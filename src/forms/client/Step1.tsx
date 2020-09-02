@@ -68,7 +68,7 @@ export const Step1 = ({ client, onChange }: Step1Props) => {
           ))}
         </Select>
       </FormGroup>
-      <ClientDescription onChange={onChange} client={client}/>
+      <ClientDescription onChange={onChange} client={client} />
     </Form>
   );
 };

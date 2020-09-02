@@ -11,6 +11,8 @@ import {
   ActionGroup,
   Button,
   AlertVariant,
+  Modal,
+  ModalVariant,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 
@@ -24,6 +26,7 @@ type FileUpload = {
   value: string | File;
   filename: string;
   isLoading: boolean;
+  modal: boolean;
 };
 
 export const ImportForm = () => {
@@ -31,25 +34,36 @@ export const ImportForm = () => {
   const httpClient = useContext(HttpClientContext)!;
 
   const [add, alerts, hide] = useAlerts();
-  const [fileUpload, setFileUpload] = useState<FileUpload>({
+  const defaultUpload = {
     value: "",
     filename: "",
     isLoading: false,
-  });
-  const [client, setClient] = useState<ClientRepresentation>({
+    modal: false,
+  };
+  const [fileUpload, setFileUpload] = useState<FileUpload>(defaultUpload);
+  const defaultClient = {
     protocol: "",
     clientId: "",
     name: "",
     description: "",
-  });
+  };
+  const [client, setClient] = useState<ClientRepresentation>(defaultClient);
 
   const handleFileChange = (value: string | File, filename: string) => {
-    setFileUpload({
-      ...fileUpload,
-      value,
-      filename,
-    });
-    setClient({ ...client, ...(value ? JSON.parse(value as string) : {}) });
+    if (value === "" && client.protocol !== "") {
+      // clear clicked
+      setFileUpload({ ...fileUpload, modal: true });
+    } else {
+      setFileUpload({
+        ...fileUpload,
+        value,
+        filename,
+      });
+      setClient({
+        ...client,
+        ...(value ? JSON.parse(value as string) : defaultClient),
+      });
+    }
   };
   const handleDescriptionChange = (
     value: string,
@@ -58,6 +72,7 @@ export const ImportForm = () => {
     const name = (event.target as HTMLInputElement).name;
     setClient({ ...client, [name]: value });
   };
+  const removeDialog = () => setFileUpload({ ...fileUpload, modal: false });
 
   const save = async () => {
     try {
@@ -80,6 +95,31 @@ export const ImportForm = () => {
       </PageSection>
       <Divider />
       <PageSection variant="light">
+        {fileUpload.modal && (
+          <Modal
+            variant={ModalVariant.small}
+            title={t("Clear this file")}
+            isOpen
+            onClose={removeDialog}
+            actions={[
+              <Button
+                key="confirm"
+                variant="primary"
+                onClick={() => {
+                  setClient(defaultClient);
+                  setFileUpload(defaultUpload);
+                }}
+              >
+                {t("Clear")}
+              </Button>,
+              <Button key="cancel" variant="link" onClick={removeDialog}>
+                {t("Cancel")}
+              </Button>,
+            ]}
+          >
+            {t("confirmImportClear")}
+          </Modal>
+        )}
         <Form isHorizontal>
           <FormGroup
             label={t("Resource file")}
