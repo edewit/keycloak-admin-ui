@@ -18,6 +18,7 @@ import {
 } from "react-router-dom";
 import { NewRealmForm } from "./forms/realm/NewRealmForm";
 import { NewClientForm } from "./forms/client/NewClientForm";
+import { ImportForm } from "./forms/client/ImportForm";
 
 export const App = () => {
   const [max, setMax] = useState(10);
@@ -51,7 +52,12 @@ export const App = () => {
                 <Button onClick={() => history.push("/add-client")}>
                   Create client
                 </Button>
-                <Button variant="link">Import client</Button>
+                <Button
+                  onClick={() => history.push("/import-client")}
+                  variant="link"
+                >
+                  Import client
+                </Button>
               </>
             }
           >
@@ -72,6 +78,7 @@ export const App = () => {
             <Switch>
               <Route exact path="/add-realm" component={NewRealmForm}></Route>
               <Route exact path="/add-client" component={NewClientForm}></Route>
+              <Route exact path="/import-client" component={ImportForm}></Route>
               <Route exact path="/" component={Clients}></Route>
             </Switch>
           </PageSection>
