@@ -6,10 +6,11 @@ import style from "./scroll-form.module.css";
 
 type ScrollFormProps = {
   sections: string[];
+  border?: boolean;
   children: React.ReactNode;
 };
 
-export const ScrollForm = ({ sections, children }: ScrollFormProps) => {
+export const ScrollForm = ({ sections, border = false, children }: ScrollFormProps) => {
   const [active, setActive] = useState(sections[0]);
   useEffect(() => {
     const getCurrentSection = () => {
@@ -72,7 +73,7 @@ export const ScrollForm = ({ sections, children }: ScrollFormProps) => {
         <GridItem span={8}>
           <Form>
             {sections.map((cat, index) => (
-              <FormPanel id={cat} key={cat} title={cat}>
+              <FormPanel id={cat} key={cat} title={cat} border={border}>
                 {nodes[index]}
               </FormPanel>
             ))}

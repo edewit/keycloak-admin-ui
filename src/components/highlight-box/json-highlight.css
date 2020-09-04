@@ -1,0 +1,24 @@
+pre {
+  outline-style: solid;
+  outline-color: var(--pf-global--BorderColor--100);
+  outline-width: var(--pf-global--BorderWidth--sm);
+
+  padding: 5px;
+  height: 10em;
+  overflow: scroll;
+}
+.string {
+  color: var(--pf-global--palette--light-green-500);
+}
+.number {
+  color: var(--pf-global--palette--orange-400);
+}
+.boolean {
+  color: var(--pf-global--palette--blue-300);
+}
+.null {
+  color: var(--pf-global--palette--orange-400);
+}
+.key {
+  color: var(--pf-global--palette--red-200);
+}

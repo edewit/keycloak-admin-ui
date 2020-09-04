@@ -7,6 +7,7 @@ import {
   Button,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
+import { JsonHighlight } from "../highlight-box/jsonHighlight";
 
 type FileUpload = {
   value: string | File;
@@ -100,7 +101,7 @@ export const JsonFileUpload = ({
           value={fileUpload.value}
           filename={fileUpload.filename}
           onChange={handleChange}
-          allowEditingUploadedText
+          hideDefaultPreview
           onReadStarted={() =>
             setFileUpload({ ...fileUpload, isLoading: true })
           }
@@ -111,7 +112,11 @@ export const JsonFileUpload = ({
           dropzoneProps={{
             accept: ".json",
           }}
-        />
+        >
+          {fileUpload.value && (
+            <JsonHighlight json={fileUpload.value as string} />
+          )}
+        </FileUpload>
       </FormGroup>
     </>
   );
