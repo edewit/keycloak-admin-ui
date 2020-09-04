@@ -11,7 +11,7 @@ interface FormPanelProps extends React.HTMLProps<HTMLFormElement> {
 export const FormPanel = (props: FormPanelProps) => {
   const { title, children, border, ...rest } = props;
   return (
-    <section {...rest} className={border ? style.panel : ''}>
+    <section {...rest} className={border ? style.panel : ""}>
       <Title headingLevel="h4" size="xl" className={style.title}>
         {title}
       </Title>
