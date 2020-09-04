@@ -20,6 +20,13 @@ import { JsonFileUpload } from "../../components/json-file-upload/JsonFileUpload
 import { useAlerts } from "../../components/alert/Alerts";
 import { AlertPanel } from "../../components/alert/AlertPanel";
 
+type FileUpload = {
+  value: string | File;
+  filename: string;
+  isLoading: boolean;
+  modal: boolean;
+};
+
 export const ImportForm = () => {
   const { t } = useTranslation("clients");
   const httpClient = useContext(HttpClientContext)!;

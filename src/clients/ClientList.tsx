@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -40,11 +41,11 @@ export const ClientList = ({ baseUrl, clients }: ClientListProps) => {
     const field = data!.toString();
     const value = convertClientId(field);
     return field.indexOf("true") !== -1 ? (
-      <>{value}</>
+      <Link to="client-settings">{value}</Link>
     ) : (
-      <>
+      <Link to="client-settings">
         {value} <Badge isRead>Disabled</Badge>
-      </>
+      </Link>
     );
   };
 

@@ -15,7 +15,7 @@ export const JsonHighlight = ({ json }: JsonHighlightProps) => {
     return json.replace(
       /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
       (match) => {
-        var cls = "number";
+        let cls = "number";
         if (/^"/.test(match)) {
           if (/:$/.test(match)) {
             cls = "key";
