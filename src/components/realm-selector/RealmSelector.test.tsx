@@ -2,6 +2,9 @@ import React from "react";
 import { mount } from "enzyme";
 import { act } from "@testing-library/react";
 
+import { AlertPanel } from "../alert/AlertPanel";
+import { useAlerts } from "../alert/Alerts";
+
 import { RealmSelector } from "./RealmSelector";
 
 it("renders realm selector", async () => {
