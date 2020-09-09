@@ -7,7 +7,7 @@ import {
   Button,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
-import { JsonHighlight } from "../highlight-box/jsonHighlight";
+import { JsonHighlight } from "./JsonHighlight";
 
 type FileUpload = {
   value: string | File;

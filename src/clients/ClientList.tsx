@@ -60,12 +60,18 @@ export const ClientList = ({ baseUrl, clients }: ClientListProps) => {
   };
 
   /* eslint-disable no-template-curly-in-string */
-  const replaceBaseUrl = (r: ClientRepresentation) =>
-    r.rootUrl &&
-    r.rootUrl
-      .replace("${authBaseUrl}", baseUrl)
-      .replace("${authAdminUrl}", baseUrl) +
-      (r.baseUrl ? r.baseUrl.substr(1) : "");
+  const replaceBaseUrl = (r: ClientRepresentation) => {
+    if (r.rootUrl) {
+      if (!r.rootUrl.startsWith("http") || r.rootUrl.indexOf("$") !== -1) {
+        r.rootUrl =
+          r.rootUrl
+            .replace("${authBaseUrl}", baseUrl)
+            .replace("${authAdminUrl}", baseUrl) +
+          (r.baseUrl ? r.baseUrl.substr(1) : "");
+      }
+    }
+    return r.rootUrl;
+  };
 
   const data = clients!
     .map((r) => {

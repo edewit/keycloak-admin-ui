@@ -10,7 +10,11 @@ type ScrollFormProps = {
   children: React.ReactNode;
 };
 
-export const ScrollForm = ({ sections, border = false, children }: ScrollFormProps) => {
+export const ScrollForm = ({
+  sections,
+  border = false,
+  children,
+}: ScrollFormProps) => {
   const [active, setActive] = useState(sections[0]);
   useEffect(() => {
     const getCurrentSection = () => {

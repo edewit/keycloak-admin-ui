@@ -32,13 +32,13 @@ exports[`<JsonFileUpload /> render 1`] = `
         className="pf-c-form__group-control"
       >
         <FileUpload
-          allowEditingUploadedText={true}
           dropzoneProps={
             Object {
               "accept": ".json",
             }
           }
           filename=""
+          hideDefaultPreview={true}
           id="test"
           isLoading={false}
           onChange={[Function]}
@@ -59,9 +59,9 @@ exports[`<JsonFileUpload /> render 1`] = `
             preventDropOnDocument={true}
           >
             <FileUploadField
-              allowEditingUploadedText={true}
               containerRef={[Function]}
               filename=""
+              hideDefaultPreview={true}
               id="test"
               isLoading={false}
               onBlur={[Function]}
@@ -192,34 +192,7 @@ exports[`<JsonFileUpload /> render 1`] = `
                 </div>
                 <div
                   className="pf-c-file-upload__file-details"
-                >
-                  <TextArea
-                    aria-label="File upload"
-                    className=""
-                    disabled={false}
-                    id="test"
-                    isRequired={false}
-                    name="test"
-                    onChange={[Function]}
-                    readOnly={false}
-                    resizeOrientation="vertical"
-                    validated="default"
-                    value=""
-                  >
-                    <textarea
-                      aria-invalid={false}
-                      aria-label="File upload"
-                      className="pf-c-form-control pf-m-resize-vertical"
-                      disabled={false}
-                      id="test"
-                      name="test"
-                      onChange={[Function]}
-                      readOnly={false}
-                      required={false}
-                      value=""
-                    />
-                  </TextArea>
-                </div>
+                />
                 <input
                   accept=".json"
                   autoComplete="off"
@@ -283,13 +256,13 @@ exports[`<JsonFileUpload /> upload file 1`] = `
         className="pf-c-form__group-control"
       >
         <FileUpload
-          allowEditingUploadedText={true}
           dropzoneProps={
             Object {
               "accept": ".json",
             }
           }
           filename=""
+          hideDefaultPreview={true}
           id="upload"
           isLoading={false}
           onChange={[Function]}
@@ -310,9 +283,9 @@ exports[`<JsonFileUpload /> upload file 1`] = `
             preventDropOnDocument={true}
           >
             <FileUploadField
-              allowEditingUploadedText={true}
               containerRef={[Function]}
               filename=""
+              hideDefaultPreview={true}
               id="upload"
               isDragActive={false}
               isLoading={false}
@@ -444,34 +417,7 @@ exports[`<JsonFileUpload /> upload file 1`] = `
                 </div>
                 <div
                   className="pf-c-file-upload__file-details"
-                >
-                  <TextArea
-                    aria-label="File upload"
-                    className=""
-                    disabled={false}
-                    id="upload"
-                    isRequired={false}
-                    name="upload"
-                    onChange={[Function]}
-                    readOnly={false}
-                    resizeOrientation="vertical"
-                    validated="default"
-                    value=""
-                  >
-                    <textarea
-                      aria-invalid={false}
-                      aria-label="File upload"
-                      className="pf-c-form-control pf-m-resize-vertical"
-                      disabled={false}
-                      id="upload"
-                      name="upload"
-                      onChange={[Function]}
-                      readOnly={false}
-                      required={false}
-                      value=""
-                    />
-                  </TextArea>
-                </div>
+                />
                 <input
                   accept=".json"
                   autoComplete="off"

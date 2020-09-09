@@ -1,0 +1,33 @@
+
+:root {
+  --keycloak--json-string-color: var(--pf-global--palette--light-green-500);
+  --keycloak--json-number-color: var(--pf-global--palette--orange-400);
+  --keycloak--json-boolean-color: var(--pf-global--palette--blue-300);
+  --keycloak--json-null-color: var(--pf-global--palette--orange-400);
+  --keycloak--json-key-color: var(--pf-global--palette--red-200);
+}
+
+pre {
+  outline-style: solid;
+  outline-color: var(--pf-global--BorderColor--100);
+  outline-width: var(--pf-global--BorderWidth--sm);
+
+  padding: 5px;
+  height: 10em;
+  overflow: scroll;
+}
+.string {
+  color: var(--keycloak--json-string-color);
+}
+.number {
+  color: var(--keycloak--json-number-color);
+}
+.boolean {
+  color: var(--keycloak--json-boolean-color);
+}
+.null {
+  color: var(--keycloak--json-null-color);
+}
+.key {
+  color: var(--keycloak--json-key-color);
+}
