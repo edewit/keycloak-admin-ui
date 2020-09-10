@@ -61,10 +61,7 @@ export const NewRealmForm = () => {
       <Divider />
       <PageSection variant="light">
         <Form isHorizontal>
-          <JsonFileUpload
-            id="kc-realm-filename"
-            onChange={handleFileChange}
-          />
+          <JsonFileUpload id="kc-realm-filename" onChange={handleFileChange} />
           <FormGroup label={t("Realm name")} isRequired fieldId="kc-realm-name">
             <TextInput
               isRequired
@@ -86,7 +83,9 @@ export const NewRealmForm = () => {
             />
           </FormGroup>
           <ActionGroup>
-            <Button variant="primary" onClick={() => save()}>{t("Create")}</Button>
+            <Button variant="primary" onClick={() => save()}>
+              {t("Create")}
+            </Button>
             <Button variant="link">{t("Cancel")}</Button>
           </ActionGroup>
         </Form>

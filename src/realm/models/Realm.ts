@@ -289,8 +289,7 @@ export interface ApplicationRepresentation extends ClientRepresentation {
   claims: ClaimRepresentation;
 }
 
-export interface OAuthClientRepresentation extends ApplicationRepresentation {
-}
+export interface OAuthClientRepresentation extends ApplicationRepresentation {}
 
 export interface ClientTemplateRepresentation {
   id: string;
@@ -375,13 +374,13 @@ export interface ResourceServerRepresentation {
   decisionStrategy: DecisionStrategy;
 }
 
-export interface AuthenticationExecutionExportRepresentation extends AbstractAuthenticationExecutionRepresentation {
+export interface AuthenticationExecutionExportRepresentation
+  extends AbstractAuthenticationExecutionRepresentation {
   flowAlias: string;
   userSetupAllowed: boolean;
 }
 
-export interface Serializable {
-}
+export interface Serializable {}
 
 export interface ClaimRepresentation {
   name: boolean;
@@ -428,7 +427,8 @@ export interface ScopeRepresentation {
   displayName: string;
 }
 
-export interface AbstractAuthenticationExecutionRepresentation extends Serializable {
+export interface AbstractAuthenticationExecutionRepresentation
+  extends Serializable {
   authenticatorConfig: string;
   authenticator: string;
   requirement: string;
