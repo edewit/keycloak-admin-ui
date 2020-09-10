@@ -4,7 +4,9 @@ import { AlertVariant } from "@patternfly/react-core";
 
 export function useAlerts(): [
   (message: string, type?: AlertVariant) => void,
-  () => ReactElement
+  () => ReactElement,
+  (key: number) => void,
+  AlertType[]
 ] {
   const [alerts, setAlerts] = useState<AlertType[]>([]);
   const createId = () => new Date().getTime();
@@ -24,5 +26,5 @@ export function useAlerts(): [
 
   const Panel = () => <AlertPanel alerts={alerts} onCloseAlert={hideAlert} />;
 
-  return [add, Panel];
+  return [add, Panel, hideAlert, alerts];
 }

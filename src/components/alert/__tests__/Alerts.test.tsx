@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, AlertVariant } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core";
 import { mount } from "enzyme";
 import { act } from "react-dom/test-utils";
 
@@ -9,11 +9,11 @@ import { useAlerts } from "../Alerts";
 jest.useFakeTimers();
 
 const WithButton = () => {
-  const [add, Alerts] = useAlerts();
+  const [add, _, hide, alerts] = useAlerts();
   return (
     <>
-      <Alerts />
-      <Button onClick={() => add("Hello", AlertVariant.default)}>Add</Button>
+      <AlertPanel alerts={alerts} onCloseAlert={hide} />
+      <Button onClick={() => add("Hello")}>Add</Button>
     </>
   );
 };
