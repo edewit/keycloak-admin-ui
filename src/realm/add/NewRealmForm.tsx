@@ -15,7 +15,7 @@ import {
 } from "@patternfly/react-core";
 
 import { JsonFileUpload } from "../../components/json-file-upload/JsonFileUpload";
-import { RealmRepresentation } from "../../models/Realm";
+import { RealmRepresentation } from "../models/Realm";
 import { HttpClientContext } from "../../http-service/HttpClientContext";
 import { useAlerts } from "../../components/alert/Alerts";
 
