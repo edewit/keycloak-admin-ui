@@ -85,7 +85,7 @@ exports[`renders global alerts 2`] = `
                   >
                     <button
                       aria-disabled="false"
-                      aria-label="Close default alert alert: Hello"
+                      aria-label="Close  alert: Hello"
                       class="pf-c-button pf-m-plain"
                       data-ouia-component-id="2"
                       data-ouia-component-type="PF4/Button"
