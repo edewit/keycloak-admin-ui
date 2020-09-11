@@ -1,8 +1,9 @@
 import React, { useState, FormEvent } from "react";
-import { ScrollForm } from "../../components/scroll-form/ScrollForm";
 import { useTranslation } from "react-i18next";
+
+import { ScrollForm } from "../components/scroll-form/ScrollForm";
 import { ClientDescription } from "./ClientDescription";
-import { ClientRepresentation } from "../../model/client-model";
+import { ClientRepresentation } from "./models/client-model";
 import { FormGroup, TextInput } from "@patternfly/react-core";
 
 type ClientSettingsProps = {
