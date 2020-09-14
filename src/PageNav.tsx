@@ -59,7 +59,7 @@ export const PageNav: React.FunctionComponent = () => {
             <NavItem className="keycloak__page_nav__nav_item__realm-selector">
               <DataLoader loader={realmLoader}>
                 {(realmList) => (
-                  <RealmSelector realm="Master" realmList={realmList || []} />
+                  <RealmSelector realmList={realmList || []} />
                 )}
               </DataLoader>
             </NavItem>
