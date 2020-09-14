@@ -12,9 +12,7 @@ import {
   ToolbarItem,
   Badge,
   Dropdown,
-  DropdownToggle,
-  DropdownItem,
-  DropdownSeparator,
+  DropdownToggle
 } from "@patternfly/react-core";
 import { CaretDownIcon } from "@patternfly/react-icons";
 
@@ -22,16 +20,14 @@ type TableViewHeaderProps = {
   title: string;
   badge: string;
   description: string;
+  dropdownItems: any;
 };
-
-const dropdownItems = [
-  <DropdownItem key="link">Placeholder</DropdownItem>
-];
 
 export const TableViewHeader = ({
   title,
   badge,
   description,
+  dropdownItems
 }: TableViewHeaderProps) => {
   return (
     <>
@@ -54,7 +50,7 @@ export const TableViewHeader = ({
             <Toolbar>
               <ToolbarContent>
                 <ToolbarItem>
-                  <Switch label="Enabled" labelOff="Disabled" className-="pf-u-mr-lg" />
+                  <Switch label="Enabled" labelOff="Disabled" className="pf-u-mr-lg" />
                 </ToolbarItem>
                 <ToolbarItem>
                   <Dropdown
