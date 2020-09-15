@@ -52,36 +52,36 @@ export const PageNav: React.FunctionComponent = () => {
   };
 
   return (
-    <PageSidebar
-      nav={
-        <Nav onSelect={onSelect}>
-          <NavList>
-            <NavItem className="keycloak__page_nav__nav_item__realm-selector">
-              <DataLoader loader={realmLoader}>
-                {(realmList) => (
+    <DataLoader loader={realmLoader}>
+      {(realmList) => (
+        <PageSidebar
+          nav={
+            <Nav onSelect={onSelect}>
+              <NavList>
+                <NavItem className="keycloak__page_nav__nav_item__realm-selector">
                   <RealmSelector realmList={realmList || []} />
-                )}
-              </DataLoader>
-            </NavItem>
-          </NavList>
-          <NavGroup title="Manage">
-            {makeNavItem("Clients", "clients")}
-            {makeNavItem("Client Scopes", "client-scopes")}
-            {makeNavItem("Realm Roles", "realm-roles")}
-            {makeNavItem("Users", "users")}
-            {makeNavItem("Groups", "groups")}
-            {makeNavItem("Sessions", "sessions")}
-            {makeNavItem("Events", "events")}
-          </NavGroup>
+                </NavItem>
+              </NavList>
+              <NavGroup title="Manage">
+                {makeNavItem("Clients", "clients")}
+                {makeNavItem("Client Scopes", "client-scopes")}
+                {makeNavItem("Realm Roles", "realm-roles")}
+                {makeNavItem("Users", "users")}
+                {makeNavItem("Groups", "groups")}
+                {makeNavItem("Sessions", "sessions")}
+                {makeNavItem("Events", "events")}
+              </NavGroup>
 
-          <NavGroup title="Configure">
-            {makeNavItem("Realm settings", "realm-settings")}
-            {makeNavItem("Authentication", "authentication")}
-            {makeNavItem("Identity providers", "identity-providers")}
-            {makeNavItem("User federation", "user-federation")}
-          </NavGroup>
-        </Nav>
-      }
-    />
+              <NavGroup title="Configure">
+                {makeNavItem("Realm settings", "realm-settings")}
+                {makeNavItem("Authentication", "authentication")}
+                {makeNavItem("Identity providers", "identity-providers")}
+                {makeNavItem("User federation", "user-federation")}
+              </NavGroup>
+            </Nav>
+          }
+        />
+      )}
+    </DataLoader>
   );
 };

@@ -14,7 +14,7 @@ import { RealmContext } from "../components/realm-context/RealmContext";
 export const ClientsSection = () => {
   const { t } = useTranslation("clients");
   const history = useHistory();
-  
+
   const [max, setMax] = useState(10);
   const [first, setFirst] = useState(0);
   const httpClient = useContext(HttpClientContext)!;

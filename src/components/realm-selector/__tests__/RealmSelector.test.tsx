@@ -19,5 +19,5 @@ it("renders realm selector", async () => {
     expandButton!.simulate("click");
   });
 
-  expect(wrapper.html()).toMatchSnapshot();
+  expect(wrapper).toMatchSnapshot();
 });

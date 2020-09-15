@@ -40,7 +40,7 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
   );
 
   const AddRealm = () => (
-    <Button isBlock onClick={() => history.push("/add-realm")}>
+    <Button component="div" isBlock onClick={() => history.push("/add-realm")}>
       Create Realm
     </Button>
   );
@@ -71,24 +71,26 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
     <>
       {realmList.length > 5 && (
         <ContextSelector
+          toggleText={toUpperCase(realm)}
           isOpen={open}
           screenReaderLabel={toUpperCase(realm)}
           onToggle={() => setOpen(!open)}
           onSelect={(_, r) => {
-            setRealm(((r as unknown) as any).props.value);
+            const value = ((r as unknown) as any).props.value;
+            setRealm(value || "master");
             setOpen(!open);
           }}
           searchInputValue={search}
           onSearchInputChange={(value) => setSearch(value)}
           onSearchButtonClick={() => onFilter()}
-          className="keycloak__realm_selector__dropdown"
+          className="keycloak__realm_selector__context_selector"
         >
           {filteredItems.map((item) => (
             <ContextSelectorItem key={item.id}>
               <RealmText value={item.realm} />
             </ContextSelectorItem>
           ))}
-          <ContextSelectorItem>
+          <ContextSelectorItem key="add">
             <AddRealm />
           </ContextSelectorItem>
         </ContextSelector>
@@ -102,15 +104,15 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
             <DropdownToggle
               id="realm-select-toggle"
               onToggle={() => setOpen(!open)}
-              className=".keycloak__realm_selector_dropdown__toggle"
+              className="keycloak__realm_selector_dropdown__toggle"
             >
               {toUpperCase(realm)}
             </DropdownToggle>
           }
           dropdownItems={[
             ...dropdownItems,
-            <Divider key="divider"/>,
-            <DropdownItem component="div" key="add">
+            <Divider key="divider" />,
+            <DropdownItem key="add">
               <AddRealm />
             </DropdownItem>,
           ]}
