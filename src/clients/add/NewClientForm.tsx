@@ -11,7 +11,6 @@ import { HttpClientContext } from "../../http-service/HttpClientContext";
 import { Step1 } from "./Step1";
 import { Step2 } from "./Step2";
 import { ClientRepresentation } from "../models/client-model";
-import { AlertPanel } from "../../components/alert/AlertPanel";
 import { useAlerts } from "../../components/alert/Alerts";
 import { useTranslation } from "react-i18next";
 import { RealmContext } from "../../components/realm-context/RealmContext";
@@ -29,7 +28,7 @@ export const NewClientForm = () => {
     publicClient: false,
     authorizationServicesEnabled: false,
   });
-  const [add, alerts, hide] = useAlerts();
+  const [add, Alerts] = useAlerts();
 
   const save = async () => {
     try {
@@ -53,10 +52,10 @@ export const NewClientForm = () => {
     });
   };
 
-  const title = t("Create client");
+  const title = t("createClient");
   return (
     <>
-      <AlertPanel alerts={alerts} onCloseAlert={hide} />
+      <Alerts />
       <PageSection variant="light">
         <TextContent>
           <Text component="h1">{title}</Text>
@@ -69,13 +68,13 @@ export const NewClientForm = () => {
           mainAriaLabel={`${title} content`}
           steps={[
             {
-              name: t("General Settings"),
+              name: t("generalSettings"),
               component: <Step1 onChange={handleInputChange} client={client} />,
             },
             {
-              name: t("Capability config"),
+              name: t("capabilityConfig"),
               component: <Step2 onChange={handleInputChange} client={client} />,
-              nextButtonText: t("common:Save"),
+              nextButtonText: t("common:save"),
             },
           ]}
           onSave={() => save()}

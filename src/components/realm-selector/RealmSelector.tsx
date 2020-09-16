@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
+
 import {
   Dropdown,
   DropdownToggle,
@@ -13,13 +14,13 @@ import {
 } from "@patternfly/react-core";
 import { CheckIcon } from "@patternfly/react-icons";
 
-import { Realm } from "../../realm/models/Realm";
+import { RealmRepresentation } from "../../realm/models/Realm";
 import { RealmContext } from "../realm-context/RealmContext";
 
 import "./realm-selector.css";
 
 type RealmSelectorProps = {
-  realmList: Realm[];
+  realmList: RealmRepresentation[];
 };
 
 export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
