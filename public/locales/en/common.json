@@ -8,6 +8,8 @@
   "export": "Export",
   "resourceFile": "Resource file",
   "clearFile": "Are you sure you want to clear this file?",
+  "on": "On",
+  "off":"Off",
 
   "signOut": "Sign out",
   "manageAccount": "Manage account",
