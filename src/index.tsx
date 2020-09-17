@@ -9,7 +9,7 @@ import { KeycloakService } from "./auth/keycloak.service";
 import { HttpClientContext } from "./http-service/HttpClientContext";
 import { HttpClient } from "./http-service/http-client";
 
-console.info("supported languages", ...i18n.languages);
+console.info("supported languages", i18n);
 init().then((keycloak) => {
   const keycloakService = new KeycloakService(keycloak);
   ReactDom.render(

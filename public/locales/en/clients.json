@@ -1,0 +1,17 @@
+{
+  "createClient": "Create client",
+  "importClient": "Import client",
+  "clientID": "Client ID",
+  "type": "Type",
+  "homeURL": "Home URL",
+  "description": "Description",
+  "name": "Name",
+  "clientList": "Client list",
+  "generalSettings": "General Settings",
+  "capabilityConfig": "Capability config",
+  "clientsExplain": "Clients are applications and services that can request authentication of a user",
+  "clientImportError": "Could not import client",
+  "clientImportSuccess": "Client imported succeful",
+  "clientDeletedSucess": "The client has been deleted",
+  "clientDeleteError": "Could not delete client:"
+}

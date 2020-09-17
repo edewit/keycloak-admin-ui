@@ -1,0 +1,18 @@
+{
+  "fullName": "{{givenName}} {{familyName}}",
+  "unknownUser": "Anonymous",
+
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "export": "Export",
+  "resourceFile": "Resource file",
+  "clearFile": "Are you sure you want to clear this file?",
+
+  "signOut": "Sign out",
+  "manageAccount": "Manage account",
+  "serverInfo": "Server info",
+  "help": "Help",
+  "documentation": "Documentation",
+  "enableHelpMode": "Enable help mode"
+}
