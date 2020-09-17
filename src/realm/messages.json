@@ -6,6 +6,8 @@
     "create":"Create",
     "createRealm": "Create realm",
     "noRealmRoles": "No realm roles",
+    "createdSuccess": "Realm created",
+    "createFailure": "Could not create realm:"
     "emptyStateText": "There aren't any realm roles in this realm. Create a realm role to get started."
   }
 }

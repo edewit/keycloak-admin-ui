@@ -40,7 +40,7 @@ export const GroupsSection = () => {
               toolbarItem={
                 <>
                   <Button onClick={() => history.push("/add-group")}>
-                    {t("Create group")}
+                    {t("createGroup")}
                   </Button>
                 </>
               }

@@ -41,9 +41,9 @@ export const NewRealmForm = () => {
   const save = async (realm: RealmRepresentation) => {
     try {
       await httpClient.doPost("/admin/realms", realm);
-      add(t("Realm created"), AlertVariant.success);
+      add(t("createdSuccess"), AlertVariant.success);
     } catch (error) {
-      add(`${t("Could not create realm:")} '${error}'`, AlertVariant.danger);
+      add(`${t("createFailure")} '${error}'`, AlertVariant.danger);
     }
   };
 
