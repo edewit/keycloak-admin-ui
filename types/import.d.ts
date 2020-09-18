@@ -6,3 +6,5 @@ interface ImportMeta {
   hot: any;
   env: Record<string, any>;
 }
+
+declare module 'mutation-observer';
