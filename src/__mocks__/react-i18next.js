@@ -34,13 +34,27 @@ const renderNodes = (reactNodes) => {
   });
 };
 
-import common from "../../public/locales/en/common.json";
-import clients from "../../public/locales/en/clients.json";
-import realm from "../../public/locales/en/realm.json";
-import groups from "../../public/locales/en/groups.json";
-import help from "../../public/locales/en/help.json";
+const common = require("../../public/locales/en/common.json");
+const clients = require("../../public/locales/en/clients.json");
+const realm = require("../../public/locales/en/realm.json");
+const groups = require("../../public/locales/en/groups.json");
+const help = require("../../public/locales/en/help.json");
 
-const translation = { ...common, ...help, ...clients, ...realm, ...groups };
+const commonPrefix = Object.assign(
+  {},
+  ...Object.keys(common).map((k) => {
+    return { ["common:" + k]: common[k] };
+  })
+);
+const translation = {
+  ...common,
+  ...help,
+  ...clients,
+  ...realm,
+  ...groups,
+  ...commonPrefix,
+};
+
 const useMock = [(k) => k, {}];
 useMock.t = (k) => translation[k] || k;
 useMock.i18n = {};

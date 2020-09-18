@@ -66,7 +66,7 @@ export const JsonFileUpload = ({
       {fileUpload.modal && (
         <Modal
           variant={ModalVariant.small}
-          title={t("clearFile")}
+          title={t("common:clearFileTitle")}
           isOpen
           onClose={removeDialog}
           actions={[
