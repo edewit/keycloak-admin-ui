@@ -40,8 +40,13 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
     </Split>
   );
 
-  const AddRealm = ({className}: {className?: string}) => (
-    <Button component="div" isBlock onClick={() => history.push("/add-realm")} className={className}>
+  const AddRealm = ({ className }: { className?: string }) => (
+    <Button
+      component="div"
+      isBlock
+      onClick={() => history.push("/add-realm")}
+      className={className}
+    >
       Create Realm
     </Button>
   );
@@ -96,7 +101,7 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
             </ContextSelectorItem>
           ))}
           <ContextSelectorItem key="add">
-            <AddRealm className="keycloak__realm_selector__create_realm_button"/>
+            <AddRealm className="keycloak__realm_selector__create_realm_button" />
           </ContextSelectorItem>
         </ContextSelector>
       )}
