@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
@@ -40,8 +40,8 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
     </Split>
   );
 
-  const AddRealm = () => (
-    <Button component="div" isBlock onClick={() => history.push("/add-realm")}>
+  const AddRealm = ({className}: {className?: string}) => (
+    <Button component="div" isBlock onClick={() => history.push("/add-realm")} className={className}>
       Create Realm
     </Button>
   );
@@ -55,6 +55,10 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
           );
     setFilteredItems(filtered || []);
   };
+
+  useEffect(() => {
+    onFilter();
+  }, [search]);
 
   const dropdownItems = realmList.map((r) => (
     <DropdownItem
@@ -92,7 +96,7 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
             </ContextSelectorItem>
           ))}
           <ContextSelectorItem key="add">
-            <AddRealm />
+            <AddRealm className="keycloak__realm_selector__create_realm_button"/>
           </ContextSelectorItem>
         </ContextSelector>
       )}

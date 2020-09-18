@@ -22,6 +22,12 @@
   --pf-c-context-selector__toggle--Color: var(--pf-c-nav__link--m-current--Color);
 }
 
+.keycloak__realm_selector__create_realm_button {
+  position: absolute;
+  left: 0;
+  bottom: -36px;
+}
+
 .keycloak__realm_selector__dropdown {
   width: 100%;
 }
