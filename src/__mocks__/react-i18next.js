@@ -1,6 +1,13 @@
 const React = require("react");
 const reactI18next = require("react-i18next");
 
+import common from "../../public/locales/en/common.json";
+import clients from "../../public/locales/en/clients.json";
+import realm from "../../public/locales/en/realm.json";
+import groups from "../../public/locales/en/groups.json";
+import roles from "../../public/locales/en/roles.json";
+import help from "../../public/locales/en/help.json";
+
 const hasChildren = (node) =>
   node && (node.children || (node.props && node.props.children));
 
@@ -34,12 +41,6 @@ const renderNodes = (reactNodes) => {
   });
 };
 
-const common = require("../../public/locales/en/common.json");
-const clients = require("../../public/locales/en/clients.json");
-const realm = require("../../public/locales/en/realm.json");
-const groups = require("../../public/locales/en/groups.json");
-const help = require("../../public/locales/en/help.json");
-
 const commonPrefix = Object.assign(
   {},
   ...Object.keys(common).map((k) => {
@@ -51,6 +52,7 @@ const translation = {
   ...help,
   ...clients,
   ...realm,
+  ...roles,
   ...groups,
   ...commonPrefix,
 };
