@@ -1,0 +1,189 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirmation dialog renders simple confirm dialog 1`] = `
+<ConfirmDialog
+  continueButtonLabel="Delete"
+  messageKey="If you delete this client, all associated data will be removed."
+  onConfirm={
+    [MockFunction] {
+      "calls": Array [
+        Array [],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  titleKey="Delete app02?"
+>
+  <Modal
+    actions={
+      Array [
+        <Button
+          id="modal-confirm"
+          onClick={[Function]}
+          variant="danger"
+        >
+          Delete
+        </Button>,
+        <Button
+          id="modal-cancel"
+          onClick={[Function]}
+          variant="secondary"
+        >
+          cancel
+        </Button>,
+      ]
+    }
+    appendTo={[Function]}
+    aria-describedby=""
+    aria-label=""
+    aria-labelledby=""
+    className=""
+    hasNoBodyWrapper={false}
+    isOpen={false}
+    onClose={[Function]}
+    ouiaSafe={true}
+    showClose={true}
+    title="Delete app02?"
+    variant="default"
+  >
+    <Portal
+      containerInfo={<div />}
+    >
+      <ModalContent
+        actions={
+          Array [
+            <Button
+              id="modal-confirm"
+              onClick={[Function]}
+              variant="danger"
+            >
+              Delete
+            </Button>,
+            <Button
+              id="modal-cancel"
+              onClick={[Function]}
+              variant="secondary"
+            >
+              cancel
+            </Button>,
+          ]
+        }
+        aria-describedby=""
+        aria-label=""
+        aria-labelledby=""
+        boxId="pf-modal-part-0"
+        className=""
+        descriptorId="pf-modal-part-2"
+        hasNoBodyWrapper={false}
+        isOpen={false}
+        labelId="pf-modal-part-1"
+        onClose={[Function]}
+        ouiaId="OUIA-Generated-Modal-default-1"
+        ouiaSafe={true}
+        showClose={true}
+        title="Delete app02?"
+        variant="default"
+      />
+    </Portal>
+  </Modal>
+</ConfirmDialog>
+`;
+
+exports[`confimation dialog renders simple confirm dialog 1`] = `
+<ConfirmDialog
+  continueButtonLabel="Delete"
+  messageKey="If you delete this client, all associated data will be removed."
+  onConfirm={
+    [MockFunction] {
+      "calls": Array [
+        Array [],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  titleKey="Delete app02?"
+>
+  <Modal
+    actions={
+      Array [
+        <Button
+          id="modal-confirm"
+          onClick={[Function]}
+          variant="danger"
+        >
+          Delete
+        </Button>,
+        <Button
+          id="modal-cancel"
+          onClick={[Function]}
+          variant="secondary"
+        >
+          cancel
+        </Button>,
+      ]
+    }
+    appendTo={[Function]}
+    aria-describedby=""
+    aria-label=""
+    aria-labelledby=""
+    className=""
+    hasNoBodyWrapper={false}
+    isOpen={false}
+    onClose={[Function]}
+    ouiaSafe={true}
+    showClose={true}
+    title="Delete app02?"
+    variant="default"
+  >
+    <Portal
+      containerInfo={<div />}
+    >
+      <ModalContent
+        actions={
+          Array [
+            <Button
+              id="modal-confirm"
+              onClick={[Function]}
+              variant="danger"
+            >
+              Delete
+            </Button>,
+            <Button
+              id="modal-cancel"
+              onClick={[Function]}
+              variant="secondary"
+            >
+              cancel
+            </Button>,
+          ]
+        }
+        aria-describedby=""
+        aria-label=""
+        aria-labelledby=""
+        boxId="pf-modal-part-0"
+        className=""
+        descriptorId="pf-modal-part-2"
+        hasNoBodyWrapper={false}
+        isOpen={false}
+        labelId="pf-modal-part-1"
+        onClose={[Function]}
+        ouiaId="OUIA-Generated-Modal-default-1"
+        ouiaSafe={true}
+        showClose={true}
+        title="Delete app02?"
+        variant="default"
+      />
+    </Portal>
+  </Modal>
+</ConfirmDialog>
+`;
