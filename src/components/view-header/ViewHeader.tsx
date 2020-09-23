@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { ReactElement, useContext, useState } from "react";
 import {
   Text,
   PageSection,
@@ -11,10 +11,8 @@ import {
   ToolbarContent,
   ToolbarItem,
   Badge,
-  Dropdown,
-  DropdownToggle,
+  Select,
 } from "@patternfly/react-core";
-import { CaretDownIcon } from "@patternfly/react-icons";
 import { HelpContext } from "../help-enabler/HelpHeader";
 import { useTranslation } from "react-i18next";
 
@@ -22,19 +20,25 @@ export type ViewHeaderProps = {
   titleKey: string;
   badge?: string;
   subKey: string;
-  dropdownItems?: any[];
-  extended: boolean;
+  selectItems?: ReactElement[];
+  isEnabled?: boolean;
+  onSelect?: (value: string) => void;
+  onToggle?: (value: boolean) => void;
 };
 
 export const ViewHeader = ({
   titleKey,
   badge,
   subKey,
-  dropdownItems,
-  extended,
+  selectItems,
+  isEnabled,
+  onSelect,
+  onToggle,
 }: ViewHeaderProps) => {
   const { t } = useTranslation();
   const { enabled } = useContext(HelpContext);
+  const [open, setOpen] = useState(false);
+  const [checked, setChecked] = useState(isEnabled);
   return (
     <>
       <PageSection variant="light">
@@ -54,32 +58,38 @@ export const ViewHeader = ({
             </Level>
           </LevelItem>
           <LevelItem></LevelItem>
-          {extended && (
+          {selectItems && (
             <LevelItem>
               <Toolbar>
                 <ToolbarContent>
                   <ToolbarItem>
                     <Switch
-                      label="Enabled"
-                      labelOff="Disabled"
+                      id={`${titleKey}-switch`}
+                      label={t("common:enabled")}
+                      labelOff={t("common:disabled")}
                       className="pf-u-mr-lg"
+                      isChecked={checked}
+                      onChange={(value) => {
+                        if (onToggle) {
+                          onToggle(value);
+                        }
+                        setChecked(value);
+                      }}
                     />
                   </ToolbarItem>
                   <ToolbarItem>
-                    <Dropdown
-                      // onSelect={this.onSelect}
-                      toggle={
-                        <DropdownToggle
-                          id={`${titleKey}-toggle`}
-                          // onToggle={this.onToggle}
-                          toggleIndicator={CaretDownIcon}
-                        >
-                          Actions
-                        </DropdownToggle>
-                      }
-                      // isOpen={isOpen}
-                      dropdownItems={dropdownItems}
-                    />
+                    <Select
+                      isOpen={open}
+                      onToggle={() => setOpen(!open)}
+                      onSelect={(_, value) => {
+                        if (onSelect) {
+                          onSelect(value as string);
+                        }
+                        setOpen(false);
+                      }}
+                    >
+                      {selectItems}
+                    </Select>
                   </ToolbarItem>
                 </ToolbarContent>
               </Toolbar>
