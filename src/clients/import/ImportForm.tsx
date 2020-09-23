@@ -53,7 +53,10 @@ export const ImportForm = () => {
   return (
     <>
       <Alerts />
-      <ViewHeader titleKey="clients:importClient" subKey="clients:clientsExplain"/>
+      <ViewHeader
+        titleKey="clients:importClient"
+        subKey="clients:clientsExplain"
+      />
       <PageSection variant="light">
         <Form isHorizontal onSubmit={handleSubmit(save)}>
           <JsonFileUpload id="realm-file" onChange={handleFileChange} />

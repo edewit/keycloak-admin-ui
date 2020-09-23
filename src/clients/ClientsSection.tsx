@@ -30,42 +30,45 @@ export const ClientsSection = () => {
 
   return (
     <>
-    <ViewHeader titleKey="clients:clientList" subKey="clients:clientsExplain"/>
-    <PageSection variant="light">
-      <DataLoader loader={loader}>
-        {(clients) => (
-          <TableToolbar
-            count={clients!.length}
-            first={first}
-            max={max}
-            onNextClick={setFirst}
-            onPreviousClick={setFirst}
-            onPerPageSelect={(f, m) => {
-              setFirst(f);
-              setMax(m);
-            }}
-            toolbarItem={
-              <>
-                <Button onClick={() => history.push("/add-client")}>
-                  {t("createClient")}
-                </Button>
-                <Button
-                  onClick={() => history.push("/import-client")}
-                  variant="link"
-                >
-                  {t("importClient")}
-                </Button>
-              </>
-            }
-          >
-            <ClientList
-              clients={clients}
-              baseUrl={keycloak!.authServerUrl()!}
-            />
-          </TableToolbar>
-        )}
-      </DataLoader>
-    </PageSection>
+      <ViewHeader
+        titleKey="clients:clientList"
+        subKey="clients:clientsExplain"
+      />
+      <PageSection variant="light">
+        <DataLoader loader={loader}>
+          {(clients) => (
+            <TableToolbar
+              count={clients!.length}
+              first={first}
+              max={max}
+              onNextClick={setFirst}
+              onPreviousClick={setFirst}
+              onPerPageSelect={(f, m) => {
+                setFirst(f);
+                setMax(m);
+              }}
+              toolbarItem={
+                <>
+                  <Button onClick={() => history.push("/add-client")}>
+                    {t("createClient")}
+                  </Button>
+                  <Button
+                    onClick={() => history.push("/import-client")}
+                    variant="link"
+                  >
+                    {t("importClient")}
+                  </Button>
+                </>
+              }
+            >
+              <ClientList
+                clients={clients}
+                baseUrl={keycloak!.authServerUrl()!}
+              />
+            </TableToolbar>
+          )}
+        </DataLoader>
+      </PageSection>
     </>
   );
 };

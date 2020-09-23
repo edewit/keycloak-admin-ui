@@ -48,7 +48,7 @@ export const NewRealmForm = () => {
   return (
     <>
       <Alerts />
-      <ViewHeader titleKey="realm:createRealm" subKey="realm:realmExplain"/>
+      <ViewHeader titleKey="realm:createRealm" subKey="realm:realmExplain" />
       <PageSection variant="light">
         <Form isHorizontal onSubmit={handleSubmit(save)}>
           <JsonFileUpload id="kc-realm-filename" onChange={handleFileChange} />

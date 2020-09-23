@@ -23,8 +23,12 @@ Extended.args = {
   badge: "badge",
   subKey: "This is the description.",
   selectItems: [
-    <SelectOption key="first" value="first-item">First item</SelectOption>,
-    <SelectOption key="second" value="second-item">Second item</SelectOption>,
+    <SelectOption key="first" value="first-item">
+      First item
+    </SelectOption>,
+    <SelectOption key="second" value="second-item">
+      Second item
+    </SelectOption>,
   ],
 };
 

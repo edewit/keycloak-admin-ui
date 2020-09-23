@@ -94,7 +94,10 @@ export const NewClientForm = () => {
   return (
     <>
       <Alerts />
-      <ViewHeader titleKey="clients:createClient" subKey="clients:clientsExplain"/>
+      <ViewHeader
+        titleKey="clients:createClient"
+        subKey="clients:clientsExplain"
+      />
       <PageSection variant="light">
         <Wizard
           onClose={() => history.push("/clients")}
