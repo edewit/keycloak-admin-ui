@@ -36,16 +36,13 @@ export const ClientList = ({ baseUrl, clients }: ClientListProps) => {
   const { realm } = useContext(RealmContext);
   const [add, Alerts] = useAlerts();
 
-  const convertClientId = (clientId: string) =>
-    clientId.substring(0, clientId.indexOf("#"));
   const enabled = (): IFormatter => (data?: IFormatterValueType) => {
     const field = data!.toString();
-    const value = convertClientId(field);
-    return field.indexOf("true") !== -1 ? (
-      <Link to="client-settings">{value}</Link>
-    ) : (
-      <Link to="client-settings">
-        {value} <Badge isRead>Disabled</Badge>
+    const [id, clientId] = field.split("#");
+    return (
+      <Link to={`client-settings/${id}`}>
+        {clientId}
+        {field.indexOf("true") === -1 && <Badge isRead>Disabled</Badge>}
       </Link>
     );
   };
@@ -76,7 +73,7 @@ export const ClientList = ({ baseUrl, clients }: ClientListProps) => {
 
   const data = clients!
     .map((r) => {
-      r.clientId = r.clientId + "#" + r.enabled;
+      r.clientId = r.id + "#" + r.clientId + "#" + r.enabled;
       r.baseUrl = replaceBaseUrl(r);
       return r;
     })
@@ -103,7 +100,7 @@ export const ClientList = ({ baseUrl, clients }: ClientListProps) => {
             title: t("common:export"),
             onClick: (_, rowId) => {
               const clientCopy = JSON.parse(JSON.stringify(data[rowId].client));
-              clientCopy.clientId = convertClientId(clientCopy.clientId);
+              clientCopy.clientId = clientCopy.clientId.split("#")[1];
               delete clientCopy.id;
 
               if (clientCopy.protocolMappers) {
