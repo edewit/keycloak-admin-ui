@@ -1,18 +1,26 @@
 import React from "react";
-import { TextContent, Text, TextVariants, ButtonVariant } from "@patternfly/react-core";
-import { Meta, Story } from "@storybook/react";
 import {
-  ConfirmDialog,
-  ConfirmDialogProps,
+  TextContent,
+  Text,
+  TextVariants,
+  ButtonVariant,
+} from "@patternfly/react-core";
+import { Meta, Story } from "@storybook/react";
+import { action } from "@storybook/addon-actions";
+
+import {
+  ConfirmDialogModal,
+  ConfirmDialogModalProps,
+  useConfirmDialog,
 } from "../components/confirm-dialog/ConfirmDialog";
 
 export default {
   title: "Confirmation Dialog",
-  component: ConfirmDialog,
+  component: ConfirmDialogModal,
 } as Meta;
 
-const Template: Story<ConfirmDialogProps> = (args) => (
-  <ConfirmDialog {...args} />
+const Template: Story<ConfirmDialogModalProps> = (args) => (
+  <ConfirmDialogModal {...args} />
 );
 
 export const Simple = Template.bind({});
@@ -35,3 +43,24 @@ Children.args = {
     </>
   ),
 };
+
+const Test = () => {
+  const [toggle, Dialog] = useConfirmDialog({
+    titleKey: "Delete app02?",
+    messageKey:
+      "If you delete this client, all associated data will be removed.",
+    continueButtonLabel: "Delete",
+    onConfirm: action("confirm"),
+    onCancel: action("cancel"),
+  });
+  return (
+    <>
+      <button id="show" onClick={toggle}>
+        Show
+      </button>
+      <Dialog />
+    </>
+  );
+};
+
+export const Api = () => <Test />;

@@ -1,6 +1,31 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactElement, ReactNode, useState } from "react";
 import { Button, ButtonVariant, Modal } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
+
+export const useConfirmDialog = (
+  props: ConfirmDialogProps
+): [() => void, () => ReactElement] => {
+  const [show, setShow] = useState(false);
+
+  function toggleDialog() {
+    setShow((show) => !show);
+  }
+
+  const Dialog = () => (
+    <ConfirmDialogModal
+      key="confirmDialog"
+      {...props}
+      open={show}
+      toggleDialog={toggleDialog}
+    />
+  );
+  return [toggleDialog, Dialog];
+};
+
+export interface ConfirmDialogModalProps extends ConfirmDialogProps {
+  open: boolean;
+  toggleDialog: () => void;
+}
 
 export type ConfirmDialogProps = {
   titleKey: string;
@@ -13,7 +38,7 @@ export type ConfirmDialogProps = {
   children?: ReactNode;
 };
 
-export const ConfirmDialog = ({
+export const ConfirmDialogModal = ({
   titleKey,
   messageKey,
   cancelButtonLabel,
@@ -22,14 +47,15 @@ export const ConfirmDialog = ({
   onConfirm,
   onCancel,
   children,
-}: ConfirmDialogProps) => {
+  open,
+  toggleDialog,
+}: ConfirmDialogModalProps) => {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(true);
   return (
     <Modal
       title={t(titleKey)}
       isOpen={open}
-      onClose={() => setOpen(false)}
+      onClose={toggleDialog}
       actions={[
         <Button
           id="modal-confirm"
@@ -37,7 +63,7 @@ export const ConfirmDialog = ({
           variant={continueButtonVariant || ButtonVariant.danger}
           onClick={() => {
             onConfirm();
-            setOpen(false);
+            toggleDialog();
           }}
         >
           {t(continueButtonLabel || "common:continue")}
@@ -48,7 +74,7 @@ export const ConfirmDialog = ({
           variant={ButtonVariant.secondary}
           onClick={() => {
             if (onCancel) onCancel();
-            setOpen(false);
+            toggleDialog();
           }}
         >
           {t(cancelButtonLabel || "common:cancel")}
