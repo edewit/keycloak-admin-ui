@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFieldArray, UseFormMethods } from "react-hook-form";
 import {
   TextInput,
@@ -8,6 +8,18 @@ import {
   ButtonVariant,
 } from "@patternfly/react-core";
 import { MinusIcon, PlusIcon } from "@patternfly/react-icons";
+
+type MultiLine = {
+  value: string;
+}
+
+export function convertToMultiline(field: string[]): MultiLine[] {
+  return field.map(f => {return {value: f}});
+}
+
+export function toValue(formValue: MultiLine[]): string[] {
+  return formValue.map(f => f.value)
+}
 
 export type MultiLineInputProps = {
   form: UseFormMethods;
@@ -20,12 +32,18 @@ export const MultiLineInput = ({ name, form }: MultiLineInputProps) => {
     name,
     control,
   });
+  useEffect(() => {
+    form.reset({
+      [name]: [{value: ""}]
+    });
+  }, []);
   return (
     <>
       {fields.map(({ id, value }, index) => (
         <Split key={id}>
           <SplitItem>
             <TextInput
+              id={id}
               ref={register()}
               name={`${name}[${index}].value`}
               defaultValue={value}

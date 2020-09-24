@@ -8,7 +8,7 @@ import {
   TextArea,
   PageSection,
   ActionGroup,
-  Button,
+  Button, AlertVariant,
 } from "@patternfly/react-core";
 import { useParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
@@ -19,11 +19,18 @@ import { CapabilityConfig } from "./add/CapabilityConfig";
 import { RealmContext } from "../components/realm-context/RealmContext";
 import { HttpClientContext } from "../http-service/HttpClientContext";
 import { ClientRepresentation } from "../realm/models/Realm";
+import {
+  convertToMultiline,
+  MultiLineInput,
+  toValue,
+} from "../components/multi-line-input/MultiLineInput";
+import { useAlerts } from "../components/alert/Alerts";
 
 export const ClientSettings = () => {
   const { t } = useTranslation("clients");
   const httpClient = useContext(HttpClientContext)!;
   const { realm } = useContext(RealmContext);
+  const [add, Alerts] = useAlerts();
 
   const { id } = useParams<{ id: string }>();
   const form = useForm();
@@ -33,9 +40,13 @@ export const ClientSettings = () => {
     const func = async () => {
       const fetchedClient = await httpClient.doGet<ClientRepresentation>(url);
       if (fetchedClient.data) {
-        Object.entries(fetchedClient.data).map((k) =>
-          form.setValue(k[0], k[1])
-        );
+        Object.entries(fetchedClient.data).map((e) => {
+          if (e[0] !== "redirectUris") {
+            form.setValue(e[0], e[1]);
+          } else if (e[1] && e[1].length > 0) {
+            form.setValue(e[0], convertToMultiline(e[1]));
+          }
+        });
       }
     };
     func();
@@ -43,12 +54,19 @@ export const ClientSettings = () => {
 
   const save = async () => {
     if (await form.trigger()) {
-      httpClient.doPut(url, { ...form.getValues() });
+      const redirectUris = toValue(form.getValues()["redirectUris"]);
+      try {
+        httpClient.doPut(url, { ...form.getValues(), redirectUris });
+        add(t("clientSaveSuccess"), AlertVariant.success);
+      } catch (error) {
+        add(`${t("clientSaveError")} '${error}'`, AlertVariant.danger);
+      }
     }
   };
 
   return (
     <PageSection>
+      <Alerts />
       <ScrollForm
         sections={[
           t("capabilityConfig"),
@@ -71,7 +89,7 @@ export const ClientSettings = () => {
             />
           </FormGroup>
           <FormGroup label={t("validRedirectUri")} fieldId="kc-redirect">
-            <TextInput type="text" id="kc-redirect" name="redirectUris" />
+            <MultiLineInput form={form} name="redirectUris" />
           </FormGroup>
           <FormGroup label={t("homeURL")} fieldId="kc-home-url">
             <TextInput

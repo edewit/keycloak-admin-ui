@@ -14,6 +14,8 @@
     "capabilityConfig": "Capability config",
     "clientsExplain": "Clients are applications and services that can request authentication of a user",
     "clientImportError": "Could not import client",
+    "clientSaveSuccess": "Client successful updated",
+    "clientSaveError": "Client could not be updated:",
     "clientImportSuccess": "Client imported successful",
     "clientDeletedSuccess": "The client has been deleted",
     "clientDeleteError": "Could not delete client:",
