@@ -11,14 +11,16 @@ import { MinusIcon, PlusIcon } from "@patternfly/react-icons";
 
 type MultiLine = {
   value: string;
-}
+};
 
 export function convertToMultiline(field: string[]): MultiLine[] {
-  return field.map(f => {return {value: f}});
+  return field.map((f) => {
+    return { value: f };
+  });
 }
 
 export function toValue(formValue: MultiLine[]): string[] {
-  return formValue.map(f => f.value)
+  return formValue.map((f) => f.value);
 }
 
 export type MultiLineInputProps = {
@@ -34,7 +36,7 @@ export const MultiLineInput = ({ name, form }: MultiLineInputProps) => {
   });
   useEffect(() => {
     form.reset({
-      [name]: [{value: ""}]
+      [name]: [{ value: "" }],
     });
   }, []);
   return (
