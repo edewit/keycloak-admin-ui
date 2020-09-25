@@ -28,6 +28,7 @@ Simple.args = {
   titleKey: "Delete app02?",
   messageKey: "If you delete this client, all associated data will be removed.",
   continueButtonLabel: "Delete",
+  continueButtonVariant: ButtonVariant.danger,
 };
 
 export const Children = Template.bind({});

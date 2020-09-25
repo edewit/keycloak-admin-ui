@@ -1,5 +1,10 @@
 import React, { ReactElement, ReactNode, useState } from "react";
-import { Button, ButtonVariant, Modal } from "@patternfly/react-core";
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  ModalVariant,
+} from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 
 export const useConfirmDialog = (
@@ -47,7 +52,7 @@ export const ConfirmDialogModal = ({
   onConfirm,
   onCancel,
   children,
-  open,
+  open = true,
   toggleDialog,
 }: ConfirmDialogModalProps) => {
   const { t } = useTranslation();
@@ -56,11 +61,12 @@ export const ConfirmDialogModal = ({
       title={t(titleKey)}
       isOpen={open}
       onClose={toggleDialog}
+      variant={ModalVariant.small}
       actions={[
         <Button
           id="modal-confirm"
           key="confirm"
-          variant={continueButtonVariant || ButtonVariant.danger}
+          variant={continueButtonVariant || ButtonVariant.primary}
           onClick={() => {
             onConfirm();
             toggleDialog();
