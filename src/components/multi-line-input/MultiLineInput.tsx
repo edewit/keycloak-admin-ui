@@ -13,14 +13,14 @@ type MultiLine = {
   value: string;
 };
 
-export function convertToMultiline(field: string[]): MultiLine[] {
-  return field.map((f) => {
-    return { value: f };
+export function convertToMultiline(fields: string[]): MultiLine[] {
+  return fields.map((field) => {
+    return { value: field };
   });
 }
 
 export function toValue(formValue: MultiLine[]): string[] {
-  return formValue.map((f) => f.value);
+  return formValue.map((field) => field.value);
 }
 
 export type MultiLineInputProps = {

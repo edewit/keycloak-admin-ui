@@ -38,11 +38,11 @@ export const ClientList = ({ baseUrl, clients }: ClientListProps) => {
 
   const enabled = (): IFormatter => (data?: IFormatterValueType) => {
     const field = data!.toString();
-    const [id, clientId] = field.split("#");
+    const [id, clientId, disabled] = field.split("#");
     return (
       <Link to={`client-settings/${id}`}>
         {clientId}
-        {field.indexOf("true") === -1 && <Badge isRead>Disabled</Badge>}
+        {disabled !== "true" && <Badge isRead>Disabled</Badge>}
       </Link>
     );
   };
@@ -72,13 +72,13 @@ export const ClientList = ({ baseUrl, clients }: ClientListProps) => {
   };
 
   const data = clients!
-    .map((r) => {
-      r.clientId = r.id + "#" + r.clientId + "#" + r.enabled;
-      r.baseUrl = replaceBaseUrl(r);
-      return r;
+    .map((client) => {
+      client.clientId = `${client.id}#${client.clientId}#${client.enabled}`;
+      client.baseUrl = replaceBaseUrl(client);
+      return client;
     })
-    .map((c) => {
-      return { cells: columns.map((col) => c[col]), client: c };
+    .map((column) => {
+      return { cells: columns.map((col) => column[col]), client: column };
     });
   return (
     <>
@@ -100,7 +100,8 @@ export const ClientList = ({ baseUrl, clients }: ClientListProps) => {
             title: t("common:export"),
             onClick: (_, rowId) => {
               const clientCopy = JSON.parse(JSON.stringify(data[rowId].client));
-              clientCopy.clientId = clientCopy.clientId.split("#")[1];
+              const [, orgClientId] = clientCopy.clientId.split("#");
+              clientCopy.clientId = orgClientId;
               delete clientCopy.id;
 
               if (clientCopy.protocolMappers) {

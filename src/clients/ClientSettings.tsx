@@ -31,26 +31,25 @@ export const ClientSettings = () => {
   const { t } = useTranslation("clients");
   const httpClient = useContext(HttpClientContext)!;
   const { realm } = useContext(RealmContext);
-  const [add, Alerts] = useAlerts();
+  const [addAlert, Alerts] = useAlerts();
 
   const { id } = useParams<{ id: string }>();
   const form = useForm();
   const url = `/admin/realms/${realm}/clients/${id}`;
 
   useEffect(() => {
-    const func = async () => {
+    (async () => {
       const fetchedClient = await httpClient.doGet<ClientRepresentation>(url);
       if (fetchedClient.data) {
-        Object.entries(fetchedClient.data).map((e) => {
-          if (e[0] !== "redirectUris") {
-            form.setValue(e[0], e[1]);
-          } else if (e[1] && e[1].length > 0) {
-            form.setValue(e[0], convertToMultiline(e[1]));
+        Object.entries(fetchedClient.data).map((entry) => {
+          if (entry[0] !== "redirectUris") {
+            form.setValue(entry[0], entry[1]);
+          } else if (entry[1] && entry[1].length > 0) {
+            form.setValue(entry[0], convertToMultiline(entry[1]));
           }
         });
       }
-    };
-    func();
+    })();
   }, []);
 
   const save = async () => {
@@ -58,9 +57,9 @@ export const ClientSettings = () => {
       const redirectUris = toValue(form.getValues()["redirectUris"]);
       try {
         httpClient.doPut(url, { ...form.getValues(), redirectUris });
-        add(t("clientSaveSuccess"), AlertVariant.success);
+        addAlert(t("clientSaveSuccess"), AlertVariant.success);
       } catch (error) {
-        add(`${t("clientSaveError")} '${error}'`, AlertVariant.danger);
+        addAlert(`${t("clientSaveError")} '${error}'`, AlertVariant.danger);
       }
     }
   };
