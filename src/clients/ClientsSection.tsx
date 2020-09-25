@@ -43,9 +43,9 @@ export const ClientsSection = () => {
               max={max}
               onNextClick={setFirst}
               onPreviousClick={setFirst}
-              onPerPageSelect={(f, m) => {
-                setFirst(f);
-                setMax(m);
+              onPerPageSelect={(first, max) => {
+                setFirst(first);
+                setMax(max);
               }}
               toolbarItem={
                 <>
