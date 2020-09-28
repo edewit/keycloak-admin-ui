@@ -12,10 +12,10 @@ import {
 import { Badge, AlertVariant } from "@patternfly/react-core";
 
 import { ExternalLink } from "../components/external-link/ExternalLink";
-import { HttpClientContext } from "../context/http-service/HttpClientContext";
 import { useAlerts } from "../components/alert/Alerts";
-import { ClientRepresentation } from "./models/client-model";
+import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
 import { RealmContext } from "../context/realm-context/RealmContext";
+import { AdminClient } from "../auth/AdminClient";
 import { exportClient } from "../util";
 
 type ClientListProps = {
@@ -33,7 +33,7 @@ const columns: (keyof ClientRepresentation)[] = [
 
 export const ClientList = ({ baseUrl, clients, refresh }: ClientListProps) => {
   const { t } = useTranslation("clients");
-  const httpClient = useContext(HttpClientContext)!;
+  const httpClient = useContext(AdminClient)!;
   const { realm } = useContext(RealmContext);
   const { addAlert } = useAlerts();
 
@@ -108,10 +108,10 @@ export const ClientList = ({ baseUrl, clients, refresh }: ClientListProps) => {
             title: t("common:delete"),
             onClick: async (_, rowId) => {
               try {
-                await httpClient.doDelete(
-                  `/admin/realms/${realm}/clients/${data[rowId].client.id}`
-                );
-                refresh();
+                await httpClient.clients.del({
+                  id: data[rowId].client.id!,
+                  realm: realm,
+                });
                 addAlert(t("clientDeletedSuccess"), AlertVariant.success);
               } catch (error) {
                 addAlert(

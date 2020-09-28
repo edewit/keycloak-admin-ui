@@ -10,20 +10,16 @@ import {
 } from "@patternfly/react-core";
 import { RealmSelector } from "./components/realm-selector/RealmSelector";
 import { DataLoader } from "./components/data-loader/DataLoader";
-import { HttpClientContext } from "./context/http-service/HttpClientContext";
+import { AdminClient } from "./auth/AdminClient";
 import { useAccess } from "./context/access/Access";
-import { RealmRepresentation } from "./realm/models/Realm";
 import { routes } from "./route-config";
 
 export const PageNav: React.FunctionComponent = () => {
   const { t } = useTranslation("common");
   const { hasAccess, hasSomeAccess } = useAccess();
-  const httpClient = useContext(HttpClientContext)!;
+  const httpClient = useContext(AdminClient)!;
   const realmLoader = async () => {
-    const response = await httpClient.doGet<RealmRepresentation[]>(
-      "/admin/realms"
-    );
-    return response.data;
+    return await httpClient.realms.find();
   };
 
   const history = useHistory();

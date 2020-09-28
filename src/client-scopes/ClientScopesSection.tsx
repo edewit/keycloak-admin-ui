@@ -4,11 +4,10 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { RealmContext } from "../context/realm-context/RealmContext";
-import { HttpClientContext } from "../context/http-service/HttpClientContext";
-import { ClientRepresentation } from "../realm/models/Realm";
 import { TableToolbar } from "../components/table-toolbar/TableToolbar";
 import { ClientScopeList } from "./ClientScopesList";
 import { ViewHeader } from "../components/view-header/ViewHeader";
+import { AdminClient } from "../auth/AdminClient";
 
 export const ClientScopesSection = () => {
   const { t } = useTranslation("client-scopes");
@@ -16,18 +15,15 @@ export const ClientScopesSection = () => {
   const [rawData, setRawData] = useState<ClientRepresentation[]>();
   const [filteredData, setFilteredData] = useState<ClientRepresentation[]>();
 
-  const httpClient = useContext(HttpClientContext)!;
-  const { realm } = useContext(RealmContext);
+  const httpClient = useContext(AdminClient)!;
 
   useEffect(() => {
     (async () => {
       if (filteredData) {
         return filteredData;
       }
-      const result = await httpClient.doGet<ClientRepresentation[]>(
-        `/admin/realms/${realm}/client-scopes`
-      );
-      setRawData(result.data!);
+      const result = await httpClient.clientScopes.find();
+      setRawData(result);
     })();
   }, []);
 
@@ -37,7 +33,6 @@ export const ClientScopesSection = () => {
         group.name.toLowerCase().includes(search.toLowerCase())
       )
     );
-  };
   return (
     <>
       <ViewHeader

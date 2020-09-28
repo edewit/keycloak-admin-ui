@@ -11,7 +11,7 @@ import {
 } from "@patternfly/react-table";
 
 import { ExternalLink } from "../components/external-link/ExternalLink";
-import { RoleRepresentation } from "../model/role-model";
+import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
 import { AlertVariant, ButtonVariant } from "@patternfly/react-core";
 import { HttpClientContext } from "../context/http-service/HttpClientContext";
 import { useAlerts } from "../components/alert/Alerts";

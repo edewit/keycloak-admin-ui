@@ -11,17 +11,17 @@ import {
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 
-import { HttpClientContext } from "../../context/http-service/HttpClientContext";
 import { GeneralSettings } from "./GeneralSettings";
 import { CapabilityConfig } from "./CapabilityConfig";
-import { ClientRepresentation } from "../models/client-model";
 import { useAlerts } from "../../components/alert/Alerts";
 import { RealmContext } from "../../context/realm-context/RealmContext";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
+import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
+import { AdminClient } from "../../auth/AdminClient";
 
 export const NewClientForm = () => {
   const { t } = useTranslation("clients");
-  const httpClient = useContext(HttpClientContext)!;
+  const httpClient = useContext(AdminClient)!;
   const { realm } = useContext(RealmContext);
   const history = useHistory();
 
@@ -42,7 +42,7 @@ export const NewClientForm = () => {
 
   const save = async () => {
     try {
-      await httpClient.doPost(`/admin/realms/${realm}/clients`, client);
+      await httpClient.clients.create({ ...client, realm });
       addAlert(t("createSuccess"), AlertVariant.success);
     } catch (error) {
       addAlert(t("createError", { error }), AlertVariant.danger);
