@@ -18,14 +18,24 @@ export const ClientsSection = () => {
 
   const [max, setMax] = useState(10);
   const [first, setFirst] = useState(0);
+  const [search, setSearch] = useState("");
+  const [resultLength, setResultLength] = useState(0);
   const httpClient = useContext(HttpClientContext)!;
   const keycloak = useContext(KeycloakContext);
   const { realm } = useContext(RealmContext);
 
   const loader = async () => {
-    return await httpClient
-      .doGet(`/admin/realms/${realm}/clients`, { params: { first, max } })
-      .then((r) => r.data as ClientRepresentation[]);
+    const params: { [name: string]: string | number } = { first, max };
+    if (search) {
+      params.clientId = search;
+      params.search = "true";
+    }
+    const result = await httpClient.doGet<ClientRepresentation[]>(
+      `/admin/realms/${realm}/clients`,
+      { params: params }
+    );
+    setResultLength(result.data!.length);
+    return result.data;
   };
 
   return (
@@ -35,41 +45,42 @@ export const ClientsSection = () => {
         subKey="clients:clientsExplain"
       />
       <PageSection variant="light">
-        <DataLoader loader={loader}>
-          {(clients) => (
-            <TableToolbar
-              count={clients!.length}
-              first={first}
-              max={max}
-              onNextClick={setFirst}
-              onPreviousClick={setFirst}
-              onPerPageSelect={(first, max) => {
-                setFirst(first);
-                setMax(max);
-              }}
-              inputGroupName="clientsToolbarTextInput"
-              inputGroupPlaceholder={t("Search for client")}
-              toolbarItem={
-                <>
-                  <Button onClick={() => history.push("/add-client")}>
-                    {t("createClient")}
-                  </Button>
-                  <Button
-                    onClick={() => history.push("/import-client")}
-                    variant="link"
-                  >
-                    {t("importClient")}
-                  </Button>
-                </>
-              }
-            >
+        <TableToolbar
+          count={resultLength}
+          first={first}
+          max={max}
+          onNextClick={setFirst}
+          onPreviousClick={setFirst}
+          onPerPageSelect={(first, max) => {
+            setFirst(first);
+            setMax(max);
+          }}
+          inputGroupName="clientsToolbarTextInput"
+          inputGroupOnChange={setSearch}
+          inputGroupPlaceholder={t("Search for client")}
+          toolbarItem={
+            <>
+              <Button onClick={() => history.push("/add-client")}>
+                {t("createClient")}
+              </Button>
+              <Button
+                onClick={() => history.push("/import-client")}
+                variant="link"
+              >
+                {t("importClient")}
+              </Button>
+            </>
+          }
+        >
+          <DataLoader loader={loader}>
+            {(clients) => (
               <ClientList
                 clients={clients}
                 baseUrl={keycloak!.authServerUrl()!}
               />
-            </TableToolbar>
-          )}
-        </DataLoader>
+            )}
+          </DataLoader>
+        </TableToolbar>
       </PageSection>
     </>
   );
