@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from "react";
 import {
   Alert,
   AlertVariant,
+  Form,
+  FormGroup,
   Select,
   SelectOption,
   SelectVariant,
@@ -13,6 +15,8 @@ import {
 import { ConfirmDialogModal } from "../confirm-dialog/ConfirmDialog";
 import { HttpClientContext } from "../../http-service/HttpClientContext";
 import { RealmContext } from "../realm-context/RealmContext";
+import { HelpItem } from "../help-enabler/HelpItem";
+import { useTranslation } from "react-i18next";
 
 export type DownloadDialogProps = {
   id: string;
@@ -58,6 +62,8 @@ export const DownloadDialog = ({
 }: DownloadDialogProps) => {
   const httpClient = useContext(HttpClientContext)!;
   const { realm } = useContext(RealmContext);
+  const { t } = useTranslation("common");
+
   const configFormats = serverInfo; //serverInfo.clientInstallations[protocol];
   const [selected, setSelected] = useState(
     configFormats[configFormats.length - 1].id
@@ -72,60 +78,77 @@ export const DownloadDialog = ({
       );
       setSnippet(response.data!);
     })();
-  }, [snippet]);
+  }, [selected]);
   return (
     <ConfirmDialogModal
-      titleKey="Download adaptor configs"
-      continueButtonLabel="Download"
+      titleKey={t("clients:downloadAdaptorTitle")}
+      continueButtonLabel={t("download")}
       onConfirm={() => {}}
       open={true}
       toggleDialog={() => {}}
     >
-      <Stack hasGutter>
-        <StackItem>
-          <Alert
-            id={id}
-            title="Description"
-            variant={AlertVariant.info}
-            isInline
-          >
-            {
-              configFormats.find((configFormat) => configFormat.id === selected)
-                ?.helpText
-            }
-          </Alert>
-        </StackItem>
-        <StackItem>
-          <Select
-            isOpen={open}
-            onToggle={() => setOpen(!open)}
-            variant={SelectVariant.single}
-            value={selected}
-            selections={selected}
-            onSelect={(_, value) => setSelected(value as string)}
-            aria-label="Select Input"
-          >
-            {configFormats.map((configFormat) => (
-              <SelectOption
-                key={configFormat.id}
-                value={configFormat.id}
-                isSelected={selected === configFormat.id}
+      <Form>
+        <Stack hasGutter>
+          <StackItem>
+            <Alert
+              id={id}
+              title={t("clients:description")}
+              variant={AlertVariant.info}
+              isInline
+            >
+              {
+                configFormats.find(
+                  (configFormat) => configFormat.id === selected
+                )?.helpText
+              }
+            </Alert>
+          </StackItem>
+          <StackItem>
+            <FormGroup
+              fieldId="type"
+              label={t("clients:formatOption")}
+              labelIcon={<HelpItem item="client.downloadType" />}
+            >
+              <Select
+                id="type"
+                isOpen={open}
+                onToggle={() => setOpen(!open)}
+                variant={SelectVariant.single}
+                value={selected}
+                selections={selected}
+                onSelect={(_, value) => setSelected(value as string)}
+                aria-label="Select Input"
               >
-                {configFormat.displayType}
-              </SelectOption>
-            ))}
-          </Select>
-        </StackItem>
-        <StackItem isFilled>
-          <TextArea
-            readOnly
-            rows={12}
-            resizeOrientation="vertical"
-            value={snippet}
-            aria-label="text area example"
-          />
-        </StackItem>
-      </Stack>
+                {configFormats.map((configFormat) => (
+                  <SelectOption
+                    key={configFormat.id}
+                    value={configFormat.id}
+                    isSelected={selected === configFormat.id}
+                  >
+                    {configFormat.displayType}
+                  </SelectOption>
+                ))}
+              </Select>
+            </FormGroup>
+          </StackItem>
+          <StackItem isFilled>
+            <FormGroup
+              fieldId="details"
+              label={t("clients:details")}
+              labelIcon={<HelpItem item="client.details" />}
+            >
+              <TextArea
+                id="details"
+                readOnly
+                rows={12}
+                resizeOrientation="vertical"
+                value={snippet}
+                aria-label="text area example"
+              />
+            </FormGroup>
+          </StackItem>
+        </Stack>
+      </Form>
     </ConfirmDialogModal>
   );
 };
