@@ -9,13 +9,19 @@ import { Help } from "./components/help-enabler/HelpHeader";
 import { RealmContextProvider } from "./components/realm-context/RealmContext";
 
 import { routes } from "./route-config";
+import { PageBreadCrumbs } from "./components/bread-crumb/PageBreadCrumbs";
 
 export const App = () => {
   return (
     <Router>
       <RealmContextProvider>
         <Help>
-          <Page header={<Header />} isManagedSidebar sidebar={<PageNav />}>
+          <Page
+            header={<Header />}
+            isManagedSidebar
+            sidebar={<PageNav />}
+            breadcrumb={<PageBreadCrumbs />}
+          >
             <Switch>
               {routes(() => {}).map((route, i) => (
                 <Route key={i} {...route} exact />

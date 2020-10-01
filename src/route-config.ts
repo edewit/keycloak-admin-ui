@@ -30,9 +30,9 @@ export const routes = (t: TFunction) => [
     breadcrumb: t("clients:clientList"),
   },
   {
-    path: "/client-settings/:id",
+    path: "/clients/:id",
     component: ClientSettings,
-    breadcrumb: t("clientSettings"),
+    breadcrumb: t("clients:clientSettings"),
   },
   {
     path: "/add-client",

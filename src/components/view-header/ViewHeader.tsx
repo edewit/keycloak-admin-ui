@@ -43,7 +43,6 @@ export const ViewHeader = ({
   return (
     <>
       <PageSection variant="light">
-        <PageBreadCrumbs />
         <Level hasGutter>
           <LevelItem>
             <Level>
