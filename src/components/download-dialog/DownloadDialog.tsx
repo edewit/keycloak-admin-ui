@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, ReactElement } from "react";
 import {
   Alert,
   AlertVariant,
@@ -21,6 +21,11 @@ import { useTranslation } from "react-i18next";
 export type DownloadDialogProps = {
   id: string;
   protocol?: string;
+};
+
+type DownloadDialogModalProps = DownloadDialogProps & {
+  open: boolean;
+  toggleDialog: () => void;
 };
 
 const serverInfo = [
@@ -56,10 +61,27 @@ const serverInfo = [
   },
 ];
 
+export const useDownloadDialog = (
+  props: DownloadDialogProps
+): [() => void, () => ReactElement] => {
+  const [show, setShow] = useState(false);
+
+  function toggleDialog() {
+    setShow((show) => !show);
+  }
+
+  const Dialog = () => (
+    <DownloadDialog {...props} open={show} toggleDialog={toggleDialog} />
+  );
+  return [toggleDialog, Dialog];
+};
+
 export const DownloadDialog = ({
   id,
+  open,
+  toggleDialog,
   protocol = "openid-connect",
-}: DownloadDialogProps) => {
+}: DownloadDialogModalProps) => {
   const httpClient = useContext(HttpClientContext)!;
   const { realm } = useContext(RealmContext);
   const { t } = useTranslation("common");
@@ -69,7 +91,7 @@ export const DownloadDialog = ({
     configFormats[configFormats.length - 1].id
   );
   const [snippet, setSnippet] = useState("");
-  const [open, setOpen] = useState(false);
+  const [openType, setOpenType] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -84,8 +106,8 @@ export const DownloadDialog = ({
       titleKey={t("clients:downloadAdaptorTitle")}
       continueButtonLabel={t("download")}
       onConfirm={() => {}}
-      open={true}
-      toggleDialog={() => {}}
+      open={open}
+      toggleDialog={toggleDialog}
     >
       <Form>
         <Stack hasGutter>
@@ -111,12 +133,17 @@ export const DownloadDialog = ({
             >
               <Select
                 id="type"
-                isOpen={open}
-                onToggle={() => setOpen(!open)}
+                isOpen={openType}
+                onToggle={() => {
+                  setOpenType(!openType);
+                }}
                 variant={SelectVariant.single}
                 value={selected}
                 selections={selected}
-                onSelect={(_, value) => setSelected(value as string)}
+                onSelect={(_, value) => {
+                  setSelected(value as string);
+                  setOpenType(false);
+                }}
                 aria-label="Select Input"
               >
                 {configFormats.map((configFormat) => (

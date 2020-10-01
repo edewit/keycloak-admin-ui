@@ -1,9 +1,9 @@
 import React from "react";
-import { Meta, Story } from "@storybook/react";
+import { Meta } from "@storybook/react";
 
 import {
   DownloadDialog,
-  DownloadDialogProps,
+  useDownloadDialog,
 } from "../components/download-dialog/DownloadDialog";
 
 export default {
@@ -11,11 +11,18 @@ export default {
   component: DownloadDialog,
 } as Meta;
 
-const Template: Story<DownloadDialogProps> = (args) => (
-  <DownloadDialog {...args} />
-);
-
-export const Simple = Template.bind({});
-Simple.args = {
-  id: "58577281-7af7-410c-a085-61ff3040be6d",
+const Test = () => {
+  const [toggle, Dialog] = useDownloadDialog({
+    id: "58577281-7af7-410c-a085-61ff3040be6d",
+  });
+  return (
+    <>
+      <button id="show" onClick={toggle}>
+        Show
+      </button>
+      <Dialog />
+    </>
+  );
 };
+
+export const Show = () => <Test />;
