@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GroupsList } from "./GroupsList";
 import { GroupsCreateModal } from "./GroupsCreateModal";
@@ -9,8 +9,6 @@ import {
 import { TableToolbar } from "../components/table-toolbar/TableToolbar";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
-import { RealmContext } from "../components/realm-context/RealmContext";
-import { AdminClient } from "../auth/AdminClient";
 import { RealmContext } from "../context/realm-context/RealmContext";
 import { useAlerts } from "../components/alert/Alerts";
 import {
@@ -28,7 +26,7 @@ import "./GroupsSection.css";
 
 export const GroupsSection = () => {
   const { t } = useTranslation("groups");
-  const httpClient = useContext(AdminClient)!;
+  const adminClient = useAdminClient();
   const [rawData, setRawData] = useState<{ [key: string]: any }[]>();
   const [filteredData, setFilteredData] = useState<{ [key: string]: any }[]>();
   const [isKebabOpen, setIsKebabOpen] = useState(false);
@@ -44,7 +42,7 @@ export const GroupsSection = () => {
   const { realm } = useContext(RealmContext);
 
   const loader = async () => {
-      const groupsData = await httpClient.groups.find({ first, max, realm });
+    const groupsData = await adminClient.groups.find({ first, max });
     const getMembers = async (id: number) => {
       const response = await httpClient.doGet<
         ServerGroupMembersRepresentation[]

@@ -11,7 +11,7 @@ import { Controller, UseFormMethods } from "react-hook-form";
 
 import { useLoginProviders } from "../../context/server-info/ServerInfoProvider";
 import { ClientDescription } from "../ClientDescription";
-import { AdminClient } from "../../auth/AdminClient";
+import { useAdminClient } from "../../auth/AdminClient";
 
 type GeneralSettingsProps = {
   form: UseFormMethods;

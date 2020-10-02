@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import {
   ActionGroup,
@@ -18,9 +18,8 @@ import { Controller, useForm } from "react-hook-form";
 
 import { ClientScopeRepresentation } from "../models/client-scope";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
-import { RealmContext } from "../../context/realm-context/RealmContext";
 import { useAlerts } from "../../components/alert/Alerts";
-import { AdminClient } from "../../auth/AdminClient";
+import { useAdminClient } from "../../auth/AdminClient";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
 
 export const NewClientScopeForm = () => {
@@ -31,8 +30,7 @@ export const NewClientScopeForm = () => {
   >();
   const history = useHistory();
 
-  const httpClient = useContext(AdminClient)!;
-  const { realm } = useContext(RealmContext);
+  const adminClient = useAdminClient();
   const providers = useLoginProviders();
 
   const [open, isOpen] = useState(false);
@@ -46,7 +44,7 @@ export const NewClientScopeForm = () => {
       });
       clientScopes.attributes = Object.assign({}, ...keyValues);
 
-      await httpClient.clientScopes.create({...clientScopes, realm});
+      await adminClient.clientScopes.create({ ...clientScopes });
       addAlert(t("createClientScopeSuccess"), AlertVariant.success);
     } catch (error) {
       addAlert(

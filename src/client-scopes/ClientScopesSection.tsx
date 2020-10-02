@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, PageSection, Spinner } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
-import { RealmContext } from "../context/realm-context/RealmContext";
 import { TableToolbar } from "../components/table-toolbar/TableToolbar";
 import { ClientScopeList } from "./ClientScopesList";
 import { ViewHeader } from "../components/view-header/ViewHeader";
-import { AdminClient } from "../auth/AdminClient";
+import { useAdminClient } from "../auth/AdminClient";
 
 export const ClientScopesSection = () => {
   const { t } = useTranslation("client-scopes");
@@ -15,7 +14,7 @@ export const ClientScopesSection = () => {
   const [rawData, setRawData] = useState<ClientRepresentation[]>();
   const [filteredData, setFilteredData] = useState<ClientRepresentation[]>();
 
-  const httpClient = useContext(AdminClient)!;
+  const adminClient = useAdminClient();
 
   useEffect(() => {
     (async () => {

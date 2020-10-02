@@ -12514,6 +12514,7 @@ keycloak-admin@../keycloak-nodejs-admin-client:
     debug "^3.1.0"
     keycloak-js "^11.0.2"
     lodash "^4.17.10"
+    node-window-polyfill "^1.0.0"
     url-join "^4.0.0"
     url-template "^2.0.8"
 
@@ -13597,6 +13598,13 @@ node-releases@^1.1.58:
   version "1.1.59"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.59.tgz#4d648330641cec704bff10f8e4fe28e453ab8e8e"
   integrity sha512-H3JrdUczbdiwxN5FuJPyCHnGHIFqQ0wWxo+9j1kAXAzqNMAHlo+4I/sYYxpyK0irQ73HgdiyzD32oqQDcU2Osw==
+
+node-window-polyfill@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/node-window-polyfill/-/node-window-polyfill-1.0.0.tgz#30426ff9f44d1ca0d83da4b6d1e244a80dc9e65e"
+  integrity sha1-MEJv+fRNHKDYPaS20eJEqA3J5l4=
+  dependencies:
+    ws "^5.1.1"
 
 nopt@~3.0.6:
   version "3.0.6"
@@ -19275,7 +19283,7 @@ write@1.0.3:
   dependencies:
     mkdirp "^0.5.1"
 
-ws@^5.2.0:
+ws@^5.1.1, ws@^5.2.0:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.2.tgz#dffef14866b8e8dc9133582514d1befaf96e980f"
   integrity sha512-jaHFD6PFv6UgoIVda6qZllptQsMlDEJkTQcybzzXDYM1XO9Y8em691FGMPmM46WGyLU4z9KMgQN+qrux/nhlHA==

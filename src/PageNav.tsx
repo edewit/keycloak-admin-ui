@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -10,16 +10,15 @@ import {
 } from "@patternfly/react-core";
 import { RealmSelector } from "./components/realm-selector/RealmSelector";
 import { DataLoader } from "./components/data-loader/DataLoader";
-import { AdminClient } from "./auth/AdminClient";
+import { useAdminClient } from "./auth/AdminClient";
 import { useAccess } from "./context/access/Access";
 import { routes } from "./route-config";
 
 export const PageNav: React.FunctionComponent = () => {
   const { t } = useTranslation("common");
-  const { hasAccess, hasSomeAccess } = useAccess();
-  const httpClient = useContext(AdminClient)!;
+  const adminClient = useAdminClient();
   const realmLoader = async () => {
-    return await httpClient.realms.find();
+    return await adminClient.realms.find();
   };
 
   const history = useHistory();

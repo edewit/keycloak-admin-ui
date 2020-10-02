@@ -1,13 +1,12 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button, PageSection, Spinner } from "@patternfly/react-core";
 
 import { ClientList } from "./ClientList";
-import { RealmContext } from "../context/realm-context/RealmContext";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { PaginatingTableToolbar } from "../components/table-toolbar/PaginatingTableToolbar";
-import { AdminClient } from "../auth/AdminClient";
+import { useAdminClient } from "../auth/AdminClient";
 
 export const ClientsSection = () => {
   const { t } = useTranslation("clients");
@@ -16,11 +15,10 @@ export const ClientsSection = () => {
   const [max, setMax] = useState(10);
   const [first, setFirst] = useState(0);
   const [search, setSearch] = useState("");
-  const httpClient = useContext(AdminClient)!;
+  const adminClient = useAdminClient();
   const [clients, setClients] = useState<ClientRepresentation[]>();
-  const { realm } = useContext(RealmContext);
 
-  const loader = async () => await httpClient.clients.find({ first, max, realm });
+  const loader = async () => await adminClient.clients.find({ first, max });
     const params: { [name: string]: string | number } = { first, max };
     if (search) {
       params.clientId = search;
@@ -77,7 +75,7 @@ export const ClientsSection = () => {
             <ClientList
               clients={clients}
               refresh={loader}
-                baseUrl={httpClient.baseUrl + "/"}
+                baseUrl={adminClient.keycloak.authServerUrl!}
             />
           </PaginatingTableToolbar>
         )}

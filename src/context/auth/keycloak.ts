@@ -13,7 +13,7 @@ export default async function (): Promise<KcAdminClient> {
   try {
     await kcAdminClient.init({ onLoad: "check-sso", pkceMethod: "S256" });
     kcAdminClient.baseUrl = "";
-  } catch(error) {
+  } catch (error) {
     alert("failed to initialize keycloak");
   }
 
