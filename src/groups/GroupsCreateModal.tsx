@@ -33,8 +33,7 @@ export const GroupsCreateModal = ({
   const httpClient = useContext(HttpClientContext)!;
   const { realm } = useContext(RealmContext);
   const [add, Alerts] = useAlerts();
-  const form = useForm();
-  const { register, errors } = form;
+  const { register, trigger, errors } = useForm();
 
   const valueChange = (createGroupName: string) => {
     setCreateGroupName(createGroupName);
@@ -62,7 +61,13 @@ export const GroupsCreateModal = ({
         isOpen={isCreateModalOpen}
         onClose={handleModalToggle}
         actions={[
-          <Button key="confirm" variant="primary" onClick={() => submitForm()}>
+          <Button
+            key="confirm"
+            variant="primary"
+            onClick={async () => {
+              if (await trigger()) await submitForm();
+            }}
+          >
             {t("create")}
           </Button>,
         ]}
