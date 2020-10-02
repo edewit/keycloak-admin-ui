@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import {
@@ -10,12 +10,11 @@ import {
   IFormatterValueType,
 } from "@patternfly/react-table";
 import { Badge, AlertVariant } from "@patternfly/react-core";
+import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
 
 import { ExternalLink } from "../components/external-link/ExternalLink";
 import { useAlerts } from "../components/alert/Alerts";
-import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
-import { RealmContext } from "../context/realm-context/RealmContext";
-import { AdminClient } from "../auth/AdminClient";
+import { useAdminClient } from "../context/auth/AdminClient";
 import { exportClient } from "../util";
 
 type ClientListProps = {
@@ -33,8 +32,7 @@ const columns: (keyof ClientRepresentation)[] = [
 
 export const ClientList = ({ baseUrl, clients, refresh }: ClientListProps) => {
   const { t } = useTranslation("clients");
-  const httpClient = useContext(AdminClient)!;
-  const { realm } = useContext(RealmContext);
+  const adminClient = useAdminClient();
   const { addAlert } = useAlerts();
 
   const emptyFormatter = (): IFormatter => (data?: IFormatterValueType) => {
@@ -108,10 +106,10 @@ export const ClientList = ({ baseUrl, clients, refresh }: ClientListProps) => {
             title: t("common:delete"),
             onClick: async (_, rowId) => {
               try {
-                await httpClient.clients.del({
+                await adminClient.clients.del({
                   id: data[rowId].client.id!,
-                  realm: realm,
                 });
+                refresh();
                 addAlert(t("clientDeletedSuccess"), AlertVariant.success);
               } catch (error) {
                 addAlert(

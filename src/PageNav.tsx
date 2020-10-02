@@ -10,7 +10,7 @@ import {
 } from "@patternfly/react-core";
 import { RealmSelector } from "./components/realm-selector/RealmSelector";
 import { DataLoader } from "./components/data-loader/DataLoader";
-import { useAdminClient } from "./auth/AdminClient";
+import { useAdminClient } from "./context/auth/AdminClient";
 import { useAccess } from "./context/access/Access";
 import { routes } from "./route-config";
 

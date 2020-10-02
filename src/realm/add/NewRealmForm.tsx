@@ -16,7 +16,7 @@ import { useAlerts } from "../../components/alert/Alerts";
 import { useForm, Controller } from "react-hook-form";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
 import RealmRepresentation from "keycloak-admin/lib/defs/realmRepresentation";
-import { useAdminClient } from "../../auth/AdminClient";
+import { useAdminClient } from "../../context/auth/AdminClient";
 
 export const NewRealmForm = () => {
   const { t } = useTranslation("realm");

@@ -19,8 +19,9 @@ import { Controller, useForm } from "react-hook-form";
 import { ClientScopeRepresentation } from "../models/client-scope";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useAlerts } from "../../components/alert/Alerts";
-import { useAdminClient } from "../../auth/AdminClient";
+import { useAdminClient } from "../../context/auth/AdminClient";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
+import { useLoginProviders } from "../../context/server-info/ServerInfoProvider";
 
 export const NewClientScopeForm = () => {
   const { t } = useTranslation("client-scopes");

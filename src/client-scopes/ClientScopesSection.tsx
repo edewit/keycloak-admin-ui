@@ -3,10 +3,11 @@ import { Button, PageSection, Spinner } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
+import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
 import { TableToolbar } from "../components/table-toolbar/TableToolbar";
 import { ClientScopeList } from "./ClientScopesList";
 import { ViewHeader } from "../components/view-header/ViewHeader";
-import { useAdminClient } from "../auth/AdminClient";
+import { useAdminClient } from "../context/auth/AdminClient";
 
 export const ClientScopesSection = () => {
   const { t } = useTranslation("client-scopes");
@@ -21,7 +22,7 @@ export const ClientScopesSection = () => {
       if (filteredData) {
         return filteredData;
       }
-      const result = await httpClient.clientScopes.find();
+      const result = await adminClient.clientScopes.find();
       setRawData(result);
     })();
   }, []);
@@ -29,9 +30,10 @@ export const ClientScopesSection = () => {
   const filterData = (search: string) => {
     setFilteredData(
       rawData!.filter((group) =>
-        group.name.toLowerCase().includes(search.toLowerCase())
+        group.name!.toLowerCase().includes(search.toLowerCase())
       )
     );
+  };
   return (
     <>
       <ViewHeader

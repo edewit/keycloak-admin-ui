@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import {
@@ -15,23 +15,20 @@ import {
   TableVariant,
 } from "@patternfly/react-table";
 import { CaretDownIcon } from "@patternfly/react-icons";
+import ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
+import ProtocolMapperRepresentation from "keycloak-admin/lib/defs/protocolMapperRepresentation";
 
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
-import {
   ProtocolMapperRepresentation as ServerInfoProtocolMapper,
   ProtocolMapperTypeRepresentation,
 } from "../../context/server-info/server-info";
 
 import {
-  ClientScopeRepresentation,
-  ProtocolMapperRepresentation,
-} from "../models/client-scope";
 import { TableToolbar } from "../../components/table-toolbar/TableToolbar";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
-import { HttpClientContext } from "../../context/http-service/HttpClientContext";
-import { RealmContext } from "../../context/realm-context/RealmContext";
 import { useAlerts } from "../../components/alert/Alerts";
 import { AddMapperDialog } from "../add/MapperDialog";
+import { useAdminClient } from "../../context/auth/AdminClient";
 
 type MapperListProps = {
   clientScope: ClientScopeRepresentation;
@@ -47,8 +44,7 @@ type Row = {
 
 export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
   const { t } = useTranslation("client-scopes");
-  const httpClient = useContext(HttpClientContext)!;
-  const { realm } = useContext(RealmContext);
+  const adminClient = useAdminClient();
   const { addAlert } = useAlerts();
 
   const [filteredData, setFilteredData] = useState<
@@ -56,7 +52,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
   >();
   const [mapperAction, setMapperAction] = useState(false);
   const mapperList = clientScope.protocolMappers!;
-  const mapperTypes = useServerInfo().protocolMapperTypes[
+  const mapperTypes = useServerInfo().protocolMapperTypes![
     clientScope.protocol!
   ];
 
@@ -185,9 +181,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
             title: t("common:delete"),
             onClick: async (_, rowId) => {
               try {
-                await httpClient.doDelete(
-                  `/admin/realms/${realm}/client-scopes/${clientScope.id}/protocol-mappers/models/${data[rowId].mapper.id}`
-                );
+                await adminClient.clientScopes.delProtocolMapper({id: clientScope.id!, mapperId: data[rowId].mapper.id!});
                 refresh();
                 addAlert(t("mappingDeletedSuccess"), AlertVariant.success);
               } catch (error) {

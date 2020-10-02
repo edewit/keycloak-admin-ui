@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button, PageSection, Spinner } from "@patternfly/react-core";
+import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
 
 import { ClientList } from "./ClientList";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { PaginatingTableToolbar } from "../components/table-toolbar/PaginatingTableToolbar";
-import { useAdminClient } from "../auth/AdminClient";
+import { useAdminClient } from "../context/auth/AdminClient";
 
 export const ClientsSection = () => {
   const { t } = useTranslation("clients");
@@ -18,14 +19,15 @@ export const ClientsSection = () => {
   const adminClient = useAdminClient();
   const [clients, setClients] = useState<ClientRepresentation[]>();
 
-  const loader = async () => await adminClient.clients.find({ first, max });
+  const loader = async () => {
     const params: { [name: string]: string | number } = { first, max };
     if (search) {
       params.clientId = search;
       params.search = "true";
     }
-    const result = await httpClient.clients.find({ params: params });
+    const result = await adminClient.clients.find({...params});
     setClients(result);
+  };
 
   useEffect(() => {
     loader();
@@ -75,7 +77,7 @@ export const ClientsSection = () => {
             <ClientList
               clients={clients}
               refresh={loader}
-                baseUrl={adminClient.keycloak.authServerUrl!}
+              baseUrl={adminClient.keycloak.authServerUrl!}
             />
           </PaginatingTableToolbar>
         )}

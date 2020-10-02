@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Avatar,
@@ -17,7 +17,7 @@ import { HelpIcon } from "@patternfly/react-icons";
 import { WhoAmIContext } from "./context/whoami/WhoAmI";
 import { HelpHeader } from "./components/help-enabler/HelpHeader";
 import { Link } from "react-router-dom";
-import { useAdminClient } from "./auth/AdminClient";
+import { useAdminClient } from "./context/auth/AdminClient";
 
 export const Header = () => {
   const adminClient = useAdminClient();
@@ -125,7 +125,7 @@ export const Header = () => {
   };
 
   const UserDropdown = () => {
-  const whoami = useContext(WhoAmIContext);
+    const whoami = useContext(WhoAmIContext);
     const [isDropdownOpen, setDropdownOpen] = useState(false);
 
     const onDropdownToggle = () => {
@@ -139,7 +139,7 @@ export const Header = () => {
         isOpen={isDropdownOpen}
         toggle={
           <DropdownToggle onToggle={onDropdownToggle}>
-          {whoami.getDisplayName()}
+            {whoami.getDisplayName()}
           </DropdownToggle>
         }
         dropdownItems={userDropdownItems}

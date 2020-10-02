@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import KeycloakAdminClient from "keycloak-admin";
-import { RealmContext } from "../components/realm-context/RealmContext";
+import { RealmContext } from "../realm-context/RealmContext";
 
 export const AdminClient = createContext<KeycloakAdminClient | undefined>(
   undefined

@@ -16,7 +16,7 @@ import { CapabilityConfig } from "./CapabilityConfig";
 import { useAlerts } from "../../components/alert/Alerts";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
 import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
-import { useAdminClient } from "../../auth/AdminClient";
+import { useAdminClient } from "../../context/auth/AdminClient";
 
 export const NewClientForm = () => {
   const { t } = useTranslation("clients");
