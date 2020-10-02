@@ -47,7 +47,7 @@ export const routes = (t: TFunction) => [
   {
     path: "/client-scopes",
     component: ClientScopesSection,
-    breadcrumb: t("clientScopeList"),
+    breadcrumb: t("client-scopes:clientScopeList"),
   },
   {
     path: "/add-client-scopes",

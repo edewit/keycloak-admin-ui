@@ -6,8 +6,13 @@
     "name": "Name",
     "description": "Description",
     "protocol": "Protocol",
+    "changeType": "Change type",
+    "changeTypeSuccess": "Scope mapping updated",
+    "changeTypeError": "Could not perform scope mapping update",
     "createClientScopeSuccess": "Client scope created",
     "createClientScopeError": "Could not create client scope:",
+    "deletedSuccess": "The client scope has been deleted",
+    "deleteError": "Could not delete client scope:",
     "displayOnConsentScreen": "Display on consent screen",
     "consentScreenText": "Consent screen text",
     "guiOrder": "GUI Order"
