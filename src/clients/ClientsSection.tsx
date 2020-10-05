@@ -1,9 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Button, PageSection } from "@patternfly/react-core";
+import { Button, PageSection, Spinner } from "@patternfly/react-core";
 
-import { DataLoader } from "../components/data-loader/DataLoader";
 import { TableToolbar } from "../components/table-toolbar/TableToolbar";
 import { ClientList } from "./ClientList";
 import { HttpClientContext } from "../http-service/HttpClientContext";
@@ -19,7 +18,7 @@ export const ClientsSection = () => {
   const [max, setMax] = useState(10);
   const [first, setFirst] = useState(0);
   const [search, setSearch] = useState("");
-  const [resultLength, setResultLength] = useState(0);
+  const [clients, setClients] = useState<ClientRepresentation[]>();
   const httpClient = useContext(HttpClientContext)!;
   const keycloak = useContext(KeycloakContext);
   const { realm } = useContext(RealmContext);
@@ -34,9 +33,12 @@ export const ClientsSection = () => {
       `/admin/realms/${realm}/clients`,
       { params: params }
     );
-    setResultLength(result.data!.length);
-    return result.data;
+    setClients(result.data);
   };
+
+  useEffect(() => {
+    loader();
+  }, []);
 
   return (
     <>
@@ -45,42 +47,46 @@ export const ClientsSection = () => {
         subKey="clients:clientsExplain"
       />
       <PageSection variant="light">
-        <TableToolbar
-          count={resultLength}
-          first={first}
-          max={max}
-          onNextClick={setFirst}
-          onPreviousClick={setFirst}
-          onPerPageSelect={(first, max) => {
-            setFirst(first);
-            setMax(max);
-          }}
-          inputGroupName="clientsToolbarTextInput"
-          inputGroupOnChange={setSearch}
-          inputGroupPlaceholder={t("Search for client")}
-          toolbarItem={
-            <>
-              <Button onClick={() => history.push("/add-client")}>
-                {t("createClient")}
-              </Button>
-              <Button
-                onClick={() => history.push("/import-client")}
-                variant="link"
-              >
-                {t("importClient")}
-              </Button>
-            </>
-          }
-        >
-          <DataLoader loader={loader}>
-            {(clients) => (
-              <ClientList
-                clients={clients}
-                baseUrl={keycloak!.authServerUrl()!}
-              />
-            )}
-          </DataLoader>
-        </TableToolbar>
+        {!clients && (
+          <div style={{ textAlign: "center" }}>
+            <Spinner />
+          </div>
+        )}
+        {clients && (
+          <TableToolbar
+            count={clients!.length}
+            first={first}
+            max={max}
+            onNextClick={setFirst}
+            onPreviousClick={setFirst}
+            onPerPageSelect={(first, max) => {
+              setFirst(first);
+              setMax(max);
+            }}
+            inputGroupName="clientsToolbarTextInput"
+            inputGroupOnChange={setSearch}
+            inputGroupOnClick={() => loader()}
+            inputGroupPlaceholder={t("Search for client")}
+            toolbarItem={
+              <>
+                <Button onClick={() => history.push("/add-client")}>
+                  {t("createClient")}
+                </Button>
+                <Button
+                  onClick={() => history.push("/import-client")}
+                  variant="link"
+                >
+                  {t("importClient")}
+                </Button>
+              </>
+            }
+          >
+            <ClientList
+              clients={clients}
+              baseUrl={keycloak!.authServerUrl()!}
+            />
+          </TableToolbar>
+        )}
       </PageSection>
     </>
   );
