@@ -11,7 +11,6 @@ import {
   StackItem,
   TextArea,
 } from "@patternfly/react-core";
-// import serverInfo from "../../clients/__tests__/mock-serverinfo.json";
 import { ConfirmDialogModal } from "../confirm-dialog/ConfirmDialog";
 import { HttpClientContext } from "../../http-service/HttpClientContext";
 import { RealmContext } from "../realm-context/RealmContext";
