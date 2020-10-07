@@ -92,7 +92,7 @@ export const GroupsSection = () => {
       <Divider />
       <PageSection variant={PageSectionVariants.light}>
         {!rawData && (
-          <div style={{ textAlign: "center" }}>
+          <div className="pf-u-text-align-center">
             <Spinner />
           </div>
         )}

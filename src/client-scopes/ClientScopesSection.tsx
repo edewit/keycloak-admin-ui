@@ -46,7 +46,7 @@ export const ClientScopesSection = () => {
       />
       <PageSection variant="light">
         {!rawData && (
-          <div style={{ textAlign: "center" }}>
+          <div className="pf-u-text-align-center">
             <Spinner />
           </div>
         )}

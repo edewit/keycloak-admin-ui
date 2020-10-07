@@ -48,7 +48,7 @@ export const ClientsSection = () => {
       />
       <PageSection variant="light">
         {!clients && (
-          <div style={{ textAlign: "center" }}>
+          <div className="pf-u-text-align-center">
             <Spinner />
           </div>
         )}
