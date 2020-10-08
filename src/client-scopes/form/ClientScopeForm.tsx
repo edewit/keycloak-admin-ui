@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import {
   ActionGroup,
   AlertVariant,
@@ -24,10 +24,10 @@ import { useAlerts } from "../../components/alert/Alerts";
 import { useLoginProviders } from "../../context/server-info/ServerInfoProvider";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
 
-export const NewClientScopeForm = () => {
+export const ClientScopeForm = () => {
   const { t } = useTranslation("client-scopes");
   const helpText = useTranslation("client-scopes-help").t;
-  const { register, control, handleSubmit, errors } = useForm<
+  const { register, control, handleSubmit, errors, setValue } = useForm<
     ClientScopeRepresentation
   >();
   const history = useHistory();
@@ -35,9 +35,31 @@ export const NewClientScopeForm = () => {
   const httpClient = useContext(HttpClientContext)!;
   const { realm } = useContext(RealmContext);
   const providers = useLoginProviders();
+  const { id } = useParams<{ id: string }>();
 
   const [open, isOpen] = useState(false);
   const { addAlert } = useAlerts();
+
+  useEffect(() => {
+    (async () => {
+      if (id) {
+        const response = await httpClient.doGet<ClientScopeRepresentation>(
+          `/admin/realms/${realm}/client-scopes/${id}`
+        );
+        if (response.data) {
+          Object.entries(response.data).map((entry) => {
+            if (entry[0] === "attributes") {
+              Object.keys(entry[1]).map((key) => {
+                const newKey = key.replace(/\./g, "_");
+                setValue("attributes." + newKey, entry[1][key]);
+              });
+            }
+            setValue(entry[0], entry[1]);
+          });
+        }
+      }
+    })();
+  }, []);
 
   const save = async (clientScopes: ClientScopeRepresentation) => {
     try {
@@ -47,14 +69,16 @@ export const NewClientScopeForm = () => {
       });
       clientScopes.attributes = Object.assign({}, ...keyValues);
 
-      await httpClient.doPost(
-        `/admin/realms/${realm}/client-scopes`,
-        clientScopes
-      );
-      addAlert(t("createClientScopeSuccess"), AlertVariant.success);
+      const url = `/admin/realms/${realm}/client-scopes/`;
+      if (id) {
+        await httpClient.doPut(url + id, clientScopes);
+      } else {
+        await httpClient.doPost(url, clientScopes);
+      }
+      addAlert(t((id ? "update" : "create") + "Success"), AlertVariant.success);
     } catch (error) {
       addAlert(
-        `${t("createClientScopeError")} '${error}'`,
+        t((id ? "update" : "create") + "Error", { error }),
         AlertVariant.danger
       );
     }
@@ -108,47 +132,49 @@ export const NewClientScopeForm = () => {
               name="description"
             />
           </FormGroup>
-          <FormGroup
-            label={t("protocol")}
-            labelIcon={
-              <HelpItem
-                helpText={helpText("protocol")}
-                forLabel="protocol"
-                forID="kc-protocol"
+          {!id && (
+            <FormGroup
+              label={t("protocol")}
+              labelIcon={
+                <HelpItem
+                  helpText={helpText("protocol")}
+                  forLabel="protocol"
+                  forID="kc-protocol"
+                />
+              }
+              fieldId="kc-protocol"
+            >
+              <Controller
+                name="protocol"
+                defaultValue=""
+                control={control}
+                render={({ onChange, value }) => (
+                  <Select
+                    toggleId="kc-protocol"
+                    required
+                    onToggle={() => isOpen(!open)}
+                    onSelect={(_, value, isPlaceholder) => {
+                      onChange(isPlaceholder ? "" : (value as string));
+                      isOpen(false);
+                    }}
+                    selections={value}
+                    variant={SelectVariant.single}
+                    aria-label={t("selectEncryptionType")}
+                    placeholderText={t("common:selectOne")}
+                    isOpen={open}
+                  >
+                    {providers.map((option) => (
+                      <SelectOption
+                        selected={option === value}
+                        key={option}
+                        value={option}
+                      />
+                    ))}
+                  </Select>
+                )}
               />
-            }
-            fieldId="kc-protocol"
-          >
-            <Controller
-              name="protocol"
-              defaultValue=""
-              control={control}
-              render={({ onChange, value }) => (
-                <Select
-                  toggleId="kc-protocol"
-                  required
-                  onToggle={() => isOpen(!open)}
-                  onSelect={(_, value, isPlaceholder) => {
-                    onChange(isPlaceholder ? "" : (value as string));
-                    isOpen(false);
-                  }}
-                  selections={value}
-                  variant={SelectVariant.single}
-                  aria-label={t("selectEncryptionType")}
-                  placeholderText={t("common:selectOne")}
-                  isOpen={open}
-                >
-                  {providers.map((option) => (
-                    <SelectOption
-                      selected={option === value}
-                      key={option}
-                      value={option}
-                    />
-                  ))}
-                </Select>
-              )}
-            />
-          </FormGroup>
+            </FormGroup>
+          )}
           <FormGroup
             hasNoPaddingTop
             label={t("displayOnConsentScreen")}
