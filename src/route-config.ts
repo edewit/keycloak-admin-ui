@@ -79,6 +79,11 @@ export const routes: RoutesFn = (t: TFunction) => [
     access: "view-clients",
   },
   {
+    path: "/client-scopes/:id",
+    component: ClientScopeForm,
+    breadcrumb: t("client-scopes:clientScopeDetails"),
+  },
+  {
     path: "/roles",
     component: RealmRolesSection,
     breadcrumb: t("roles:roleList"),
