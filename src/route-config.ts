@@ -67,7 +67,7 @@ export const routes: RoutesFn = (t: TFunction) => [
     access: "view-clients",
   },
   {
-    path: "/client-scopes/add-client-scopes",
+    path: "/client-scopes/new",
     component: ClientScopeForm,
     breadcrumb: t("client-scopes:createClientScope"),
     access: "manage-clients",
