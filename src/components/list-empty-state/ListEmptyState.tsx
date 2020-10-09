@@ -5,22 +5,29 @@ import {
   EmptyStateBody,
   Title,
   Button,
+  ButtonVariant,
+  EmptyStateSecondaryActions,
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
+
+export type Action = {
+  text: string;
+  type?: ButtonVariant;
+  onClick: MouseEventHandler<HTMLButtonElement>;
+};
 
 export type ListEmptyStateProps = {
   message: string;
   instructions: string;
-  primaryActionText: string;
-  onPrimaryAction: MouseEventHandler<HTMLButtonElement>;
+  actions: Action[];
 };
 
 export const ListEmptyState = ({
   message,
   instructions,
-  primaryActionText,
-  onPrimaryAction,
+  actions,
 }: ListEmptyStateProps) => {
+  const primaryAction = actions.splice(0, 1)[0];
   return (
     <>
       <EmptyState variant="large">
@@ -29,9 +36,23 @@ export const ListEmptyState = ({
           {message}
         </Title>
         <EmptyStateBody>{instructions}</EmptyStateBody>
-        <Button variant="primary" onClick={onPrimaryAction}>
-          {primaryActionText}
-        </Button>
+          <Button
+            variant={primaryAction.type || ButtonVariant.primary}
+            onClick={primaryAction.onClick}
+          >
+            {primaryAction.text}
+          </Button>
+        <EmptyStateSecondaryActions>
+          {actions.map((action) => (
+            <Button
+              key={action.text}
+              variant={action.type || ButtonVariant.primary}
+              onClick={action.onClick}
+            >
+              {action.text}
+            </Button>
+          ))}
+        </EmptyStateSecondaryActions>
       </EmptyState>
     </>
   );

@@ -22,6 +22,5 @@ export const View = Template.bind({});
 View.args = {
   message: "No things",
   instructions: "You haven't created any things for this list.",
-  primaryActionText: "Add a thing",
-  onPrimaryAction: handleClick,
+  actions: [{ text: "Add a thing", onClick: handleClick }],
 };

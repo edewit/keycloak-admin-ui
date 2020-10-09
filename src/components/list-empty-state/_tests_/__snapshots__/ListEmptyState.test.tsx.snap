@@ -42,6 +42,9 @@ exports[`<ListEmptyState /> render 1`] = `
       >
         Add a thing
       </button>
+      <div
+        class="pf-c-empty-state__secondary"
+      />
     </div>
   </div>
 </DocumentFragment>
