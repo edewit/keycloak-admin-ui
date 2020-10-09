@@ -36,12 +36,12 @@ export const ListEmptyState = ({
           {message}
         </Title>
         <EmptyStateBody>{instructions}</EmptyStateBody>
-          <Button
-            variant={primaryAction.type || ButtonVariant.primary}
-            onClick={primaryAction.onClick}
-          >
-            {primaryAction.text}
-          </Button>
+        <Button
+          variant={primaryAction.type || ButtonVariant.primary}
+          onClick={primaryAction.onClick}
+        >
+          {primaryAction.text}
+        </Button>
         <EmptyStateSecondaryActions>
           {actions.map((action) => (
             <Button
