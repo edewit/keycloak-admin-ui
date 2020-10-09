@@ -37,6 +37,9 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
   >();
   const [mapperAction, setMapperAction] = useState(false);
   const mapperList = clientScope.protocolMappers!;
+  const mapperTypes = useServerInfo().protocolMapperTypes[
+    clientScope.protocol!
+  ];
 
   if (!mapperList) {
     return (
@@ -48,10 +51,6 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
       />
     );
   }
-
-  const mapperTypes = useServerInfo().protocolMapperTypes[
-    clientScope.protocol!
-  ];
 
   const data = mapperList
     .map((mapper) => {
