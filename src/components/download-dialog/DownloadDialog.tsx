@@ -78,8 +78,11 @@ export const DownloadDialog = ({
       titleKey={t("clients:downloadAdaptorTitle")}
       continueButtonLabel={t("download")}
       onConfirm={() => {
-        const config = configFormats.find(config => config.id === selected)!;
-        FileSaver.saveAs(new Blob([snippet], { type: config.mediaType }), config.filename);
+        const config = configFormats.find((config) => config.id === selected)!;
+        FileSaver.saveAs(
+          new Blob([snippet], { type: config.mediaType }),
+          config.filename
+        );
       }}
       open={open}
       toggleDialog={toggleDialog}
