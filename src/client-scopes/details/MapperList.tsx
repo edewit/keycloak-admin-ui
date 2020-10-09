@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   AlertVariant,
+  ButtonVariant,
   Dropdown,
   DropdownItem,
   DropdownToggle,
@@ -56,8 +57,14 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
       <ListEmptyState
         message={t("emptyMappers")}
         instructions={t("emptyMappersInstructions")}
-        primaryActionText={t("emptyPrimaryAction")}
-        onPrimaryAction={() => {}}
+        actions={[
+          { text: t("emptyPrimaryAction"), onClick: () => {} },
+          {
+            text: t("emptySecondaryAction"),
+            onClick: () => {},
+            type: ButtonVariant.secondary,
+          },
+        ]}
       />
     );
   }
