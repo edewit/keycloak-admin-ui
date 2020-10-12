@@ -8,7 +8,9 @@ describe("<ListEmptyState />", () => {
       <ListEmptyState
         message="No things"
         instructions="You haven't created any things for this list."
-        actions={[{ text: "Add a thing", onClick: () => {} }]}
+        primaryActionText="Add it now!"
+        onPrimaryAction={() => {}}
+        secondaryActions={[{ text: "Add a thing", onClick: () => {} }]}
       />
     );
     expect(comp.asFragment()).toMatchSnapshot();
