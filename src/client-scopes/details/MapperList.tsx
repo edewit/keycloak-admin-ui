@@ -15,7 +15,10 @@ import {
 import { CaretDownIcon } from "@patternfly/react-icons";
 
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
-import { ClientScopeRepresentation } from "../models/client-scope";
+import {
+  ClientScopeRepresentation,
+  ProtocolMapperRepresentation,
+} from "../models/client-scope";
 import { TableToolbar } from "../../components/table-toolbar/TableToolbar";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 import { HttpClientContext } from "../../context/http-service/HttpClientContext";
@@ -26,6 +29,13 @@ type MapperListProps = {
   clientScope: ClientScopeRepresentation;
 };
 
+type Row = {
+  name: string;
+  category: string;
+  type: string;
+  priority: number;
+};
+
 export const MapperList = ({ clientScope }: MapperListProps) => {
   const { t } = useTranslation("client-scopes");
   const httpClient = useContext(HttpClientContext)!;
@@ -33,7 +43,7 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
   const { addAlert } = useAlerts();
 
   const [filteredData, setFilteredData] = useState<
-    { cells: (string | number | undefined)[] }[]
+    { mapper: ProtocolMapperRepresentation; cells: Row }[]
   >();
   const [mapperAction, setMapperAction] = useState(false);
   const mapperList = clientScope.protocolMappers!;
@@ -59,22 +69,20 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
       )[0];
       return {
         mapper,
-        cells: [
-          mapper.name,
-          mapperType.category,
-          mapperType.name,
-          mapperType.priority,
-        ],
+        cells: {
+          name: mapper.name,
+          category: mapperType.category,
+          type: mapperType.name,
+          priority: mapperType.priority,
+        } as Row,
       };
     })
-    .sort((a, b) => (a.cells[3] as number) - (b.cells[3] as number));
+    .sort((a, b) => a.cells.priority - b.cells.priority);
 
   const filterData = (search: string) => {
     setFilteredData(
       data.filter((column) =>
-        (column.cells[0] as string)!
-          .toLowerCase()
-          .includes(search.toLowerCase())
+        column.cells.name.toLowerCase().includes(search.toLowerCase())
       )
     );
   };
@@ -112,7 +120,9 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
       <Table
         variant={TableVariant.compact}
         cells={[t("name"), t("category"), t("type"), t("priority")]}
-        rows={filteredData || data}
+        rows={(filteredData || data).map((cell) => {
+          return { cells: Object.values(cell.cells), mapper: cell.mapper };
+        })}
         aria-label={t("clientScopeList")}
         actions={[
           {
