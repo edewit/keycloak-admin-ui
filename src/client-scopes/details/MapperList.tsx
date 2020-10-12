@@ -57,8 +57,9 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
       <ListEmptyState
         message={t("emptyMappers")}
         instructions={t("emptyMappersInstructions")}
-        actions={[
-          { text: t("emptyPrimaryAction"), onClick: () => {} },
+        primaryActionText={t("emptyPrimaryAction")}
+        onPrimaryAction={() => {}}
+        secondaryActions={[
           {
             text: t("emptySecondaryAction"),
             onClick: () => {},
