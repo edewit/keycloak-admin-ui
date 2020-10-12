@@ -31,7 +31,6 @@ import { MapperList } from "../details/MapperList";
 
 export const ClientScopeForm = () => {
   const { t } = useTranslation("client-scopes");
-  const helpText = useTranslation("client-scopes-help").t;
   const { register, control, handleSubmit, errors, setValue } = useForm<
     ClientScopeRepresentation
   >();
@@ -109,7 +108,7 @@ export const ClientScopeForm = () => {
                 label={t("name")}
                 labelIcon={
                   <HelpItem
-                    helpText={helpText("name")}
+                  helpText="client-scopes-help:name"
                     forLabel={t("name")}
                     forID="kc-name"
                   />
@@ -130,7 +129,7 @@ export const ClientScopeForm = () => {
                 label={t("description")}
                 labelIcon={
                   <HelpItem
-                    helpText={helpText("description")}
+                  helpText="client-scopes-help:description"
                     forLabel={t("description")}
                     forID="kc-description"
                   />
@@ -149,7 +148,7 @@ export const ClientScopeForm = () => {
                   label={t("protocol")}
                   labelIcon={
                     <HelpItem
-                      helpText={helpText("protocol")}
+                    helpText="client-scopes-help:protocol"
                       forLabel="protocol"
                       forID="kc-protocol"
                     />
@@ -192,7 +191,7 @@ export const ClientScopeForm = () => {
                 label={t("displayOnConsentScreen")}
                 labelIcon={
                   <HelpItem
-                    helpText={helpText("displayOnConsentScreen")}
+                  helpText="client-scopes-help:displayOnConsentScreen"
                     forLabel={t("displayOnConsentScreen")}
                     forID="kc-display.on.consent.screen"
                   />
@@ -202,14 +201,14 @@ export const ClientScopeForm = () => {
                 <Controller
                   name="attributes.display_on_consent_screen"
                   control={control}
-                  defaultValue={false}
+                defaultValue="false"
                   render={({ onChange, value }) => (
                     <Switch
                       id="kc-display.on.consent.screen"
                       label={t("common:on")}
                       labelOff={t("common:off")}
                       isChecked={value === "true"}
-                      onChange={onChange}
+                    onChange={(value) => onChange("" + value)}
                     />
                   )}
                 />
@@ -218,7 +217,7 @@ export const ClientScopeForm = () => {
                 label={t("consentScreenText")}
                 labelIcon={
                   <HelpItem
-                    helpText={helpText("consentScreenText")}
+                  helpText="client-scopes-help:consentScreenText"
                     forLabel={t("consentScreenText")}
                     forID="kc-consent-screen-text"
                   />
@@ -263,7 +262,7 @@ export const ClientScopeForm = () => {
                 label={t("guiOrder")}
                 labelIcon={
                   <HelpItem
-                    helpText={helpText("guiOrder")}
+                  helpText="client-scopes-help:guiOrder"
                     forLabel={t("guiOrder")}
                     forID="kc-gui-order"
                   />
@@ -291,7 +290,7 @@ export const ClientScopeForm = () => {
             </Form>
           </Tab>
           <Tab eventKey={1} title={<TabTitleText>{t("mappers")}</TabTitleText>}>
-            {clientScope && <MapperList clientScope={clientScope} />}
+          {clientScope && <MapperList clientScope={clientScope} />}
           </Tab>
         </Tabs>
       </PageSection>

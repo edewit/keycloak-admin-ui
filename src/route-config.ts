@@ -17,6 +17,7 @@ import { NewRealmForm } from "./realm/add/NewRealmForm";
 import { SessionsSection } from "./sessions/SessionsSection";
 import { UserFederationSection } from "./user-federation/UserFederationSection";
 import { UsersSection } from "./user/UsersSection";
+import { MappingDetails } from "./client-scopes/details/MappingDetails";
 
 import { AccessType } from "./context/whoami/who-am-i-model";
 
@@ -77,6 +78,11 @@ export const routes: RoutesFn = (t: TFunction) => [
     component: ClientScopeForm,
     breadcrumb: t("client-scopes:clientScopeDetails"),
     access: "view-clients",
+  },
+  {
+    path: "/client-scopes/:scopeId/:id",
+    component: MappingDetails,
+    breadcrumb: t("client-scopes:mappingDetails"),
   },
   {
     path: "/client-scopes/:id",
