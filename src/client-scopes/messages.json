@@ -11,6 +11,7 @@
     "type": "Type",
     "priority": "Priority",
     "protocol": "Protocol",
+    "includeInTokenScope": "Include in token scope",
     "createSuccess": "Client scope created",
     "createError": "Could not create client scope: '{{error}}'",
     "updateSuccess": "Client scope updated",

@@ -132,49 +132,47 @@ export const ClientScopeForm = () => {
               name="description"
             />
           </FormGroup>
-          {!id && (
-            <FormGroup
-              label={t("protocol")}
-              labelIcon={
-                <HelpItem
-                  helpText={helpText("protocol")}
-                  forLabel="protocol"
-                  forID="kc-protocol"
-                />
-              }
-              fieldId="kc-protocol"
-            >
-              <Controller
-                name="protocol"
-                defaultValue=""
-                control={control}
-                render={({ onChange, value }) => (
-                  <Select
-                    toggleId="kc-protocol"
-                    required
-                    onToggle={() => isOpen(!open)}
-                    onSelect={(_, value, isPlaceholder) => {
-                      onChange(isPlaceholder ? "" : (value as string));
-                      isOpen(false);
-                    }}
-                    selections={value}
-                    variant={SelectVariant.single}
-                    aria-label={t("selectEncryptionType")}
-                    placeholderText={t("common:selectOne")}
-                    isOpen={open}
-                  >
-                    {providers.map((option) => (
-                      <SelectOption
-                        selected={option === value}
-                        key={option}
-                        value={option}
-                      />
-                    ))}
-                  </Select>
-                )}
+          <FormGroup
+            label={t("protocol")}
+            labelIcon={
+              <HelpItem
+                helpText={helpText("protocol")}
+                forLabel="protocol"
+                forID="kc-protocol"
               />
-            </FormGroup>
-          )}
+            }
+            fieldId="kc-protocol"
+          >
+            <Controller
+              name="protocol"
+              defaultValue=""
+              control={control}
+              render={({ onChange, value }) => (
+                <Select
+                  toggleId="kc-protocol"
+                  required
+                  onToggle={() => isOpen(!open)}
+                  onSelect={(_, value, isPlaceholder) => {
+                    onChange(isPlaceholder ? "" : (value as string));
+                    isOpen(false);
+                  }}
+                  selections={value}
+                  variant={SelectVariant.single}
+                  aria-label={t("selectEncryptionType")}
+                  placeholderText={t("common:selectOne")}
+                  isOpen={open}
+                >
+                  {providers.map((option) => (
+                    <SelectOption
+                      selected={option === value}
+                      key={option}
+                      value={option}
+                    />
+                  ))}
+                </Select>
+              )}
+            />
+          </FormGroup>
           <FormGroup
             hasNoPaddingTop
             label={t("displayOnConsentScreen")}
@@ -218,6 +216,33 @@ export const ClientScopeForm = () => {
               type="text"
               id="kc-consent-screen-text"
               name="attributes.consent_screen_text"
+            />
+          </FormGroup>
+          <FormGroup
+            hasNoPaddingTop
+            label={t("includeInTokenScope")}
+            labelIcon={
+              <HelpItem
+                helpText={helpText("includeInTokenScope")}
+                forLabel={t("includeInTokenScope")}
+                forID="includeInTokenScope"
+              />
+            }
+            fieldId="includeInTokenScope"
+          >
+            <Controller
+              name="attributes.include_in_token_scope"
+              control={control}
+              defaultValue="false"
+              render={({ onChange, value }) => (
+                <Switch
+                  id="includeInTokenScope"
+                  label={t("common:on")}
+                  labelOff={t("common:off")}
+                  isChecked={value === "true"}
+                  onChange={(value) => onChange("" + value)}
+                />
+              )}
             />
           </FormGroup>
           <FormGroup
