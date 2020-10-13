@@ -59,8 +59,9 @@ export const ClientScopeForm = () => {
             }
             setValue(entry[0], entry[1]);
           });
-          setClientScope(response.data);
         }
+
+        setClientScope(response.data);
       }
     })();
   }, []);
@@ -108,7 +109,7 @@ export const ClientScopeForm = () => {
                 label={t("name")}
                 labelIcon={
                   <HelpItem
-                  helpText="client-scopes-help:name"
+                    helpText="client-scopes-help:name"
                     forLabel={t("name")}
                     forID="kc-name"
                   />
@@ -129,7 +130,7 @@ export const ClientScopeForm = () => {
                 label={t("description")}
                 labelIcon={
                   <HelpItem
-                  helpText="client-scopes-help:description"
+                    helpText="client-scopes-help:description"
                     forLabel={t("description")}
                     forID="kc-description"
                   />
@@ -148,7 +149,7 @@ export const ClientScopeForm = () => {
                   label={t("protocol")}
                   labelIcon={
                     <HelpItem
-                    helpText="client-scopes-help:protocol"
+                      helpText="client-scopes-help:protocol"
                       forLabel="protocol"
                       forID="kc-protocol"
                     />
@@ -191,7 +192,7 @@ export const ClientScopeForm = () => {
                 label={t("displayOnConsentScreen")}
                 labelIcon={
                   <HelpItem
-                  helpText="client-scopes-help:displayOnConsentScreen"
+                    helpText="client-scopes-help:displayOnConsentScreen"
                     forLabel={t("displayOnConsentScreen")}
                     forID="kc-display.on.consent.screen"
                   />
@@ -201,14 +202,14 @@ export const ClientScopeForm = () => {
                 <Controller
                   name="attributes.display_on_consent_screen"
                   control={control}
-                defaultValue="false"
+                  defaultValue="false"
                   render={({ onChange, value }) => (
                     <Switch
                       id="kc-display.on.consent.screen"
                       label={t("common:on")}
                       labelOff={t("common:off")}
                       isChecked={value === "true"}
-                    onChange={(value) => onChange("" + value)}
+                      onChange={(value) => onChange("" + value)}
                     />
                   )}
                 />
@@ -217,7 +218,7 @@ export const ClientScopeForm = () => {
                 label={t("consentScreenText")}
                 labelIcon={
                   <HelpItem
-                  helpText="client-scopes-help:consentScreenText"
+                    helpText="client-scopes-help:consentScreenText"
                     forLabel={t("consentScreenText")}
                     forID="kc-consent-screen-text"
                   />
@@ -229,40 +230,40 @@ export const ClientScopeForm = () => {
                   type="text"
                   id="kc-consent-screen-text"
                   name="attributes.consent_screen_text"
-            />
-          </FormGroup>
-          <FormGroup
-            hasNoPaddingTop
-            label={t("includeInTokenScope")}
-            labelIcon={
-              <HelpItem
-                helpText={helpText("includeInTokenScope")}
-                forLabel={t("includeInTokenScope")}
-                forID="includeInTokenScope"
-              />
-            }
-            fieldId="includeInTokenScope"
-          >
-            <Controller
-              name="attributes.include_in_token_scope"
-              control={control}
-              defaultValue="false"
-              render={({ onChange, value }) => (
-                <Switch
-                  id="includeInTokenScope"
-                  label={t("common:on")}
-                  labelOff={t("common:off")}
-                  isChecked={value === "true"}
-                  onChange={(value) => onChange("" + value)}
                 />
-              )}
+              </FormGroup>
+              <FormGroup
+                hasNoPaddingTop
+                label={t("includeInTokenScope")}
+                labelIcon={
+                  <HelpItem
+                    helpText="client-scopes-help:includeInTokenScope"
+                    forLabel={t("includeInTokenScope")}
+                    forID="includeInTokenScope"
+                  />
+                }
+                fieldId="includeInTokenScope"
+              >
+                <Controller
+                  name="attributes.include_in_token_scope"
+                  control={control}
+                  defaultValue="false"
+                  render={({ onChange, value }) => (
+                    <Switch
+                      id="includeInTokenScope"
+                      label={t("common:on")}
+                      labelOff={t("common:off")}
+                      isChecked={value === "true"}
+                      onChange={(value) => onChange("" + value)}
+                    />
+                  )}
                 />
               </FormGroup>
               <FormGroup
                 label={t("guiOrder")}
                 labelIcon={
                   <HelpItem
-                  helpText="client-scopes-help:guiOrder"
+                    helpText="client-scopes-help:guiOrder"
                     forLabel={t("guiOrder")}
                     forID="kc-gui-order"
                   />
@@ -290,7 +291,7 @@ export const ClientScopeForm = () => {
             </Form>
           </Tab>
           <Tab eventKey={1} title={<TabTitleText>{t("mappers")}</TabTitleText>}>
-          {clientScope && <MapperList clientScope={clientScope} />}
+            {clientScope && <MapperList clientScope={clientScope} />}
           </Tab>
         </Tabs>
       </PageSection>
