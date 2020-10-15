@@ -30,6 +30,6 @@
     "mappingDeletedError": "Could not delete mapping: '{{error}}'",
     "displayOnConsentScreen": "Display on consent screen",
     "consentScreenText": "Consent screen text",
-    "guiOrder": "GUI Order"
+    "guiOrder": "Display Order"
   }
 }
