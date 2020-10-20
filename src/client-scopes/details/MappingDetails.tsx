@@ -7,6 +7,7 @@ import {
   Button,
   ButtonVariant,
   Checkbox,
+  DropdownItem,
   Flex,
   FlexItem,
   Form,
@@ -110,12 +111,15 @@ export const MappingDetails = () => {
         titleKey={mapping ? mapping.name! : ""}
         subKey={id}
         badge={mapping?.protocol}
-        selectItems={[
-          <SelectOption key="delete" value="delete">
+        dropdownItems={[
+          <DropdownItem
+            key="delete"
+            value="delete"
+            onClick={toggleDeleteDialog}
+          >
             {t("common:delete")}
-          </SelectOption>,
+          </DropdownItem>,
         ]}
-        onSelect={toggleDeleteDialog}
       />
       <PageSection variant="light">
         <Form isHorizontal onSubmit={handleSubmit(save)}>
