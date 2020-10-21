@@ -83,11 +83,13 @@ export const routes: RoutesFn = (t: TFunction) => [
     path: "/client-scopes/:scopeId/:id",
     component: MappingDetails,
     breadcrumb: t("client-scopes:mappingDetails"),
+    access: "view-clients",
   },
   {
     path: "/client-scopes/:id",
     component: ClientScopeForm,
     breadcrumb: t("client-scopes:clientScopeDetails"),
+    access: "view-clients",
   },
   {
     path: "/roles",
