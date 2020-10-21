@@ -2,6 +2,11 @@ import React, { ReactElement, useState } from "react";
 import {
   Button,
   ButtonVariant,
+  DataList,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
   Modal,
   Text,
   TextContent,
@@ -19,8 +24,6 @@ import {
   ProtocolMapperRepresentation,
   ProtocolMapperTypeRepresentation,
 } from "../../context/server-info/server-info";
-
-import "./mapper-dialog.css";
 
 export type AddMapperDialogProps = {
   protocol: string;
@@ -74,20 +77,6 @@ export const AddMapperDialog = ({
     })
   );
 
-  const columns: (keyof ProtocolMapperTypeRepresentation)[] = [
-    "name",
-    "helpText",
-  ];
-
-  const data = protocolMappers.map((c) => {
-    return {
-      item: c,
-      cells: columns.map((col) => {
-        return c[col];
-      }),
-    };
-  });
-
   return (
     <Modal
       title={t("chooseAMapperType")}
@@ -126,21 +115,36 @@ export const AddMapperDialog = ({
         <Text>{t("predefinedMappingDescription")}</Text>
       </TextContent>
       {!buildIn && (
-        <Table
-          variant={TableVariant.compact}
-          cells={[t("name"), t("description")]}
-          rows={data}
+        <DataList
+          onSelectDataListItem={(id) => {
+            const mapper = protocolMappers.find((mapper) => mapper.id === id);
+            onConfirm(mapper!);
+            toggleDialog();
+          }}
           aria-label={t("chooseAMapperType")}
+          isCompact
         >
-          <TableHeader />
-          <TableBody
-            onRowClick={(_, row) => {
-              onConfirm(row.item);
-              toggleDialog();
-            }}
-            className="keycloak__add-mapper-dialog__table-row"
-          />
-        </Table>
+          {protocolMappers.map((mapper) => (
+            <DataListItem
+              aria-labelledby={mapper.name}
+              key={mapper.id}
+              id={mapper.id}
+            >
+              <DataListItemRow>
+                <DataListItemCells
+                  dataListCells={[
+                    <DataListCell key={`name-${mapper.id}`}>
+                      <>{mapper.name}</>
+                    </DataListCell>,
+                    <DataListCell key={`helpText-${mapper.id}`}>
+                      <>{mapper.helpText}</>
+                    </DataListCell>,
+                  ]}
+                />
+              </DataListItemRow>
+            </DataListItem>
+          ))}
+        </DataList>
       )}
       {buildIn && (
         <Table
