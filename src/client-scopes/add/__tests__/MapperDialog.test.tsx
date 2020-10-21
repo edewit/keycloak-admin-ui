@@ -65,10 +65,9 @@ describe("<MapperDialog/>", () => {
     expect(container).toMatchSnapshot();
 
     container
-      .find("tbody.keycloak__add-mapper-dialog__table-row")
-      .find("tr")
+      .find("div.pf-c-data-list__item-content")
       .first()
-      .simulate("mousedown");
+      .simulate("click");
     expect(onConfirm).toBeCalledWith(
       serverInfo.protocolMapperTypes[protocol][0]
     );
