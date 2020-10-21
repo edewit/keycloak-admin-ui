@@ -90,8 +90,11 @@ export const ClientScopeForm = () => {
   return (
     <>
       <ViewHeader
-        titleKey="client-scopes:createClientScope"
+        titleKey={
+          clientScope ? clientScope.name! : "client-scopes:createClientScope"
+        }
         subKey="client-scopes:clientScopeExplain"
+        badge={clientScope ? clientScope.protocol : undefined}
       />
 
       <PageSection variant="light">
