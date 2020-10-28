@@ -4,6 +4,7 @@ import {
   AlertVariant,
   Form,
   FormGroup,
+  ModalVariant,
   Select,
   SelectOption,
   SelectVariant,
@@ -66,13 +67,20 @@ export const DownloadDialog = ({
   const [openType, setOpenType] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
+      console.log("hello");
       const response = await httpClient.doGet<string>(
         `/admin/realms/${realm}/clients/${id}/installation/providers/${selected}`
       );
-      setSnippet(await response.text());
+      if (isMounted) {
+        setSnippet(await response.text());
+      }
     })();
-  }, [selected, snippet]);
+    return () => {
+      isMounted = false;
+    };
+  }, [selected]);
   return (
     <ConfirmDialogModal
       titleKey={t("clients:downloadAdaptorTitle")}
@@ -86,6 +94,7 @@ export const DownloadDialog = ({
       }}
       open={open}
       toggleDialog={toggleDialog}
+      variant={ModalVariant.medium}
     >
       <Form>
         <Stack hasGutter>
