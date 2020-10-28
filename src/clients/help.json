@@ -4,6 +4,7 @@
     "details": "this is information about the details",
     "client-authenticator-type": "Client Authenticator used for authentication of this client against Keycloak server",
     "client-secret": "The registration access token provides access for clients to the client registration service.",
-    "registration-access-token": "The registration access token provides access for clients to the client registration service."
+    "registration-access-token": "The registration access token provides access for clients to the client registration service.",
+    "signature-algorithm": "JWA algorithm, which the client needs to use when signing a JWT for authentication. If left blank, the client is allowed to use any algorithm."
   }
 }

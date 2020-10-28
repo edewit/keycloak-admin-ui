@@ -25,6 +25,7 @@ import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { HttpClientContext } from "../../context/http-service/HttpClientContext";
 import { RealmContext } from "../../context/realm-context/RealmContext";
 import { ClientSecret } from "./ClientSecret";
+import { SignedJWT } from "./SignedJWT";
 
 type ClientAuthenticatorProviders = {
   id: string;
@@ -180,6 +181,9 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
         <CardFooter>
           {form.getValues("clientAuthenticatorType") === "client-secret" && (
             <ClientSecret secret={secret} toggle={toggleClientSecretConfirm} />
+          )}
+          {form.getValues("clientAuthenticatorType") === "client-jwt" && (
+            <SignedJWT form={form} />
           )}
         </CardFooter>
       </Card>

@@ -60,6 +60,7 @@
     "registrationAccessToken": "Registration access token",
     "accessTokenSuccess": "Access token regenerated",
     "accessTokenError": "Could not regenerate access token due to: {{error}}",
+    "signatureAlgorithm": "Signature algorithm",
     "searchForClient": "Search for client"
   }
 }
