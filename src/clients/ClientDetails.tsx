@@ -21,7 +21,11 @@ import { HttpClientContext } from "../context/http-service/HttpClientContext";
 import { RealmContext } from "../context/realm-context/RealmContext";
 import { Credentials } from "./credentials/Credentials";
 import { ClientRepresentation } from "../realm/models/Realm";
-import { exportClient } from "../util";
+import {
+  convertFormValuesToObject,
+  convertToFormValues,
+  exportClient,
+} from "../util";
 import {
   convertToMultiline,
   toValue,
@@ -60,18 +64,25 @@ export const ClientDetails = () => {
     protocol: form.getValues("protocol"),
   });
 
+  const setupForm = (client: ClientRepresentation) => {
+    form.reset(client);
+    Object.entries(client).map((entry) => {
+      if (entry[0] === "redirectUris" && entry[1] && entry[1].length > 0) {
+        form.setValue(entry[0], convertToMultiline(entry[1]));
+      } else if (entry[0] === "attributes") {
+        convertToFormValues(entry[1], "attributes", form.setValue);
+      } else {
+        form.setValue(entry[0], entry[1]);
+      }
+    });
+  };
+
   useEffect(() => {
     (async () => {
       const fetchedClient = await httpClient.doGet<ClientRepresentation>(url);
       if (fetchedClient.data) {
         setName(fetchedClient.data.clientId);
-        Object.entries(fetchedClient.data).map((entry) => {
-          if (entry[0] !== "redirectUris") {
-            form.setValue(entry[0], entry[1]);
-          } else if (entry[1] && entry[1].length > 0) {
-            form.setValue(entry[0], convertToMultiline(entry[1]));
-          }
-        });
+        setupForm(fetchedClient.data);
       }
     })();
   }, []);
@@ -79,8 +90,18 @@ export const ClientDetails = () => {
   const save = async () => {
     if (await form.trigger()) {
       const redirectUris = toValue(form.getValues()["redirectUris"]);
+      const attributes = convertFormValuesToObject(
+        form.getValues()["attributes"]
+      );
+
       try {
-        httpClient.doPut(url, { ...form.getValues(), redirectUris });
+        const client = {
+          ...form.getValues(),
+          redirectUris,
+          attributes,
+        };
+        await httpClient.doPut(url, client);
+        setupForm(client as ClientRepresentation);
         addAlert(t("clientSaveSuccess"), AlertVariant.success);
       } catch (error) {
         addAlert(`${t("clientSaveError")} '${error}'`, AlertVariant.danger);

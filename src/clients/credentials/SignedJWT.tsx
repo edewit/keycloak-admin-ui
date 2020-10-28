@@ -37,13 +37,12 @@ export const SignedJWT = ({ form }: SignedJWTProps) => {
         }
       >
         <Controller
-          name="clientAuthenticatorType"
-          defaultValue=""
+          name="attributes.token_endpoint_auth_signing_alg"
+          defaultValue={providers[0]}
           control={form.control}
           render={({ onChange, value }) => (
             <Select
               toggleId="kc-signature-algorithm"
-              required
               onToggle={() => isOpen(!open)}
               onSelect={(_, value) => {
                 onChange(value as string);

@@ -16,7 +16,7 @@ import {
   SplitItem,
 } from "@patternfly/react-core";
 import React, { useContext, useEffect, useState } from "react";
-import { Controller, UseFormMethods } from "react-hook-form";
+import { Controller, UseFormMethods, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useAlerts } from "../../components/alert/Alerts";
 import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
@@ -52,6 +52,11 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
   const httpClient = useContext(HttpClientContext)!;
   const { realm } = useContext(RealmContext);
   const { addAlert } = useAlerts();
+  const clientAuthenticatorType = useWatch({
+    control: form.control,
+    name: "clientAuthenticatorType",
+    defaultValue: "",
+  });
 
   const [providers, setProviders] = useState<ClientAuthenticatorProviders[]>(
     []
@@ -179,10 +184,10 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
           <Divider className="pf-u-mt-md" />
         </CardBody>
         <CardFooter>
-          {form.getValues("clientAuthenticatorType") === "client-secret" && (
+          {clientAuthenticatorType === "client-secret" && (
             <ClientSecret secret={secret} toggle={toggleClientSecretConfirm} />
           )}
-          {form.getValues("clientAuthenticatorType") === "client-jwt" && (
+          {clientAuthenticatorType === "client-jwt" && (
             <SignedJWT form={form} />
           )}
         </CardFooter>
