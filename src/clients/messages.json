@@ -61,6 +61,7 @@
     "accessTokenSuccess": "Access token regenerated",
     "accessTokenError": "Could not regenerate access token due to: {{error}}",
     "signatureAlgorithm": "Signature algorithm",
+    "subject": "Subject DN",
     "searchForClient": "Search for client"
   }
 }

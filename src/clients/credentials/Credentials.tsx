@@ -26,6 +26,7 @@ import { HttpClientContext } from "../../context/http-service/HttpClientContext"
 import { RealmContext } from "../../context/realm-context/RealmContext";
 import { ClientSecret } from "./ClientSecret";
 import { SignedJWT } from "./SignedJWT";
+import { X509 } from "./X509";
 
 type ClientAuthenticatorProviders = {
   id: string;
@@ -172,6 +173,10 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
               )}
             />
           </FormGroup>
+          {clientAuthenticatorType === "client-jwt" && (
+            <SignedJWT form={form} />
+          )}
+          {clientAuthenticatorType === "client-x509" && <X509 form={form} />}
           <ActionGroup>
             <Button
               variant="primary"
@@ -181,14 +186,17 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
               {t("common:save")}
             </Button>
           </ActionGroup>
-          <Divider className="pf-u-mt-md" />
         </CardBody>
         <CardFooter>
-          {clientAuthenticatorType === "client-secret" && (
-            <ClientSecret secret={secret} toggle={toggleClientSecretConfirm} />
-          )}
-          {clientAuthenticatorType === "client-jwt" && (
-            <SignedJWT form={form} />
+          {(clientAuthenticatorType === "client-secret" ||
+            clientAuthenticatorType === "client-secret-jwt") && (
+            <>
+              <Divider className="pf-u-mb-md" />
+              <ClientSecret
+                secret={secret}
+                toggle={toggleClientSecretConfirm}
+              />
+            </>
           )}
         </CardFooter>
       </Card>
