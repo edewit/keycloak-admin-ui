@@ -69,7 +69,6 @@ export const DownloadDialog = ({
   useEffect(() => {
     let isMounted = true;
     (async () => {
-      console.log("hello");
       const response = await httpClient.doGet<string>(
         `/admin/realms/${realm}/clients/${id}/installation/providers/${selected}`
       );
