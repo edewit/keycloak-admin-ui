@@ -9,7 +9,7 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
 import { ClientSettings } from "./ClientSettings";
@@ -38,6 +38,11 @@ export const ClientDetails = () => {
   const { addAlert } = useAlerts();
 
   const form = useForm();
+  const publicClient = useWatch({
+    control: form.control,
+    name: "publicClient",
+    defaultValue: false,
+  });
   const { id } = useParams<{ id: string }>();
 
   const [activeTab, setActiveTab] = useState(0);
@@ -179,12 +184,14 @@ export const ClientDetails = () => {
           >
             <ClientSettings form={form} save={save} />
           </Tab>
-          <Tab
-            eventKey={1}
-            title={<TabTitleText>{t("credentials")}</TabTitleText>}
-          >
-            <Credentials clientId={id} form={form} save={save} />
-          </Tab>
+          {publicClient && (
+            <Tab
+              eventKey={1}
+              title={<TabTitleText>{t("credentials")}</TabTitleText>}
+            >
+              <Credentials clientId={id} form={form} save={save} />
+            </Tab>
+          )}
         </Tabs>
       </PageSection>
     </>
