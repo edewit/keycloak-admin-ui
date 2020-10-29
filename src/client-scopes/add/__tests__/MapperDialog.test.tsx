@@ -22,7 +22,7 @@ describe("<MapperDialog/>", () => {
   it("should return empty array when selecting nothing", () => {
     const onConfirm = jest.fn();
     const container = mount(
-      <Test buildIn={true} protocol="openid-connect" onConfirm={onConfirm} />
+      <Test filter={[]} protocol="openid-connect" onConfirm={onConfirm} />
     );
 
     container.find("button#open").simulate("click");
@@ -36,7 +36,7 @@ describe("<MapperDialog/>", () => {
     const onConfirm = jest.fn();
     const protocol = "openid-connect";
     const container = mount(
-      <Test buildIn={true} protocol={protocol} onConfirm={onConfirm} />
+      <Test filter={[]} protocol={protocol} onConfirm={onConfirm} />
     );
 
     container.find("button#open").simulate("click");
@@ -57,9 +57,7 @@ describe("<MapperDialog/>", () => {
   it("should return selected protocol mapping type on click", () => {
     const onConfirm = jest.fn();
     const protocol = "openid-connect";
-    const container = mount(
-      <Test buildIn={false} protocol={protocol} onConfirm={onConfirm} />
-    );
+    const container = mount(<Test protocol={protocol} onConfirm={onConfirm} />);
 
     container.find("button#open").simulate("click");
     expect(container).toMatchSnapshot();

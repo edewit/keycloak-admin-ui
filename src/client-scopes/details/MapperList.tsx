@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import {
   AlertVariant,
   ButtonVariant,
@@ -16,6 +17,8 @@ import {
 import { CaretDownIcon } from "@patternfly/react-icons";
 
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
+import { ProtocolMapperRepresentation as ServerInfoProtocolMapper } from "../../context/server-info/server-info";
+
 import {
   ClientScopeRepresentation,
   ProtocolMapperRepresentation,
@@ -25,10 +28,11 @@ import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState
 import { HttpClientContext } from "../../context/http-service/HttpClientContext";
 import { RealmContext } from "../../context/realm-context/RealmContext";
 import { useAlerts } from "../../components/alert/Alerts";
-import { Link } from "react-router-dom";
+import { useAddMapperDialog } from "../add/MapperDialog";
 
 type MapperListProps = {
   clientScope: ClientScopeRepresentation;
+  refresh: () => void;
 };
 
 type Row = {
@@ -38,7 +42,7 @@ type Row = {
   priority: number;
 };
 
-export const MapperList = ({ clientScope }: MapperListProps) => {
+export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
   const { t } = useTranslation("client-scopes");
   const httpClient = useContext(HttpClientContext)!;
   const { realm } = useContext(RealmContext);
@@ -53,21 +57,41 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
     clientScope.protocol!
   ];
 
+  const [toggleBuildInMapperDialog, BuildInMapperDialog] = useAddMapperDialog({
+    protocol: clientScope.protocol!,
+    filter: mapperList as ServerInfoProtocolMapper[],
+    onConfirm: async (mappers) => {
+      try {
+        await httpClient.doPost(
+          `/admin/realms/${realm}/client-scopes/${clientScope.id}/protocol-mappers/add-models`,
+          mappers
+        );
+        refresh();
+        addAlert(t("mappingCreatedSuccess"), AlertVariant.success);
+      } catch (error) {
+        addAlert(t("mappingCreatedError", { error }), AlertVariant.danger);
+      }
+    },
+  });
+
   if (!mapperList) {
     return (
-      <ListEmptyState
-        message={t("emptyMappers")}
-        instructions={t("emptyMappersInstructions")}
-        primaryActionText={t("emptyPrimaryAction")}
-        onPrimaryAction={() => {}}
-        secondaryActions={[
-          {
-            text: t("emptySecondaryAction"),
-            onClick: () => {},
-            type: ButtonVariant.secondary,
-          },
-        ]}
-      />
+      <>
+        <BuildInMapperDialog />
+        <ListEmptyState
+          message={t("emptyMappers")}
+          instructions={t("emptyMappersInstructions")}
+          primaryActionText={t("emptyPrimaryAction")}
+          onPrimaryAction={toggleBuildInMapperDialog}
+          secondaryActions={[
+            {
+              text: t("emptySecondaryAction"),
+              onClick: () => {},
+              type: ButtonVariant.secondary,
+            },
+          ]}
+        />
+      </>
     );
   }
 
@@ -122,7 +146,7 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
           }
           isOpen={mapperAction}
           dropdownItems={[
-            <DropdownItem key="predefined">
+            <DropdownItem key="predefined" onClick={toggleBuildInMapperDialog}>
               {t("fromPredefinedMapper")}
             </DropdownItem>,
             <DropdownItem key="byConfiguration">
@@ -132,6 +156,7 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
         />
       }
     >
+      <BuildInMapperDialog />
       <Table
         variant={TableVariant.compact}
         cells={[t("name"), t("category"), t("type"), t("priority")]}
@@ -147,6 +172,7 @@ export const MapperList = ({ clientScope }: MapperListProps) => {
                 await httpClient.doDelete(
                   `/admin/realms/${realm}/client-scopes/${clientScope.id}/protocol-mappers/models/${data[rowId].mapper.id}`
                 );
+                mapperList.splice(rowId, 1);
                 addAlert(t("mappingDeletedSuccess"), AlertVariant.success);
               } catch (error) {
                 addAlert(

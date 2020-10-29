@@ -8,6 +8,7 @@ import {
   DataListItemCells,
   DataListItemRow,
   Modal,
+  ModalVariant,
   Text,
   TextContent,
 } from "@patternfly/react-core";
@@ -27,10 +28,10 @@ import {
 
 export type AddMapperDialogProps = {
   protocol: string;
-  buildIn: boolean;
+  filter?: ProtocolMapperRepresentation[];
   onConfirm: (
     value: ProtocolMapperTypeRepresentation | ProtocolMapperRepresentation[]
-  ) => {};
+  ) => void;
 };
 
 type AddMapperDialogModalProps = AddMapperDialogProps & {
@@ -55,7 +56,7 @@ export const useAddMapperDialog = (
 
 export const AddMapperDialog = ({
   protocol,
-  buildIn,
+  filter,
   open,
   toggleDialog,
   onConfirm,
@@ -64,26 +65,31 @@ export const AddMapperDialog = ({
   const protocolMappers = serverInfo.protocolMapperTypes[protocol];
   const buildInMappers = serverInfo.builtinProtocolMappers[protocol];
   const { t } = useTranslation("client-scopes");
+
+  const nameFilter = (filter || []).map((f) => f.name);
   const [rows, setRows] = useState(
-    buildInMappers.map((mapper) => {
-      const mapperType = protocolMappers.filter(
-        (type) => type.id === mapper.protocolMapper
-      )[0];
-      return {
-        item: mapper,
-        selected: false,
-        cells: [mapper.name, mapperType.helpText],
-      };
-    })
+    buildInMappers
+      .filter((map) => !nameFilter.includes(map.name))
+      .map((mapper) => {
+        const mapperType = protocolMappers.filter(
+          (type) => type.id === mapper.protocolMapper
+        )[0];
+        return {
+          item: mapper,
+          selected: false,
+          cells: [mapper.name, mapperType.helpText],
+        };
+      })
   );
 
   return (
     <Modal
+      variant={ModalVariant.medium}
       title={t("chooseAMapperType")}
       isOpen={open}
       onClose={toggleDialog}
       actions={
-        buildIn
+        filter
           ? [
               <Button
                 id="modal-confirm"
@@ -114,7 +120,7 @@ export const AddMapperDialog = ({
       <TextContent>
         <Text>{t("predefinedMappingDescription")}</Text>
       </TextContent>
-      {!buildIn && (
+      {!filter && (
         <DataList
           onSelectDataListItem={(id) => {
             const mapper = protocolMappers.find((mapper) => mapper.id === id);
@@ -146,7 +152,7 @@ export const AddMapperDialog = ({
           ))}
         </DataList>
       )}
-      {buildIn && (
+      {filter && (
         <Table
           variant={TableVariant.compact}
           cells={[t("name"), t("description")]}

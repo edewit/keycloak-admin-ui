@@ -13,6 +13,8 @@
     "protocol": "Protocol",
     "includeInTokenScope": "Include in token scope",
     "mappingDetails": "Mapper details",
+    "mappingCreatedSuccess": "Mapping successfully created",
+    "mappingCreatedError": "Could not create mapping: '{{error}}'",
     "deleteMappingTitle": "Delete mapping?",
     "deleteMappingConfirm": "Are you sure you want to delete this mapping?",
     "mappingUpdatedSuccess": "Mapping successfully updated",

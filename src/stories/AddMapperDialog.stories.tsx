@@ -28,11 +28,10 @@ const Template: Story<AddMapperDialogProps> = (args) => {
 export const BuildInDialog = Template.bind({});
 BuildInDialog.args = {
   protocol: "openid-connect",
-  buildIn: true,
+  filter: [],
 };
 
 export const ProtocolMapperDialog = Template.bind({});
 ProtocolMapperDialog.args = {
   protocol: "openid-connect",
-  buildIn: false,
 };
