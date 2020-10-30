@@ -57,9 +57,9 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
     clientScope.protocol!
   ];
 
-  const [toggleBuildInMapperDialog, BuildInMapperDialog] = useAddMapperDialog({
+  const [toggleBuiltInMapperDialog, BuiltInMapperDialog] = useAddMapperDialog({
     protocol: clientScope.protocol!,
-    filter: mapperList as ServerInfoProtocolMapper[],
+    filter: (mapperList as ServerInfoProtocolMapper[]) || [],
     onConfirm: async (mappers) => {
       try {
         await httpClient.doPost(
@@ -77,12 +77,12 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
   if (!mapperList) {
     return (
       <>
-        <BuildInMapperDialog />
+        <BuiltInMapperDialog />
         <ListEmptyState
           message={t("emptyMappers")}
           instructions={t("emptyMappersInstructions")}
           primaryActionText={t("emptyPrimaryAction")}
-          onPrimaryAction={toggleBuildInMapperDialog}
+          onPrimaryAction={toggleBuiltInMapperDialog}
           secondaryActions={[
             {
               text: t("emptySecondaryAction"),
@@ -146,7 +146,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
           }
           isOpen={mapperAction}
           dropdownItems={[
-            <DropdownItem key="predefined" onClick={toggleBuildInMapperDialog}>
+            <DropdownItem key="predefined" onClick={toggleBuiltInMapperDialog}>
               {t("fromPredefinedMapper")}
             </DropdownItem>,
             <DropdownItem key="byConfiguration">
@@ -156,7 +156,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
         />
       }
     >
-      <BuildInMapperDialog />
+      <BuiltInMapperDialog />
       <Table
         variant={TableVariant.compact}
         cells={[t("name"), t("category"), t("type"), t("priority")]}

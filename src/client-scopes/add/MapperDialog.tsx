@@ -63,12 +63,12 @@ export const AddMapperDialog = ({
 }: AddMapperDialogModalProps) => {
   const serverInfo = useServerInfo();
   const protocolMappers = serverInfo.protocolMapperTypes[protocol];
-  const buildInMappers = serverInfo.builtinProtocolMappers[protocol];
+  const builtInMappers = serverInfo.builtinProtocolMappers[protocol];
   const { t } = useTranslation("client-scopes");
 
   const nameFilter = (filter || []).map((f) => f.name);
   const [rows, setRows] = useState(
-    buildInMappers
+    builtInMappers
       .filter((map) => !nameFilter.includes(map.name))
       .map((mapper) => {
         const mapperType = protocolMappers.filter(
@@ -81,9 +81,11 @@ export const AddMapperDialog = ({
         };
       })
   );
+  const [demo, setDemo] = useState("demo");
 
   return (
     <Modal
+      key="hello"
       variant={ModalVariant.medium}
       title={t("chooseAMapperType")}
       isOpen={open}
@@ -112,6 +114,9 @@ export const AddMapperDialog = ({
                 }}
               >
                 {t("common:cancel")}
+              </Button>,
+              <Button key="demo" onClick={() => setDemo("bla")}>
+                {demo}
               </Button>,
             ]
           : []
@@ -165,7 +170,7 @@ export const AddMapperDialog = ({
           aria-label={t("chooseAMapperType")}
         >
           <TableHeader />
-          <TableBody />
+          <TableBody rowKey={(row: any) => row.rowData.item.name} />
         </Table>
       )}
     </Modal>
