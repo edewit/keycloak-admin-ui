@@ -156,7 +156,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
         />
       }
     >
-      <BuiltInMapperDialog />
+      {BuiltInMapperDialog()}
       <Table
         variant={TableVariant.compact}
         cells={[t("name"), t("category"), t("type"), t("priority")]}
