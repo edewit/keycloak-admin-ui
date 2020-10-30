@@ -8,8 +8,6 @@ import {
   SplitItem,
 } from "@patternfly/react-core";
 
-import { HelpItem } from "../../components/help-enabler/HelpItem";
-
 export type ClientSecretProps = {
   secret: string;
   toggle: () => void;
@@ -18,17 +16,7 @@ export type ClientSecretProps = {
 export const ClientSecret = ({ secret, toggle }: ClientSecretProps) => {
   const { t } = useTranslation("clients");
   return (
-    <FormGroup
-      label={t("clientSecret")}
-      fieldId="kc-client-secret"
-      labelIcon={
-        <HelpItem
-          helpText="clients-help:client-secret"
-          forLabel={t("clientSecret")}
-          forID="kc-client-secret"
-        />
-      }
-    >
+    <FormGroup label={t("clientSecret")} fieldId="kc-client-secret">
       <Split hasGutter>
         <SplitItem isFilled>
           <ClipboardCopy id="kc-client-secret" isReadOnly>

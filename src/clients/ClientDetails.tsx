@@ -72,7 +72,7 @@ export const ClientDetails = () => {
   const setupForm = (client: ClientRepresentation) => {
     form.reset(client);
     Object.entries(client).map((entry) => {
-      if (entry[0] === "redirectUris" && entry[1] && entry[1].length > 0) {
+      if (entry[0] === "redirectUris") {
         form.setValue(entry[0], convertToMultiline(entry[1]));
       } else if (entry[0] === "attributes") {
         convertToFormValues(entry[1], "attributes", form.setValue);

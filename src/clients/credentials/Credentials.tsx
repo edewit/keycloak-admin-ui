@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   ClipboardCopy,
   Divider,
   Form,
@@ -56,7 +55,6 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
   const clientAuthenticatorType = useWatch({
     control: form.control,
     name: "clientAuthenticatorType",
-    defaultValue: "",
   });
 
   const [providers, setProviders] = useState<ClientAuthenticatorProviders[]>(
@@ -144,7 +142,6 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
           >
             <Controller
               name="clientAuthenticatorType"
-              defaultValue=""
               control={form.control}
               render={({ onChange, value }) => (
                 <Select
@@ -187,7 +184,7 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
             </Button>
           </ActionGroup>
         </CardBody>
-        <CardFooter>
+        <CardBody>
           {(clientAuthenticatorType === "client-secret" ||
             clientAuthenticatorType === "client-secret-jwt") && (
             <>
@@ -198,7 +195,7 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
               />
             </>
           )}
-        </CardFooter>
+        </CardBody>
       </Card>
       <Card isFlat>
         <CardBody>

@@ -54,7 +54,7 @@
     "confirmClientSecretTitle": "Regenerate secret for this client?",
     "confirmClientSecretBody": "If you regenerate secret, the Keycloak database will be updated and you will need to download a new adapter for this client.",
     "confirmAccessTokenTitle": "Regenerate registration access token?",
-    "confirmAccessTokenBody": "If you regenerate reiteration access token, the access data regarding the client registration service will be updated.",
+    "confirmAccessTokenBody": "If you regenerate registration access token, the access data regarding the client registration service will be updated.",
     "clientSecretSuccess": "Client secret regenerated",
     "clientSecretError": "Could not regenerate client secret due to: {{error}}",
     "registrationAccessToken": "Registration access token",
