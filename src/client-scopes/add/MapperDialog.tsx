@@ -81,11 +81,9 @@ export const AddMapperDialog = ({
         };
       })
   );
-  const [demo, setDemo] = useState("demo");
 
   return (
     <Modal
-      key="hello"
       variant={ModalVariant.medium}
       title={t("chooseAMapperType")}
       isOpen={open}
@@ -114,9 +112,6 @@ export const AddMapperDialog = ({
                 }}
               >
                 {t("common:cancel")}
-              </Button>,
-              <Button key="demo" onClick={() => setDemo("bla")}>
-                {demo}
               </Button>,
             ]
           : []

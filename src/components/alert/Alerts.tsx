@@ -1,4 +1,10 @@
-import React, { useState, createContext, ReactNode, useContext } from "react";
+import React, {
+  useState,
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+} from "react";
 import { AlertType, AlertPanel } from "./AlertPanel";
 import { AlertVariant } from "@patternfly/react-core";
 
@@ -14,6 +20,14 @@ export const useAlerts = () => useContext(AlertContext);
 
 export const AlertProvider = ({ children }: { children: ReactNode }) => {
   const [alerts, setAlerts] = useState<AlertType[]>([]);
+
+  useEffect(() => {
+    const timer = alerts.map((alert) =>
+      setTimeout(() => hideAlert(alert.key), 8000)
+    );
+    return () => timer.forEach((time) => clearTimeout(time));
+  }, [alerts]);
+
   const createId = () => new Date().getTime();
 
   const hideAlert = (key: number) => {
@@ -24,9 +38,7 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
     message: string,
     variant: AlertVariant = AlertVariant.default
   ) => {
-    const key = createId();
-    setAlerts([...alerts, { key, message, variant }]);
-    setTimeout(() => hideAlert(key), 8000);
+    setAlerts([...alerts, { key: createId(), message, variant }]);
   };
 
   return (
