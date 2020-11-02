@@ -156,7 +156,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
         />
       }
     >
-      {BuiltInMapperDialog()}
+      <BuiltInMapperDialog />
       <Table
         variant={TableVariant.compact}
         cells={[t("name"), t("category"), t("type"), t("priority")]}
@@ -172,7 +172,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
                 await httpClient.doDelete(
                   `/admin/realms/${realm}/client-scopes/${clientScope.id}/protocol-mappers/models/${data[rowId].mapper.id}`
                 );
-                mapperList.splice(rowId, 1);
+                refresh();
                 addAlert(t("mappingDeletedSuccess"), AlertVariant.success);
               } catch (error) {
                 addAlert(
