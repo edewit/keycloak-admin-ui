@@ -7,22 +7,27 @@ import { ServerInfoContext } from "../../../context/server-info/ServerInfoProvid
 import { AddMapperDialogProps, useAddMapperDialog } from "../MapperDialog";
 
 describe("<MapperDialog/>", () => {
+  const Wrapper = (args: AddMapperDialogProps) => (
+    <ServerInfoContext.Provider value={serverInfo}>
+      <Test {...args} />
+    </ServerInfoContext.Provider>
+  );
   const Test = (args: AddMapperDialogProps) => {
     const [toggle, Dialog] = useAddMapperDialog(args);
     return (
-      <ServerInfoContext.Provider value={serverInfo}>
+      <>
         <Dialog />
         <Button id="open" onClick={toggle}>
           Show
         </Button>
-      </ServerInfoContext.Provider>
+      </>
     );
   };
 
   it("should return empty array when selecting nothing", () => {
     const onConfirm = jest.fn();
     const container = mount(
-      <Test filter={[]} protocol="openid-connect" onConfirm={onConfirm} />
+      <Wrapper filter={[]} protocol="openid-connect" onConfirm={onConfirm} />
     );
 
     container.find("button#open").simulate("click");
@@ -36,7 +41,7 @@ describe("<MapperDialog/>", () => {
     const onConfirm = jest.fn();
     const protocol = "openid-connect";
     const container = mount(
-      <Test filter={[]} protocol={protocol} onConfirm={onConfirm} />
+      <Wrapper filter={[]} protocol={protocol} onConfirm={onConfirm} />
     );
 
     container.find("button#open").simulate("click");
@@ -57,7 +62,9 @@ describe("<MapperDialog/>", () => {
   it("should return selected protocol mapping type on click", () => {
     const onConfirm = jest.fn();
     const protocol = "openid-connect";
-    const container = mount(<Test protocol={protocol} onConfirm={onConfirm} />);
+    const container = mount(
+      <Wrapper protocol={protocol} onConfirm={onConfirm} />
+    );
 
     container.find("button#open").simulate("click");
     expect(container).toMatchSnapshot();

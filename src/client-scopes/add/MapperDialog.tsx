@@ -114,7 +114,7 @@ export const useAddMapperDialog = (
         toggleDialog,
         rows,
         setRows,
-        isBuiltIn: !!filter,
+        isBuiltIn: !!props.filter,
         ...props,
       }),
   ];

@@ -15,12 +15,20 @@ export default {
   component: AddMapperDialog,
 } as Meta;
 
-const Template: Story<AddMapperDialogProps> = (args) => {
+const Test = (args: AddMapperDialogProps) => {
   const [toggle, Dialog] = useAddMapperDialog(args);
   return (
-    <ServerInfoContext.Provider value={serverInfo}>
+    <>
       <Dialog />
       <Button onClick={toggle}>Show</Button>
+    </>
+  );
+};
+
+const Template: Story<AddMapperDialogProps> = (args) => {
+  return (
+    <ServerInfoContext.Provider value={serverInfo}>
+      <Test {...args} />
     </ServerInfoContext.Provider>
   );
 };
