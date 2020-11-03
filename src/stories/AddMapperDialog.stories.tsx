@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@patternfly/react-core";
 import { Meta, Story } from "@storybook/react";
 
@@ -7,7 +7,6 @@ import { ServerInfoContext } from "../context/server-info/ServerInfoProvider";
 import {
   AddMapperDialog,
   AddMapperDialogProps,
-  useAddMapperDialog,
 } from "../client-scopes/add/MapperDialog";
 
 export default {
@@ -15,20 +14,16 @@ export default {
   component: AddMapperDialog,
 } as Meta;
 
-const Test = (args: AddMapperDialogProps) => {
-  const [toggle, Dialog] = useAddMapperDialog(args);
-  return (
-    <>
-      <Dialog />
-      <Button onClick={toggle}>Show</Button>
-    </>
-  );
-};
-
 const Template: Story<AddMapperDialogProps> = (args) => {
+  const [open, setOpen] = useState(false);
   return (
     <ServerInfoContext.Provider value={serverInfo}>
-      <Test {...args} />
+      <AddMapperDialog
+        {...args}
+        open={open}
+        toggleDialog={() => setOpen(!open)}
+      />
+      <Button onClick={() => setOpen(true)}>Show</Button>
     </ServerInfoContext.Provider>
   );
 };

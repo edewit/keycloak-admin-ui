@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -27,7 +27,7 @@ import {
 } from "../../context/server-info/server-info";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 
-export type AddMapperDialogProps = {
+export type AddMapperDialogModalProps = {
   protocol: string;
   filter?: ProtocolMapperRepresentation[];
   onConfirm: (
@@ -35,48 +35,13 @@ export type AddMapperDialogProps = {
   ) => void;
 };
 
-type AddMapperDialogModalProps = AddMapperDialogProps & {
+export type AddMapperDialogProps = AddMapperDialogModalProps & {
   open: boolean;
   toggleDialog: () => void;
-  isBuiltIn: boolean;
-  rows: {
-    item: ProtocolMapperRepresentation;
-    selected: boolean;
-    cells: string[];
-  }[];
-  setRows: React.Dispatch<
-    React.SetStateAction<
-      {
-        item: ProtocolMapperRepresentation;
-        selected: boolean;
-        cells: string[];
-      }[]
-    >
-  >;
 };
 
-const Dialog = ({
-  open,
-  toggleDialog,
-  rows,
-  setRows,
-  ...props
-}: AddMapperDialogModalProps) => {
-  return (
-    <AddMapperDialog
-      {...props}
-      open={open}
-      toggleDialog={toggleDialog}
-      rows={rows}
-      setRows={setRows}
-    />
-  );
-};
-
-export const useAddMapperDialog = (
-  props: AddMapperDialogProps
-): [() => void, () => ReactElement] => {
-  const [show, setShow] = useState(false);
+export const AddMapperDialog = (props: AddMapperDialogProps) => {
+  const { t } = useTranslation("client-scopes");
 
   const serverInfo = useServerInfo();
   const protocol = props.protocol;
@@ -102,43 +67,13 @@ export const useAddMapperDialog = (
     setRows([...allRows.filter((row) => !nameFilter.includes(row.item.name))]);
   }
 
-  function toggleDialog() {
-    setShow((show) => !show);
-  }
-
-  return [
-    toggleDialog,
-    () =>
-      Dialog({
-        open: show,
-        toggleDialog,
-        rows,
-        setRows,
-        isBuiltIn: !!props.filter,
-        ...props,
-      }),
-  ];
-};
-
-export const AddMapperDialog = ({
-  protocol,
-  rows,
-  setRows,
-  isBuiltIn,
-  open,
-  toggleDialog,
-  onConfirm,
-}: AddMapperDialogModalProps) => {
-  const serverInfo = useServerInfo();
-  const protocolMappers = serverInfo.protocolMapperTypes[protocol];
-  const { t } = useTranslation("client-scopes");
+  const isBuiltIn = !!props.filter;
 
   return (
     <Modal
       variant={ModalVariant.medium}
       title={t("chooseAMapperType")}
-      isOpen={open}
-      onClose={toggleDialog}
+      isOpen={props.open}
       actions={
         isBuiltIn
           ? [
@@ -147,10 +82,10 @@ export const AddMapperDialog = ({
                 key="confirm"
                 isDisabled={rows.length === 0}
                 onClick={() => {
-                  onConfirm(
+                  props.onConfirm(
                     rows.filter((row) => row.selected).map((row) => row.item)
                   );
-                  toggleDialog();
+                  props.toggleDialog();
                 }}
               >
                 {t("common:add")}
@@ -160,7 +95,7 @@ export const AddMapperDialog = ({
                 key="cancel"
                 variant={ButtonVariant.secondary}
                 onClick={() => {
-                  toggleDialog();
+                  props.toggleDialog();
                 }}
               >
                 {t("common:cancel")}
@@ -176,8 +111,8 @@ export const AddMapperDialog = ({
         <DataList
           onSelectDataListItem={(id) => {
             const mapper = protocolMappers.find((mapper) => mapper.id === id);
-            onConfirm(mapper!);
-            toggleDialog();
+            props.onConfirm(mapper!);
+            props.toggleDialog();
           }}
           aria-label={t("chooseAMapperType")}
           isCompact
@@ -217,7 +152,7 @@ export const AddMapperDialog = ({
           aria-label={t("chooseAMapperType")}
         >
           <TableHeader />
-          <TableBody rowKey={(row: any) => row.rowData.item.name} />
+          <TableBody />
         </Table>
       )}
       {isBuiltIn && rows.length === 0 && (

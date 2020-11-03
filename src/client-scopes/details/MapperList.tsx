@@ -17,7 +17,10 @@ import {
 import { CaretDownIcon } from "@patternfly/react-icons";
 
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
-import { ProtocolMapperRepresentation as ServerInfoProtocolMapper } from "../../context/server-info/server-info";
+import {
+  ProtocolMapperRepresentation as ServerInfoProtocolMapper,
+  ProtocolMapperTypeRepresentation,
+} from "../../context/server-info/server-info";
 
 import {
   ClientScopeRepresentation,
@@ -28,7 +31,7 @@ import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState
 import { HttpClientContext } from "../../context/http-service/HttpClientContext";
 import { RealmContext } from "../../context/realm-context/RealmContext";
 import { useAlerts } from "../../components/alert/Alerts";
-import { useAddMapperDialog } from "../add/MapperDialog";
+import { AddMapperDialog } from "../add/MapperDialog";
 
 type MapperListProps = {
   clientScope: ClientScopeRepresentation;
@@ -57,27 +60,34 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
     clientScope.protocol!
   ];
 
-  const [toggleBuiltInMapperDialog, BuiltInMapperDialog] = useAddMapperDialog({
-    protocol: clientScope.protocol!,
-    filter: (mapperList as ServerInfoProtocolMapper[]) || [],
-    onConfirm: async (mappers) => {
-      try {
-        await httpClient.doPost(
-          `/admin/realms/${realm}/client-scopes/${clientScope.id}/protocol-mappers/add-models`,
-          mappers
-        );
-        refresh();
-        addAlert(t("mappingCreatedSuccess"), AlertVariant.success);
-      } catch (error) {
-        addAlert(t("mappingCreatedError", { error }), AlertVariant.danger);
-      }
-    },
-  });
+  const [builtInDialogOpen, setBuiltInDialogOpen] = useState(false);
+  const toggleBuiltInMapperDialog = () =>
+    setBuiltInDialogOpen(!builtInDialogOpen);
+  const addMappers = async (
+    mappers: ProtocolMapperTypeRepresentation | ProtocolMapperRepresentation[]
+  ) => {
+    try {
+      await httpClient.doPost(
+        `/admin/realms/${realm}/client-scopes/${clientScope.id}/protocol-mappers/add-models`,
+        mappers
+      );
+      refresh();
+      addAlert(t("mappingCreatedSuccess"), AlertVariant.success);
+    } catch (error) {
+      addAlert(t("mappingCreatedError", { error }), AlertVariant.danger);
+    }
+  };
 
   if (!mapperList) {
     return (
       <>
-        <BuiltInMapperDialog />
+        <AddMapperDialog
+          protocol={clientScope.protocol!}
+          filter={(mapperList as ServerInfoProtocolMapper[]) || []}
+          onConfirm={addMappers}
+          open={builtInDialogOpen}
+          toggleDialog={toggleBuiltInMapperDialog}
+        />
         <ListEmptyState
           message={t("emptyMappers")}
           instructions={t("emptyMappersInstructions")}
@@ -156,7 +166,13 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
         />
       }
     >
-      <BuiltInMapperDialog />
+      <AddMapperDialog
+        protocol={clientScope.protocol!}
+        filter={(mapperList as ServerInfoProtocolMapper[]) || []}
+        onConfirm={addMappers}
+        open={builtInDialogOpen}
+        toggleDialog={toggleBuiltInMapperDialog}
+      />
       <Table
         variant={TableVariant.compact}
         cells={[t("name"), t("category"), t("type"), t("priority")]}
