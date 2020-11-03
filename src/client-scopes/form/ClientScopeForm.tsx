@@ -15,6 +15,7 @@ import {
   Tabs,
   TabTitleText,
   TextInput,
+  ValidatedOptions,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { Controller, useForm } from "react-hook-form";
@@ -123,7 +124,11 @@ export const ClientScopeForm = () => {
                 }
                 fieldId="kc-name"
                 isRequired
-                validated={errors.name ? "error" : "default"}
+                validated={
+                  errors.name
+                    ? ValidatedOptions.error
+                    : ValidatedOptions.default
+                }
                 helperTextInvalid={t("common:required")}
               >
                 <TextInput
@@ -131,6 +136,11 @@ export const ClientScopeForm = () => {
                   type="text"
                   id="kc-name"
                   name="name"
+                  validated={
+                    errors.name
+                      ? ValidatedOptions.error
+                      : ValidatedOptions.default
+                  }
                 />
               </FormGroup>
               <FormGroup
