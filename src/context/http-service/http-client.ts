@@ -31,6 +31,10 @@ export class HttpClient {
     endpoint: string,
     config?: RequestInitWithParams
   ): Promise<HttpResponse<T>> {
+    const cache = localStorage.getItem(endpoint);
+    if (cache) {
+      return Promise.resolve(JSON.parse(cache));
+    }
     return this.doRequest(endpoint, { ...config, method: "get" });
   }
 
