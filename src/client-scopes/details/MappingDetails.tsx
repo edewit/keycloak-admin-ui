@@ -18,6 +18,7 @@ import {
   SelectVariant,
   Switch,
   TextInput,
+  ValidatedOptions,
 } from "@patternfly/react-core";
 import { ConfigPropertyRepresentation } from "keycloak-admin/lib/defs/configPropertyRepresentation";
 
@@ -31,43 +32,53 @@ import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
 import { convertFormValuesToObject, convertToFormValues } from "../../util";
 
+type Params = {
+  scopeId: string;
+  id: string;
+  mappingId: string;
+  protocol: string;
+};
+
 export const MappingDetails = () => {
   const { t } = useTranslation("client-scopes");
   const adminClient = useAdminClient();
   const { addAlert } = useAlerts();
 
-  const { scopeId, id } = useParams<{ scopeId: string; id: string }>();
-  const { register, setValue, control, handleSubmit } = useForm();
+  const { scopeId, id, mappingId, protocol } = useParams<Params>();
+  const { register, errors, setValue, control, handleSubmit } = useForm();
   const [mapping, setMapping] = useState<ProtocolMapperRepresentation>();
   const [typeOpen, setTypeOpen] = useState(false);
   const [configProperties, setConfigProperties] = useState<
     ConfigPropertyRepresentation[]
   >();
 
-  const serverInfo = useServerInfo();
   const history = useHistory();
+  const serverInfo = useServerInfo();
+  const url = `/admin/realms/${realm}/client-scopes/${scopeId}/protocol-mappers/models${
+    id || ""
+  }`;
 
   useEffect(() => {
-    (async () => {
+    if (id) {
+      (async () => {
       const data = await adminClient.clientScopes.findProtocolMapper({
         id: scopeId,
         mapperId: id,
       });
       if (data) {
         Object.entries(data).map((entry) => {
-          if (entry[0] === "config") {
-            convertToFormValues(entry[1], "config", setValue);
-          }
-          setValue(entry[0], entry[1]);
-        });
-      }
+          convertToFormValues(entry[1], "config", setValue);
+        }
       setMapping(data);
       const mapperTypes = serverInfo.protocolMapperTypes![data!.protocol!];
-      const properties = mapperTypes.find(
+        const properties = mapperTypes.find(
         (type) => type.id === data.protocolMapper
       )?.properties!;
-      setConfigProperties(properties);
-    })();
+        setConfigProperties(properties);
+      })();
+    } else {
+      setMapping({ protocol: protocol, protocolMapper: mappingId });
+    }
   }, []);
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
@@ -92,14 +103,15 @@ export const MappingDetails = () => {
   const save = async (formMapping: ProtocolMapperRepresentation) => {
     const config = convertFormValuesToObject(formMapping.config);
     const map = { ...mapping, config };
+    const key = id ? "Updated" : "Created";
     try {
       await adminClient.clientScopes.updateProtocolMapper(
         { id: scopeId, mapperId: id },
         map
       );
-      addAlert(t("mappingUpdatedSuccess"), AlertVariant.success);
+      addAlert(t(`mapping${key}Success`), AlertVariant.success);
     } catch (error) {
-      addAlert(t("mappingUpdatedError", { error }), AlertVariant.danger);
+      addAlert(t(`mapping${key}Error`, { error }), AlertVariant.danger);
     }
   };
 
@@ -107,21 +119,55 @@ export const MappingDetails = () => {
     <>
       <DeleteConfirm />
       <ViewHeader
-        titleKey={mapping ? mapping.name! : ""}
+        titleKey={mapping ? mapping.name! : t("addMapper")}
         subKey={id}
         badge={mapping?.protocol}
-        dropdownItems={[
-          <DropdownItem
-            key="delete"
-            value="delete"
-            onClick={toggleDeleteDialog}
-          >
-            {t("common:delete")}
-          </DropdownItem>,
-        ]}
+        dropdownItems={
+          id
+            ? [
+                <DropdownItem
+                  key="delete"
+                  value="delete"
+                  onClick={toggleDeleteDialog}
+                >
+                  {t("common:delete")}
+                </DropdownItem>,
+              ]
+            : undefined
+        }
       />
       <PageSection variant="light">
         <Form isHorizontal onSubmit={handleSubmit(save)}>
+          {!id && (
+            <FormGroup
+              label={t("name")}
+              labelIcon={
+                <HelpItem
+                  helpText="client-scopes-help:mapperName"
+                  forLabel={t("name")}
+                  forID="name"
+                />
+              }
+              fieldId="name"
+              isRequired
+              validated={
+                errors.name ? ValidatedOptions.error : ValidatedOptions.default
+              }
+              helperTextInvalid={t("common:required")}
+            >
+              <TextInput
+                ref={register({ required: true })}
+                type="text"
+                id="name"
+                name="name"
+                validated={
+                  errors.name
+                    ? ValidatedOptions.error
+                    : ValidatedOptions.default
+                }
+              />
+            </FormGroup>
+          )}
           <FormGroup
             label={t("realmRolePrefix")}
             labelIcon={
