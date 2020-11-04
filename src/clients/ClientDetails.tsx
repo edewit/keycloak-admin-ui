@@ -29,6 +29,7 @@ import {
   convertToMultiline,
   toValue,
 } from "../components/multi-line-input/MultiLineInput";
+import { ClientScopes } from "./scopes/ClientScopes";
 
 export const ClientDetails = () => {
   const { t } = useTranslation("clients");
@@ -189,6 +190,12 @@ export const ClientDetails = () => {
               <Credentials clientId={id} form={form} save={save} />
             </Tab>
           )}
+          <Tab
+            eventKey={2}
+            title={<TabTitleText>{t("clientScopes")}</TabTitleText>}
+          >
+            <ClientScopes clientId={id} />
+          </Tab>
         </Tabs>
       </PageSection>
     </>
