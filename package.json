@@ -4,14 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "snowpack build --polyfill-node",
+    "build": "snowpack build",
     "build-storybook": "build-storybook -s public",
     "check-types": "tsc -p ./",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "format-check": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint ./src/**/*.ts*",
     "postinstall": "grunt",
-    "start": "snowpack dev --polyfill-node",
+    "start": "snowpack dev",
     "storybook": "start-storybook -p 6006 -s public",
     "test": "jest"
   },
