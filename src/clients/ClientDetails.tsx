@@ -30,6 +30,7 @@ import {
   toValue,
 } from "../components/multi-line-input/MultiLineInput";
 import { ClientScopes } from "./scopes/ClientScopes";
+import { EvaluateScopes } from "./scopes/EvaluateScopes";
 
 export const ClientDetails = () => {
   const { t } = useTranslation("clients");
@@ -45,6 +46,7 @@ export const ClientDetails = () => {
   const { id } = useParams<{ id: string }>();
 
   const [activeTab, setActiveTab] = useState(0);
+  const [activeTab2, setActiveTab2] = useState(30);
   const [name, setName] = useState("");
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
@@ -194,7 +196,24 @@ export const ClientDetails = () => {
             eventKey={2}
             title={<TabTitleText>{t("clientScopes")}</TabTitleText>}
           >
-            <ClientScopes clientId={id} />
+            <Tabs
+              activeKey={activeTab2}
+              isSecondary
+              onSelect={(_, key) => setActiveTab2(key as number)}
+            >
+              <Tab
+                eventKey={30}
+                title={<TabTitleText>{t("setup")}</TabTitleText>}
+              >
+                <ClientScopes clientId={id} />
+              </Tab>
+              <Tab
+                eventKey={31}
+                title={<TabTitleText>{t("evaluate")}</TabTitleText>}
+              >
+                <EvaluateScopes />
+              </Tab>
+            </Tabs>
           </Tab>
         </Tabs>
       </PageSection>
