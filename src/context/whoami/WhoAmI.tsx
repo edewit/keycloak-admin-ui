@@ -3,7 +3,9 @@ import i18n from "../../i18n";
 
 import { DataLoader } from "../../components/data-loader/DataLoader";
 import { useAdminClient } from "../auth/AdminClient";
-import WhoAmIRepresentation from "keycloak-admin/lib/defs/whoAmIRepresentation";
+import WhoAmIRepresentation, {
+  AccessType,
+} from "keycloak-admin/lib/defs/whoAmIRepresentation";
 
 export class WhoAmI {
   constructor(

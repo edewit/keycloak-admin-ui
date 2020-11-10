@@ -16,6 +16,7 @@ import { routes } from "./route-config";
 
 export const PageNav: React.FunctionComponent = () => {
   const { t } = useTranslation("common");
+  const { hasAccess, hasSomeAccess } = useAccess();
   const adminClient = useAdminClient();
   const realmLoader = async () => {
     return await adminClient.realms.find();

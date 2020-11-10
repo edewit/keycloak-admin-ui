@@ -5,7 +5,7 @@ import { GroupsCreateModal } from "./GroupsCreateModal";
 import { TableToolbar } from "../components/table-toolbar/TableToolbar";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
-import { RealmContext } from "../context/realm-context/RealmContext";
+import { useAdminClient } from "../context/auth/AdminClient";
 import { useAlerts } from "../components/alert/Alerts";
 import {
   Button,
@@ -38,11 +38,11 @@ export const GroupsSection = () => {
   const membersLength = "membersLength";
 
   const loader = async () => {
-      const groupsData = await adminClient.groups.find();
+    const groupsData = await adminClient.groups.find();
 
-      const getMembers = async (id: string) => {
-        const response = await adminClient.groups.listMembers({ id });
-        return response.length;
+    const getMembers = async (id: string) => {
+      const response = await adminClient.groups.listMembers({ id });
+      return response.length;
     };
 
     const memberPromises = groupsData.map((group: { [key: string]: any }) =>
@@ -90,11 +90,9 @@ export const GroupsSection = () => {
     if (tableRowSelectedArray.length !== 0) {
       const deleteGroup = async (rowId: number) => {
         try {
-          await httpClient.doDelete(
-            `/admin/realms/${realm}/groups/${
-              filteredData ? filteredData![rowId].id : rawData![rowId].id
-            }`
-          );
+          await adminClient.groups.del({
+            id: filteredData ? filteredData![rowId].id : rawData![rowId].id,
+          });
           loader();
         } catch (error) {
           addAlert(`${t("groupDeleteError")} ${error}`, AlertVariant.danger);

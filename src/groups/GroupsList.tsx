@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import { GroupRepresentation } from "./models/groups";
 import { UsersIcon } from "@patternfly/react-icons";
 import { useAdminClient } from "../context/auth/AdminClient";
-import { RealmContext } from "../context/realm-context/RealmContext";
 import { useAlerts } from "../components/alert/Alerts";
 
 export type GroupsListProps = {
@@ -35,7 +34,6 @@ export const GroupsList = ({
   const adminClient = useAdminClient();
   const columnGroupName: keyof GroupRepresentation = "name";
   const columnGroupNumber: keyof GroupRepresentation = "membersLength";
-  const { realm } = useContext(RealmContext);
   const { addAlert } = useAlerts();
   const [formattedData, setFormattedData] = useState<FormattedData[]>([]);
 

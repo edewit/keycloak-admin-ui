@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement } from "react";
+import React, { useState, useEffect, ReactElement, useContext } from "react";
 import {
   Alert,
   AlertVariant,
@@ -67,11 +67,12 @@ export const DownloadDialog = ({
   useEffect(() => {
     let isMounted = true;
     (async () => {
-      // const response = await httpClient.doGet<string>(
-      //   `admin/${realm}/master/clients/${id}/installation/providers/${selected}`
-      // );
+      const snippet = await adminClient.clients.getInstallationProviders({
+        id,
+        providerId: selected,
+      });
       if (isMounted) {
-        setSnippet(await response.text());
+        setSnippet(snippet);
       }
     })();
     return () => {

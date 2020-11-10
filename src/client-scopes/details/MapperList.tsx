@@ -15,15 +15,12 @@ import {
   TableVariant,
 } from "@patternfly/react-table";
 import { CaretDownIcon } from "@patternfly/react-icons";
+
 import ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
 import ProtocolMapperRepresentation from "keycloak-admin/lib/defs/protocolMapperRepresentation";
-
+import { ProtocolMapperTypeRepresentation } from "keycloak-admin/lib/defs/serverInfoRepesentation";
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
-  ProtocolMapperRepresentation as ServerInfoProtocolMapper,
-  ProtocolMapperTypeRepresentation,
-} from "../../context/server-info/server-info";
 
-import {
 import { TableToolbar } from "../../components/table-toolbar/TableToolbar";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 import { useAlerts } from "../../components/alert/Alerts";
@@ -63,9 +60,9 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
     mappers: ProtocolMapperTypeRepresentation | ProtocolMapperRepresentation[]
   ) => {
     try {
-      await httpClient.doPost(
-        `/admin/realms/${realm}/client-scopes/${clientScope.id}/protocol-mappers/add-models`,
-        mappers
+      await adminClient.clientScopes.addMultipleProtocolMappers(
+        { id: clientScope.id! },
+        mappers as ProtocolMapperRepresentation[]
       );
       refresh();
       addAlert(t("mappingCreatedSuccess"), AlertVariant.success);
@@ -79,7 +76,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
       <>
         <AddMapperDialog
           protocol={clientScope.protocol!}
-          filter={(mapperList as ServerInfoProtocolMapper[]) || []}
+          filter={mapperList || []}
           onConfirm={addMappers}
           open={builtInDialogOpen}
           toggleDialog={toggleBuiltInMapperDialog}
@@ -164,7 +161,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
     >
       <AddMapperDialog
         protocol={clientScope.protocol!}
-        filter={(mapperList as ServerInfoProtocolMapper[]) || []}
+        filter={mapperList || []}
         onConfirm={addMappers}
         open={builtInDialogOpen}
         toggleDialog={toggleBuiltInMapperDialog}
@@ -181,7 +178,10 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
             title: t("common:delete"),
             onClick: async (_, rowId) => {
               try {
-                await adminClient.clientScopes.delProtocolMapper({id: clientScope.id!, mapperId: data[rowId].mapper.id!});
+                await adminClient.clientScopes.delProtocolMapper({
+                  id: clientScope.id!,
+                  mapperId: data[rowId].mapper.id!,
+                });
                 refresh();
                 addAlert(t("mappingDeletedSuccess"), AlertVariant.success);
               } catch (error) {
