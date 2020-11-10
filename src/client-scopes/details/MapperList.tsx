@@ -58,7 +58,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
     setBuiltInDialogOpen(!builtInDialogOpen);
   const addMappers = async (
     mappers: ProtocolMapperTypeRepresentation | ProtocolMapperRepresentation[]
-  ) => {
+  ): Promise<void> => {
     try {
       await adminClient.clientScopes.addMultipleProtocolMappers(
         { id: clientScope.id! },

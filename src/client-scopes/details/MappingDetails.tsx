@@ -54,27 +54,26 @@ export const MappingDetails = () => {
 
   const history = useHistory();
   const serverInfo = useServerInfo();
-  const url = `/admin/realms/${realm}/client-scopes/${scopeId}/protocol-mappers/models${
-    id || ""
-  }`;
 
   useEffect(() => {
     if (id) {
       (async () => {
-      const data = await adminClient.clientScopes.findProtocolMapper({
-        id: scopeId,
-        mapperId: id,
-      });
-      if (data) {
-        Object.entries(data).map((entry) => {
-          convertToFormValues(entry[1], "config", setValue);
+        const data = await adminClient.clientScopes.findProtocolMapper({
+          id: scopeId,
+          mapperId: id,
+        });
+        if (data) {
+          Object.entries(data).map((entry) => {
+            convertToFormValues(entry[1], "config", setValue);
+          });
         }
-      setMapping(data);
-      const mapperTypes = serverInfo.protocolMapperTypes![data!.protocol!];
+        const mapperTypes = serverInfo.protocolMapperTypes![data!.protocol!];
         const properties = mapperTypes.find(
-        (type) => type.id === data.protocolMapper
-      )?.properties!;
+          (type) => type.id === data!.protocolMapper
+        )?.properties!;
         setConfigProperties(properties);
+
+        setMapping(data);
       })();
     } else {
       setMapping({ protocol: protocol, protocolMapper: mappingId });
@@ -102,13 +101,17 @@ export const MappingDetails = () => {
 
   const save = async (formMapping: ProtocolMapperRepresentation) => {
     const config = convertFormValuesToObject(formMapping.config);
-    const map = { ...mapping, config };
+    const map = { ...mapping, ...formMapping, config };
     const key = id ? "Updated" : "Created";
     try {
-      await adminClient.clientScopes.updateProtocolMapper(
-        { id: scopeId, mapperId: id },
-        map
-      );
+      if (id) {
+        await adminClient.clientScopes.updateProtocolMapper(
+          { id: scopeId, mapperId: id },
+          map
+        );
+      } else {
+        await adminClient.clientScopes.addProtocolMapper({ id: scopeId }, map);
+      }
       addAlert(t(`mapping${key}Success`), AlertVariant.success);
     } catch (error) {
       addAlert(t(`mapping${key}Error`, { error }), AlertVariant.danger);
