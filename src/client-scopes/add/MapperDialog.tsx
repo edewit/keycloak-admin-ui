@@ -43,8 +43,8 @@ export const AddMapperDialog = (props: AddMapperDialogProps) => {
 
   const serverInfo = useServerInfo();
   const protocol = props.protocol;
-  const protocolMappers = serverInfo.protocolMapperTypes[protocol];
-  const builtInMappers = serverInfo.builtinProtocolMappers[protocol];
+  const protocolMappers = serverInfo.protocolMapperTypes![protocol];
+  const builtInMappers = serverInfo.builtinProtocolMappers![protocol];
   const [filter, setFilter] = useState<ProtocolMapperRepresentation[]>([]);
 
   const allRows = builtInMappers.map((mapper) => {

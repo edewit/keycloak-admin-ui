@@ -12,7 +12,7 @@ export const ServerInfoContext = createContext<ServerInfoRepresentation>(
 export const useServerInfo = () => useContext(ServerInfoContext);
 
 export const useLoginProviders = () => {
-  return sortProviders(useServerInfo().providers["login-protocol"].providers);
+  return sortProviders(useServerInfo().providers!["login-protocol"].providers);
 };
 
 export const ServerInfoProvider = ({ children }: { children: ReactNode }) => {

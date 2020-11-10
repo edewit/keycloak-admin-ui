@@ -105,7 +105,7 @@ export const GroupsList = ({
         rowId: number
       ) => {
         try {
-          await adminClient.groups.del({ id: list![rowId].id });
+          await adminClient.groups.del({ id: list![rowId].id! });
           refresh();
           setTableRowSelectedArray([]);
           addAlert(t("Group deleted"), AlertVariant.success);

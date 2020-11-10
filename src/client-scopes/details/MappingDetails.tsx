@@ -19,6 +19,7 @@ import {
   Switch,
   TextInput,
 } from "@patternfly/react-core";
+import { ConfigPropertyRepresentation } from "keycloak-admin/lib/defs/configPropertyRepresentation";
 
 import { ViewHeader } from "../../components/view-header/ViewHeader";
 import { useAdminClient } from "../../context/auth/AdminClient";
@@ -28,7 +29,6 @@ import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog"
 import { useAlerts } from "../../components/alert/Alerts";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
-import { ConfigPropertyRepresentation } from "../../context/server-info/server-info";
 import { convertFormValuesToObject, convertToFormValues } from "../../util";
 
 export const MappingDetails = () => {
@@ -62,10 +62,10 @@ export const MappingDetails = () => {
         });
       }
       setMapping(data);
-      const mapperTypes = serverInfo.protocolMapperTypes[data!.protocol!];
+      const mapperTypes = serverInfo.protocolMapperTypes![data!.protocol!];
       const properties = mapperTypes.find(
         (type) => type.id === response.data!.protocolMapper
-      )?.properties;
+      )?.properties!;
       setConfigProperties(properties);
     })();
   }, []);
@@ -214,8 +214,8 @@ export const MappingDetails = () => {
                 >
                   {configProperties &&
                     configProperties
-                      .find((property) => property.name === "jsonType.label")
-                      ?.options.map((option) => (
+                      .find((property) => property.name! === "jsonType.label")
+                      ?.options!.map((option) => (
                         <SelectOption
                           selected={option === value}
                           key={option}

@@ -57,7 +57,7 @@ export const DownloadDialog = ({
   const { enabled } = useContext(HelpContext);
   const serverInfo = useServerInfo();
 
-  const configFormats = serverInfo.clientInstallations[protocol];
+  const configFormats = serverInfo.clientInstallations![protocol];
   const [selected, setSelected] = useState(
     configFormats[configFormats.length - 1].id
   );
@@ -72,7 +72,11 @@ export const DownloadDialog = ({
         providerId: selected,
       });
       if (isMounted) {
-        setSnippet(snippet);
+        if (typeof snippet === "string") {
+          setSnippet(snippet);
+        } else {
+          setSnippet(JSON.stringify(snippet, undefined, 3));
+        }
       }
     })();
     return () => {

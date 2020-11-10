@@ -14,6 +14,7 @@ import {
   Split,
   SplitItem,
 } from "@patternfly/react-core";
+import CredentialRepresentation from "keycloak-admin/lib/defs/credentialRepresentation";
 import React, { useEffect, useState } from "react";
 import { Controller, UseFormMethods, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -90,7 +91,7 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
   }
 
   const regenerateClientSecret = async () => {
-    const secret = await regenerate<Secret>(
+    const secret = await regenerate<CredentialRepresentation>(
       (clientId) =>
         adminClient.clients.generateNewClientSecret({ id: clientId }),
       "clientSecret"
