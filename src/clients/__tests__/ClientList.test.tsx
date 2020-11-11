@@ -1,6 +1,6 @@
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { mount } from "enzyme";
+import { render } from "@testing-library/react";
 import KeycloakAdminClient from "keycloak-admin";
 
 import clientMock from "./mock-clients.json";
@@ -8,7 +8,7 @@ import { ClientList } from "../ClientList";
 import { AdminClient } from "../../context/auth/AdminClient";
 
 test("renders ClientList", () => {
-  const container = mount(
+  const container = render(
     <MemoryRouter>
       <AdminClient.Provider
         value={

@@ -16,7 +16,6 @@ import { ClientDescription } from "./ClientDescription";
 import { CapabilityConfig } from "./add/CapabilityConfig";
 import { MultiLineInput } from "../components/multi-line-input/MultiLineInput";
 import { FormAccess } from "../components/form-access/FormAccess";
-import { useAdminClient } from "../context/auth/AdminClient";
 
 type ClientSettingsProps = {
   form: UseFormMethods;
