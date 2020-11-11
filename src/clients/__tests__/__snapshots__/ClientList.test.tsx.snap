@@ -12,7 +12,7 @@ exports[`renders ClientList 1`] = `
         "entries": Array [
           Object {
             "hash": "",
-            "key": "wmvjzq",
+            "key": "r5gbun",
             "pathname": "/",
             "search": "",
             "state": undefined,
@@ -26,7 +26,7 @@ exports[`renders ClientList 1`] = `
         "listen": [Function],
         "location": Object {
           "hash": "",
-          "key": "wmvjzq",
+          "key": "r5gbun",
           "pathname": "/",
           "search": "",
           "state": undefined,

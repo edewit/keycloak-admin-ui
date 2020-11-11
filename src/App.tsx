@@ -17,13 +17,13 @@ import { ForbiddenSection } from "./ForbiddenSection";
 
 const AppContexts = ({ children }: { children: ReactNode }) => (
   <WhoAmIContextProvider>
-      <AccessContextProvider>
-        <Help>
-          <AlertProvider>
-            <ServerInfoProvider>{children}</ServerInfoProvider>
-          </AlertProvider>
-        </Help>
-      </AccessContextProvider>
+    <AccessContextProvider>
+      <Help>
+        <AlertProvider>
+          <ServerInfoProvider>{children}</ServerInfoProvider>
+        </AlertProvider>
+      </Help>
+    </AccessContextProvider>
   </WhoAmIContextProvider>
 );
 

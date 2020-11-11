@@ -64,7 +64,7 @@ export const MappingDetails = () => {
       setMapping(data);
       const mapperTypes = serverInfo.protocolMapperTypes![data!.protocol!];
       const properties = mapperTypes.find(
-        (type) => type.id === response.data!.protocolMapper
+        (type) => type.id === data.protocolMapper
       )?.properties!;
       setConfigProperties(properties);
     })();

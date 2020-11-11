@@ -25,7 +25,7 @@ export const ClientsSection = () => {
       params.clientId = search;
       params.search = "true";
     }
-    const result = await adminClient.clients.find({...params});
+    const result = await adminClient.clients.find({ ...params });
     setClients(result);
   };
 
