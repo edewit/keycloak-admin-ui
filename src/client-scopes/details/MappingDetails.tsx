@@ -35,8 +35,6 @@ import { convertFormValuesToObject, convertToFormValues } from "../../util";
 type Params = {
   scopeId: string;
   id: string;
-  mappingId: string;
-  protocol: string;
 };
 
 export const MappingDetails = () => {
@@ -44,7 +42,7 @@ export const MappingDetails = () => {
   const adminClient = useAdminClient();
   const { addAlert } = useAlerts();
 
-  const { scopeId, id, mappingId, protocol } = useParams<Params>();
+  const { scopeId, id } = useParams<Params>();
   const { register, errors, setValue, control, handleSubmit } = useForm();
   const [mapping, setMapping] = useState<ProtocolMapperRepresentation>();
   const [typeOpen, setTypeOpen] = useState(false);
@@ -54,9 +52,10 @@ export const MappingDetails = () => {
 
   const history = useHistory();
   const serverInfo = useServerInfo();
+  const isGuid = /^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$/;
 
   useEffect(() => {
-    if (id) {
+    if (id.match(isGuid)) {
       (async () => {
         const data = await adminClient.clientScopes.findProtocolMapper({
           id: scopeId,
@@ -76,7 +75,10 @@ export const MappingDetails = () => {
         setMapping(data);
       })();
     } else {
-      setMapping({ protocol: protocol, protocolMapper: mappingId });
+      (async () => {
+        const scope = await adminClient.clientScopes.findOne({ id: scopeId });
+        setMapping({ protocol: scope.protocol, protocolMapper: id });
+      })();
     }
   }, []);
 
@@ -102,9 +104,9 @@ export const MappingDetails = () => {
   const save = async (formMapping: ProtocolMapperRepresentation) => {
     const config = convertFormValuesToObject(formMapping.config);
     const map = { ...mapping, ...formMapping, config };
-    const key = id ? "Updated" : "Created";
+    const key = id.match(isGuid) ? "Updated" : "Created";
     try {
-      if (id) {
+      if (id.match(isGuid)) {
         await adminClient.clientScopes.updateProtocolMapper(
           { id: scopeId, mapperId: id },
           map
@@ -123,10 +125,10 @@ export const MappingDetails = () => {
       <DeleteConfirm />
       <ViewHeader
         titleKey={mapping ? mapping.name! : t("addMapper")}
-        subKey={id}
+        subKey={id.match(isGuid) ? id : ""}
         badge={mapping?.protocol}
         dropdownItems={
-          id
+          id.match(isGuid)
             ? [
                 <DropdownItem
                   key="delete"
@@ -141,7 +143,7 @@ export const MappingDetails = () => {
       />
       <PageSection variant="light">
         <Form isHorizontal onSubmit={handleSubmit(save)}>
-          {!id && (
+          {!id.match(isGuid) && (
             <FormGroup
               label={t("name")}
               labelIcon={

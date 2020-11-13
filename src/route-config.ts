@@ -74,12 +74,6 @@ export const routes: RoutesFn = (t: TFunction) => [
     access: "view-clients",
   },
   {
-    path: "/client-scopes/:scopeId/:protocol/:mappingId",
-    component: MappingDetails,
-    breadcrumb: t("client-scopes:mappingDetails"),
-    access: "view-clients",
-  },
-  {
     path: "/client-scopes/:scopeId/:id",
     component: MappingDetails,
     breadcrumb: t("client-scopes:mappingDetails"),
