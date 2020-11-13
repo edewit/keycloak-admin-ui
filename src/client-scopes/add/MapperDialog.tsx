@@ -72,6 +72,7 @@ export const AddMapperDialog = (props: AddMapperDialogProps) => {
       variant={ModalVariant.medium}
       title={t("chooseAMapperType")}
       isOpen={props.open}
+      onClose={props.toggleDialog}
       actions={
         isBuiltIn
           ? [
@@ -80,9 +81,12 @@ export const AddMapperDialog = (props: AddMapperDialogProps) => {
                 key="confirm"
                 isDisabled={rows.length === 0}
                 onClick={() => {
-                  props.onConfirm(
-                    rows.filter((row) => row.selected).map((row) => row.item)
-                  );
+                  const selectedRows = rows
+                    .filter((row) => row.selected)
+                    .map((row) => row.item);
+                  if (selectedRows.length > 0) {
+                    props.onConfirm(selectedRows);
+                  }
                   props.toggleDialog();
                 }}
               >

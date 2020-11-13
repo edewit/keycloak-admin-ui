@@ -17508,7 +17508,7 @@ exports[`<MapperDialog/> should return empty array when selecting nothing 1`] = 
       onClick={[Function]}
       type="button"
     >
-      Show
+      Hide
     </button>
   </Button>
 </Test>
@@ -19157,7 +19157,7 @@ exports[`<MapperDialog/> should return selected protocol mapping type on click 1
       onClick={[Function]}
       type="button"
     >
-      Show
+      Hide
     </button>
   </Button>
 </Test>
