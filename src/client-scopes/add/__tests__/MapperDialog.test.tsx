@@ -23,17 +23,16 @@ describe("<MapperDialog/>", () => {
     );
   };
 
-  it("should return empty array when selecting nothing", () => {
-    const onConfirm = jest.fn();
+  it("should have disabled add button when nothing is selected", () => {
     const container = mount(
-      <Test filter={[]} protocol="openid-connect" onConfirm={onConfirm} />
+      <Test filter={[]} protocol="openid-connect" onConfirm={() => {}} />
     );
 
     container.find("button#open").simulate("click");
     expect(container).toMatchSnapshot();
 
-    container.find("button#modal-confirm").simulate("click");
-    expect(onConfirm).toBeCalledTimes(0);
+    const button = container.find("button#modal-confirm");
+    expect(button.hasClass("pf-m-disabled")).toBe(true);
   });
 
   it("should return array with selected build in protocol mapping", () => {

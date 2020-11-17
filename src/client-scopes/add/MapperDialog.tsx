@@ -65,6 +65,9 @@ export const AddMapperDialog = (props: AddMapperDialogProps) => {
     setRows([...allRows.filter((row) => !nameFilter.includes(row.item.name))]);
   }
 
+  const selectedRows = rows
+    .filter((row) => row.selected)
+    .map((row) => row.item);
   const isBuiltIn = !!props.filter;
 
   return (
@@ -79,14 +82,9 @@ export const AddMapperDialog = (props: AddMapperDialogProps) => {
               <Button
                 id="modal-confirm"
                 key="confirm"
-                isDisabled={rows.length === 0}
+                isDisabled={rows.length === 0 || selectedRows.length === 0}
                 onClick={() => {
-                  const selectedRows = rows
-                    .filter((row) => row.selected)
-                    .map((row) => row.item);
-                  if (selectedRows.length > 0) {
-                    props.onConfirm(selectedRows);
-                  }
+                  props.onConfirm(selectedRows);
                   props.toggleDialog();
                 }}
               >
