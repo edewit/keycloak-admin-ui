@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Table,
@@ -6,12 +6,16 @@ import {
   TableHeader,
   TableVariant,
 } from "@patternfly/react-table";
-import { Button } from "@patternfly/react-core";
+import {
+  Button,
+  Select,
+  SelectOption,
+  Split,
+  SplitItem,
+} from "@patternfly/react-core";
 
-import { ClientScopeRepresentation } from "../../client-scopes/models/client-scope";
+import { useAdminClient } from "../../context/auth/AdminClient";
 import { DataLoader } from "../../components/data-loader/DataLoader";
-import { HttpClientContext } from "../../context/http-service/HttpClientContext";
-import { RealmContext } from "../../context/realm-context/RealmContext";
 import { TableToolbar } from "../../components/table-toolbar/TableToolbar";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 
@@ -21,50 +25,40 @@ export type ClientScopesProps = {
 
 export const ClientScopes = ({ clientId }: ClientScopesProps) => {
   const { t } = useTranslation("client-scopes");
-  const httpClient = useContext(HttpClientContext)!;
-  const { realm } = useContext(RealmContext);
-
-  //const [rows, setRows] = useState<{ cells: (string | Record<string, any> | ClientScopeRepresentation[] | undefined)[]; }[]>();
-
-  const columns: (keyof ClientScopeRepresentation)[] = [
-    "name",
-    "description",
-    "protocol",
-  ];
-  const url = `/admin/realms/${realm}/clients/${clientId}`;
+  const adminClient = useAdminClient();
+  const [searchToggle, setSearchToggle] = useState(false);
 
   const loader = async (): Promise<
     {
       cells: (string | Record<string, any> | undefined)[];
     }[]
   > => {
-    const defaultClientScopes = (
-      await httpClient.doGet<ClientScopeRepresentation[]>(
-        url + "/default-client-scopes"
-      )
-    ).data!;
-    const optionalClientScopes = (
-      await httpClient.doGet<ClientScopeRepresentation[]>(
-        url + "/optional-client-scopes"
-      )
-    ).data!;
-    const clientScopes = (
-      await httpClient.doGet<ClientScopeRepresentation[]>(
-        `/admin/realms/${realm}/client-scopes`
-      )
-    ).data!;
+    const defaultClientScopes = await adminClient.clients.listDefaultClientScopes(
+      { id: clientId }
+    );
+    const optionalClientScopes = await adminClient.clients.listOptionalClientScopes(
+      { id: clientId }
+    );
+    const clientScopes = await adminClient.clientScopes.find();
 
-    console.log(defaultClientScopes);
-    console.log(optionalClientScopes);
-    console.log(clientScopes);
+    const find = (id: string) =>
+      clientScopes.find((clientScope) => id === clientScope.id)!;
 
-    return defaultClientScopes.map((c) => {
+    const optional = optionalClientScopes.map((c) => {
+      const scope = find(c.id!);
       return {
-        cells: columns.map((col) => {
-          return c[col];
-        }),
+        cells: [c.name, "optional", scope.description],
       };
     });
+
+    const defaultScopes = defaultClientScopes.map((c) => {
+      const scope = find(c.id!);
+      return {
+        cells: [c.name, "default", scope.description],
+      };
+    });
+
+    return [...optional, ...defaultScopes];
   };
 
   const filterData = () => {};
@@ -79,7 +73,22 @@ export const ClientScopes = ({ clientId }: ClientScopesProps) => {
               inputGroupPlaceholder={t("searchFor")}
               inputGroupOnChange={filterData}
               toolbarItem={
-                <Button onClick={() => {}}>{t("createClientScope")}</Button>
+                <Split>
+                  <SplitItem>
+                    <Select
+                      onSelect={() => {}}
+                      onToggle={() => setSearchToggle(!searchToggle)}
+                      aria-label="Select Input"
+                      isOpen={searchToggle}
+                    >
+                      <SelectOption key="client">Client Scope</SelectOption>
+                      <SelectOption key="assigned">Assigned type</SelectOption>
+                    </Select>
+                  </SplitItem>
+                  <SplitItem>
+                    <Button onClick={() => {}}>{t("createClientScope")}</Button>
+                  </SplitItem>
+                </Split>
               }
             >
               <Table
