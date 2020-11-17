@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -29,11 +29,7 @@ import { ViewHeader } from "../../components/view-header/ViewHeader";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { ProtocolMapperRepresentation } from "../models/client-scope";
 
-export type RoleMappingFormProps = {
-  clientScopeId: string;
-};
-
-export const RoleMappingForm = ({ clientScopeId }: RoleMappingFormProps) => {
+export const RoleMappingForm = () => {
   const { realm } = useContext(RealmContext);
   const adminClient = useAdminClient();
   const history = useHistory();
@@ -41,6 +37,7 @@ export const RoleMappingForm = ({ clientScopeId }: RoleMappingFormProps) => {
 
   const { t } = useTranslation("client-scopes");
   const { register, handleSubmit, control, errors } = useForm();
+  const { clientScopeId } = useParams<{ clientScopeId: string }>();
 
   const [roleOpen, setRoleOpen] = useState(false);
 
