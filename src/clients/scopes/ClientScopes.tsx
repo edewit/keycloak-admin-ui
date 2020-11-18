@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { TFunction } from "i18next";
 import {
+  IFormatter,
+  IFormatterValueType,
   Table,
   TableBody,
   TableHeader,
@@ -8,23 +11,41 @@ import {
 } from "@patternfly/react-table";
 import {
   Button,
-  Dropdown,
-  DropdownToggle,
   Select,
   SelectOption,
+  Spinner,
   Split,
   SplitItem,
 } from "@patternfly/react-core";
+import ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
 
 import { useAdminClient } from "../../context/auth/AdminClient";
-import { DataLoader } from "../../components/data-loader/DataLoader";
 import { TableToolbar } from "../../components/table-toolbar/TableToolbar";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 import { AddScopeDialog } from "./AddScopeDialog";
-import { clientScopeTypesDropdown } from "./ClientScopeTypes";
+import { clientScopeTypesSelectOptions } from "./ClientScopeTypes";
 
 export type ClientScopesProps = {
   clientId: string;
+};
+
+const CellDropdown = (props: { name: string; t: TFunction }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Select
+      key={new Date().getTime()}
+      onToggle={() => setOpen(!open)}
+      isOpen={open}
+      selections={[props.name]}
+      onSelect={(_, value) => {
+        console.log(value);
+        setOpen(false);
+      }}
+    >
+      {clientScopeTypesSelectOptions(props.t)}
+    </Select>
+  );
 };
 
 export const ClientScopes = ({ clientId }: ClientScopesProps) => {
@@ -34,7 +55,10 @@ export const ClientScopes = ({ clientId }: ClientScopesProps) => {
   const [addToggle, setAddToggle] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
-  const loader = async (): Promise<{ cells: (string | undefined)[] }[]> => {
+  const [rows, setRows] = useState<{ cells: (string | undefined)[] }[]>();
+  const [rest, setRest] = useState<ClientScopeRepresentation[]>();
+
+  const loader = async () => {
     const defaultClientScopes = await adminClient.clients.listDefaultClientScopes(
       { id: clientId }
     );
@@ -49,116 +73,135 @@ export const ClientScopes = ({ clientId }: ClientScopesProps) => {
     const optional = optionalClientScopes.map((c) => {
       const scope = find(c.id!);
       return {
-        cells: [c.name, "optional", scope.description],
+        cells: [c.name, t("clientScope.optional"), scope.description],
       };
     });
 
     const defaultScopes = defaultClientScopes.map((c) => {
       const scope = find(c.id!);
       return {
-        cells: [c.name, "default", scope.description],
+        cells: [c.name, t("clientScope.default"), scope.description],
       };
     });
 
-    return [...optional, ...defaultScopes];
+    setRows([...optional, ...defaultScopes]);
   };
+
+  useEffect(() => {
+    loader();
+  }, []);
+
+  useEffect(() => {
+    if (rows) {
+      loadRest(rows);
+    }
+  }, [rows]);
 
   const loadRest = async (rows: { cells: (string | undefined)[] }[]) => {
     const clientScopes = await adminClient.clientScopes.find();
     const names = rows.map((row) => row.cells[0]);
 
-    return clientScopes.filter((scope) => !names.includes(scope.name));
+    setRest(clientScopes.filter((scope) => !names.includes(scope.name)));
+  };
+
+  const dropdown = (): IFormatter => (data?: IFormatterValueType) => {
+    return (data ? (
+      <CellDropdown name={data.toString()} t={t} />
+    ) : undefined) as object;
   };
 
   const filterData = () => {};
 
   return (
-    <DataLoader loader={loader}>
-      {(rows) => (
-        <>
-          {rows.data.length > 0 && (
-            <>
-              <DataLoader loader={() => loadRest(rows.data)}>
-                {(rest) => (
-                  <AddScopeDialog
-                    clientScopes={rest.data}
-                    open={addDialogOpen}
-                    toggleDialog={() => setAddDialogOpen(!addDialogOpen)}
-                  />
-                )}
-              </DataLoader>
+    <>
+      {!rows && (
+        <div className="pf-u-text-align-center">
+          <Spinner />
+        </div>
+      )}
 
-              <TableToolbar
-                inputGroupName="clientsScopeToolbarTextInput"
-                inputGroupPlaceholder={t("searchByName")}
-                inputGroupOnChange={filterData}
-                toolbarItem={
-                  <Split hasGutter>
-                    <SplitItem>
-                      <Select
-                        onSelect={() => {}}
-                        onToggle={() => setSearchToggle(!searchToggle)}
-                        aria-label="Select Input"
-                        isOpen={searchToggle}
-                      >
-                        <SelectOption key="client">Client Scope</SelectOption>
-                        <SelectOption key="assigned">
-                          Assigned type
-                        </SelectOption>
-                      </Select>
-                    </SplitItem>
-                    <SplitItem>
-                      <Button onClick={() => setAddDialogOpen(true)}>
-                        {t("addClientScope")}
-                      </Button>
-                    </SplitItem>
-                    <SplitItem>
-                      <Dropdown
-                        id="add-dropdown"
-                        key="add-dropdown"
-                        isOpen={addToggle}
-                        toggle={
-                          <DropdownToggle
-                            onToggle={() => setAddToggle(!addToggle)}
-                            id="add-scope-toggle"
-                          >
-                            {t("common:add")}
-                          </DropdownToggle>
-                        }
-                        dropdownItems={clientScopeTypesDropdown(t)}
-                      />
-                    </SplitItem>
-                  </Split>
-                }
-              >
-                <Table
-                  variant={TableVariant.compact}
-                  cells={[t("name"), t("description"), t("protocol")]}
-                  rows={rows.data}
-                  actions={[
-                    {
-                      title: t("common:remove"),
-                      onClick: () => {},
-                    },
-                  ]}
-                  aria-label={t("clientScopeList")}
-                >
-                  <TableHeader />
-                  <TableBody />
-                </Table>
-              </TableToolbar>
-            </>
-          )}
-          {rows.data.length === 0 && (
-            <ListEmptyState
-              message={t("clients:emptyClientScopes")}
-              instructions={t("clients:emptyClientScopesInstructions")}
-              primaryActionText={t("clients:emptyClientScopesPrimaryAction")}
-              onPrimaryAction={() => {}}
+      {rows && rows.length > 0 && (
+        <>
+          {rest && (
+            <AddScopeDialog
+              clientScopes={rest}
+              open={addDialogOpen}
+              toggleDialog={() => setAddDialogOpen(!addDialogOpen)}
             />
           )}
+
+          <TableToolbar
+            inputGroupName="clientsScopeToolbarTextInput"
+            inputGroupPlaceholder={t("searchByName")}
+            inputGroupOnChange={filterData}
+            toolbarItem={
+              <Split hasGutter>
+                <SplitItem>
+                  <Select
+                    onSelect={() => {}}
+                    onToggle={() => setSearchToggle(!searchToggle)}
+                    aria-label="Select Input"
+                    isOpen={searchToggle}
+                  >
+                    <SelectOption key="client">Client Scope</SelectOption>
+                    <SelectOption key="assigned">Assigned type</SelectOption>
+                  </Select>
+                </SplitItem>
+                <SplitItem>
+                  <Button onClick={() => setAddDialogOpen(true)}>
+                    {t("addClientScope")}
+                  </Button>
+                </SplitItem>
+                <SplitItem>
+                  <Select
+                    id="add-dropdown"
+                    key="add-dropdown"
+                    isOpen={addToggle}
+                    selections={[]}
+                    placeholderText={t("changeTypeTo")}
+                    onToggle={() => setAddToggle(!addToggle)}
+                    onSelect={(_, value) => {
+                      console.log(value);
+                      setAddToggle(false);
+                    }}
+                  >
+                    {clientScopeTypesSelectOptions(t)}
+                  </Select>
+                </SplitItem>
+              </Split>
+            }
+          >
+            <Table
+              onSelect={() => {}}
+              variant={TableVariant.compact}
+              cells={[
+                t("name"),
+                { title: t("description"), cellFormatters: [dropdown()] },
+                t("protocol"),
+              ]}
+              rows={rows}
+              actions={[
+                {
+                  title: t("common:remove"),
+                  onClick: () => {},
+                },
+              ]}
+              aria-label={t("clientScopeList")}
+            >
+              <TableHeader />
+              <TableBody />
+            </Table>
+          </TableToolbar>
         </>
       )}
-    </DataLoader>
+      {rows && rows.length === 0 && (
+        <ListEmptyState
+          message={t("clients:emptyClientScopes")}
+          instructions={t("clients:emptyClientScopesInstructions")}
+          primaryActionText={t("clients:emptyClientScopesPrimaryAction")}
+          onPrimaryAction={() => {}}
+        />
+      )}
+    </>
   );
 };

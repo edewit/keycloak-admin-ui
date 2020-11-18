@@ -19,6 +19,11 @@
     "searchByName": "Search by name",
     "setup": "Setup",
     "evaluate": "Evaluate",
+    "changeTypeTo": "Change type to",
+    "clientScope": {
+      "default" : "Default",
+      "optional" : "Optional"
+    },
     "emptyClientScopes": "This client doesn't have any added client scopes",
     "emptyClientScopesInstructions": "There are currently no client scopes linked to this client. You can add existing client scopes to this client to share protocol mappers and roles.",
     "emptyClientScopesPrimaryAction": "Add client scopes",
