@@ -47,7 +47,7 @@ export const ClientDetails = () => {
 
   const [activeTab, setActiveTab] = useState(0);
   const [activeTab2, setActiveTab2] = useState(30);
-  const [name, setName] = useState("");
+  const [client, setClient] = useState<ClientRepresentation>();
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: "clients:clientDeleteConfirmTitle",
@@ -86,7 +86,7 @@ export const ClientDetails = () => {
     (async () => {
       const fetchedClient = await adminClient.clients.findOne({ id });
       if (fetchedClient) {
-        setName(fetchedClient.clientId!);
+        setClient(fetchedClient);
         setupForm(fetchedClient);
       }
     })();
@@ -136,7 +136,7 @@ export const ClientDetails = () => {
             <>
               <DisableConfirm />
               <ViewHeader
-                titleKey={name}
+                titleKey={client!.clientId!}
                 subKey="clients:clientsExplain"
                 dropdownItems={[
                   <DropdownItem
@@ -205,7 +205,7 @@ export const ClientDetails = () => {
                 eventKey={30}
                 title={<TabTitleText>{t("setup")}</TabTitleText>}
               >
-                <ClientScopes clientId={id} />
+                <ClientScopes clientId={id} protocol={client!.protocol!} />
               </Tab>
               <Tab
                 eventKey={31}

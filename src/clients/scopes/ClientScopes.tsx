@@ -11,8 +11,10 @@ import {
 } from "@patternfly/react-table";
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
   Select,
-  SelectOption,
   Spinner,
   Split,
   SplitItem,
@@ -24,9 +26,11 @@ import { TableToolbar } from "../../components/table-toolbar/TableToolbar";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 import { AddScopeDialog } from "./AddScopeDialog";
 import { clientScopeTypesSelectOptions } from "./ClientScopeTypes";
+import { FilterIcon } from "@patternfly/react-icons";
 
 export type ClientScopesProps = {
   clientId: string;
+  protocol: string;
 };
 
 const CellDropdown = (props: { name: string; t: TFunction }) => {
@@ -48,10 +52,13 @@ const CellDropdown = (props: { name: string; t: TFunction }) => {
   );
 };
 
-export const ClientScopes = ({ clientId }: ClientScopesProps) => {
+type SearchType = "client" | "assigned";
+
+export const ClientScopes = ({ clientId, protocol }: ClientScopesProps) => {
   const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
   const [searchToggle, setSearchToggle] = useState(false);
+  const [searchType, setSearchType] = useState<SearchType>("client");
   const [addToggle, setAddToggle] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
@@ -101,7 +108,11 @@ export const ClientScopes = ({ clientId }: ClientScopesProps) => {
     const clientScopes = await adminClient.clientScopes.find();
     const names = rows.map((row) => row.cells[0]);
 
-    setRest(clientScopes.filter((scope) => !names.includes(scope.name)));
+    setRest(
+      clientScopes
+        .filter((scope) => !names.includes(scope.name))
+        .filter((scope) => scope.protocol === protocol)
+    );
   };
 
   const dropdown = (): IFormatter => (data?: IFormatterValueType) => {
@@ -131,22 +142,45 @@ export const ClientScopes = ({ clientId }: ClientScopesProps) => {
           )}
 
           <TableToolbar
+            searchTypeComponent={
+              <Dropdown
+                toggle={
+                  <DropdownToggle
+                    id="toggle-id"
+                    onToggle={() => setSearchToggle(!searchToggle)}
+                  >
+                    <FilterIcon /> {t(`clientScopeSearch.${searchType}`)}
+                  </DropdownToggle>
+                }
+                aria-label="Select Input"
+                isOpen={searchToggle}
+                dropdownItems={[
+                  <DropdownItem
+                    key="client"
+                    onClick={() => {
+                      setSearchType("client");
+                      setSearchToggle(false);
+                    }}
+                  >
+                    {t("clientScopeSearch.client")}
+                  </DropdownItem>,
+                  <DropdownItem
+                    key="assigned"
+                    onClick={() => {
+                      setSearchType("assigned");
+                      setSearchToggle(false);
+                    }}
+                  >
+                    {t("clientScopeSearch.assigned")}
+                  </DropdownItem>,
+                ]}
+              />
+            }
             inputGroupName="clientsScopeToolbarTextInput"
             inputGroupPlaceholder={t("searchByName")}
             inputGroupOnChange={filterData}
             toolbarItem={
               <Split hasGutter>
-                <SplitItem>
-                  <Select
-                    onSelect={() => {}}
-                    onToggle={() => setSearchToggle(!searchToggle)}
-                    aria-label="Select Input"
-                    isOpen={searchToggle}
-                  >
-                    <SelectOption key="client">Client Scope</SelectOption>
-                    <SelectOption key="assigned">Assigned type</SelectOption>
-                  </Select>
-                </SplitItem>
                 <SplitItem>
                   <Button onClick={() => setAddDialogOpen(true)}>
                     {t("addClientScope")}
