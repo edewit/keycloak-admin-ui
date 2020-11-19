@@ -19,40 +19,91 @@ import {
   Split,
   SplitItem,
 } from "@patternfly/react-core";
+import { FilterIcon } from "@patternfly/react-icons";
 import ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
+import KeycloakAdminClient from "keycloak-admin";
 
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { TableToolbar } from "../../components/table-toolbar/TableToolbar";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 import { AddScopeDialog } from "./AddScopeDialog";
-import { clientScopeTypesSelectOptions } from "./ClientScopeTypes";
-import { FilterIcon } from "@patternfly/react-icons";
+import {
+  clientScopeTypesSelectOptions,
+  ClientScopeType,
+  ClientScope,
+} from "./ClientScopeTypes";
 
 export type ClientScopesProps = {
   clientId: string;
   protocol: string;
 };
 
-const CellDropdown = (props: { name: string; t: TFunction }) => {
+const firstUpperCase = (name: string) =>
+  name.charAt(0).toUpperCase() + name.slice(1);
+
+const changeScope = async (
+  adminClient: KeycloakAdminClient,
+  clientId: string,
+  clientScope: ClientScopeRepresentation,
+  type: ClientScopeType,
+  changeTo: ClientScopeType
+) => {
+  const typeToName = firstUpperCase(type);
+  const changeToName = firstUpperCase(changeTo);
+
+  const indexedAdminClient = (adminClient.clients as unknown) as {
+    [index: string]: Function;
+  };
+  await indexedAdminClient[`del${typeToName}ClientScope`]({
+    id: clientId,
+    clientScopeId: clientScope.id!,
+  });
+  await indexedAdminClient[`add${changeToName}ClientScope`]({
+    id: clientId,
+    clientScopeId: clientScope.id!,
+  });
+};
+
+type CellDropdownProps = {
+  clientId: string;
+  clientScope: ClientScopeRepresentation;
+  type: ClientScopeType;
+};
+
+const CellDropdown = ({ clientId, clientScope, type }: CellDropdownProps) => {
+  const adminClient = useAdminClient();
+  const { t } = useTranslation("clients");
   const [open, setOpen] = useState(false);
 
   return (
     <Select
-      key={new Date().getTime()}
+      key={clientScope.id}
       onToggle={() => setOpen(!open)}
       isOpen={open}
-      selections={[props.name]}
+      selections={[type]}
       onSelect={(_, value) => {
-        console.log(value);
+        changeScope(
+          adminClient,
+          clientId,
+          clientScope,
+          type,
+          value as ClientScopeType
+        );
         setOpen(false);
       }}
     >
-      {clientScopeTypesSelectOptions(props.t)}
+      {clientScopeTypesSelectOptions(t)}
     </Select>
   );
 };
 
 type SearchType = "client" | "assigned";
+
+type TableRow = {
+  clientScope: ClientScopeRepresentation;
+  type: ClientScopeType;
+  cells: (string | undefined)[];
+};
 
 export const ClientScopes = ({ clientId, protocol }: ClientScopesProps) => {
   const { t } = useTranslation("clients");
@@ -62,7 +113,7 @@ export const ClientScopes = ({ clientId, protocol }: ClientScopesProps) => {
   const [addToggle, setAddToggle] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
-  const [rows, setRows] = useState<{ cells: (string | undefined)[] }[]>();
+  const [rows, setRows] = useState<TableRow[]>();
   const [rest, setRest] = useState<ClientScopeRepresentation[]>();
 
   const loader = async () => {
@@ -80,14 +131,18 @@ export const ClientScopes = ({ clientId, protocol }: ClientScopesProps) => {
     const optional = optionalClientScopes.map((c) => {
       const scope = find(c.id!);
       return {
-        cells: [c.name, t("clientScope.optional"), scope.description],
+        clientScope: c,
+        type: ClientScope.optional,
+        cells: [c.name, c.id, scope.description],
       };
     });
 
     const defaultScopes = defaultClientScopes.map((c) => {
       const scope = find(c.id!);
       return {
-        cells: [c.name, t("clientScope.default"), scope.description],
+        clientScope: c,
+        type: ClientScope.default,
+        cells: [c.name, c.id, scope.description],
       };
     });
 
@@ -116,9 +171,17 @@ export const ClientScopes = ({ clientId, protocol }: ClientScopesProps) => {
   };
 
   const dropdown = (): IFormatter => (data?: IFormatterValueType) => {
-    return (data ? (
-      <CellDropdown name={data.toString()} t={t} />
-    ) : undefined) as object;
+    if (!data) {
+      return <></>;
+    }
+    const row = rows?.find((row) => row.clientScope.id === data.toString())!;
+    return (
+      <CellDropdown
+        clientId={clientId}
+        clientScope={row.clientScope}
+        type={row.type}
+      />
+    );
   };
 
   const filterData = () => {};

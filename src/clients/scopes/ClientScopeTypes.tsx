@@ -2,7 +2,12 @@ import React from "react";
 import { TFunction } from "i18next";
 import { DropdownItem, SelectOption } from "@patternfly/react-core";
 
-const clientScopeTypes = ["default", "optional"];
+export enum ClientScope {
+  default = "default",
+  optional = "optional",
+}
+export type ClientScopeType = ClientScope.default | ClientScope.optional;
+const clientScopeTypes = Object.keys(ClientScope);
 
 export const clientScopeTypesSelectOptions = (t: TFunction) =>
   clientScopeTypes.map((type) => (

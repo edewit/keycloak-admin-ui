@@ -136,7 +136,7 @@ export const ClientDetails = () => {
             <>
               <DisableConfirm />
               <ViewHeader
-                titleKey={client!.clientId!}
+                titleKey={client ? client.clientId! : ""}
                 subKey="clients:clientsExplain"
                 dropdownItems={[
                   <DropdownItem
@@ -201,12 +201,14 @@ export const ClientDetails = () => {
               isSecondary
               onSelect={(_, key) => setActiveTab2(key as number)}
             >
-              <Tab
-                eventKey={30}
-                title={<TabTitleText>{t("setup")}</TabTitleText>}
-              >
-                <ClientScopes clientId={id} protocol={client!.protocol!} />
-              </Tab>
+              {client && (
+                <Tab
+                  eventKey={30}
+                  title={<TabTitleText>{t("setup")}</TabTitleText>}
+                >
+                  <ClientScopes clientId={id} protocol={client!.protocol!} />
+                </Tab>
+              )}
               <Tab
                 eventKey={31}
                 title={<TabTitleText>{t("evaluate")}</TabTitleText>}
