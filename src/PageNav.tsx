@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -14,13 +14,28 @@ import { useAdminClient } from "./context/auth/AdminClient";
 import { useAccess } from "./context/access/Access";
 import { routes } from "./route-config";
 
-export const PageNav: React.FunctionComponent = () => {
-  const { t } = useTranslation("common");
-  const { hasAccess, hasSomeAccess } = useAccess();
+const RealmSelectorNav = () => {
   const adminClient = useAdminClient();
   const realmLoader = async () => {
     return await adminClient.realms.find();
   };
+  return (
+    <NavList>
+      <DataLoader loader={realmLoader}>
+        {(realmList) => (
+          <NavItem className="keycloak__page_nav__nav_item__realm-selector">
+            <RealmSelector realmList={realmList.data || []} />
+          </NavItem>
+        )}
+      </DataLoader>
+    </NavList>
+  );
+};
+const RealmSelect = memo(RealmSelectorNav);
+
+export const PageNav: React.FunctionComponent = () => {
+  const { t } = useTranslation("common");
+  const { hasAccess, hasSomeAccess } = useAccess();
 
   const history = useHistory();
 
@@ -76,15 +91,7 @@ export const PageNav: React.FunctionComponent = () => {
     <PageSidebar
       nav={
         <Nav onSelect={onSelect}>
-          <NavList>
-            <DataLoader loader={realmLoader}>
-              {(realmList) => (
-                <NavItem className="keycloak__page_nav__nav_item__realm-selector">
-                  <RealmSelector realmList={realmList.data || []} />
-                </NavItem>
-              )}
-            </DataLoader>
-          </NavList>
+          <RealmSelect />
           {showManage && (
             <NavGroup title={t("manage")}>
               <LeftNav title="clients" path="/clients" />
