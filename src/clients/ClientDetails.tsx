@@ -4,6 +4,7 @@ import {
   ButtonVariant,
   DropdownItem,
   PageSection,
+  Spinner,
   Tab,
   Tabs,
   TabTitleText,
@@ -172,6 +173,13 @@ export const ClientDetails = () => {
     }
   };
 
+  if (!client) {
+    return (
+      <div className="pf-u-text-align-center">
+        <Spinner />
+      </div>
+    );
+  }
   return (
     <>
       <DeleteConfirm />
@@ -182,10 +190,9 @@ export const ClientDetails = () => {
         defaultValue={true}
         render={({ onChange, value }) => (
           <ClientDetailHeader
-            name={name}
             value={value}
             onChange={onChange}
-            client={form.getValues()}
+            client={client}
             save={save}
             toggleDeleteDialog={toggleDeleteDialog}
             toggleDownloadDialog={toggleDownloadDialog}
@@ -221,14 +228,12 @@ export const ClientDetails = () => {
               isSecondary
               onSelect={(_, key) => setActiveTab2(key as number)}
             >
-              {client && (
-                <Tab
-                  eventKey={30}
-                  title={<TabTitleText>{t("setup")}</TabTitleText>}
-                >
-                  <ClientScopes clientId={id} protocol={client!.protocol!} />
-                </Tab>
-              )}
+              <Tab
+                eventKey={30}
+                title={<TabTitleText>{t("setup")}</TabTitleText>}
+              >
+                <ClientScopes clientId={id} protocol={client!.protocol!} />
+              </Tab>
               <Tab
                 eventKey={31}
                 title={<TabTitleText>{t("evaluate")}</TabTitleText>}
