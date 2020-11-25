@@ -32,6 +32,7 @@ import {
 } from "../components/multi-line-input/MultiLineInput";
 import { ClientScopes } from "./scopes/ClientScopes";
 import { EvaluateScopes } from "./scopes/EvaluateScopes";
+import { ServiceAccount } from "./service-account/ServiceAccount";
 
 type ClientDetailHeaderProps = {
   onChange: (...event: any[]) => void;
@@ -102,6 +103,12 @@ export const ClientDetails = () => {
     name: "publicClient",
     defaultValue: false,
   });
+  const serviceAccount = useWatch({
+    control: form.control,
+    name: "serviceAccountsEnabled",
+    defaultValue: false,
+  });
+
   const { id } = useParams<{ id: string }>();
 
   const [activeTab, setActiveTab] = useState(0);
@@ -242,6 +249,14 @@ export const ClientDetails = () => {
               </Tab>
             </Tabs>
           </Tab>
+          {serviceAccount && (
+            <Tab
+              eventKey={3}
+              title={<TabTitleText>{t("serviceAccount")}</TabTitleText>}
+            >
+              <ServiceAccount clientId={id} />
+            </Tab>
+          )}
         </Tabs>
       </PageSection>
     </>
