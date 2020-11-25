@@ -1,11 +1,12 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Table,
   TableBody,
   TableHeader,
   TableVariant,
 } from "@patternfly/react-table";
-import { Badge } from "@patternfly/react-core";
+import { Badge, Checkbox, Split, SplitItem } from "@patternfly/react-core";
 
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { DataLoader } from "../../components/data-loader/DataLoader";
@@ -19,17 +20,21 @@ type ServiceAccountProps = {
   clientId: string;
 };
 
+type CompositeRole = RoleRepresentation & {
+  parent: RoleRepresentation;
+};
+
 export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
+  const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
   const { realm } = useContext(RealmContext);
+
+  const [hide, setHide] = useState(false);
 
   const loader = async () => {
     const serviceAccount = await adminClient.clients.getServiceAccountUser({
       id: clientId,
     });
-    const availableRoles = await adminClient.users.listAvailableRealmRoleMappings(
-      { id: serviceAccount.id! }
-    );
     const effectiveRoles = await adminClient.users.listCompositeRealmRoleMappings(
       { id: serviceAccount.id! }
     );
@@ -52,9 +57,6 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
       )
     ).filter((rows) => rows.roles.length > 0);
 
-    console.log("availableRoles", availableRoles);
-    console.log("assignedRoles", assignedRoles);
-
     const findClient = (role: RoleRepresentation) => {
       const row = clientRoles.filter((row) =>
         row.roles.find((r) => r.id === role.id)
@@ -62,14 +64,11 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
       return row ? row.client : undefined;
     };
 
-    const data = [
-      ...effectiveRoles,
-      ...clientRoles.map((row) => row.roles).flat(),
-    ].sort((r1, r2) => r1.name!.localeCompare(r2.name!));
+    const clientRolesFlat = clientRoles.map((row) => row.roles).flat();
 
     const addInherentData = await (async () =>
       Promise.all(
-        data.map(async (role) => {
+        effectiveRoles.map(async (role) => {
           const compositeRoles = await adminClient.roles.getCompositeRolesForRealm(
             { realm, id: role.id! }
           );
@@ -80,31 +79,60 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
             : { ...role, parent: undefined };
         })
       ))();
-    return addInherentData.flat().map((role) => {
-      const client = findClient(role);
-      return {
-        cells: [
-          <Fragment key={role.id}>
-            {client && (
-              <Badge
-                key={client.id}
-                isRead
-                className="keycloak-admin--service-account__client-name"
-              >
-                {client.clientId}
-              </Badge>
-            )}
-            {role.name}
-          </Fragment>,
-          role.parent ? role.parent.name : "",
-          role.description,
-        ],
-      };
-    });
+    const uniqueRolesWithParent = addInherentData
+      .flat()
+      .filter(
+        (role, index, array) =>
+          array.findIndex((r) => r.id === role.id) === index
+      );
+    return ([
+      ...(hide ? assignedRoles : uniqueRolesWithParent),
+      ...clientRolesFlat,
+    ] as CompositeRole[])
+      .sort((r1, r2) => r1.name!.localeCompare(r2.name!))
+      .map((role) => {
+        const client = findClient(role);
+        return {
+          cells: [
+            <Fragment key={role.id}>
+              {client && (
+                <Badge
+                  key={client.id}
+                  isRead
+                  className="keycloak-admin--service-account__client-name"
+                >
+                  {client.clientId}
+                </Badge>
+              )}
+              {role.name}
+            </Fragment>,
+            role.parent ? role.parent.name : "",
+            role.description,
+          ],
+        };
+      });
   };
 
+  const filterData = () => {};
+
   return (
-    <TableToolbar>
+    <TableToolbar
+      inputGroupName="clientsServiceAccountRoleToolbarTextInput"
+      inputGroupPlaceholder={t("searchByName")}
+      inputGroupOnChange={filterData}
+      toolbarItem={
+        <Split hasGutter>
+          <SplitItem>
+            <Checkbox
+              label={t("hideInheritedRoles")}
+              id="hideInheritedRoles"
+              isChecked={hide}
+              onChange={setHide}
+            />
+          </SplitItem>
+        </Split>
+      }
+    >
       <DataLoader loader={loader}>
         {(clientRoles) => (
           <Table
@@ -113,6 +141,7 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
             rows={clientRoles.data}
             aria-label="roleList"
           >
+            {hide ? "" : " "}
             <TableHeader />
             <TableBody />
           </Table>
