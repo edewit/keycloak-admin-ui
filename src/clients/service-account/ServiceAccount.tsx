@@ -13,6 +13,7 @@ import { DataLoader } from "../../components/data-loader/DataLoader";
 import { TableToolbar } from "../../components/table-toolbar/TableToolbar";
 import { RealmContext } from "../../context/realm-context/RealmContext";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
+import { emptyFormatter } from "../../util";
 
 import "./service-account.css";
 
@@ -135,16 +136,22 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
     >
       <DataLoader loader={loader}>
         {(clientRoles) => (
-          <Table
-            variant={TableVariant.compact}
-            cells={["name", "inherent", "description"]}
-            rows={clientRoles.data}
-            aria-label="roleList"
-          >
+          <>
             {hide ? "" : " "}
-            <TableHeader />
-            <TableBody />
-          </Table>
+            <Table
+              variant={TableVariant.compact}
+              cells={[
+                "name",
+                { title: t("inherent"), cellFormatters: [emptyFormatter()] },
+                { title: t("description"), cellFormatters: [emptyFormatter()] },
+              ]}
+              rows={clientRoles.data}
+              aria-label="roleList"
+            >
+              <TableHeader />
+              <TableBody />
+            </Table>
+          </>
         )}
       </DataLoader>
     </TableToolbar>
