@@ -6,7 +6,13 @@ import {
   TableHeader,
   TableVariant,
 } from "@patternfly/react-table";
-import { Badge, Checkbox, Split, SplitItem } from "@patternfly/react-core";
+import {
+  Badge,
+  Button,
+  Checkbox,
+  Split,
+  SplitItem,
+} from "@patternfly/react-core";
 
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { DataLoader } from "../../components/data-loader/DataLoader";
@@ -131,6 +137,9 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
               onChange={setHide}
             />
           </SplitItem>
+          <SplitItem>
+            <Button>{t("assignRole")}</Button>
+          </SplitItem>
         </Split>
       }
     >
@@ -139,10 +148,14 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
           <>
             {hide ? "" : " "}
             <Table
+              onSelect={() => {}}
               variant={TableVariant.compact}
               cells={[
-                "name",
-                { title: t("inherent"), cellFormatters: [emptyFormatter()] },
+                t("roles:roleName"),
+                {
+                  title: t("inherentFrom"),
+                  cellFormatters: [emptyFormatter()],
+                },
                 { title: t("description"), cellFormatters: [emptyFormatter()] },
               ]}
               rows={clientRoles.data}
