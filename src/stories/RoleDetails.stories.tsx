@@ -1,7 +1,10 @@
 import React from "react";
-import { Meta } from "@storybook/react";
 import { Page } from "@patternfly/react-core";
 import { RealmRolesForm } from "../realm-roles/RealmRoleForm";
+
+import { MockAdminClient } from "./MockAdminClient";
+
+import rolesMock from "../realm-roles/__tests__/mock-roles.json";
 
 export default {
   title: "Role details tab",
@@ -11,7 +14,9 @@ export default {
 export const RoleDetailsExample = () => {
   return (
     <Page>
-      <RealmRolesForm />
+      <MockAdminClient mock={{ roles: { findOneById: () => rolesMock[0] } }}>
+        <RealmRolesForm />
+      </MockAdminClient>
     </Page>
   );
 };
