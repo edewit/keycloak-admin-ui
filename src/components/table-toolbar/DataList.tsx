@@ -56,12 +56,14 @@ export type DataListProps = {
   loader: (first?: number, max?: number, search?: string) => Promise<any[]>;
   isPaginated?: boolean;
   ariaLabelKey: string;
+  searchPlaceholderKey: string;
   columns: Field[];
   actions?: IActions;
 };
 
 export const DataList = ({
   ariaLabelKey,
+  searchPlaceholderKey,
   isPaginated = false,
   loader,
   columns,
@@ -135,7 +137,7 @@ export const DataList = ({
           inputGroupName={`${ariaLabelKey}input`}
           inputGroupOnChange={searchOnChange}
           inputGroupOnClick={load}
-          inputGroupPlaceholder={t("Search for client")}
+          inputGroupPlaceholder={t(searchPlaceholderKey)}
         >
           {!loading && (
             <DataTable
@@ -153,7 +155,7 @@ export const DataList = ({
           inputGroupName={`${ariaLabelKey}input`}
           inputGroupOnChange={searchOnChange}
           inputGroupOnClick={() => {}}
-          inputGroupPlaceholder={t("Search for client")}
+          inputGroupPlaceholder={t(searchPlaceholderKey)}
         >
           <DataTable
             actions={actions}

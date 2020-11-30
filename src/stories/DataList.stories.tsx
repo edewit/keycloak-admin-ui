@@ -11,11 +11,15 @@ export default {
   component: DataList,
 } as Meta;
 
+const wait = (ms: number, value: any) =>
+  new Promise((resolve) => setTimeout(resolve, ms, value));
+
 const Template: Story<DataListProps> = (args) => <DataList {...args} />;
 
 export const SimpleList = Template.bind({});
 SimpleList.args = {
   ariaLabelKey: "clients:clientList",
+  searchPlaceholderKey: "common:search",
   columns: [
     { name: "clientId", displayKey: "clients:clientID" },
     { name: "protocol", displayKey: "clients:type" },
@@ -36,11 +40,10 @@ SimpleList.args = {
 export const LoadingList = Template.bind({});
 LoadingList.args = {
   ariaLabelKey: "clients:clientList",
+  searchPlaceholderKey: "common:search",
   columns: [{ name: "title" }, { name: "body" }],
   isPaginated: true,
   loader: async () => {
-    const wait = (ms: number, value: any) =>
-      new Promise((resolve) => setTimeout(resolve, ms, value));
     const res = await fetch("https://jsonplaceholder.typicode.com/posts/");
     const value = await res.json();
     return wait(3000, value) as any;
