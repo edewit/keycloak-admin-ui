@@ -68,6 +68,7 @@ export type DataListProps<T> = {
   columns: Field<T>[];
   actions?: Action<T>[];
   toolbarItem?: ReactNode;
+  emptyState?: ReactNode;
 };
 
 export function DataList<T>({
@@ -78,6 +79,7 @@ export function DataList<T>({
   columns,
   actions,
   toolbarItem,
+  emptyState,
 }: DataListProps<T>) {
   const { t } = useTranslation();
   const [rows, setRows] = useState<Row<T>[]>();
@@ -170,7 +172,7 @@ export function DataList<T>({
           inputGroupPlaceholder={t(searchPlaceholderKey)}
           toolbarItem={toolbarItem}
         >
-          {!loading && (
+          {!loading && (emptyState === undefined || rows.length !== 0) && (
             <DataTable
               actions={convertAction()}
               rows={rows}
@@ -178,6 +180,7 @@ export function DataList<T>({
               ariaLabelKey={ariaLabelKey}
             />
           )}
+          {!loading && rows.length === 0 && emptyState}
           {loading && <Loading />}
         </PaginatingTableToolbar>
       )}
@@ -189,12 +192,15 @@ export function DataList<T>({
           inputGroupPlaceholder={t(searchPlaceholderKey)}
           toolbarItem={toolbarItem}
         >
-          <DataTable
-            actions={convertAction()}
-            rows={filteredData || rows}
-            columns={columns}
-            ariaLabelKey={ariaLabelKey}
-          />
+          {(emptyState === undefined || rows.length !== 0) && (
+            <DataTable
+              actions={convertAction()}
+              rows={filteredData || rows}
+              columns={columns}
+              ariaLabelKey={ariaLabelKey}
+            />
+          )}
+          {rows.length === 0 && emptyState}
         </TableToolbar>
       )}
     </>

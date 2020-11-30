@@ -49,3 +49,12 @@ LoadingList.args = {
     return wait(3000, value) as any;
   },
 };
+
+export const EmptyList = Template.bind({});
+EmptyList.args = {
+  ariaLabelKey: "clients:clientList",
+  searchPlaceholderKey: "common:search",
+  columns: [{ name: "title" }, { name: "body" }],
+  loader: () => Promise.resolve([]),
+  emptyState: <h1>Wait what? No content?</h1>,
+};
