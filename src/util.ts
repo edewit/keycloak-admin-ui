@@ -30,8 +30,10 @@ const sortProvider = (
   }
 };
 
+export const deepCopy = (obj: object) => JSON.parse(JSON.stringify(obj));
+
 export const exportClient = (client: ClientRepresentation): void => {
-  const clientCopy = JSON.parse(JSON.stringify(client));
+  const clientCopy = deepCopy(client);
   delete clientCopy.id;
 
   if (clientCopy.protocolMappers) {

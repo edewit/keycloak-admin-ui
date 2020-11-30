@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  IAction,
   IActions,
   IFormatter,
   Table,
@@ -11,24 +12,26 @@ import {
 import { PaginatingTableToolbar } from "./PaginatingTableToolbar";
 import { Spinner } from "@patternfly/react-core";
 import { TableToolbar } from "./TableToolbar";
+import { deepCopy } from "../../util";
 
-type Row = {
-  cells: any[];
+type Row<T> = {
+  data: T;
+  cells: (keyof T)[];
 };
 
-type DataTableProps = {
+type DataTableProps<T> = {
   ariaLabelKey: string;
   columns: Field[];
-  rows: Row[];
+  rows: Row<T>[];
   actions?: IActions;
 };
 
-const DataTable = ({
+function DataTable<T>({
   columns,
   rows,
   actions,
   ariaLabelKey,
-}: DataTableProps) => {
+}: DataTableProps<T>) {
   const { t } = useTranslation();
   return (
     <Table
@@ -44,7 +47,7 @@ const DataTable = ({
       <TableBody />
     </Table>
   );
-};
+}
 
 export type Field = {
   name: string;
@@ -52,26 +55,32 @@ export type Field = {
   cellFormatters?: IFormatter[];
 };
 
-export type DataListProps = {
-  loader: (first?: number, max?: number, search?: string) => Promise<any[]>;
+export type Action<T> = IAction & {
+  onRowClick?: (row: T) => Promise<boolean> | void;
+};
+
+export type DataListProps<T> = {
+  loader: (first?: number, max?: number, search?: string) => Promise<T[]>;
   isPaginated?: boolean;
   ariaLabelKey: string;
   searchPlaceholderKey: string;
   columns: Field[];
-  actions?: IActions;
+  actions?: Action<T>[];
+  toolbarItem?: ReactNode;
 };
 
-export const DataList = ({
+export function DataList<T>({
   ariaLabelKey,
   searchPlaceholderKey,
   isPaginated = false,
   loader,
   columns,
   actions,
-}: DataListProps) => {
+  toolbarItem,
+}: DataListProps<T>) {
   const { t } = useTranslation();
-  const [rows, setRows] = useState<Row[]>();
-  const [filteredData, setFilteredData] = useState<Row[]>();
+  const [rows, setRows] = useState<Row<T>[]>();
+  const [filteredData, setFilteredData] = useState<Row<T>[]>();
   const [loading, setLoading] = useState(false);
 
   const [max, setMax] = useState(10);
@@ -85,7 +94,8 @@ export const DataList = ({
     setRows(
       data!.map((value) => {
         return {
-          cells: columns.map((col) => value[col.name]),
+          data: value,
+          cells: columns.map((col) => (value as any)[col.name]),
         };
       })
     );
@@ -100,11 +110,25 @@ export const DataList = ({
     setFilteredData(
       rows!.filter((row) =>
         row.cells.some(
-          (cell) => cell && cell.toLowerCase().includes(search.toLowerCase())
+          (cell) =>
+            cell && cell.toString().toLowerCase().includes(search.toLowerCase())
         )
       )
     );
   };
+
+  const convertAction = () =>
+    actions &&
+    deepCopy(actions).map((action: Action<T>, index: number) => {
+      delete action.onRowClick;
+      action.onClick = async (_, rowIndex) => {
+        const result = await actions[index].onRowClick!(rows![rowIndex].data);
+        if (result) {
+          delete rows![rowIndex];
+        }
+      };
+      return action;
+    });
 
   const searchOnChange = (value: string) => {
     if (isPaginated) {
@@ -138,10 +162,11 @@ export const DataList = ({
           inputGroupOnChange={searchOnChange}
           inputGroupOnClick={load}
           inputGroupPlaceholder={t(searchPlaceholderKey)}
+          toolbarItem={toolbarItem}
         >
           {!loading && (
             <DataTable
-              actions={actions}
+              actions={convertAction()}
               rows={rows}
               columns={columns}
               ariaLabelKey={ariaLabelKey}
@@ -156,9 +181,10 @@ export const DataList = ({
           inputGroupOnChange={searchOnChange}
           inputGroupOnClick={() => {}}
           inputGroupPlaceholder={t(searchPlaceholderKey)}
+          toolbarItem={toolbarItem}
         >
           <DataTable
-            actions={actions}
+            actions={convertAction()}
             rows={filteredData || rows}
             columns={columns}
             ariaLabelKey={ariaLabelKey}
@@ -167,4 +193,4 @@ export const DataList = ({
       )}
     </>
   );
-};
+}

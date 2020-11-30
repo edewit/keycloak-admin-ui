@@ -1,10 +1,10 @@
 import React from "react";
+import { IFormatterValueType } from "@patternfly/react-table";
 import { Meta, Story } from "@storybook/react";
 
 import clients from "../clients/__tests__/mock-clients.json";
 
 import { DataList, DataListProps } from "../components/table-toolbar/DataList";
-import { IFormatterValueType } from "@patternfly/react-table";
 
 export default {
   title: "Data list",
