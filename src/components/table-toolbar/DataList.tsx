@@ -21,7 +21,7 @@ type Row<T> = {
 
 type DataTableProps<T> = {
   ariaLabelKey: string;
-  columns: Field[];
+  columns: Field<T>[];
   rows: Row<T>[];
   actions?: IActions;
 };
@@ -50,7 +50,7 @@ function DataTable<T>({
 }
 
 export type Field<T> = {
-  name: keyof T;
+  name: string;
   displayKey?: string;
   cellFormatters?: IFormatter[];
   cellRenderer?: (row: T) => ReactNode;

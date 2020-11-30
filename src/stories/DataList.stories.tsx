@@ -14,7 +14,7 @@ export default {
 const wait = (ms: number, value: any) =>
   new Promise((resolve) => setTimeout(resolve, ms, value));
 
-const Template: Story<DataListProps> = (args) => <DataList {...args} />;
+const Template: Story<DataListProps<any>> = (args) => <DataList {...args} />;
 
 export const SimpleList = Template.bind({});
 SimpleList.args = {
