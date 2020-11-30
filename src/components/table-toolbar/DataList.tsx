@@ -53,16 +53,16 @@ export type Field = {
 };
 
 export type DataListProps = {
+  loader: (first?: number, max?: number, search?: string) => Promise<any[]>;
+  isPaginated?: boolean;
   ariaLabelKey: string;
-  data?: any[];
-  loader?: (first: number, max: number, search: string) => Promise<any[]>;
   columns: Field[];
   actions?: IActions;
 };
 
 export const DataList = ({
   ariaLabelKey,
-  data,
+  isPaginated = false,
   loader,
   columns,
   actions,
@@ -70,16 +70,15 @@ export const DataList = ({
   const { t } = useTranslation();
   const [rows, setRows] = useState<Row[]>();
   const [filteredData, setFilteredData] = useState<Row[]>();
+  const [loading, setLoading] = useState(false);
 
   const [max, setMax] = useState(10);
   const [first, setFirst] = useState(0);
   const [search, setSearch] = useState("");
 
   const load = async () => {
-    if (loader) {
-      // setRows(undefined);
-      data = await loader(first, max, search);
-    }
+    setLoading(true);
+    const data = await loader(first, max, search);
 
     setRows(
       data!.map((value) => {
@@ -88,14 +87,12 @@ export const DataList = ({
         };
       })
     );
+    setLoading(false);
   };
 
-  useEffect(
-    () => {
-      load();
-    },
-    loader ? [first, max] : []
-  );
+  useEffect(() => {
+    load();
+  }, [first, max]);
 
   const filter = (search: string) => {
     setFilteredData(
@@ -108,21 +105,23 @@ export const DataList = ({
   };
 
   const searchOnChange = (value: string) => {
-    if (loader) {
+    if (isPaginated) {
       setSearch(value);
     } else {
       filter(value);
     }
   };
 
+  const Loading = () => (
+    <div className="pf-u-text-align-center">
+      <Spinner />
+    </div>
+  );
+
   return (
     <>
-      {!rows && (
-        <div className="pf-u-text-align-center">
-          <Spinner />
-        </div>
-      )}
-      {rows && loader && (
+      {!rows && <Loading />}
+      {rows && isPaginated && (
         <PaginatingTableToolbar
           count={rows.length}
           first={first}
@@ -138,15 +137,18 @@ export const DataList = ({
           inputGroupOnClick={load}
           inputGroupPlaceholder={t("Search for client")}
         >
-          <DataTable
-            actions={actions}
-            rows={rows}
-            columns={columns}
-            ariaLabelKey={ariaLabelKey}
-          />
+          {!loading && (
+            <DataTable
+              actions={actions}
+              rows={rows}
+              columns={columns}
+              ariaLabelKey={ariaLabelKey}
+            />
+          )}
+          {loading && <Loading />}
         </PaginatingTableToolbar>
       )}
-      {rows && !loader && (
+      {rows && !isPaginated && (
         <TableToolbar
           inputGroupName={`${ariaLabelKey}input`}
           inputGroupOnChange={searchOnChange}

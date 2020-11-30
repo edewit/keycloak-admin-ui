@@ -30,18 +30,19 @@ SimpleList.args = {
     },
     { name: "baseUrl", displayKey: "clients:homeURL" },
   ],
-  data: clients,
+  loader: () => clients,
 };
 
 export const LoadingList = Template.bind({});
 LoadingList.args = {
   ariaLabelKey: "clients:clientList",
   columns: [{ name: "title" }, { name: "body" }],
-  loader: () => {
+  isPaginated: true,
+  loader: async () => {
     const wait = (ms: number, value: any) =>
       new Promise((resolve) => setTimeout(resolve, ms, value));
-    return fetch("https://jsonplaceholder.typicode.com/posts/")
-      .then((res) => res.json())
-      .then((value) => wait(3000, value) as any);
+    const res = await fetch("https://jsonplaceholder.typicode.com/posts/");
+    const value = await res.json();
+    return wait(3000, value) as any;
   },
 };
