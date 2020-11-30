@@ -49,7 +49,7 @@ export const ClientsSection = () => {
     ) : undefined) as object;
   };
 
-  const clientDetailLink = (client: ClientRepresentation) => (
+  const ClientDetailLink = (client: ClientRepresentation) => (
     <>
       <Link key={client.id} to={`/clients/${client.id}`}>
         {client.clientId}
@@ -111,7 +111,7 @@ export const ClientsSection = () => {
             {
               name: "clientId",
               displayKey: "clients:clientID",
-              cellRenderer: clientDetailLink,
+              cellRenderer: ClientDetailLink,
             },
             { name: "protocol", displayKey: "clients:type" },
             {
