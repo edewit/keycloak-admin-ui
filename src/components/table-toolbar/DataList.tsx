@@ -49,10 +49,11 @@ function DataTable<T>({
   );
 }
 
-export type Field = {
-  name: string;
+export type Field<T> = {
+  name: keyof T;
   displayKey?: string;
   cellFormatters?: IFormatter[];
+  cellRenderer?: (row: T) => ReactNode;
 };
 
 export type Action<T> = IAction & {
@@ -64,7 +65,7 @@ export type DataListProps<T> = {
   isPaginated?: boolean;
   ariaLabelKey: string;
   searchPlaceholderKey: string;
-  columns: Field[];
+  columns: Field<T>[];
   actions?: Action<T>[];
   toolbarItem?: ReactNode;
 };
@@ -95,7 +96,12 @@ export function DataList<T>({
       data!.map((value) => {
         return {
           data: value,
-          cells: columns.map((col) => (value as any)[col.name]),
+          cells: columns.map((col) => {
+            if (col.cellRenderer) {
+              return col.cellRenderer(value);
+            }
+            return (value as any)[col.name];
+          }),
         };
       })
     );
