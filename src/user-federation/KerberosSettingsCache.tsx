@@ -22,7 +22,6 @@ export const KerberosSettingsCache = () => {
   // let userFedCachePolicy = "MAX_LIFESPAN";
   const adminClient = useAdminClient();
   const { register, control, setValue } = useForm<ComponentRepresentation>();
-  const [name, setName] = useState("");
   const { id } = useParams<{ id: string }>();
 
   const convertToDays = (num: string) => {
@@ -65,7 +64,6 @@ export const KerberosSettingsCache = () => {
     (async () => {
       const fetchedComponent = await adminClient.components.findOne({ id });
       if (fetchedComponent) {
-        setName(fetchedComponent.name!);
         setupForm(fetchedComponent);
       }
     })();

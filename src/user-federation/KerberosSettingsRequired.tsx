@@ -21,7 +21,6 @@ export const KerberosSettingsRequired = () => {
   const adminClient = useAdminClient();
   const [isEditModeDropdownOpen, setIsEditModeDropdownOpen] = useState(false);
   const { register, control, setValue } = useForm<ComponentRepresentation>();
-  const [name, setName] = useState("");
   const { id } = useParams<{ id: string }>();
 
   const setupForm = (component: ComponentRepresentation) => {
@@ -55,7 +54,6 @@ export const KerberosSettingsRequired = () => {
     (async () => {
       const fetchedComponent = await adminClient.components.findOne({ id });
       if (fetchedComponent) {
-        setName(fetchedComponent.name!);
         setupForm(fetchedComponent);
       }
     })();
