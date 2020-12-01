@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   FormGroup,
   Select,
@@ -8,17 +9,57 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { HelpItem } from "../components/help-enabler/HelpItem";
-import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import ComponentRepresentation from "keycloak-admin/lib/defs/componentRepresentation";
 import { FormAccess } from "../components/form-access/FormAccess";
+import { useAdminClient } from "../context/auth/AdminClient";
+import { useParams } from "react-router-dom";
 
 export const KerberosSettingsRequired = () => {
   const { t } = useTranslation("user-federation");
   const helpText = useTranslation("user-federation-help").t;
-
+  const adminClient = useAdminClient();
   const [isEditModeDropdownOpen, setIsEditModeDropdownOpen] = useState(false);
-  const { register, control } = useForm<ComponentRepresentation>();
+  const { register, control, setValue } = useForm<ComponentRepresentation>();
+  const [name, setName] = useState("");
+  const { id } = useParams<{ id: string }>();
+
+  const setupForm = (component: ComponentRepresentation) => {
+    Object.entries(component).map((entry) => {
+      if (entry[0] === "config") {
+        setValue("serverPrincipal", entry[1].serverPrincipal);
+        setValue("keyTab", entry[1].keyTab);
+        setValue("debug", entry[1].debug[0] === "true");
+        setValue(
+          "allowPasswordAuthentication",
+          entry[1].allowPasswordAuthentication[0] === "true"
+        );
+        setValue(
+          "updateProfileFirstLogin",
+          entry[1].updateProfileFirstLogin[0] === "true"
+        );
+        setValue("editMode", entry[1].editMode);
+        setValue("kerberosRealm", entry[1].kerberosRealm);
+        // MF TODO - these two props do not seem to appear on new UI like old UI
+        // setValue("enabled", entry[1].enabled);
+        // setValue("priority", entry[1].priority);
+      } else {
+        setValue(entry[0], entry[1]);
+      }
+    });
+    // TODO - keep for now to debug future save and show/hide functionality
+    console.log(component);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const fetchedComponent = await adminClient.components.findOne({ id });
+      if (fetchedComponent) {
+        setName(fetchedComponent.name!);
+        setupForm(fetchedComponent);
+      }
+    })();
+  }, []);
 
   return (
     <>
@@ -40,7 +81,7 @@ export const KerberosSettingsRequired = () => {
             isRequired
             type="text"
             id="kc-console-display-name"
-            name="consoleDisplayName"
+            name="name"
             ref={register}
           />
         </FormGroup>
@@ -204,7 +245,8 @@ export const KerberosSettingsRequired = () => {
                   value={t("common:selectOne")}
                   isPlaceholder
                 />
-                <SelectOption key={1} value="UNSYNCED" />
+                <SelectOption key={1} value="READ_ONLY" />
+                <SelectOption key={2} value="UNSYNCED" />
               </Select>
             )}
           ></Controller>
@@ -223,7 +265,7 @@ export const KerberosSettingsRequired = () => {
           hasNoPaddingTop
         >
           <Controller
-            name="updateFirstLogin"
+            name="updateProfileFirstLogin"
             defaultValue={false}
             control={control}
             render={({ onChange, value }) => (

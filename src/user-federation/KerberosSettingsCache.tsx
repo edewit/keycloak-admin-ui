@@ -7,14 +7,69 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { HelpItem } from "../components/help-enabler/HelpItem";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+
 import ComponentRepresentation from "keycloak-admin/lib/defs/componentRepresentation";
 import { FormAccess } from "../components/form-access/FormAccess";
+import { useAdminClient } from "../context/auth/AdminClient";
+import { useParams } from "react-router-dom";
 
 export const KerberosSettingsCache = () => {
   const { t } = useTranslation("user-federation");
   const helpText = useTranslation("user-federation-help").t;
+  // TODO MF leave for future show/hide functionality
+  // let userFedCachePolicy = "MAX_LIFESPAN";
+  const adminClient = useAdminClient();
+  const { register, control, setValue } = useForm<ComponentRepresentation>();
+  const [name, setName] = useState("");
+  const { id } = useParams<{ id: string }>();
+
+  const convertToDays = (num) => {
+    switch (num) {
+      case "1":
+        return t("common:Sunday");
+      case "2":
+        return t("common:Monday");
+      case "3":
+        return t("common:Tuesday");
+      case "4":
+        return t("common:Wednesday");
+      case "5":
+        return t("common:Thursday");
+      case "6":
+        return t("common:Friday");
+      case "7":
+        return t("common:Saturday");
+      default:
+        return t("common:selectOne");
+    }
+  };
+
+  const setupForm = (component: ComponentRepresentation) => {
+    Object.entries(component).map((entry) => {
+      if (entry[0] === "config") {
+        setValue("cachePolicy", entry[1].cachePolicy);
+        setValue("evictionHour", entry[1].evictionHour);
+        setValue("evictionMinute", entry[1].evictionMinute);
+        setValue("evictionDay", convertToDays(entry[1].evictionDay[0]));
+        setValue("maxLifespan", entry[1].maxLifespan);
+      } else {
+        setValue(entry[0], entry[1]);
+      }
+    });
+    console.log(component);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const fetchedComponent = await adminClient.components.findOne({ id });
+      if (fetchedComponent) {
+        setName(fetchedComponent.name!);
+        setupForm(fetchedComponent);
+      }
+    })();
+  }, []);
 
   const [isCachePolicyDropdownOpen, setIsCachePolicyDropdownOpen] = useState(
     false
@@ -29,8 +84,6 @@ export const KerberosSettingsCache = () => {
   const [isEvictionDayDropdownOpen, setIsEvictionDayDropdownOpen] = useState(
     false
   );
-
-  const { control, register } = useForm<ComponentRepresentation>();
 
   const hourOptions = [
     <SelectOption key={0} value={t("common:selectOne")} isPlaceholder />,
@@ -85,14 +138,15 @@ export const KerberosSettingsCache = () => {
                   value={t("common:selectOne")}
                   isPlaceholder
                 />
-                <SelectOption key={1} value="Default" />
-                <SelectOption key={2} value="Something" />
+                <SelectOption key={1} value="DEFAULT" />
+                <SelectOption key={2} value="EVICT_DAILY" />
+                <SelectOption key={3} value="EVICT_WEEKLY" />
+                <SelectOption key={4} value="MAX_LIFESPAN" />
+                <SelectOption key={5} value="NO_CACHE" />
               </Select>
             )}
           ></Controller>
         </FormGroup>
-
-        {/* TODO: Field shows only if cache policy is EVICT_WEEKLY */}
         <FormGroup
           label={t("evictionDay")}
           labelIcon={
@@ -139,8 +193,6 @@ export const KerberosSettingsCache = () => {
             )}
           ></Controller>
         </FormGroup>
-
-        {/* TODO: Field shows only if cache policy is EVICT_WEEKLY or EVICT_DAILY */}
         {/* TODO: Investigate whether this should be a number field instead of a dropdown/text field */}
         <FormGroup
           label={t("evictionHour")}
@@ -176,8 +228,6 @@ export const KerberosSettingsCache = () => {
             )}
           ></Controller>
         </FormGroup>
-
-        {/* TODO: Field shows only if cache policy is EVICT_WEEKLY or EVICT_DAILY */}
         {/* TODO: Investigate whether this should be a number field instead of a dropdown/text field */}
         <FormGroup
           label={t("evictionMinute")}
@@ -213,8 +263,6 @@ export const KerberosSettingsCache = () => {
             )}
           ></Controller>
         </FormGroup>
-
-        {/* TODO: Field shows only if cache policy is MAX_LIFESPAN */}
         <FormGroup
           label={t("maxLifespan")}
           labelIcon={
