@@ -25,7 +25,7 @@ export const KerberosSettingsCache = () => {
   const [name, setName] = useState("");
   const { id } = useParams<{ id: string }>();
 
-  const convertToDays = (num) => {
+  const convertToDays = (num: string) => {
     switch (num) {
       case "1":
         return t("common:Sunday");
