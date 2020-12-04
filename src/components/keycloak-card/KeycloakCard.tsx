@@ -43,7 +43,7 @@ export const KeycloakCard = ({
   };
 
   const openSettings = () => {
-    history.push(`/components/${id}`);
+    history.push(`/user-federation/${id}`);
     // debugging
     console.log(`Card ${title} was clicked!`);
     console.log(`Its ID is: ${id}`);

@@ -166,7 +166,7 @@ export const routes: RoutesFn = (t: TFunction) => [
     access: "view-realm",
   },
   {
-    path: "/components/:id",
+    path: "/user-federation/:id",
     component: UserFederationKerberosSettings,
     breadcrumb: t("common:settings"),
     access: "view-realm",

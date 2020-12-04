@@ -15,11 +15,7 @@ export const PageBreadCrumbs = () => {
         <Breadcrumb>
           {crumbs.map(({ match, breadcrumb: crumb }, i) => (
             <BreadcrumbItem key={i} isActive={crumbs.length - 1 === i}>
-              {crumbs.length - 1 !== i && match.url === "/components" ? (
-                <Link to="/user-federation">User federation</Link>
-              ) : (
-                <Link to={match.url}>{crumb}</Link>
-              )}
+              <Link to={match.url}>{crumb}</Link>
             </BreadcrumbItem>
           ))}
         </Breadcrumb>
