@@ -103,11 +103,6 @@ export const ClientDetails = () => {
     name: "publicClient",
     defaultValue: false,
   });
-  const serviceAccount = useWatch({
-    control: form.control,
-    name: "serviceAccountsEnabled",
-    defaultValue: false,
-  });
 
   const { id } = useParams<{ id: string }>();
 
@@ -173,6 +168,7 @@ export const ClientDetails = () => {
         };
         await adminClient.clients.update({ id }, client);
         setupForm(client as ClientRepresentation);
+        setClient(client);
         addAlert(t("clientSaveSuccess"), AlertVariant.success);
       } catch (error) {
         addAlert(`${t("clientSaveError")} '${error}'`, AlertVariant.danger);
@@ -249,7 +245,7 @@ export const ClientDetails = () => {
               </Tab>
             </Tabs>
           </Tab>
-          {serviceAccount && (
+          {client && client.serviceAccountsEnabled && (
             <Tab
               eventKey={3}
               title={<TabTitleText>{t("serviceAccount")}</TabTitleText>}
