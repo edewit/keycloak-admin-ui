@@ -73,6 +73,7 @@ export const RealmRolesSection = () => {
         await adminClient.roles.delById({
           id: selectedRole!.id!,
         });
+        setSelectedRole(undefined);
         addAlert(t("roleDeletedSuccess"), AlertVariant.success);
       } catch (error) {
         addAlert(`${t("roleDeleteError")} ${error}`, AlertVariant.danger);
@@ -87,6 +88,7 @@ export const RealmRolesSection = () => {
       <PageSection variant="light">
         <DeleteConfirm />
         <DataList
+          key={selectedRole ? selectedRole.id : "roleList"}
           loader={loader}
           ariaLabelKey="roles:roleList"
           searchPlaceholderKey="roles:searchFor"

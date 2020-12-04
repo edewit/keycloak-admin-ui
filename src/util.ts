@@ -1,5 +1,6 @@
 import { IFormatter, IFormatterValueType } from "@patternfly/react-table";
 import FileSaver from "file-saver";
+import _ from "lodash";
 import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
 import { ProviderRepresentation } from "keycloak-admin/lib/defs/serverInfoRepesentation";
 
@@ -30,10 +31,8 @@ const sortProvider = (
   }
 };
 
-export const deepCopy = (obj: object) => JSON.parse(JSON.stringify(obj));
-
 export const exportClient = (client: ClientRepresentation): void => {
-  const clientCopy = deepCopy(client);
+  const clientCopy = _.cloneDeep(client);
   delete clientCopy.id;
 
   if (clientCopy.protocolMappers) {

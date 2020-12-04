@@ -12,7 +12,7 @@ import {
 import { PaginatingTableToolbar } from "./PaginatingTableToolbar";
 import { Spinner } from "@patternfly/react-core";
 import { TableToolbar } from "./TableToolbar";
-import { deepCopy } from "../../util";
+import _ from "lodash";
 
 type Row<T> = {
   data: T;
@@ -127,12 +127,12 @@ export function DataList<T>({
 
   const convertAction = () =>
     actions &&
-    deepCopy(actions).map((action: Action<T>, index: number) => {
+    _.cloneDeep(actions).map((action: Action<T>, index: number) => {
       delete action.onRowClick;
       action.onClick = async (_, rowIndex) => {
         const result = await actions[index].onRowClick!(rows![rowIndex].data);
         if (result) {
-          delete rows![rowIndex];
+          load();
         }
       };
       return action;
