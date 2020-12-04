@@ -13,6 +13,7 @@ import {
   FlexItem,
 } from "@patternfly/react-core";
 import "./keycloak-card.css";
+import { useHistory } from "react-router-dom";
 
 export type KeycloakCardProps = {
   id: string;
@@ -26,6 +27,7 @@ export type KeycloakCardProps = {
 };
 
 export const KeycloakCard = ({
+  id,
   dropdownItems,
   title,
   labelText,
@@ -33,8 +35,18 @@ export const KeycloakCard = ({
   footerText,
 }: KeycloakCardProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const history = useHistory();
+
   const onDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const openSettings = () => {
+    history.push(`/components/${id}`);
+    // debugging
+    console.log(`Card ${title} was clicked!`);
+    console.log(`Its ID is: ${id}`);
   };
 
   return (
@@ -53,7 +65,7 @@ export const KeycloakCard = ({
         </CardActions>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardBody />
+      <CardBody onClick={openSettings} />
       <CardFooter>
         <Flex>
           <FlexItem className="keycloak--keycloak-card__footer">
