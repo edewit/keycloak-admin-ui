@@ -24,6 +24,7 @@
     "setup": "Setup",
     "evaluate": "Evaluate",
     "changeTypeTo": "Change type to",
+    "assignRole": "Assign role",
     "clientScope": {
       "default" : "Default",
       "optional" : "Optional"
@@ -63,8 +64,8 @@
     "authenticationFlow": "Authentication flow",
     "standardFlow": "Standard flow",
     "directAccess": "Direct access",
-    "serviceAccount": "Service account",
-    "enableServiceAccount": "Enable service account",
+    "serviceAccount": "Service account roles",
+    "enableServiceAccount": "Enable service account roles",
     "displayOnClient": "Display client on screen",
     "consentScreenText": "Client consent screen text",
     "loginSettings": "Login settings",
