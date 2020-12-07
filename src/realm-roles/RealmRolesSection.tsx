@@ -95,7 +95,7 @@ export const RealmRolesSection = () => {
           isPaginated
           toolbarItem={
             <>
-                <Button onClick={goToCreate}>{t("createRole")}</Button>
+              <Button onClick={goToCreate}>{t("createRole")}</Button>
             </>
           }
           actions={[
@@ -131,7 +131,7 @@ export const RealmRolesSection = () => {
               message={t("noRolesInThisRealm")}
               instructions={t("noRolesInThisRealmInstructions")}
               primaryActionText={t("createRole")}
-              onPrimaryAction={goToCreate}}
+              onPrimaryAction={goToCreate}
             />
           }
         />

@@ -24,8 +24,8 @@ export const ClientsSection = () => {
 
   const adminClient = useAdminClient();
   const baseUrl = adminClient.keycloak
-                  ? adminClient.keycloak.authServerUrl!
-                  : adminClient.baseUrl + "/"
+    ? adminClient.keycloak.authServerUrl!
+    : adminClient.baseUrl + "/";
 
   const loader = async (first?: number, max?: number, search?: string) => {
     const params: { [name: string]: string | number } = {
