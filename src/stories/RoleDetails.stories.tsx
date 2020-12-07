@@ -3,18 +3,18 @@ import { Page } from "@patternfly/react-core";
 import { Meta } from "@storybook/react";
 
 import { MockAdminClient } from "./MockAdminClient";
-import { RealmRolesForm } from "../realm-roles/RealmRoleForm";
+import { RealmRoleForm } from "../realm-roles/RealmRoleForm";
 
 export default {
   title: "New role form",
-  component: RealmRolesForm,
+  component: RealmRoleForm,
 } as Meta;
 
 export const View = () => {
   return (
     <Page>
       <MockAdminClient>
-        <RealmRolesForm />
+        <RealmRoleForm />
       </MockAdminClient>
     </Page>
   );
