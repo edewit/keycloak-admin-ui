@@ -6,13 +6,7 @@ import {
   TableHeader,
   TableVariant,
 } from "@patternfly/react-table";
-import {
-  Badge,
-  Button,
-  Checkbox,
-  Split,
-  SplitItem,
-} from "@patternfly/react-core";
+import { Badge, Button, Checkbox, ToolbarItem } from "@patternfly/react-core";
 
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { DataLoader } from "../../components/data-loader/DataLoader";
@@ -128,19 +122,19 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
       inputGroupPlaceholder={t("searchByName")}
       inputGroupOnChange={filterData}
       toolbarItem={
-        <Split hasGutter>
-          <SplitItem>
+        <>
+          <ToolbarItem>
             <Checkbox
               label={t("hideInheritedRoles")}
               id="hideInheritedRoles"
               isChecked={hide}
               onChange={setHide}
             />
-          </SplitItem>
-          <SplitItem>
+          </ToolbarItem>
+          <ToolbarItem>
             <Button>{t("assignRole")}</Button>
-          </SplitItem>
-        </Split>
+          </ToolbarItem>
+        </>
       }
     >
       <DataLoader loader={loader}>
