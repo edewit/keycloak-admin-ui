@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .kc-role-attributes__table {
   /* even though the table is borderless, make the border under the th transparent */
   --pf-c-table--border-width--base: 0;
@@ -14,4 +15,24 @@
   --pf-c-form__group--m-action--MarginTop: calc(
     var(--pf-global--spacer--2xl) - var(--pf-global--spacer--sm)
   );
+=======
+.pf-c-form-control:not(textarea) {
+  width: 600px;
+}
+
+.pf-u-mt-lg {
+  grid-gap: 16px;
+}
+
+tr.labels, tr.tableRow {
+  border-bottom: none !important;
+}
+
+td#text-input-0-1 {
+    width: 30px;
+}
+
+table.keyValueTable {
+    margin-top: 50px;
+>>>>>>> use TableComposable
 }
