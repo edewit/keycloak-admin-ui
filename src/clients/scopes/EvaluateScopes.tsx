@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ClipboardCopy,
@@ -10,14 +10,35 @@ import {
   Split,
   SplitItem,
 } from "@patternfly/react-core";
+import ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
 
 import { HelpItem } from "../../components/help-enabler/HelpItem";
+import { useAdminClient } from "../../context/auth/AdminClient";
+
 import "./evaluate.css";
 
-export const EvaluateScopes = () => {
+export type EvaluateScopesProps = {
+  clientId: string;
+  protocol: string;
+};
+
+export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
   const { t } = useTranslation();
+  const adminClient = useAdminClient();
+  const [selectableScopes, setSelectableScopes] = useState<
+    ClientScopeRepresentation[]
+  >([]);
   const [isOpen, setIsOpen] = useState(false);
-  // const [selected]
+  const [selected, setSelected] = useState<string[]>([protocol]);
+
+  useEffect(() => {
+    (async () => {
+      const optionalClientScopes = await adminClient.clients.listOptionalClientScopes(
+        { id: clientId }
+      );
+      setSelectableScopes(optionalClientScopes);
+    })();
+  }, []);
 
   return (
     <Form isHorizontal>
@@ -39,17 +60,22 @@ export const EvaluateScopes = () => {
               typeAheadAriaLabel="Select a state"
               onToggle={() => setIsOpen(!isOpen)}
               isOpen={isOpen}
+              selections={selected}
+              onSelect={(_, value) => {
+                // const option = value as ClientScopeRepresentation;
+                const option = value as string;
+                if (selected.includes(option)) {
+                  setSelected(selected.filter((item) => item !== option));
+                } else {
+                  setSelected([...selected, option]);
+                }
+              }}
               aria-labelledby="test"
               placeholderText="Select a state"
             >
-              {/* {this.state.options.map((option, index) => (
-            <SelectOption
-              isDisabled={option.disabled}
-              key={index}
-              value={option.value}
-              {...(option.description && { description: option.description })}
-            />
-          ))} */}
+              {selectableScopes.map((option, index) => (
+                <SelectOption key={index} value={option.name} />
+              ))}
             </Select>
           </SplitItem>
           <SplitItem>
