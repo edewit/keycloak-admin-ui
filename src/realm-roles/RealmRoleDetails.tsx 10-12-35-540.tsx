@@ -1,22 +1,31 @@
-import React from "react";
-import { useHistory} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import {
   ActionGroup,
+  AlertVariant,
   Button,
+  ButtonVariant,
+  DropdownItem,
   FormGroup,
+  PageSection,
+  Tab,
+  Tabs,
+  TabTitleText,
   TextArea,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
-import { SubmitHandler, UseFormMethods } from "react-hook-form";
+import {
+  Controller,
+  SubmitHandler,
+  useForm,
+  UseFormMethods,
+} from "react-hook-form";
 
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
 import { FormAccess } from "../components/form-access/FormAccess";
 
-<<<<<<< HEAD
-export type RealmRoleFormProps = {
-=======
 import { useAlerts } from "../components/alert/Alerts";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 
@@ -25,14 +34,13 @@ import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { RoleAttributes } from "./RoleAttributes";
 import { RolesTabs } from "./RealmRoleTabs";
 
-type RoleFormType = {
->>>>>>> logic from call with Jeff
+type RoleDetailsType = {
   form: UseFormMethods;
   save: SubmitHandler<RoleRepresentation>;
   editMode: boolean;
 };
 
-export const RealmRoleForm = ({ form, save, editMode }: RealmRoleFormProps) => {
+const RoleDetails = ({ form, save, editMode }: RoleDetailsType) => {
   const { t } = useTranslation("roles");
   const history = useHistory();
   return (
@@ -57,31 +65,25 @@ export const RealmRoleForm = ({ form, save, editMode }: RealmRoleFormProps) => {
           isReadOnly={editMode}
         />
       </FormGroup>
-      <FormGroup
-        label={t("description")}
-        fieldId="kc-description"
-        validated={
-          form.errors.description
-            ? ValidatedOptions.error
-            : ValidatedOptions.default
-        }
-        helperTextInvalid={form.errors.description?.message}
-      >
-        <TextArea
+      <FormGroup label={t("description")} fieldId="kc-description">
+        <Controller
           name="description"
-          ref={form.register({
-            maxLength: {
-              value: 255,
-              message: t("common:maxLength", { length: 255 }),
-            },
-          })}
-          type="text"
-          validated={
-            form.errors.description
-              ? ValidatedOptions.error
-              : ValidatedOptions.default
-          }
-          id="kc-role-description"
+          defaultValue=""
+          control={form.control}
+          rules={{ maxLength: 255 }}
+          render={({ onChange, value }) => (
+            <TextArea
+              type="text"
+              validated={
+                form.errors.description
+                  ? ValidatedOptions.error
+                  : ValidatedOptions.default
+              }
+              id="kc-role-description"
+              value={value}
+              onChange={onChange}
+            />
+          )}
         />
       </FormGroup>
       <ActionGroup>
@@ -94,9 +96,6 @@ export const RealmRoleForm = ({ form, save, editMode }: RealmRoleFormProps) => {
       </ActionGroup>
     </FormAccess>
   );
-<<<<<<< HEAD
-};
-=======
 };
 
 export const RealmRolesForm = () => {
@@ -109,11 +108,32 @@ export const RealmRolesForm = () => {
   const { id } = useParams<{ id: string }>();
   const [name, setName] = useState("");
   const [activeTab, setActiveTab] = useState(0);
+  const [attributes, setAttributes] = useState({});
+
+  const onAttributesChange = (attributes: {[index: string]: string[]}) => {
+    setAttributes(attributes);
+  }
+
+  const attributesToArray = (attributes: {
+    [key: string]: string }) => {
+      if (!attributes ||  Object.keys(attributes).length == 0) {
+        return [ {
+            key: "",
+            value: [""]
+          }
+        ];
+      }
+      return Object.keys(attributes || {}).map((key) => ({
+        key: key,
+        value: [attributes[key]]
+      })
+    )};
 
   useEffect(() => {
     (async () => {
       if (id) {
         const fetchedRole = await adminClient.roles.findOneById({ id });
+        setAttributes(fetchedRole.attributes);
         setName(fetchedRole.name!);
         setupForm(fetchedRole);
       } else {
@@ -187,11 +207,10 @@ export const RealmRolesForm = () => {
 
       <PageSection variant="light">
         {id && (
-          <RolesTabs />
+        <RolesTabs />
         )}
-        {!id && <RoleForm form={form} save={save} editMode={false} />}
+        {!id && <RoleDetails form={form} save={save} editMode={false} />}
       </PageSection>
     </>
   );
 };
->>>>>>> use TableComposable

@@ -10,7 +10,7 @@ export default {
   component: RolesTabs,
 } as Meta;
 
-export const RoleTabsExample = () => {
+export const RolesTabsExample = () => {
   return (
     <MockAdminClient mock={{ roles: { findOneById: () => rolesMock[0] } }}>
       <MemoryRouter initialEntries={["/roles/1"]}>
