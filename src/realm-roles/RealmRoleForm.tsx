@@ -14,19 +14,7 @@ import { SubmitHandler, UseFormMethods } from "react-hook-form";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
 import { FormAccess } from "../components/form-access/FormAccess";
 
-<<<<<<< HEAD
 export type RealmRoleFormProps = {
-=======
-import { useAlerts } from "../components/alert/Alerts";
-import { ViewHeader } from "../components/view-header/ViewHeader";
-
-import { useAdminClient } from "../context/auth/AdminClient";
-import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
-import { RoleAttributes } from "./RoleAttributes";
-import { RolesTabs } from "./RealmRoleTabs";
-
-type RoleFormType = {
->>>>>>> logic from call with Jeff
   form: UseFormMethods;
   save: SubmitHandler<RoleRepresentation>;
   editMode: boolean;
@@ -94,104 +82,4 @@ export const RealmRoleForm = ({ form, save, editMode }: RealmRoleFormProps) => {
       </ActionGroup>
     </FormAccess>
   );
-<<<<<<< HEAD
 };
-=======
-};
-
-export const RealmRolesForm = () => {
-  const { t } = useTranslation("roles");
-  const form = useForm<RoleRepresentation>();
-  const adminClient = useAdminClient();
-  const { addAlert } = useAlerts();
-  const history = useHistory();
-
-  const { id } = useParams<{ id: string }>();
-  const [name, setName] = useState("");
-  const [activeTab, setActiveTab] = useState(0);
-
-  useEffect(() => {
-    (async () => {
-      if (id) {
-        const fetchedRole = await adminClient.roles.findOneById({ id });
-        setName(fetchedRole.name!);
-        setupForm(fetchedRole);
-      } else {
-        setName(t("createRole"));
-      }
-    })();
-  }, []);
-
-  const setupForm = (role: RoleRepresentation) => {
-    Object.entries(role).map((entry) => {
-      form.setValue(entry[0], entry[1]);
-    });
-  };
-
-  const save = async (role: RoleRepresentation) => {
-    try {
-      if (id) {
-        await adminClient.roles.updateById({ id }, role);
-      } else {
-        await adminClient.roles.create(role);
-        const createdRole = await adminClient.roles.findOneByName({
-          name: role.name!,
-        });
-        history.push(`/roles/${createdRole.id}`);
-      }
-      addAlert(t(id ? "roleSaveSuccess" : "roleCreated"), AlertVariant.success);
-    } catch (error) {
-      addAlert(
-        t((id ? "roleSave" : "roleCreate") + "Error", { error }),
-        AlertVariant.danger
-      );
-    }
-  };
-
-  const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
-    titleKey: "roles:roleDeleteConfirm",
-    messageKey: t("roles:roleDeleteConfirmDialog", { name }),
-    continueButtonLabel: "common:delete",
-    continueButtonVariant: ButtonVariant.danger,
-    onConfirm: async () => {
-      try {
-        await adminClient.roles.delById({ id });
-        addAlert(t("roleDeletedSuccess"), AlertVariant.success);
-        history.push("/roles");
-      } catch (error) {
-        addAlert(`${t("roleDeleteError")} ${error}`, AlertVariant.danger);
-      }
-    },
-  });
-
-  return (
-    <>
-      <DeleteConfirm />
-      <ViewHeader
-        titleKey={name}
-        subKey={id ? "" : "roles:roleCreateExplain"}
-        dropdownItems={
-          id
-            ? [
-                <DropdownItem
-                  key="action"
-                  component="button"
-                  onClick={() => toggleDeleteDialog()}
-                >
-                  {t("deleteRole")}
-                </DropdownItem>,
-              ]
-            : undefined
-        }
-      />
-
-      <PageSection variant="light">
-        {id && (
-          <RolesTabs />
-        )}
-        {!id && <RoleForm form={form} save={save} editMode={false} />}
-      </PageSection>
-    </>
-  );
-};
->>>>>>> use TableComposable
