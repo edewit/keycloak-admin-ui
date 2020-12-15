@@ -11,7 +11,6 @@ import { EventsSection } from "./events/EventsSection";
 import { GroupsSection } from "./groups/GroupsSection";
 import { IdentityProvidersSection } from "./identity-providers/IdentityProvidersSection";
 import { PageNotFoundSection } from "./PageNotFoundSection";
-import { RealmRolesForm } from "./realm-roles/RealmRoleForm";
 import { RealmRolesSection } from "./realm-roles/RealmRolesSection";
 import { RealmSettingsSection } from "./realm-settings/RealmSettingsSection";
 import { NewRealmForm } from "./realm/add/NewRealmForm";
@@ -23,6 +22,7 @@ import { ClientDetails } from "./clients/ClientDetails";
 import { UserFederationKerberosSettings } from "./user-federation/UserFederationKerberosSettings";
 import { UserFederationLdapSettings } from "./user-federation/UserFederationLdapSettings";
 import { RoleMappingForm } from "./client-scopes/add/RoleMappingForm";
+import { RealmRoleTabs } from "./realm-roles/RealmRoleTabs";
 
 export type RouteDef = {
   path: string;
@@ -108,13 +108,13 @@ export const routes: RoutesFn = (t: any) => [
   },
   {
     path: "/roles/add-role",
-    component: RealmRolesForm,
+    component: RealmRoleTabs,
     breadcrumb: t("roles:createRole"),
     access: "manage-realm",
   },
   {
     path: "/roles/:id",
-    component: RealmRolesForm,
+    component: RealmRoleTabs,
     breadcrumb: t("roles:roleDetails"),
     access: "view-realm",
   },

@@ -81,8 +81,6 @@ export const RealmRoleTabs = () => {
 
   const save = async (role: RoleRepresentation) => {
     try {
-      console.log("attrobites", role.attributes)
-
       if (id) {
         if (role.attributes) {
           // react-hook-form will use `KeyValueType[]` here we convert it back into an indexed property of string[]
