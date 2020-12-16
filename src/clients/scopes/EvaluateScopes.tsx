@@ -16,37 +16,50 @@ import {
 import ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
 import UserRepresentation from "keycloak-admin/lib/defs/userRepresentation";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
+import ProtocolMapperRepresentation from "keycloak-admin/lib/defs/protocolMapperRepresentation";
 
+import { KeycloakDataTable } from "../../components/table-toolbar/KeycloakDataTable";
 import { RealmContext } from "../../context/realm-context/RealmContext";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useAdminClient } from "../../context/auth/AdminClient";
 
 import "./evaluate.css";
-import { Table } from "@patternfly/react-table";
+import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
+import { ProtocolMapperTypeRepresentation } from "keycloak-admin/lib/defs/serverInfoRepesentation";
 
 export type EvaluateScopesProps = {
   clientId: string;
+  protocol: string;
 };
 
-export const EvaluateScopes = ({ clientId }: EvaluateScopesProps) => {
+export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
   const prefix = "openid";
   const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
   const { realm } = useContext(RealmContext);
+  const mapperTypes = useServerInfo().protocolMapperTypes![protocol];
+
   const [selectableScopes, setSelectableScopes] = useState<
     ClientScopeRepresentation[]
   >([]);
   const [isScopeOpen, setIsScopeOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([prefix]);
+  const [activeTab, setActiveTab] = useState(0);
 
   const [userItems, setUserItems] = useState<JSX.Element[]>([]);
   const [userSearch, setUserSearch] = useState("");
   const [user, setUser] = useState<UserRepresentation>();
 
+  const [key, setKey] = useState("");
+  const refresh = () => setKey(`${new Date().getTime()}`);
   const [effectiveRoles, setEffectiveRoles] = useState<RoleRepresentation[]>(
     []
   );
+  const [protocolMappers, setProtocolMappers] = useState<
+    ProtocolMapperRepresentation[]
+  >([]);
+
   useEffect(() => {
     (async () => {
       const optionalClientScopes = await adminClient.clients.listOptionalClientScopes(
@@ -99,12 +112,23 @@ export const EvaluateScopes = ({ clientId }: EvaluateScopesProps) => {
         })
       );
 
-      const listProtocolMapper = await adminClient.clients.evaluateListProtocolMapper(
-        { id: clientId, scope }
-      );
+      const mapperList = (await adminClient.clients.evaluateListProtocolMapper({
+        id: clientId,
+        scope,
+      })) as ({
+        type: ProtocolMapperTypeRepresentation;
+      } & ProtocolMapperRepresentation)[];
 
-      console.log(effectiveRoles);
-      console.log(listProtocolMapper);
+      mapperList.map((mapper) => {
+        mapper.type = mapperTypes.filter(
+          (type) => type.id === mapper.protocolMapper
+        )[0];
+      });
+
+      setProtocolMappers(mapperList);
+
+      console.log(mapperList);
+      refresh();
     })();
   }, [selected]);
 
@@ -190,14 +214,59 @@ export const EvaluateScopes = ({ clientId }: EvaluateScopesProps) => {
           </Select>
         </FormGroup>
       </Form>
-      <Tabs isVertical style={{ position: "fixed", right: "0" }}>
+      <Tabs
+        key={key}
+        isVertical
+        activeKey={activeTab}
+        onSelect={(_, key) => setActiveTab(key as number)}
+      >
         <Tab
           eventKey={0}
-          title={<TabTitleText>{t("common:settings")}</TabTitleText>}
+          title={<TabTitleText>{t("effectiveProtocolMappers")}</TabTitleText>}
         >
-          {effectiveRoles.map((role) => (
-            <div key={role.id}>{role.name}</div>
-          ))}
+          <KeycloakDataTable
+            loader={() => Promise.resolve(protocolMappers)}
+            ariaLabelKey="clients:effectiveProtocolMappers"
+            searchPlaceholderKey="clients:searchForProtocol"
+            columns={[
+              {
+                name: "mapperName",
+                displayKey: "clients:name",
+              },
+              {
+                name: "containerName",
+                displayKey: "clients:parentClientScope",
+              },
+              {
+                name: "type.category",
+                displayKey: "clients:category",
+              },
+              {
+                name: "type.priority",
+                displayKey: "clients:priority",
+              },
+            ]}
+          />
+        </Tab>
+        <Tab
+          eventKey={1}
+          title={<TabTitleText>{t("effectiveRoleScopeMappings")}</TabTitleText>}
+        >
+          <KeycloakDataTable
+            loader={() => Promise.resolve(effectiveRoles)}
+            ariaLabelKey="client:effectiveRoleScopeMappings"
+            searchPlaceholderKey="clients:searchForRole"
+            columns={[
+              {
+                name: "name",
+                displayKey: "clients:role",
+              },
+              {
+                name: "containerId",
+                displayKey: "clients:origin",
+              },
+            ]}
+          />
         </Tab>
       </Tabs>
     </>
