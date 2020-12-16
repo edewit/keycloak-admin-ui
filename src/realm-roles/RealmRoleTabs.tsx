@@ -152,7 +152,7 @@ export const RealmRoleTabs = () => {
               eventKey={0}
               title={<TabTitleText>{t("details")}</TabTitleText>}
             >
-              <RealmRoleForm form={form} save={save} editMode={false} />
+              <RealmRoleForm form={form} save={save} editMode={true} />
             </Tab>
             <Tab
               eventKey={1}
@@ -162,7 +162,7 @@ export const RealmRoleTabs = () => {
             </Tab>
           </Tabs>
         )}
-        {!id && <RealmRoleForm form={form} save={save} editMode={true} />}
+        {!id && <RealmRoleForm form={form} save={save} editMode={false} />}
       </PageSection>
     </>
   );

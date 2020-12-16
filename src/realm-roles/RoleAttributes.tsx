@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ActionGroup,
   Button,
@@ -32,6 +32,8 @@ type RoleAttributesProps = {
 export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
   const { t } = useTranslation("roles");
   const history = useHistory();
+  const [disabled, setDisabled] = useState(false);
+
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -42,6 +44,7 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
 
   const onAdd = () => {
     append({ key: "", value: "" });
+    setDisabled(!disabled)
   };
 
   return (
@@ -76,6 +79,7 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                     ref={form.register()}
                     aria-label="key-input"
                     defaultValue={attribute.key}
+                    isReadOnly={rowIndex !== fields.length - 1}
                   />
                 </Td>
                 <Td
