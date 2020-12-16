@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ClipboardCopy,
+  EmptyState,
+  EmptyStateBody,
   Form,
   FormGroup,
   Select,
@@ -12,20 +14,22 @@ import {
   Tab,
   Tabs,
   TabTitleText,
+  TextArea,
+  Title,
 } from "@patternfly/react-core";
 import ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
 import UserRepresentation from "keycloak-admin/lib/defs/userRepresentation";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
 import ProtocolMapperRepresentation from "keycloak-admin/lib/defs/protocolMapperRepresentation";
+import { ProtocolMapperTypeRepresentation } from "keycloak-admin/lib/defs/serverInfoRepesentation";
 
-import { KeycloakDataTable } from "../../components/table-toolbar/KeycloakDataTable";
-import { RealmContext } from "../../context/realm-context/RealmContext";
-import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useAdminClient } from "../../context/auth/AdminClient";
+import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
+import { RealmContext } from "../../context/realm-context/RealmContext";
+import { KeycloakDataTable } from "../../components/table-toolbar/KeycloakDataTable";
+import { HelpItem } from "../../components/help-enabler/HelpItem";
 
 import "./evaluate.css";
-import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
-import { ProtocolMapperTypeRepresentation } from "keycloak-admin/lib/defs/serverInfoRepesentation";
 
 export type EvaluateScopesProps = {
   clientId: string;
@@ -59,6 +63,7 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
   const [protocolMappers, setProtocolMappers] = useState<
     ProtocolMapperRepresentation[]
   >([]);
+  const [accessToken, setAccessToken] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -127,10 +132,30 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
 
       setProtocolMappers(mapperList);
 
-      console.log(mapperList);
       refresh();
     })();
   }, [selected]);
+
+  useEffect(() => {
+    (async () => {
+      const scope = selected.join(" ");
+      if (user) {
+        setAccessToken(
+          JSON.stringify(
+            await adminClient.clients.evaluateGenerateAccessToken({
+              id: clientId,
+              userId: user.id!,
+              scope,
+            }),
+            undefined,
+            3
+          )
+        );
+      } else {
+        setAccessToken("");
+      }
+    })();
+  }, [user, selected]);
 
   return (
     <>
@@ -267,6 +292,24 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
               },
             ]}
           />
+        </Tab>
+        <Tab
+          eventKey={2}
+          title={<TabTitleText>{t("generatedAccessToken")}</TabTitleText>}
+        >
+          {accessToken && (
+            <TextArea rows={20} id="accessToken" value={accessToken} />
+          )}
+          {!accessToken && (
+            <EmptyState variant="large">
+              <Title headingLevel="h4" size="lg">
+                {t("noGeneratedAccessToken")}
+              </Title>
+              <EmptyStateBody>
+                {t("generatedAccessTokenIsDisabled")}
+              </EmptyStateBody>
+            </EmptyState>
+          )}
         </Tab>
       </Tabs>
     </>
