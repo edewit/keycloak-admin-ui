@@ -22,7 +22,7 @@ import { useTranslation } from "react-i18next";
 import { FormAccess } from "../components/form-access/FormAccess";
 import { useHistory } from "react-router-dom";
 
-export type KeyValueType = { key: string; value: string }
+export type KeyValueType = { key: string; value: string };
 
 type RoleAttributesProps = {
   form: UseFormMethods;
@@ -33,14 +33,17 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
   const { t } = useTranslation("roles");
   const history = useHistory();
 
-  const { fields, append, remove } = useFieldArray({control: form.control, name: "attributes"});
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "attributes",
+  });
 
   const columns = ["Key", "Value"];
 
   const onAdd = () => {
-    append({key: "", value: ""});
+    append({ key: "", value: "" });
   };
-  
+
   return (
     <>
       <FormAccess role="anyone" isHorizontal onSubmit={form.handleSubmit(save)}>
@@ -87,8 +90,12 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                     defaultValue={attribute.value}
                   />
                 </Td>
-                {rowIndex !== fields.length - 1  && fields.length -1 !== 0 && (
-                  <Td key="add-button" id="kc-minus-button" dataLabel={columns[2]}>
+                {rowIndex !== fields.length - 1 && fields.length - 1 !== 0 && (
+                  <Td
+                    key="add-button"
+                    id="kc-minus-button"
+                    dataLabel={columns[2]}
+                  >
                     <Button
                       id="minus-icon"
                       isDisabled={!attribute.key || !attribute.value}

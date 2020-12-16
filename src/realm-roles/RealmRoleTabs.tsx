@@ -20,9 +20,7 @@ import { ViewHeader } from "../components/view-header/ViewHeader";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { RealmRoleForm } from "./RealmRoleForm";
 
-const arrayToAttributes = (
-  attributeArray: KeyValueType[]
-) => {
+const arrayToAttributes = (attributeArray: KeyValueType[]) => {
   const initValue: { [index: string]: string[] } = {};
   return attributeArray.reduce((acc, attribute) => {
     acc[attribute.key] = [attribute.value];
@@ -81,12 +79,14 @@ export const RealmRoleTabs = () => {
 
   const save = async (role: RoleRepresentation) => {
     try {
-      console.log("attrobites", role.attributes)
+      console.log("attrobites", role.attributes);
 
       if (id) {
         if (role.attributes) {
           // react-hook-form will use `KeyValueType[]` here we convert it back into an indexed property of string[]
-          role.attributes = arrayToAttributes(role.attributes as unknown as KeyValueType[]);
+          role.attributes = arrayToAttributes(
+            (role.attributes as unknown) as KeyValueType[]
+          );
         }
         await adminClient.roles.updateById({ id }, role);
       } else {
