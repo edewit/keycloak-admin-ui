@@ -14,6 +14,7 @@ import ComponentRepresentation from "keycloak-admin/lib/defs/componentRepresenta
 import { FormAccess } from "../components/form-access/FormAccess";
 import { useAdminClient } from "../context/auth/AdminClient";
 import { useParams } from "react-router-dom";
+import _ from "lodash";
 
 export const KerberosSettingsCache = () => {
   const { t } = useTranslation("user-federation");
@@ -23,37 +24,16 @@ export const KerberosSettingsCache = () => {
   const { register, control, setValue } = useForm<ComponentRepresentation>();
   const { id } = useParams<{ id: string }>();
 
-  const convertToDays = (num: string) => {
-    switch (num) {
-      case "1":
-        return t("common:Sunday");
-      case "2":
-        return t("common:Monday");
-      case "3":
-        return t("common:Tuesday");
-      case "4":
-        return t("common:Wednesday");
-      case "5":
-        return t("common:Thursday");
-      case "6":
-        return t("common:Friday");
-      case "7":
-        return t("common:Saturday");
-      default:
-        return t("common:selectOne");
-    }
-  };
-
   const cachePolicyType = useWatch({
     control: control,
     name: "config.cachePolicy",
   });
 
   const setupForm = (component: ComponentRepresentation) => {
+    setValue("config.cachePolicy", component.config?.cachePolicy);
     Object.entries(component).map((entry) => {
       if (entry[0] === "config") {
         convertToFormValues(entry[1], "config", setValue);
-        setValue("config.evictionDay", convertToDays(entry[1].evictionDay[0]));
       } else {
         setValue(entry[0], entry[1]);
       }
@@ -87,14 +67,14 @@ export const KerberosSettingsCache = () => {
     <SelectOption key={0} value={t("common:selectOne")} isPlaceholder />,
   ];
   for (let index = 1; index <= 24; index++) {
-    hourOptions.push(<SelectOption key={index + 1} value={index} />);
+    hourOptions.push(<SelectOption key={index + 1} value={[`${index}`]} />);
   }
 
   const minuteOptions = [
     <SelectOption key={0} value={t("common:selectOne")} isPlaceholder />,
   ];
   for (let index = 1; index <= 60; index++) {
-    minuteOptions.push(<SelectOption key={index + 1} value={index} />);
+    minuteOptions.push(<SelectOption key={index + 1} value={[`${index}`]} />);
   }
 
   return (
@@ -136,17 +116,17 @@ export const KerberosSettingsCache = () => {
                   value={t("common:selectOne")}
                   isPlaceholder
                 />
-                <SelectOption key={1} value="DEFAULT" />
-                <SelectOption key={2} value="EVICT_DAILY" />
-                <SelectOption key={3} value="EVICT_WEEKLY" />
-                <SelectOption key={4} value="MAX_LIFESPAN" />
-                <SelectOption key={5} value="NO_CACHE" />
+                <SelectOption key={1} value={["DEFAULT"]} />
+                <SelectOption key={2} value={["EVICT_DAILY"]} />
+                <SelectOption key={3} value={["EVICT_WEEKLY"]} />
+                <SelectOption key={4} value={["MAX_LIFESPAN"]} />
+                <SelectOption key={5} value={["NO_CACHE"]} />
               </Select>
             )}
           ></Controller>
         </FormGroup>
 
-        {cachePolicyType === "EVICT_WEEKLY" ? (
+        {_.isEqual(cachePolicyType, ["EVICT_WEEKLY"]) ? (
           <FormGroup
             label={t("evictionDay")}
             labelIcon={
@@ -182,13 +162,27 @@ export const KerberosSettingsCache = () => {
                     value={t("common:selectOne")}
                     isPlaceholder
                   />
-                  <SelectOption key={1} value={t("common:Sunday")} />
-                  <SelectOption key={2} value={t("common:Monday")} />
-                  <SelectOption key={3} value={t("common:Tuesday")} />
-                  <SelectOption key={4} value={t("common:Wednesday")} />
-                  <SelectOption key={5} value={t("common:Thursday")} />
-                  <SelectOption key={6} value={t("common:Friday")} />
-                  <SelectOption key={7} value={t("common:Saturday")} />
+                  <SelectOption key={1} value={["1"]}>
+                    {t("common:Sunday")}
+                  </SelectOption>
+                  <SelectOption key={2} value={["2"]}>
+                    {t("common:Monday")}
+                  </SelectOption>
+                  <SelectOption key={3} value={["3"]}>
+                    {t("common:Tuesday")}
+                  </SelectOption>
+                  <SelectOption key={4} value={["4"]}>
+                    {t("common:Wednesday")}
+                  </SelectOption>
+                  <SelectOption key={5} value={["5"]}>
+                    {t("common:Thursday")}
+                  </SelectOption>
+                  <SelectOption key={6} value={["6"]}>
+                    {t("common:Friday")}
+                  </SelectOption>
+                  <SelectOption key={7} value={["7"]}>
+                    {t("common:Saturday")}
+                  </SelectOption>
                 </Select>
               )}
             ></Controller>
@@ -197,8 +191,8 @@ export const KerberosSettingsCache = () => {
           <></>
         )}
 
-        {cachePolicyType === "EVICT_DAILY" ||
-        cachePolicyType === "EVICT_WEEKLY" ? (
+        {_.isEqual(cachePolicyType, ["EVICT_DAILY"]) ||
+        _.isEqual(cachePolicyType, ["EVICT_WEEKLY"]) ? (
           <>
             <FormGroup
               label={t("evictionHour")}
@@ -273,7 +267,7 @@ export const KerberosSettingsCache = () => {
         ) : (
           <></>
         )}
-        {cachePolicyType === "MAX_LIFESPAN" ? (
+        {_.isEqual(cachePolicyType, ["MAX_LIFESPAN"]) ? (
           <FormGroup
             label={t("maxLifespan")}
             labelIcon={
