@@ -1,10 +1,5 @@
-import React, { useState } from "react";
-import {
-  ActionGroup,
-  Button,
-  ButtonVariant,
-  TextInput,
-} from "@patternfly/react-core";
+import React from "react";
+import { ActionGroup, Button, Form, TextInput } from "@patternfly/react-core";
 import { SubmitHandler, useFieldArray, UseFormMethods } from "react-hook-form";
 import "./RealmRolesSection.css";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
@@ -19,7 +14,6 @@ import {
 } from "@patternfly/react-table";
 import { MinusCircleIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import { useTranslation } from "react-i18next";
-import { FormAccess } from "../components/form-access/FormAccess";
 import { useHistory } from "react-router-dom";
 
 export type KeyValueType = { key: string; value: string };
@@ -32,8 +26,6 @@ type RoleAttributesProps = {
 export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
   const { t } = useTranslation("roles");
   const history = useHistory();
-  const [disabled, setDisabled] = useState(false);
-
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -44,12 +36,11 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
 
   const onAdd = () => {
     append({ key: "", value: "" });
-    setDisabled(!disabled)
   };
 
   return (
     <>
-      <FormAccess role="anyone" isHorizontal onSubmit={form.handleSubmit(save)}>
+      <Form role="anyone" onSubmit={form.handleSubmit(save)}>
         <TableComposable
           className="kc-role-attributes__table"
           aria-label="Role attribute keys and values"
@@ -79,7 +70,6 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                     ref={form.register()}
                     aria-label="key-input"
                     defaultValue={attribute.key}
-                    isReadOnly={rowIndex !== fields.length - 1}
                   />
                 </Td>
                 <Td
@@ -96,15 +86,13 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                 </Td>
                 {rowIndex !== fields.length - 1 && fields.length - 1 !== 0 && (
                   <Td
-                    key="add-button"
+                    key="minus-button"
                     id="kc-minus-button"
                     dataLabel={columns[2]}
                   >
                     <Button
                       id="minus-icon"
-                      isDisabled={!attribute.key || !attribute.value}
-                      variant={ButtonVariant.link}
-                      tabIndex={-1}
+                      variant="link"
                       className="kc-role-attributes__minus-icon"
                       onClick={() => remove(rowIndex)}
                     >
@@ -115,14 +103,13 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                 {rowIndex === fields.length - 1 && (
                   <Td key="add-button" id="add-button" dataLabel={columns[2]}>
                     <Button
+                      aria-label={t("roles:addAttributeText")}
                       id="plus-icon"
-                      isDisabled
-                      variant={ButtonVariant.link}
-                      tabIndex={-1}
+                      variant="link"
                       className="kc-role-attributes__plus-icon"
                       onClick={onAdd}
-                      icon={<PlusCircleIcon/>}
-/>
+                      icon={<PlusCircleIcon />}
+                    />
                   </Td>
                 )}
               </Tr>
@@ -137,7 +124,7 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
             {t("common:reload")}
           </Button>
         </ActionGroup>
-      </FormAccess>
+      </Form>
     </>
   );
 };
