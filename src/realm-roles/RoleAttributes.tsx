@@ -105,7 +105,7 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                       isDisabled={!attribute.key || !attribute.value}
                       variant={ButtonVariant.link}
                       tabIndex={-1}
-                      className="kc-role-attributes__plus-icon"
+                      className="kc-role-attributes__minus-icon"
                       onClick={() => remove(rowIndex)}
                     >
                       <MinusCircleIcon />
@@ -116,14 +116,13 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                   <Td key="add-button" id="add-button" dataLabel={columns[2]}>
                     <Button
                       id="plus-icon"
-                      isDisabled={!attribute.key || !attribute.value}
+                      isDisabled
                       variant={ButtonVariant.link}
                       tabIndex={-1}
                       className="kc-role-attributes__plus-icon"
                       onClick={onAdd}
-                    >
-                      <PlusCircleIcon />
-                    </Button>
+                      icon={<PlusCircleIcon/>}
+/>
                   </Td>
                 )}
               </Tr>
