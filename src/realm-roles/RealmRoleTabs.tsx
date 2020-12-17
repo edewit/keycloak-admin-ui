@@ -23,7 +23,7 @@ import { RealmRoleForm } from "./RealmRoleForm";
 const arrayToAttributes = (attributeArray: KeyValueType[]) => {
   const initValue: { [index: string]: string[] } = {};
   return attributeArray.reduce((acc, attribute) => {
-    acc[attribute.key] = [attribute.value];
+      acc[attribute.key] = [attribute.value];
     return acc;
   }, initValue);
 };
@@ -45,7 +45,7 @@ const attributesToArray = (attributes: { [key: string]: string }): any => {
 
 export const RealmRoleTabs = () => {
   const { t } = useTranslation("roles");
-  const form = useForm<RoleRepresentation>();
+  const form = useForm<RoleRepresentation>({mode: "onChange"});
   const history = useHistory();
   const [name, setName] = useState("");
   const adminClient = useAdminClient();
@@ -79,7 +79,6 @@ export const RealmRoleTabs = () => {
 
   const save = async (role: RoleRepresentation) => {
     try {
-      console.log("attrobites", role.attributes);
 
       if (id) {
         if (role.attributes) {
