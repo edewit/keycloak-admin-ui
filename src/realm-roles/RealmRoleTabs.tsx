@@ -35,11 +35,17 @@ export const RolesTabs = () => {
   const { addAlert } = useAlerts();
 
   useEffect(() => {
+    let canceled = false;
     (async () => {
       const fetchedRole = await adminClient.roles.findOneById({ id });
-      setName(fetchedRole.name!);
-      setupForm(fetchedRole);
+      if (!canceled) {
+        setName(fetchedRole.name!);
+        setupForm(fetchedRole);
+      }
     })();
+    return () => {
+      canceled = true;
+    };
   }, []);
 
   const setupForm = (role: RoleRepresentation) => {

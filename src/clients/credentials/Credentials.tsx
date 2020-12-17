@@ -64,17 +64,25 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
   const [open, isOpen] = useState(false);
 
   useEffect(() => {
+    let canceled = false;
     (async () => {
       const providers = await adminClient.authenticationManagement.getClientAuthenticatorProviders(
         { id: clientId }
       );
-      setProviders(providers);
+      if (!canceled) {
+        setProviders(providers);
+      }
 
       const secret = await adminClient.clients.getClientSecret({
         id: clientId,
       });
-      setSecret(secret.value!);
+      if (!canceled) {
+        setSecret(secret.value!);
+      }
     })();
+    return () => {
+      canceled = true;
+    };
   }, []);
 
   async function regenerate<T>(

@@ -55,8 +55,9 @@ export const MappingDetails = () => {
   const isGuid = /^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$/;
 
   useEffect(() => {
-    if (id.match(isGuid)) {
-      (async () => {
+    let canceled = false;
+    (async () => {
+      if (id.match(isGuid)) {
         const data = await adminClient.clientScopes.findProtocolMapper({
           id: scopeId,
           mapperId: id,
@@ -70,16 +71,21 @@ export const MappingDetails = () => {
         const properties = mapperTypes.find(
           (type) => type.id === data!.protocolMapper
         )?.properties!;
-        setConfigProperties(properties);
 
-        setMapping(data);
-      })();
-    } else {
-      (async () => {
+        if (!canceled) {
+          setConfigProperties(properties);
+          setMapping(data);
+        }
+      } else {
         const scope = await adminClient.clientScopes.findOne({ id: scopeId });
-        setMapping({ protocol: scope.protocol, protocolMapper: id });
-      })();
-    }
+        if (!canceled) {
+          setMapping({ protocol: scope.protocol, protocolMapper: id });
+        }
+      }
+    })();
+    return () => {
+      canceled = true;
+    };
   }, []);
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({

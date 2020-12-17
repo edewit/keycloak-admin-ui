@@ -47,6 +47,7 @@ export const RoleMappingForm = () => {
   const [clientRoles, setClientRoles] = useState<RoleRepresentation[]>([]);
 
   useEffect(() => {
+    let canceled = false;
     (async () => {
       const clients = await adminClient.clients.find();
 
@@ -68,19 +69,36 @@ export const RoleMappingForm = () => {
             return this.clientId!;
           })
       );
-      setClients(filteredClients);
+      if (!canceled) {
+        setClients(filteredClients);
+      }
     })();
+    () => {
+      canceled = true;
+    };
   }, []);
 
   useEffect(() => {
+    let canceled = false;
     (async () => {
       const client = selectedClient as ClientRepresentation;
       if (client && client.name !== "realmRoles") {
-        setClientRoles(await adminClient.clients.listRoles({ id: client.id! }));
+        const clientRoles = await adminClient.clients.listRoles({
+          id: client.id!,
+        });
+        if (!canceled) {
+          setClientRoles(clientRoles);
+        }
       } else {
-        setClientRoles(await adminClient.roles.find());
+        const clientRoles = await adminClient.roles.find();
+        if (!canceled) {
+          setClientRoles(clientRoles);
+        }
       }
     })();
+    () => {
+      canceled = true;
+    };
   }, [selectedClient]);
 
   const save = async (mapping: ProtocolMapperRepresentation) => {

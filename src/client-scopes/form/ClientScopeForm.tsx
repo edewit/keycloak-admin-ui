@@ -45,25 +45,32 @@ export const ClientScopeForm = () => {
   const [open, isOpen] = useState(false);
   const { addAlert } = useAlerts();
 
-  const load = async () => {
-    if (id) {
-      const data = await adminClient.clientScopes.findOne({ id });
-      if (data) {
-        Object.entries(data).map((entry) => {
-          if (entry[0] === "attributes") {
-            convertToFormValues(entry[1], "attributes", setValue);
-          }
-          setValue(entry[0], entry[1]);
-        });
-      }
-
-      setClientScope(data);
-    }
-  };
+  const [key, setKey] = useState(0);
+  const refresh = () => setKey(new Date().getTime());
 
   useEffect(() => {
-    load();
-  }, []);
+    let canceled = false;
+    (async () => {
+      if (id) {
+        const data = await adminClient.clientScopes.findOne({ id });
+        if (data) {
+          Object.entries(data).map((entry) => {
+            if (entry[0] === "attributes") {
+              convertToFormValues(entry[1], "attributes", setValue);
+            }
+            setValue(entry[0], entry[1]);
+          });
+        }
+
+        if (!canceled) {
+          setClientScope(data);
+        }
+      }
+    })();
+    () => {
+      canceled = true;
+    };
+  }, [key]);
 
   const save = async (clientScopes: ClientScopeRepresentation) => {
     try {
@@ -305,7 +312,7 @@ export const ClientScopeForm = () => {
           </Tab>
           <Tab eventKey={1} title={<TabTitleText>{t("mappers")}</TabTitleText>}>
             {clientScope && (
-              <MapperList clientScope={clientScope} refresh={load} />
+              <MapperList clientScope={clientScope} refresh={refresh} />
             )}
           </Tab>
         </Tabs>

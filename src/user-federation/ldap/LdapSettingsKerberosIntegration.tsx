@@ -28,12 +28,16 @@ export const LdapSettingsKerberosIntegration = () => {
   };
 
   useEffect(() => {
+    let canceled = false;
     (async () => {
       const fetchedComponent = await adminClient.components.findOne({ id });
-      if (fetchedComponent) {
+      if (fetchedComponent && !canceled) {
         setupForm(fetchedComponent);
       }
     })();
+    return () => {
+      canceled = true;
+    };
   }, []);
 
   return (

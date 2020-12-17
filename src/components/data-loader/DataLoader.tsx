@@ -14,20 +14,28 @@ type Result<T> = {
 
 export function DataLoader<T>(props: DataLoaderProps<T>) {
   const [data, setData] = useState<{ result: T } | undefined>(undefined);
-  const loadData = async () => {
-    const result = await props.loader();
-    setData({ result });
-  };
+
+  const [key, setKey] = useState(0);
+  const refresh = () => setKey(new Date().getTime());
+
   useEffect(() => {
-    setData(undefined);
-    loadData();
-  }, [props]);
+    let canceled = false;
+    (async () => {
+      const result = await props.loader();
+      if (!canceled) {
+        setData({ result });
+      }
+    })();
+    return () => {
+      canceled = true;
+    };
+  }, [key]);
 
   if (data) {
     if (props.children instanceof Function) {
       return props.children({
         data: data.result,
-        refresh: () => loadData(),
+        refresh: refresh,
       });
     }
     return props.children;

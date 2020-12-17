@@ -144,13 +144,17 @@ export const ClientDetails = () => {
   };
 
   useEffect(() => {
+    let canceled = false;
     (async () => {
       const fetchedClient = await adminClient.clients.findOne({ id });
-      if (fetchedClient) {
+      if (fetchedClient && !canceled) {
         setClient(fetchedClient);
         setupForm(fetchedClient);
       }
     })();
+    return () => {
+      canceled = true;
+    };
   }, []);
 
   const save = async () => {

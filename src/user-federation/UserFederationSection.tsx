@@ -34,19 +34,25 @@ export const UserFederationSection = () => {
   const { t } = useTranslation("user-federation");
   const { realm } = useContext(RealmContext);
   const adminClient = useAdminClient();
-
-  const loader = async () => {
-    const testParams: { [name: string]: string | number } = {
-      parentId: realm,
-      type: "org.keycloak.storage.UserStorageProvider", // MF note that this is providerType in the output, but API call is still type
-    };
-    const userFederations = await adminClient.components.find(testParams);
-    setUserFederations(userFederations);
-  };
+  const [key, setKey] = useState(0);
+  const refresh = () => setKey(new Date().getTime());
 
   useEffect(() => {
-    loader();
-  }, []);
+    let canceled = false;
+    (async () => {
+      const testParams: { [name: string]: string | number } = {
+        parentId: realm,
+        type: "org.keycloak.storage.UserStorageProvider", // MF note that this is providerType in the output, but API call is still type
+      };
+      const userFederations = await adminClient.components.find(testParams);
+      if (!canceled) {
+        setUserFederations(userFederations);
+      }
+    })();
+    return () => {
+      canceled = true;
+    };
+  }, [key]);
 
   const ufAddProviderDropdownItems = [
     <DropdownItem key="itemLDAP">LDAP</DropdownItem>,
@@ -54,7 +60,7 @@ export const UserFederationSection = () => {
   ];
 
   const learnMoreLinkProps = {
-    title: `${t("common:learnMore")}`,
+    title: t("common:learnMore"),
     href:
       "https://www.keycloak.org/docs/latest/server_admin/index.html#_user-storage-federation",
   };
@@ -70,7 +76,7 @@ export const UserFederationSection = () => {
     onConfirm: async () => {
       try {
         await adminClient.components.del({ id: currentCard });
-        await loader();
+        refresh();
         addAlert(t("userFedDeletedSuccess"), AlertVariant.success);
       } catch (error) {
         addAlert(t("userFedDeleteError", { error }), AlertVariant.danger);

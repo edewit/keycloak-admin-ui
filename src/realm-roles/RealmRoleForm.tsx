@@ -110,15 +110,21 @@ export const RealmRolesForm = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
+    let canceled = false;
     (async () => {
       if (id) {
         const fetchedRole = await adminClient.roles.findOneById({ id });
-        setName(fetchedRole.name!);
-        setupForm(fetchedRole);
+        if (!canceled) {
+          setName(fetchedRole.name!);
+          setupForm(fetchedRole);
+        }
       } else {
         setName(t("createRole"));
       }
     })();
+    return () => {
+      canceled = true;
+    };
   }, []);
 
   const setupForm = (role: RoleRepresentation) => {
