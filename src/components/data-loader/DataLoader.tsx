@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Spinner } from "@patternfly/react-core";
+import { useFetch } from "../../context/auth/AdminClient";
 
 type DataLoaderProps<T> = {
   loader: () => Promise<T>;
@@ -19,16 +20,10 @@ export function DataLoader<T>(props: DataLoaderProps<T>) {
   const refresh = () => setKey(new Date().getTime());
 
   useEffect(() => {
-    let canceled = false;
-    (async () => {
-      const result = await props.loader();
-      if (!canceled) {
-        setData({ result });
-      }
-    })();
-    return () => {
-      canceled = true;
-    };
+    return useFetch(
+      () => props.loader(),
+      (result) => setData({ result })
+    );
   }, [key]);
 
   if (data) {

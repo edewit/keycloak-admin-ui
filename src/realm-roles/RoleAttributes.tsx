@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { Button, ButtonVariant, TextInput } from "@patternfly/react-core";
 import { useForm } from "react-hook-form";
 import "./RealmRolesSection.css";
-import { useAdminClient } from "../context/auth/AdminClient";
+import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
 import { useTranslation } from "react-i18next";
 
@@ -46,17 +46,13 @@ export const RoleAttributes = () => {
   ];
 
   useEffect(() => {
-    let canceled = false;
-    (async () => {
-      const fetchedRole = await adminClient.roles.findOneById({ id });
-      if (!canceled) {
+    return useFetch(
+      () => adminClient.roles.findOneById({ id }),
+      (fetchedRole) => {
         setName(fetchedRole.name!);
         setupForm(fetchedRole);
       }
-    })();
-    return () => {
-      canceled = true;
-    };
+    );
   }, []);
 
   const setupForm = (role: RoleRepresentation) => {

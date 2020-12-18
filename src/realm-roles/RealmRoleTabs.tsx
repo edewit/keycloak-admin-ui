@@ -17,7 +17,7 @@ import { Controller, useForm } from "react-hook-form";
 import { FormAccess } from "../components/form-access/FormAccess";
 
 import { useAlerts } from "../components/alert/Alerts";
-import { useAdminClient } from "../context/auth/AdminClient";
+import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
 import { RoleAttributes } from "./RoleAttributes";
 import "./RealmRolesSection.css";
@@ -35,17 +35,13 @@ export const RolesTabs = () => {
   const { addAlert } = useAlerts();
 
   useEffect(() => {
-    let canceled = false;
-    (async () => {
-      const fetchedRole = await adminClient.roles.findOneById({ id });
-      if (!canceled) {
+    return useFetch(
+      () => adminClient.roles.findOneById({ id }),
+      (fetchedRole) => {
         setName(fetchedRole.name!);
         setupForm(fetchedRole);
       }
-    })();
-    return () => {
-      canceled = true;
-    };
+    );
   }, []);
 
   const setupForm = (role: RoleRepresentation) => {

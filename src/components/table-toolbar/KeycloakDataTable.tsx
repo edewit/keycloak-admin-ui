@@ -14,6 +14,7 @@ import _ from "lodash";
 
 import { PaginatingTableToolbar } from "./PaginatingTableToolbar";
 import { TableToolbar } from "./TableToolbar";
+import { useFetch } from "../../context/auth/AdminClient";
 
 type Row<T> = {
   data: T;
@@ -131,33 +132,30 @@ export function KeycloakDataTable<T>({
   const refresh = () => setKey(new Date().getTime());
 
   useEffect(() => {
-    let canceled = false;
+    return useFetch(
+      async () => {
+        setLoading(true);
+        const data = await loader(first, max, search);
 
-    (async () => {
-      setLoading(true);
-      const data = await loader(first, max, search);
-
-      if (!canceled) {
-        setRows(
-          data!.map((value) => {
-            return {
-              data: value,
-              selected: false,
-              cells: columns.map((col) => {
-                if (col.cellRenderer) {
-                  return col.cellRenderer(value);
-                }
-                return (value as any)[col.name];
-              }),
-            };
-          })
-        );
+        const result = data!.map((value) => {
+          return {
+            data: value,
+            selected: false,
+            cells: columns.map((col) => {
+              if (col.cellRenderer) {
+                return col.cellRenderer(value);
+              }
+              return (value as any)[col.name];
+            }),
+          };
+        });
+        return result;
+      },
+      (result) => {
+        setRows(result);
         setLoading(false);
       }
-    })();
-    return () => {
-      canceled = true;
-    };
+    );
   }, [key, first, max]);
 
   const getNodeText = (node: keyof T | JSX.Element): string => {

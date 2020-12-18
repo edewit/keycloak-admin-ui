@@ -19,7 +19,7 @@ import { useAlerts } from "../components/alert/Alerts";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { useDownloadDialog } from "../components/download-dialog/DownloadDialog";
 import { ViewHeader } from "../components/view-header/ViewHeader";
-import { useAdminClient } from "../context/auth/AdminClient";
+import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import { Credentials } from "./credentials/Credentials";
 import {
   convertFormValuesToObject,
@@ -144,17 +144,13 @@ export const ClientDetails = () => {
   };
 
   useEffect(() => {
-    let canceled = false;
-    (async () => {
-      const fetchedClient = await adminClient.clients.findOne({ id });
-      if (fetchedClient && !canceled) {
+    return useFetch(
+      () => adminClient.clients.findOne({ id }),
+      (fetchedClient) => {
         setClient(fetchedClient);
         setupForm(fetchedClient);
       }
-    })();
-    return () => {
-      canceled = true;
-    };
+    );
   }, []);
 
   const save = async () => {

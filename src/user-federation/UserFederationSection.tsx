@@ -22,7 +22,7 @@ import { ViewHeader } from "../components/view-header/ViewHeader";
 import { DatabaseIcon } from "@patternfly/react-icons";
 import { useTranslation } from "react-i18next";
 import { RealmContext } from "../context/realm-context/RealmContext";
-import { useAdminClient } from "../context/auth/AdminClient";
+import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import "./user-federation.css";
 
@@ -38,20 +38,18 @@ export const UserFederationSection = () => {
   const refresh = () => setKey(new Date().getTime());
 
   useEffect(() => {
-    let canceled = false;
-    (async () => {
-      const testParams: { [name: string]: string | number } = {
-        parentId: realm,
-        type: "org.keycloak.storage.UserStorageProvider", // MF note that this is providerType in the output, but API call is still type
-      };
-      const userFederations = await adminClient.components.find(testParams);
-      if (!canceled) {
+    return useFetch(
+      () => {
+        const testParams: { [name: string]: string | number } = {
+          parentId: realm,
+          type: "org.keycloak.storage.UserStorageProvider", // MF note that this is providerType in the output, but API call is still type
+        };
+        return adminClient.components.find(testParams);
+      },
+      (userFederations) => {
         setUserFederations(userFederations);
       }
-    })();
-    return () => {
-      canceled = true;
-    };
+    );
   }, [key]);
 
   const ufAddProviderDropdownItems = [

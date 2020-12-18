@@ -6,7 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { convertToFormValues } from "../../util";
 import ComponentRepresentation from "keycloak-admin/lib/defs/componentRepresentation";
 import { FormAccess } from "../../components/form-access/FormAccess";
-import { useAdminClient } from "../../context/auth/AdminClient";
+import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { useParams } from "react-router-dom";
 
 export const LdapSettingsAdvanced = () => {
@@ -27,16 +27,10 @@ export const LdapSettingsAdvanced = () => {
   };
 
   useEffect(() => {
-    let canceled = false;
-    (async () => {
-      const fetchedComponent = await adminClient.components.findOne({ id });
-      if (fetchedComponent && !canceled) {
-        setupForm(fetchedComponent);
-      }
-    })();
-    return () => {
-      canceled = true;
-    };
+    return useFetch(
+      () => adminClient.components.findOne({ id }),
+      (fetchedComponent) => setupForm(fetchedComponent)
+    );
   }, []);
 
   return (
