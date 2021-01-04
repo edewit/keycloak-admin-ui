@@ -65,7 +65,11 @@ export const App = () => {
           <Switch>
             {routes(() => {}).map((route, i) => (
               <Route
-                exact
+                exact={
+                  route.matchOptions?.exact === undefined
+                    ? true
+                    : route.matchOptions.exact
+                }
                 key={i}
                 path={route.path}
                 component={() => <SecuredRoute route={route} />}

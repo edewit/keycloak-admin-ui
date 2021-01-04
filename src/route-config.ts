@@ -8,7 +8,7 @@ import { NewClientForm } from "./clients/add/NewClientForm";
 import { ClientsSection } from "./clients/ClientsSection";
 import { ImportForm } from "./clients/import/ImportForm";
 import { EventsSection } from "./events/EventsSection";
-import { GroupsSection } from "./groups/GroupsSection";
+import { GroupName, GroupsSection } from "./groups/GroupsSection";
 import { IdentityProvidersSection } from "./identity-providers/IdentityProvidersSection";
 import { PageNotFoundSection } from "./PageNotFoundSection";
 import { RealmRolesForm } from "./realm-roles/RealmRoleForm";
@@ -28,6 +28,9 @@ import { BreadcrumbsRoute } from "use-react-router-breadcrumbs";
 export type RouteDef = BreadcrumbsRoute & {
   component: () => JSX.Element;
   access: AccessType;
+  matchOptions?: {
+    exact?: boolean;
+  };
 };
 
 type RoutesFn = (t: TFunction) => RouteDef[];
@@ -126,7 +129,10 @@ export const routes: RoutesFn = (t) => [
   {
     path: "/:realm/groups",
     component: GroupsSection,
-    breadcrumb: t("groups"),
+    breadcrumb: GroupName,
+    matchOptions: {
+      exact: false,
+    },
     access: "query-groups",
   },
   {

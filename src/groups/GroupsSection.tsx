@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -21,10 +22,19 @@ import { useAlerts } from "../components/alert/Alerts";
 import { KeycloakDataTable } from "../components/table-toolbar/KeycloakDataTable";
 
 import "./GroupsSection.css";
-import { Link, useRouteMatch } from "react-router-dom";
 
 type GroupTableData = GroupRepresentation & {
   membersLength?: number;
+};
+
+const getId = (pathname: string) => {
+  const pathParts = pathname.substr(1).split("/");
+  return pathParts.length > 1 ? pathParts.splice(1) : undefined;
+};
+
+const getLastId = (pathname: string) => {
+  const pathParts = getId(pathname);
+  return pathParts ? pathParts[pathParts.length - 1] : undefined;
 };
 
 export const GroupsSection = () => {
@@ -35,7 +45,10 @@ export const GroupsSection = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<GroupRepresentation[]>([]);
   const { addAlert } = useAlerts();
-  const { url } = useRouteMatch();
+
+  const location = useLocation();
+  const id = getLastId(location.pathname);
+
   const [key, setKey] = useState("");
   const refresh = () => setKey(`${new Date().getTime()}`);
 
@@ -45,7 +58,12 @@ export const GroupsSection = () => {
   };
 
   const loader = async () => {
-    const groupsData = await adminClient.groups.find();
+    let groupsData;
+    if (!id) {
+      groupsData = await adminClient.groups.find();
+    } else {
+      groupsData = (await adminClient.groups.findOne({ id })).subGroups!;
+    }
 
     const memberPromises = groupsData.map((group) => getMembers(group.id!));
     const memberData = await Promise.all(memberPromises);
@@ -53,8 +71,13 @@ export const GroupsSection = () => {
       group.membersLength = memberData[i];
       return group;
     });
+
     return updatedObject;
   };
+
+  useEffect(() => {
+    refresh();
+  }, [id]);
 
   const handleModalToggle = () => {
     setIsCreateModalOpen(!isCreateModalOpen);
@@ -85,7 +108,7 @@ export const GroupsSection = () => {
 
   const GroupNameCell = (group: GroupTableData) => (
     <>
-      <Link key={group.id} to={`${url}/${group.id}`}>
+      <Link key={group.id} to={`${location.pathname}/${group.id}`}>
         {group.name}
       </Link>
     </>
@@ -187,4 +210,26 @@ export const GroupsSection = () => {
       </PageSection>
     </>
   );
+};
+
+let index = -1;
+export const GroupName = ({ location }: { location: { pathname: string } }) => {
+  const adminClient = useAdminClient();
+  const [group, setGroup] = useState<GroupRepresentation>();
+
+  useEffect(() => {
+    let mounted = true;
+    const ids = getId(location.pathname)!;
+    index++;
+    adminClient.groups.findOne({ id: ids[index] }).then((group) => {
+      if (mounted) {
+        setGroup(group);
+      }
+    });
+    return () => {
+      index--;
+      mounted = false;
+    };
+  }, []);
+  return <>{group && <span key={group.id}>{group.name}</span>}</>;
 };
