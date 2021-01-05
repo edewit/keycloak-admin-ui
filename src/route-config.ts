@@ -26,16 +26,13 @@ import { RoleMappingForm } from "./client-scopes/add/RoleMappingForm";
 import { BreadcrumbsRoute } from "use-react-router-breadcrumbs";
 
 export type RouteDef = BreadcrumbsRoute & {
-  component: () => JSX.Element;
   access: AccessType;
-  matchOptions?: {
-    exact?: boolean;
-  };
+  component: () => JSX.Element;
 };
 
 type RoutesFn = (t: TFunction) => RouteDef[];
 
-export const routes: RoutesFn = (t) => [
+export const routes: RoutesFn = (t: TFunction) => [
   {
     path: "/:realm/add-realm",
     component: NewRealmForm,
