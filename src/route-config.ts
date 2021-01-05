@@ -8,7 +8,7 @@ import { NewClientForm } from "./clients/add/NewClientForm";
 import { ClientsSection } from "./clients/ClientsSection";
 import { ImportForm } from "./clients/import/ImportForm";
 import { EventsSection } from "./events/EventsSection";
-import { GroupName, GroupsSection } from "./groups/GroupsSection";
+import { GroupsSection } from "./groups/GroupsSection";
 import { IdentityProvidersSection } from "./identity-providers/IdentityProvidersSection";
 import { PageNotFoundSection } from "./PageNotFoundSection";
 import { RealmRolesForm } from "./realm-roles/RealmRoleForm";
@@ -129,7 +129,7 @@ export const routes: RoutesFn = (t) => [
   {
     path: "/:realm/groups",
     component: GroupsSection,
-    breadcrumb: GroupName,
+    breadcrumb: null,
     matchOptions: {
       exact: false,
     },

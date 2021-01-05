@@ -145,5 +145,6 @@ exports[`BreadCrumbs tests couple of crumbs 1`] = `
       </ol>
     </nav>
   </Breadcrumb>
+  <GroupBreadCrumbs />
 </PageBreadCrumbs>
 `;

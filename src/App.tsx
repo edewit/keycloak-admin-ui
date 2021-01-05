@@ -18,6 +18,7 @@ import { AccessContextProvider, useAccess } from "./context/access/Access";
 import { routes, RouteDef } from "./route-config";
 import { PageBreadCrumbs } from "./components/bread-crumb/PageBreadCrumbs";
 import { ForbiddenSection } from "./ForbiddenSection";
+import { SubGroups } from "./groups/GroupsSection";
 import { useRealm } from "./context/realm-context/RealmContext";
 
 // This must match the id given as scrollableSelector in scroll-form
@@ -27,7 +28,9 @@ const AppContexts = ({ children }: { children: ReactNode }) => (
   <AccessContextProvider>
     <Help>
       <AlertProvider>
-        <ServerInfoProvider>{children}</ServerInfoProvider>
+        <ServerInfoProvider>
+          <SubGroups>{children}</SubGroups>
+        </ServerInfoProvider>
       </AlertProvider>
     </Help>
   </AccessContextProvider>

@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -27,6 +33,42 @@ type GroupTableData = GroupRepresentation & {
   membersLength?: number;
 };
 
+type SubGroupsProps = {
+  subGroups: GroupRepresentation[];
+  addSubGroup: (group: GroupRepresentation) => void;
+  clear: () => void;
+  remove: (group: GroupRepresentation) => void;
+};
+
+const SubGroupContext = createContext<SubGroupsProps>({
+  subGroups: [],
+  addSubGroup: () => {},
+  clear: () => {},
+  remove: () => {},
+});
+
+export const SubGroups = ({ children }: { children: ReactNode }) => {
+  const [subGroups, setSubGroups] = useState<GroupRepresentation[]>([]);
+  const addSubGroup = (group: GroupRepresentation) =>
+    setSubGroups([...subGroups, group]);
+
+  const clear = () => setSubGroups([]);
+  const remove = (group: GroupRepresentation) =>
+    setSubGroups(
+      subGroups.slice(
+        0,
+        subGroups.findIndex((g) => g.id === group.id)
+      )
+    );
+  return (
+    <SubGroupContext.Provider value={{ subGroups, addSubGroup, clear, remove }}>
+      {children}
+    </SubGroupContext.Provider>
+  );
+};
+
+export const useSubGroups = () => useContext(SubGroupContext);
+
 const getId = (pathname: string) => {
   const pathParts = pathname.substr(1).split("/");
   return pathParts.length > 1 ? pathParts.splice(1) : undefined;
@@ -44,6 +86,7 @@ export const GroupsSection = () => {
   const [createGroupName, setCreateGroupName] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<GroupRepresentation[]>([]);
+  const { addSubGroup } = useSubGroups();
   const { addAlert } = useAlerts();
 
   const location = useLocation();
@@ -62,7 +105,9 @@ export const GroupsSection = () => {
     if (!id) {
       groupsData = await adminClient.groups.find();
     } else {
-      groupsData = (await adminClient.groups.findOne({ id })).subGroups!;
+      const group = await adminClient.groups.findOne({ id });
+      addSubGroup(group);
+      groupsData = group.subGroups!;
     }
 
     const memberPromises = groupsData.map((group) => getMembers(group.id!));
@@ -210,26 +255,4 @@ export const GroupsSection = () => {
       </PageSection>
     </>
   );
-};
-
-let index = -1;
-export const GroupName = ({ location }: { location: { pathname: string } }) => {
-  const adminClient = useAdminClient();
-  const [group, setGroup] = useState<GroupRepresentation>();
-
-  useEffect(() => {
-    let mounted = true;
-    const ids = getId(location.pathname)!;
-    index++;
-    adminClient.groups.findOne({ id: ids[index] }).then((group) => {
-      if (mounted) {
-        setGroup(group);
-      }
-    });
-    return () => {
-      index--;
-      mounted = false;
-    };
-  }, []);
-  return <>{group && <span key={group.id}>{group.name}</span>}</>;
 };
