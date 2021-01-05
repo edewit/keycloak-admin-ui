@@ -67,7 +67,7 @@ export const GroupsCreateModal = ({
         isOpen={isCreateModalOpen}
         onClose={handleModalToggle}
         actions={[
-          <Button key="confirm" variant="primary" type="submit">
+          <Button key="confirm" variant="primary" onClick={submitForm}>
             {t("create")}
           </Button>,
         ]}
