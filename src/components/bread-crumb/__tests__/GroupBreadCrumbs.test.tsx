@@ -6,9 +6,12 @@ import { GroupBreadCrumbs } from "../GroupBreadCrumbs";
 import { SubGroups, useSubGroups } from "../../../groups/GroupsSection";
 
 const GroupCrumbs = () => {
-  const { addSubGroup } = useSubGroups();
+  const { setSubGroups } = useSubGroups();
   useEffect(() => {
-    addSubGroup({ id: "123", name: "active group" });
+    setSubGroups([
+      { id: "1", name: "first group" },
+      { id: "123", name: "active group" },
+    ]);
   }, []);
 
   return <GroupBreadCrumbs />;

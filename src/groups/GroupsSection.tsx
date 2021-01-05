@@ -35,22 +35,20 @@ type GroupTableData = GroupRepresentation & {
 
 type SubGroupsProps = {
   subGroups: GroupRepresentation[];
-  addSubGroup: (group: GroupRepresentation) => void;
+  setSubGroups: (group: GroupRepresentation[]) => void;
   clear: () => void;
   remove: (group: GroupRepresentation) => void;
 };
 
 const SubGroupContext = createContext<SubGroupsProps>({
   subGroups: [],
-  addSubGroup: () => {},
+  setSubGroups: () => {},
   clear: () => {},
   remove: () => {},
 });
 
 export const SubGroups = ({ children }: { children: ReactNode }) => {
   const [subGroups, setSubGroups] = useState<GroupRepresentation[]>([]);
-  const addSubGroup = (group: GroupRepresentation) =>
-    setSubGroups([...subGroups, group]);
 
   const clear = () => setSubGroups([]);
   const remove = (group: GroupRepresentation) =>
@@ -61,7 +59,9 @@ export const SubGroups = ({ children }: { children: ReactNode }) => {
       )
     );
   return (
-    <SubGroupContext.Provider value={{ subGroups, addSubGroup, clear, remove }}>
+    <SubGroupContext.Provider
+      value={{ subGroups, setSubGroups, clear, remove }}
+    >
       {children}
     </SubGroupContext.Provider>
   );
@@ -86,7 +86,7 @@ export const GroupsSection = () => {
   const [createGroupName, setCreateGroupName] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<GroupRepresentation[]>([]);
-  const { addSubGroup } = useSubGroups();
+  const { subGroups, setSubGroups } = useSubGroups();
   const { addAlert } = useAlerts();
 
   const location = useLocation();
@@ -105,9 +105,20 @@ export const GroupsSection = () => {
     if (!id) {
       groupsData = await adminClient.groups.find();
     } else {
-      const group = await adminClient.groups.findOne({ id });
-      addSubGroup(group);
-      groupsData = group.subGroups!;
+      const ids = getId(location.pathname);
+      const isNavigationStateInValid = ids && ids.length !== subGroups.length;
+      if (isNavigationStateInValid) {
+        const groups = [];
+        for (const i of ids!) {
+          groups.push(await adminClient.groups.findOne({ id: i }));
+        }
+        setSubGroups(groups);
+        groupsData = groups.pop()?.subGroups!;
+      } else {
+        const group = await adminClient.groups.findOne({ id });
+        setSubGroups([...subGroups, group]);
+        groupsData = group.subGroups!;
+      }
     }
 
     const memberPromises = groupsData.map((group) => getMembers(group.id!));
