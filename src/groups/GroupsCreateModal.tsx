@@ -85,6 +85,7 @@ export const GroupsCreateModal = ({
           >
             <TextInput
               ref={register({ required: true })}
+              autoFocus
               type="text"
               id="create-group-name"
               name="name"
