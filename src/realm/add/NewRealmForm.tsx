@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   PageSection,
@@ -17,9 +18,12 @@ import { useForm, Controller } from "react-hook-form";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
 import RealmRepresentation from "keycloak-admin/lib/defs/realmRepresentation";
 import { useAdminClient } from "../../context/auth/AdminClient";
+import { WhoAmIContext } from "../../context/whoami/WhoAmI";
 
 export const NewRealmForm = () => {
   const { t } = useTranslation("realm");
+  const history = useHistory();
+  const { refresh } = useContext(WhoAmIContext);
   const adminClient = useAdminClient();
   const { addAlert } = useAlerts();
 
@@ -39,6 +43,8 @@ export const NewRealmForm = () => {
   const save = async (realm: RealmRepresentation) => {
     try {
       await adminClient.realms.create(realm);
+      refresh();
+      history.push(`/${realm.realm}`);
       addAlert(t("Realm created"), AlertVariant.success);
     } catch (error) {
       addAlert(
