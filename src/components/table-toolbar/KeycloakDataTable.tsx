@@ -145,7 +145,7 @@ export function KeycloakDataTable<T>({
               if (col.cellRenderer) {
                 return col.cellRenderer(value);
               }
-            return _.get(value, col.name);
+              return _.get(value, col.name);
             }),
           };
         });
