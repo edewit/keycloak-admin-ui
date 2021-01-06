@@ -42,6 +42,7 @@
 
     "home": "Home",
     "manage": "Manage",
+    "dashboard": "Dashboard",
     "clients": "Clients",
     "clientScopes": "Client scopes",
     "realmRoles": "Realm roles",

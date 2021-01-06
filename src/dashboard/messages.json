@@ -1,0 +1,27 @@
+{
+  "dashboard": {
+    "welcome": "Welcome to",
+    "introduction": "If you want to leave this page and mange this realm, please click the corresponding menu items in the left navigation bar.",
+    "serverInfo": "Server info",
+    "serverTime": "Server time",
+    "serverUptime": "Server uptime",
+    "system": "System",
+    "currentWorkingDirectory": "Current working directory",
+    "javaVersion": "Java Version",
+    "javaVendor": "Java Vendor",
+    "javaRuntime": "Java Runtime",
+    "javaVm": "Java VM",
+    "javaVmVersion": "Java VM Version",
+    "javaHome": "Java Home",
+    "userName": "User Name",
+    "userTimezone": "User Timezone",
+    "userLocale": "User Locale",
+    "fileEncoding": "System Encoding",
+    "osName": "Operation System",
+    "osArchitecture": "OS Architecture",
+    "profile": "Profile",
+    "enabledFeatures": "Enabled features",
+    "disabledFeatures": "Disabled features",
+    "memory": "Memory"
+  }
+}

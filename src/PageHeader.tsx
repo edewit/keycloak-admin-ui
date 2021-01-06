@@ -16,7 +16,7 @@ import {
 import { HelpIcon } from "@patternfly/react-icons";
 import { WhoAmIContext } from "./context/whoami/WhoAmI";
 import { HelpHeader } from "./components/help-enabler/HelpHeader";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useAdminClient } from "./context/auth/AdminClient";
 
 export const Header = () => {
@@ -55,7 +55,12 @@ export const Header = () => {
 
   const ServerInfoDropdownItem = () => {
     const { t } = useTranslation();
-    return <DropdownItem key="server info">{t("serverInfo")}</DropdownItem>;
+    const history = useHistory();
+    return (
+      <DropdownItem key="server info" onClick={() => history.push("/master")}>
+        {t("serverInfo")}
+      </DropdownItem>
+    );
   };
 
   const HelpDropdownItem = () => {
@@ -160,7 +165,11 @@ export const Header = () => {
       showNavToggle
       logo={
         <Link to="/">
-          <Brand src="/logo.svg" alt="Logo" />
+          <Brand
+            src="/logo.svg"
+            alt="Logo"
+            className="keycloak__pageheader_brand"
+          />
         </Link>
       }
       logoComponent="div"
