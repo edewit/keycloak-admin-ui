@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ActionGroup, Button, Form, TextInput } from "@patternfly/react-core";
 import { SubmitHandler, useFieldArray, UseFormMethods } from "react-hook-form";
 import "./RealmRolesSection.css";
@@ -26,10 +26,6 @@ type RoleAttributesProps = {
 export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
   const { t } = useTranslation("roles");
   const history = useHistory();
-  const [isKeyInputValid, setKeyInputValid] = useState(form.formState.isValid);
-  const [isValueInputValid, setValueInputValid] = useState(
-    form.formState.isValid
-  );
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -40,16 +36,6 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
 
   const onAdd = () => {
     append({ key: "", value: "" });
-    setKeyInputValid(false);
-    setValueInputValid(false);
-  };
-
-  const onKeyInputChange = (index: number, value: string) => {
-    return value ? setKeyInputValid(true) : setKeyInputValid(false);
-  };
-
-  const onValueInputChange = (index: number, value: string) => {
-    return value ? setValueInputValid(true) : setValueInputValid(false);
   };
 
   return (
@@ -84,8 +70,6 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                     ref={form.register({ required: true })}
                     aria-label="key-input"
                     defaultValue={attribute.key}
-                    isReadOnly={false}
-                    onChange={(value) => onKeyInputChange(rowIndex, value)}
                   />
                 </Td>
                 <Td
@@ -104,7 +88,6 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                     })}
                     aria-label="value-input"
                     defaultValue={attribute.value}
-                    onChange={(value) => onValueInputChange(rowIndex, value)}
                   />
                 </Td>
                 {rowIndex !== fields.length - 1 && fields.length - 1 !== 0 && (
@@ -132,7 +115,7 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
                       className="kc-role-attributes__plus-icon"
                       onClick={onAdd}
                       icon={<PlusCircleIcon />}
-                      isDisabled={!isKeyInputValid || !isValueInputValid}
+                      isDisabled={!form.formState.isValid}
                     />
                   </Td>
                 )}
@@ -144,7 +127,7 @@ export const RoleAttributes = ({ form, save }: RoleAttributesProps) => {
           <Button
             variant="primary"
             type="submit"
-            isDisabled={!isKeyInputValid || !isValueInputValid}
+            isDisabled={!form.formState.isValid}
           >
             {t("common:save")}
           </Button>
