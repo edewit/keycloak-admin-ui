@@ -27,7 +27,7 @@ type RealmSelectorProps = {
 
 export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
   const { realm, setRealm } = useRealm();
-  const whoami = useContext(WhoAmIContext);
+  const { whoAmI } = useContext(WhoAmIContext);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [filteredItems, setFilteredItems] = useState(realmList);
@@ -87,7 +87,7 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
 
   const addRealmComponent = (
     <React.Fragment key="Add Realm">
-      {whoami.whoAmI.canCreateRealm() && (
+      {whoAmI.canCreateRealm() && (
         <>
           <Divider key="divider" />
           <DropdownItem key="add">
