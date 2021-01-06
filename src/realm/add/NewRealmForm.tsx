@@ -45,6 +45,8 @@ export const NewRealmForm = () => {
       await adminClient.realms.create(realm);
       refresh();
       history.push(`/${realm.realm}`);
+      //force token update
+      await adminClient.keycloak.updateToken(Number.MAX_VALUE);
       addAlert(t("Realm created"), AlertVariant.success);
     } catch (error) {
       addAlert(
