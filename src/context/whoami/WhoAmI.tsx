@@ -67,7 +67,6 @@ export const WhoAmIContextProvider = ({ children }: WhoAmIProviderProps) => {
   const [key, setKey] = useState(0);
 
   useEffect(() => {
-    console.log("fetching who am i");
     return useFetch(
       () =>
         adminClient.whoAmI.find({
