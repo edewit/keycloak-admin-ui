@@ -55,7 +55,12 @@ export const ClientScopesSection = () => {
                   addAlert(t("deletedSuccess"), AlertVariant.success);
                   return true;
                 } catch (error) {
-                  addAlert(t("deleteError", { error }), AlertVariant.danger);
+                  addAlert(
+                    t("deleteError", {
+                      error: error.response.data?.errorMessage || error,
+                    }),
+                    AlertVariant.danger
+                  );
                   return false;
                 }
               },
