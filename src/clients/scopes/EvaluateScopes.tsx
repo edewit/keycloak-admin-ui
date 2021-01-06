@@ -23,7 +23,7 @@ import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
 import ProtocolMapperRepresentation from "keycloak-admin/lib/defs/protocolMapperRepresentation";
 import { ProtocolMapperTypeRepresentation } from "keycloak-admin/lib/defs/serverInfoRepesentation";
 
-import { useAdminClient } from "../../context/auth/AdminClient";
+import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
 import { RealmContext } from "../../context/realm-context/RealmContext";
 import { KeycloakDataTable } from "../../components/table-toolbar/KeycloakDataTable";
@@ -66,12 +66,10 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
   const [accessToken, setAccessToken] = useState("");
 
   useEffect(() => {
-    (async () => {
-      const optionalClientScopes = await adminClient.clients.listOptionalClientScopes(
-        { id: clientId }
-      );
-      setSelectableScopes(optionalClientScopes);
-    })();
+    return useFetch(
+      () => adminClient.clients.listOptionalClientScopes({ id: clientId }),
+      (optionalClientScopes) => setSelectableScopes(optionalClientScopes)
+    );
   }, []);
 
   const toString = (user: UserRepresentation) => {
@@ -86,9 +84,15 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
   };
 
   useEffect(() => {
-    (async () => {
-      if (userSearch.length > 2) {
-        const users = await adminClient.users.find({ search: userSearch });
+    return useFetch(
+      () => {
+        if (userSearch.length > 2) {
+          return adminClient.users.find({ search: userSearch });
+        } else {
+          return Promise.resolve<UserRepresentation[]>([]);
+        }
+      },
+      (users) =>
         setUserItems(
           users
             .map((user) => {
@@ -98,63 +102,67 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
               return user;
             })
             .map((user) => <SelectOption key={user.id} value={user} />)
-        );
-      } else {
-        setUserItems([]);
-      }
-    })();
+        )
+    );
   }, [userSearch]);
 
   useEffect(() => {
-    (async () => {
-      const scope = selected.join(" ");
-      setEffectiveRoles(
-        await adminClient.clients.evaluatePermission({
+    return useFetch(
+      async () => {
+        const scope = selected.join(" ");
+        const effectiveRoles = await adminClient.clients.evaluatePermission({
           id: clientId,
           roleContainer: realm,
           scope,
           type: "granted",
-        })
-      );
+        });
 
-      const mapperList = (await adminClient.clients.evaluateListProtocolMapper({
-        id: clientId,
-        scope,
-      })) as ({
-        type: ProtocolMapperTypeRepresentation;
-      } & ProtocolMapperRepresentation)[];
+        const mapperList = (await adminClient.clients.evaluateListProtocolMapper(
+          {
+            id: clientId,
+            scope,
+          }
+        )) as ({
+          type: ProtocolMapperTypeRepresentation;
+        } & ProtocolMapperRepresentation)[];
 
-      mapperList.map((mapper) => {
-        mapper.type = mapperTypes.filter(
-          (type) => type.id === mapper.protocolMapper
-        )[0];
-      });
+        return {
+          mapperList,
+          effectiveRoles,
+        };
+      },
+      ({ mapperList, effectiveRoles }) => {
+        setEffectiveRoles(effectiveRoles);
+        mapperList.map((mapper) => {
+          mapper.type = mapperTypes.filter(
+            (type) => type.id === mapper.protocolMapper
+          )[0];
+        });
 
-      setProtocolMappers(mapperList);
-
-      refresh();
-    })();
+        setProtocolMappers(mapperList);
+        refresh();
+      }
+    );
   }, [selected]);
 
   useEffect(() => {
-    (async () => {
-      const scope = selected.join(" ");
-      if (user) {
-        setAccessToken(
-          JSON.stringify(
-            await adminClient.clients.evaluateGenerateAccessToken({
-              id: clientId,
-              userId: user.id!,
-              scope,
-            }),
-            undefined,
-            3
-          )
-        );
-      } else {
-        setAccessToken("");
+    return useFetch(
+      () => {
+        const scope = selected.join(" ");
+        if (user) {
+          return adminClient.clients.evaluateGenerateAccessToken({
+            id: clientId,
+            userId: user.id!,
+            scope,
+          });
+        } else {
+          return Promise.resolve({});
+        }
+      },
+      (accessToken) => {
+        setAccessToken(JSON.stringify(accessToken, undefined, 3));
       }
-    })();
+    );
   }, [user, selected]);
 
   return (
@@ -297,10 +305,8 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
           eventKey={2}
           title={<TabTitleText>{t("generatedAccessToken")}</TabTitleText>}
         >
-          {accessToken && (
-            <TextArea rows={20} id="accessToken" value={accessToken} />
-          )}
-          {!accessToken && (
+          {user && <TextArea rows={20} id="accessToken" value={accessToken} />}
+          {!user && (
             <EmptyState variant="large">
               <Title headingLevel="h4" size="lg">
                 {t("noGeneratedAccessToken")}
