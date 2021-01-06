@@ -4,16 +4,18 @@ import { useTranslation } from "react-i18next";
 import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core";
 
 import { useSubGroups } from "../../groups/GroupsSection";
+import { useRealm } from "../../context/realm-context/RealmContext";
 
 export const GroupBreadCrumbs = () => {
   const { t } = useTranslation();
   const { clear, remove, subGroups } = useSubGroups();
+  const { realm } = useRealm();
 
   const history = useHistory();
 
   useEffect(() => {
     return history.listen(({ pathname }) => {
-      if (!pathname.startsWith("/groups") || pathname === "/groups") {
+      if (pathname.indexOf("/groups") === -1) {
         clear();
       }
     });
@@ -24,7 +26,7 @@ export const GroupBreadCrumbs = () => {
       {subGroups.length !== 0 && (
         <Breadcrumb>
           <BreadcrumbItem key="home">
-            <Link to="/groups">{t("groups")}</Link>
+            <Link to={`/${realm}/groups`}>{t("groups")}</Link>
           </BreadcrumbItem>
           {subGroups.map((group, i) => (
             <BreadcrumbItem key={i} isActive={subGroups.length - 1 === i}>

@@ -71,7 +71,7 @@ export const useSubGroups = () => useContext(SubGroupContext);
 
 const getId = (pathname: string) => {
   const pathParts = pathname.substr(1).split("/");
-  return pathParts.length > 1 ? pathParts.splice(1) : undefined;
+  return pathParts.length > 1 ? pathParts.splice(2) : undefined;
 };
 
 const getLastId = (pathname: string) => {
