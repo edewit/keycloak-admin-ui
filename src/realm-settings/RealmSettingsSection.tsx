@@ -121,14 +121,7 @@ export const RealmSettingsSection = () => {
   const adminClient = useAdminClient();
   const { realm: realmName } = useRealm();
   const { addAlert } = useAlerts();
-  const {
-    register,
-    control,
-    trigger,
-    getValues,
-    setValue,
-    handleSubmit,
-  } = useForm();
+  const { register, control, getValues, setValue, handleSubmit } = useForm();
   const [activeTab, setActiveTab] = useState(0);
   const [open, setOpen] = useState(false);
 
@@ -146,14 +139,12 @@ export const RealmSettingsSection = () => {
     Object.entries(realm).map((entry) => setValue(entry[0], entry[1]));
   };
 
-  const save = async () => {
-    if (await trigger()) {
-      try {
-        await adminClient.realms.update({ realm: realmName }, getValues());
-        addAlert(t("saveSuccess"), AlertVariant.success);
-      } catch (error) {
-        addAlert(t("saveError", { error }), AlertVariant.danger);
-      }
+  const save = async (realm: RealmRepresentation) => {
+    try {
+      await adminClient.realms.update({ realm: realmName }, realm);
+      addAlert(t("saveSuccess"), AlertVariant.success);
+    } catch (error) {
+      addAlert(t("saveError", { error }), AlertVariant.danger);
     }
   };
 
@@ -168,7 +159,7 @@ export const RealmSettingsSection = () => {
             value={value}
             onChange={onChange}
             realmName={realmName}
-            save={save}
+            save={() => save(getValues())}
           />
         )}
       />
