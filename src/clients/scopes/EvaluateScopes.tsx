@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ClipboardCopy,
@@ -6,12 +6,15 @@ import {
   EmptyStateBody,
   Form,
   FormGroup,
+  Grid,
+  GridItem,
   Select,
   SelectOption,
   SelectVariant,
   Split,
   SplitItem,
   Tab,
+  TabContent,
   Tabs,
   TabTitleText,
   TextArea,
@@ -34,6 +37,73 @@ import "./evaluate.css";
 export type EvaluateScopesProps = {
   clientId: string;
   protocol: string;
+};
+
+const ProtocolMappers = ({
+  protocolMappers,
+}: {
+  protocolMappers: ProtocolMapperRepresentation[];
+}) => {
+  const [key, setKey] = useState(0);
+  useEffect(() => {
+    setKey(key + 1);
+  }, [protocolMappers]);
+  return (
+    <KeycloakDataTable
+      key={key}
+      loader={() => Promise.resolve(protocolMappers)}
+      ariaLabelKey="clients:effectiveProtocolMappers"
+      searchPlaceholderKey="clients:searchForProtocol"
+      columns={[
+        {
+          name: "mapperName",
+          displayKey: "clients:name",
+        },
+        {
+          name: "containerName",
+          displayKey: "clients:parentClientScope",
+        },
+        {
+          name: "type.category",
+          displayKey: "clients:category",
+        },
+        {
+          name: "type.priority",
+          displayKey: "clients:priority",
+        },
+      ]}
+    />
+  );
+};
+
+const EffectiveRoles = ({
+  effectiveRoles,
+}: {
+  effectiveRoles: RoleRepresentation[];
+}) => {
+  const [key, setKey] = useState(0);
+  useEffect(() => {
+    setKey(key + 1);
+  }, [effectiveRoles]);
+
+  return (
+    <KeycloakDataTable
+      key={key}
+      loader={() => Promise.resolve(effectiveRoles)}
+      ariaLabelKey="client:effectiveRoleScopeMappings"
+      searchPlaceholderKey="clients:searchForRole"
+      columns={[
+        {
+          name: "name",
+          displayKey: "clients:role",
+        },
+        {
+          name: "containerId",
+          displayKey: "clients:origin",
+        },
+      ]}
+    />
+  );
 };
 
 export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
@@ -64,6 +134,10 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
     ProtocolMapperRepresentation[]
   >([]);
   const [accessToken, setAccessToken] = useState("");
+
+  const tabContent1 = useRef(null);
+  const tabContent2 = useRef(null);
+  const tabContent3 = useRef(null);
 
   useEffect(() => {
     return useFetch(
@@ -247,77 +321,73 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
           </Select>
         </FormGroup>
       </Form>
-      <Tabs
-        key={key}
-        isVertical
-        activeKey={activeTab}
-        onSelect={(_, key) => setActiveTab(key as number)}
-      >
-        <Tab
-          eventKey={0}
-          title={<TabTitleText>{t("effectiveProtocolMappers")}</TabTitleText>}
-        >
-          <KeycloakDataTable
-            loader={() => Promise.resolve(protocolMappers)}
-            ariaLabelKey="clients:effectiveProtocolMappers"
-            searchPlaceholderKey="clients:searchForProtocol"
-            columns={[
-              {
-                name: "mapperName",
-                displayKey: "clients:name",
-              },
-              {
-                name: "containerName",
-                displayKey: "clients:parentClientScope",
-              },
-              {
-                name: "type.category",
-                displayKey: "clients:category",
-              },
-              {
-                name: "type.priority",
-                displayKey: "clients:priority",
-              },
-            ]}
-          />
-        </Tab>
-        <Tab
-          eventKey={1}
-          title={<TabTitleText>{t("effectiveRoleScopeMappings")}</TabTitleText>}
-        >
-          <KeycloakDataTable
-            loader={() => Promise.resolve(effectiveRoles)}
-            ariaLabelKey="client:effectiveRoleScopeMappings"
-            searchPlaceholderKey="clients:searchForRole"
-            columns={[
-              {
-                name: "name",
-                displayKey: "clients:role",
-              },
-              {
-                name: "containerId",
-                displayKey: "clients:origin",
-              },
-            ]}
-          />
-        </Tab>
-        <Tab
-          eventKey={2}
-          title={<TabTitleText>{t("generatedAccessToken")}</TabTitleText>}
-        >
-          {user && <TextArea rows={20} id="accessToken" value={accessToken} />}
-          {!user && (
-            <EmptyState variant="large">
-              <Title headingLevel="h4" size="lg">
-                {t("noGeneratedAccessToken")}
-              </Title>
-              <EmptyStateBody>
-                {t("generatedAccessTokenIsDisabled")}
-              </EmptyStateBody>
-            </EmptyState>
-          )}
-        </Tab>
-      </Tabs>
+      <Grid className="keycloak__scopes_evaluate__tabs">
+        <GridItem span={8}>
+          <TabContent
+            eventKey={0}
+            id="effectiveProtocolMappers"
+            ref={tabContent1}
+          >
+            <ProtocolMappers protocolMappers={protocolMappers} />
+          </TabContent>
+          <TabContent
+            eventKey={1}
+            id="effectiveRoleScopeMappings"
+            ref={tabContent2}
+            hidden
+          >
+            <EffectiveRoles effectiveRoles={effectiveRoles} />
+          </TabContent>
+          <TabContent
+            eventKey={2}
+            id="generatedAccessToken"
+            ref={tabContent3}
+            hidden
+          >
+            {user && (
+              <TextArea rows={20} id="accessToken" value={accessToken} />
+            )}
+            {!user && (
+              <EmptyState variant="large">
+                <Title headingLevel="h4" size="lg">
+                  {t("noGeneratedAccessToken")}
+                </Title>
+                <EmptyStateBody>
+                  {t("generatedAccessTokenIsDisabled")}
+                </EmptyStateBody>
+              </EmptyState>
+            )}
+          </TabContent>
+        </GridItem>
+        <GridItem span={4}>
+          <Tabs
+            key={key}
+            isVertical
+            activeKey={activeTab}
+            onSelect={(_, key) => setActiveTab(key as number)}
+          >
+            <Tab
+              eventKey={0}
+              title={
+                <TabTitleText>{t("effectiveProtocolMappers")}</TabTitleText>
+              }
+              tabContentRef={tabContent1}
+            />
+            <Tab
+              eventKey={1}
+              title={
+                <TabTitleText>{t("effectiveRoleScopeMappings")}</TabTitleText>
+              }
+              tabContentRef={tabContent2}
+            ></Tab>
+            <Tab
+              eventKey={2}
+              title={<TabTitleText>{t("generatedAccessToken")}</TabTitleText>}
+              tabContentRef={tabContent3}
+            />
+          </Tabs>
+        </GridItem>
+      </Grid>
     </>
   );
 };
