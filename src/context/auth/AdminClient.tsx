@@ -17,7 +17,7 @@ export const useAdminClient = () => {
   return adminClient;
 };
 
-export function useFetch<T>(
+export function asyncStateFetch<T>(
   adminClientCall: () => Promise<T>,
   callback: (param: T) => void
 ) {
