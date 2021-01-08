@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -28,6 +28,7 @@ import { useAlerts } from "../components/alert/Alerts";
 import { KeycloakDataTable } from "../components/table-toolbar/KeycloakDataTable";
 
 import "./GroupsSection.css";
+import { useRealm } from "../context/realm-context/RealmContext";
 
 type GroupTableData = GroupRepresentation & {
   membersLength?: number;
@@ -88,6 +89,8 @@ export const GroupsSection = () => {
   const [selectedRows, setSelectedRows] = useState<GroupRepresentation[]>([]);
   const { subGroups, setSubGroups } = useSubGroups();
   const { addAlert } = useAlerts();
+  const { realm } = useRealm();
+  const history = useHistory();
 
   const location = useLocation();
   const id = getLastId(location.pathname);
@@ -131,6 +134,8 @@ export const GroupsSection = () => {
         group.membersLength = memberData[i];
         return group;
       });
+    } else {
+      history.push(`/${realm}/groups`);
     }
 
     return [];
@@ -191,8 +196,8 @@ export const GroupsSection = () => {
           onSelect={(rows) => setSelectedRows([...rows])}
           canSelectAll={false}
           loader={loader}
-          ariaLabelKey="client-scopes:clientScopeList"
-          searchPlaceholderKey="client-scopes:searchFor"
+          ariaLabelKey="groups:groups"
+          searchPlaceholderKey="groups:searchForGroups"
           toolbarItem={
             <>
               <ToolbarItem>
