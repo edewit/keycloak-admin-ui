@@ -110,25 +110,30 @@ export const GroupsSection = () => {
       if (isNavigationStateInValid) {
         const groups = [];
         for (const i of ids!) {
-          groups.push(await adminClient.groups.findOne({ id: i }));
+          const group = await adminClient.groups.findOne({ id: i });
+          if (group) groups.push(group);
         }
         setSubGroups(groups);
         groupsData = groups.pop()?.subGroups!;
       } else {
         const group = await adminClient.groups.findOne({ id });
-        setSubGroups([...subGroups, group]);
-        groupsData = group.subGroups!;
+        if (group) {
+          setSubGroups([...subGroups, group]);
+          groupsData = group.subGroups!;
+        }
       }
     }
 
-    const memberPromises = groupsData.map((group) => getMembers(group.id!));
-    const memberData = await Promise.all(memberPromises);
-    const updatedObject = groupsData.map((group: GroupTableData, i) => {
-      group.membersLength = memberData[i];
-      return group;
-    });
+    if (groupsData) {
+      const memberPromises = groupsData.map((group) => getMembers(group.id!));
+      const memberData = await Promise.all(memberPromises);
+      return groupsData.map((group: GroupTableData, i) => {
+        group.membersLength = memberData[i];
+        return group;
+      });
+    }
 
-    return updatedObject;
+    return [];
   };
 
   useEffect(() => {
