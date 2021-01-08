@@ -43,11 +43,11 @@ export const NewRealmForm = () => {
   const save = async (realm: RealmRepresentation) => {
     try {
       await adminClient.realms.create(realm);
-      refresh();
-      history.push(`/${realm.realm}`);
-      //force token update
-      await adminClient.keycloak.updateToken(Number.MAX_VALUE);
       addAlert(t("Realm created"), AlertVariant.success);
+      refresh();
+      //force token update
+      await adminClient.keycloak?.updateToken(Number.MAX_VALUE);
+      history.push(`/${realm.realm}`);
     } catch (error) {
       addAlert(
         `${t("Could not create realm:")} '${error}'`,

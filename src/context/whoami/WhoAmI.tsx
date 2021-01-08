@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import i18n from "../../i18n";
 
-import { AdminClient, useFetch } from "../auth/AdminClient";
+import { AdminClient, asyncStateFetch } from "../auth/AdminClient";
 import { RealmContext } from "../realm-context/RealmContext";
 import WhoAmIRepresentation, {
   AccessType,
@@ -67,7 +67,7 @@ export const WhoAmIContextProvider = ({ children }: WhoAmIProviderProps) => {
   const [key, setKey] = useState(0);
 
   useEffect(() => {
-    return useFetch(
+    return asyncStateFetch(
       () =>
         adminClient.whoAmI.find({
           realm: adminClient.keycloak?.realm,
