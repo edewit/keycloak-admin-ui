@@ -14,7 +14,7 @@ import { KeycloakDataTable } from "../components/table-toolbar/KeycloakDataTable
 import { emptyFormatter, exportClient } from "../util";
 import { useAlerts } from "../components/alert/Alerts";
 import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
-import { externalLinkFormatter } from "../components/external-link/ExternalLink";
+import { formattedLinkTableCell } from "../components/external-link/FormattedLink";
 
 export const ClientsSection = () => {
   const { t } = useTranslation("clients");
@@ -112,7 +112,7 @@ export const ClientsSection = () => {
             {
               name: "baseUrl",
               displayKey: "clients:homeURL",
-              cellFormatters: [externalLinkFormatter(), emptyFormatter()],
+              cellFormatters: [formattedLinkTableCell(), emptyFormatter()],
               cellRenderer: (client) => {
                 if (client.rootUrl) {
                   if (
