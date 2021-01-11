@@ -17,16 +17,22 @@ import {
   TabContent,
   Tabs,
   TabTitleText,
+  Text,
   TextArea,
+  TextContent,
   Title,
 } from "@patternfly/react-core";
+import { QuestionCircleIcon } from "@patternfly/react-icons";
 import ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
 import UserRepresentation from "keycloak-admin/lib/defs/userRepresentation";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
 import ProtocolMapperRepresentation from "keycloak-admin/lib/defs/protocolMapperRepresentation";
 import { ProtocolMapperTypeRepresentation } from "keycloak-admin/lib/defs/serverInfoRepesentation";
 
-import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
+import {
+  useAdminClient,
+  asyncStateFetch,
+} from "../../context/auth/AdminClient";
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
 import { RealmContext } from "../../context/realm-context/RealmContext";
 import { KeycloakDataTable } from "../../components/table-toolbar/KeycloakDataTable";
@@ -140,7 +146,7 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
   const tabContent3 = useRef(null);
 
   useEffect(() => {
-    return useFetch(
+    return asyncStateFetch(
       () => adminClient.clients.listOptionalClientScopes({ id: clientId }),
       (optionalClientScopes) => setSelectableScopes(optionalClientScopes)
     );
@@ -158,7 +164,7 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
   };
 
   useEffect(() => {
-    return useFetch(
+    return asyncStateFetch(
       () => {
         if (userSearch.length > 2) {
           return adminClient.users.find({ search: userSearch });
@@ -181,7 +187,7 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
   }, [userSearch]);
 
   useEffect(() => {
-    return useFetch(
+    return asyncStateFetch(
       async () => {
         const scope = selected.join(" ");
         const effectiveRoles = await adminClient.clients.evaluatePermission({
@@ -220,7 +226,7 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
   }, [selected]);
 
   useEffect(() => {
-    return useFetch(
+    return asyncStateFetch(
       () => {
         const scope = selected.join(" ");
         if (user) {
@@ -241,10 +247,15 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
 
   return (
     <>
+      <TextContent className="keycloak__scopes_evaluate__intro">
+        <Text>
+          <QuestionCircleIcon /> {t("clients-help:evaluateExplain")}
+        </Text>
+      </TextContent>
       <Form isHorizontal>
         <FormGroup
           label={t("scopeParameter")}
-          fieldId="kc-scope-parameter"
+          fieldId="scopeParameter"
           labelIcon={
             <HelpItem
               helpText="clients-help:scopeParameter"
@@ -256,7 +267,7 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
           <Split hasGutter>
             <SplitItem isFilled>
               <Select
-                id="scopeParameter"
+                toggleId="scopeParameter"
                 variant={SelectVariant.typeaheadMulti}
                 typeAheadAriaLabel={t("scopeParameter")}
                 onToggle={() => setIsScopeOpen(!isScopeOpen)}
@@ -289,7 +300,7 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
         </FormGroup>
         <FormGroup
           label={t("user")}
-          fieldId="kc-user"
+          fieldId="user"
           labelIcon={
             <HelpItem
               helpText="clients-help:user"
@@ -299,7 +310,7 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
           }
         >
           <Select
-            id="user"
+            toggleId="user"
             variant={SelectVariant.typeahead}
             typeAheadAriaLabel={t("user")}
             onToggle={() => setIsUserOpen(!isUserOpen)}
