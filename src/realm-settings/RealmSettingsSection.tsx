@@ -27,13 +27,13 @@ import {
 import RealmRepresentation from "keycloak-admin/lib/defs/realmRepresentation";
 import { getBaseUrl, toUpperCase } from "../util";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
-import { useAdminClient, useFetch } from "../context/auth/AdminClient";
+import { useAdminClient, asyncStateFetch } from "../context/auth/AdminClient";
 import { useRealm } from "../context/realm-context/RealmContext";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { useAlerts } from "../components/alert/Alerts";
 import { FormAccess } from "../components/form-access/FormAccess";
 import { HelpItem } from "../components/help-enabler/HelpItem";
-import { ExternalLink } from "../components/external-link/ExternalLink";
+import { FormattedLink } from "../components/external-link/FormattedLink";
 
 type RealmSettingsHeaderProps = {
   onChange: (...event: any[]) => void;
@@ -122,16 +122,19 @@ export const RealmSettingsSection = () => {
   const { realm: realmName } = useRealm();
   const { addAlert } = useAlerts();
   const { register, control, getValues, setValue, handleSubmit } = useForm();
+  const [realm, setRealm] = useState<RealmRepresentation>();
   const [activeTab, setActiveTab] = useState(0);
   const [open, setOpen] = useState(false);
 
-  const history = useHistory();
   const baseUrl = getBaseUrl(adminClient);
 
   useEffect(() => {
-    return useFetch(
+    return asyncStateFetch(
       () => adminClient.realms.findOne({ realm: realmName }),
-      (realm) => setupForm(realm)
+      (realm) => {
+        setRealm(realm);
+        setupForm(realm);
+      }
     );
   }, []);
 
@@ -142,6 +145,7 @@ export const RealmSettingsSection = () => {
   const save = async (realm: RealmRepresentation) => {
     try {
       await adminClient.realms.update({ realm: realmName }, realm);
+      setRealm(realm);
       addAlert(t("saveSuccess"), AlertVariant.success);
     } catch (error) {
       addAlert(t("saveError", { error }), AlertVariant.danger);
@@ -298,13 +302,13 @@ export const RealmSettingsSection = () => {
               >
                 <Stack>
                   <StackItem>
-                    <ExternalLink
+                    <FormattedLink
                       href={`${baseUrl}realms/${realmName}/.well-known/openid-configuration`}
                       title={t("openEndpointConfiguration")}
                     />
                   </StackItem>
                   <StackItem>
-                    <ExternalLink
+                    <FormattedLink
                       href={`${baseUrl}realms/${realmName}/protocol/saml/descriptor`}
                       title={t("samlIdentityProviderMetadata")}
                     />
@@ -316,7 +320,7 @@ export const RealmSettingsSection = () => {
                 <Button variant="primary" type="submit">
                   {t("common:save")}
                 </Button>
-                <Button variant="link" onClick={() => history.push("/")}>
+                <Button variant="link" onClick={() => setupForm(realm!)}>
                   {t("common:reload")}
                 </Button>
               </ActionGroup>
