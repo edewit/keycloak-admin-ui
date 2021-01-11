@@ -321,7 +321,7 @@ export const EvaluateScopes = ({ clientId, protocol }: EvaluateScopesProps) => {
           </Select>
         </FormGroup>
       </Form>
-      <Grid className="keycloak__scopes_evaluate__tabs">
+      <Grid hasGutter className="keycloak__scopes_evaluate__tabs">
         <GridItem span={8}>
           <TabContent
             eventKey={0}
