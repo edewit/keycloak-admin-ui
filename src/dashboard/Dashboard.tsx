@@ -1,5 +1,6 @@
 import {
   Brand,
+  Button,
   Card,
   CardBody,
   CardTitle,
@@ -11,29 +12,28 @@ import {
   EmptyStateBody,
   Grid,
   GridItem,
+  Label,
   List,
   ListItem,
   ListVariant,
   PageSection,
-  Progress,
-  ProgressVariant,
-  Split,
-  SplitItem,
+  Text,
+  TextContent,
   Title,
 } from "@patternfly/react-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
 
-import { ViewHeader } from "../components/view-header/ViewHeader";
 import { useRealm } from "../context/realm-context/RealmContext";
 import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 
 import "./dashboard.css";
+import { firstUpperCase } from "../util";
 
 const EmptyDashboard = () => {
   const { t } = useTranslation("dashboard");
-  const { realm } = useRealm();
+  const { realm, setRealm } = useRealm();
   return (
     <PageSection variant="light">
       <EmptyState variant="large">
@@ -49,6 +49,9 @@ const EmptyDashboard = () => {
           {realm}
         </Title>
         <EmptyStateBody>{t("introduction")}</EmptyStateBody>
+        <Button variant="link" onClick={() => setRealm("master")}>
+          {t("common:providerInfo")}
+        </Button>
       </EmptyState>
     </PageSection>
   );
@@ -56,6 +59,7 @@ const EmptyDashboard = () => {
 
 const Dashboard = () => {
   const { t } = useTranslation("dashboard");
+  const { realm } = useRealm();
   const serverInfo = useServerInfo();
 
   const enabledFeatures = _.xor(
@@ -64,216 +68,90 @@ const Dashboard = () => {
     serverInfo.profileInfo?.previewFeatures
   );
 
+  const isExperimentalFeature = (feature: string) => {
+    return serverInfo.profileInfo?.experimentalFeatures?.includes(feature);
+  };
+
+  const isPreviewFeature = (feature: string) => {
+    return serverInfo.profileInfo?.previewFeatures?.includes(feature);
+  };
+
   return (
     <>
-      <ViewHeader
-        titleKey="dashboard"
-        subKey="last refresh"
-        subKeyLinkProps={{ title: "refresh", href: "hello" }}
-      />
+      <PageSection variant="light">
+        <TextContent className="pf-u-mr-sm">
+          <Text component="h1">{firstUpperCase(realm)} realm</Text>
+        </TextContent>
+      </PageSection>
       <PageSection>
-        <Split hasGutter>
-          <SplitItem isFilled>
-            <Grid hasGutter>
-              <GridItem span={4}>
-                <Card className="keycloak__dashboard_card">
-                  <CardTitle>{t("serverInfo")}</CardTitle>
-                  <CardBody>
-                    <DescriptionList>
-                      <DescriptionListGroup>
-                        <DescriptionListDescription>
-                          {serverInfo.systemInfo?.version}
-                        </DescriptionListDescription>
-                        <DescriptionListDescription>
-                          {serverInfo.profileInfo?.name}
-                        </DescriptionListDescription>
-                      </DescriptionListGroup>
-                    </DescriptionList>
-                  </CardBody>
-                </Card>
-              </GridItem>
-              <GridItem span={4}>
-                <Card className="keycloak__dashboard_card">
-                  <CardTitle>{t("serverTime")}</CardTitle>
-                  <CardBody>
-                    <DescriptionList>
-                      <DescriptionListGroup>
-                        <DescriptionListDescription>
-                          {serverInfo.systemInfo?.serverTime}
-                        </DescriptionListDescription>
-                      </DescriptionListGroup>
-                    </DescriptionList>
-                  </CardBody>
-                </Card>
-              </GridItem>
-              <GridItem span={4}>
-                <Card className="keycloak__dashboard_card">
-                  <CardTitle>{t("serverUptime")}</CardTitle>
-                  <CardBody>
-                    <DescriptionList>
-                      <DescriptionListGroup>
-                        <DescriptionListDescription>
-                          {serverInfo.systemInfo?.uptime}
-                        </DescriptionListDescription>
-                      </DescriptionListGroup>
-                    </DescriptionList>
-                  </CardBody>
-                </Card>
-              </GridItem>
-              <GridItem span={12}>
-                <Card className="keycloak__dashboard_card">
-                  <CardTitle>{t("profile")}</CardTitle>
-                  <CardBody>
-                    <DescriptionList>
-                      <DescriptionListGroup>
-                        <DescriptionListTerm>
-                          {t("enabledFeatures")}
-                        </DescriptionListTerm>
-                        <DescriptionListDescription>
-                          <List variant={ListVariant.inline}>
-                            {enabledFeatures.map((feature) => (
-                              <ListItem key={feature}>{feature}</ListItem>
-                            ))}
-                          </List>
-                        </DescriptionListDescription>
-                      </DescriptionListGroup>
-                      <DescriptionListGroup>
-                        <DescriptionListTerm>
-                          {t("disabledFeatures")}
-                        </DescriptionListTerm>
-                        <DescriptionListDescription>
-                          <List variant={ListVariant.inline}>
-                            {serverInfo.profileInfo?.disabledFeatures?.map(
-                              (feature) => (
-                                <ListItem key={feature}>{feature}</ListItem>
-                              )
-                            )}
-                          </List>
-                        </DescriptionListDescription>
-                      </DescriptionListGroup>
-                    </DescriptionList>
-                  </CardBody>
-                </Card>
-              </GridItem>
-              <GridItem span={12}>
-                <Card>
-                  <CardTitle>{t("memory")}</CardTitle>
-                  <CardBody>
-                    <Progress
-                      value={100 - serverInfo.memoryInfo?.freePercentage!}
-                      variant={
-                        serverInfo.memoryInfo?.freePercentage! < 70
-                          ? ProgressVariant.warning
-                          : ProgressVariant.success
-                      }
-                    />
-                  </CardBody>
-                </Card>
-              </GridItem>
-            </Grid>
-          </SplitItem>
-          <SplitItem>
+        <Grid hasGutter>
+          <GridItem span={2}>
             <Card className="keycloak__dashboard_card">
-              <CardTitle>{t("system")}</CardTitle>
+              <CardTitle>{t("serverInfo")}</CardTitle>
               <CardBody>
                 <DescriptionList>
                   <DescriptionListGroup>
-                    <DescriptionListTerm>
-                      {t("currentWorkingDirectory")}
-                    </DescriptionListTerm>
+                    <DescriptionListTerm>{t("version")}</DescriptionListTerm>
                     <DescriptionListDescription>
-                      {serverInfo.systemInfo?.userDir}
+                      {serverInfo.systemInfo?.version}
                     </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>
-                      {t("javaVersion")}
-                    </DescriptionListTerm>
+                    <DescriptionListTerm>{t("product")}</DescriptionListTerm>
                     <DescriptionListDescription>
-                      {serverInfo.systemInfo?.javaVersion}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>{t("javaVendor")}</DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.javaVendor}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>
-                      {t("javaRuntime")}
-                    </DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.javaRuntime}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>{t("javaVm")}</DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.javaVm}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>
-                      {t("javaVmVersion")}
-                    </DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.javaVmVersion}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>{t("javaHome")}</DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.javaHome}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>{t("userName")}</DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.userName}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>
-                      {t("userTimezone")}
-                    </DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.userTimezone}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>{t("userLocale")}</DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.userLocale}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>
-                      {t("fileEncoding")}
-                    </DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.fileEncoding}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>{t("osName")}</DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.osName}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>
-                      {t("osArchitecture")}
-                    </DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {serverInfo.systemInfo?.osArchitecture}
+                      {serverInfo.profileInfo?.name}
                     </DescriptionListDescription>
                   </DescriptionListGroup>
                 </DescriptionList>
               </CardBody>
             </Card>
-          </SplitItem>
-        </Split>
+          </GridItem>
+          <GridItem span={10}>
+            <Card className="keycloak__dashboard_card">
+              <CardTitle>{t("profile")}</CardTitle>
+              <CardBody>
+                <DescriptionList>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>
+                      {t("enabledFeatures")}
+                    </DescriptionListTerm>
+                    <DescriptionListDescription>
+                      <List variant={ListVariant.inline}>
+                        {enabledFeatures.map((feature) => (
+                          <ListItem key={feature}>
+                            {feature}{" "}
+                            {isExperimentalFeature(feature) ? (
+                              <Label color="orange">{t("experimental")}</Label>
+                            ) : (
+                              <></>
+                            )}
+                            {isPreviewFeature(feature) ? (
+                              <Label>{t("preview")}</Label>
+                            ) : (
+                              <></>
+                            )}
+                          </ListItem>
+                        ))}
+                      </List>
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>
+                      {t("disabledFeatures")}
+                    </DescriptionListTerm>
+                    <DescriptionListDescription>
+                      <List variant={ListVariant.inline}>
+                        {serverInfo.profileInfo?.disabledFeatures?.map(
+                          (feature) => (
+                            <ListItem key={feature}>{feature}</ListItem>
+                          )
+                        )}
+                      </List>
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                </DescriptionList>
+              </CardBody>
+            </Card>
+          </GridItem>
+        </Grid>
       </PageSection>
     </>
   );

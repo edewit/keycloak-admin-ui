@@ -90,7 +90,7 @@ export const PageNav: React.FunctionComponent = () => {
             </DataLoader>
           </NavList>
           <NavGroup title="">
-            <LeftNav title="dashboard" path="/" />
+            <LeftNav title="home" path="/" />
           </NavGroup>
           {showManage && (
             <NavGroup title={t("manage")}>

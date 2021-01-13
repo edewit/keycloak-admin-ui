@@ -15,6 +15,7 @@ import {
 } from "@patternfly/react-core";
 import { CheckIcon } from "@patternfly/react-icons";
 
+import { firstUpperCase } from "../../util";
 import RealmRepresentation from "keycloak-admin/lib/defs/realmRepresentation";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { WhoAmIContext } from "../../context/whoami/WhoAmI";
@@ -34,10 +35,9 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
   const [filteredItems, setFilteredItems] = useState(realmList);
   const history = useHistory();
   const { t } = useTranslation("common");
-
   const RealmText = ({ value }: { value: string }) => (
     <Split className="keycloak__realm_selector__list-item-split">
-      <SplitItem isFilled>{toUpperCase(value)}</SplitItem>
+      <SplitItem isFilled>{firstUpperCase(value)}</SplitItem>
       <SplitItem>{value === realm && <CheckIcon />}</SplitItem>
     </Split>
   );
@@ -100,9 +100,9 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
     <>
       {realmList.length > 5 && (
         <ContextSelector
-          toggleText={toUpperCase(realm)}
+          toggleText={firstUpperCase(realm)}
           isOpen={open}
-          screenReaderLabel={toUpperCase(realm)}
+          screenReaderLabel={firstUpperCase(realm)}
           onToggle={() => setOpen(!open)}
           onSelect={(_, r) => {
             const value = ((r as unknown) as any).props.value;
@@ -135,7 +135,7 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
               onToggle={() => setOpen(!open)}
               className="keycloak__realm_selector_dropdown__toggle"
             >
-              {toUpperCase(realm)}
+              {firstUpperCase(realm)}
             </DropdownToggle>
           }
           dropdownItems={[...dropdownItems, addRealmComponent]}

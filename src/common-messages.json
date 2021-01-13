@@ -33,6 +33,7 @@
     "signOut": "Sign out",
     "manageAccount": "Manage account",
     "serverInfo": "Server info",
+    "providerInfo": "Provider info",
     "help": "Help",
     "helpLabel": "More help for {{label}}",
     "documentation": "Documentation",
@@ -42,7 +43,6 @@
 
     "home": "Home",
     "manage": "Manage",
-    "dashboard": "Dashboard",
     "clients": "Clients",
     "clientScopes": "Client scopes",
     "realmRoles": "Realm roles",
