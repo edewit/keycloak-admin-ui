@@ -15,13 +15,12 @@ import {
 } from "@patternfly/react-core";
 import { CheckIcon } from "@patternfly/react-icons";
 
-import { firstUpperCase } from "../../util";
+import { toUpperCase } from "../../util";
 import RealmRepresentation from "keycloak-admin/lib/defs/realmRepresentation";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { WhoAmIContext } from "../../context/whoami/WhoAmI";
 
 import "./realm-selector.css";
-import { toUpperCase } from "../../util";
 
 type RealmSelectorProps = {
   realmList: RealmRepresentation[];
@@ -37,7 +36,7 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
   const { t } = useTranslation("common");
   const RealmText = ({ value }: { value: string }) => (
     <Split className="keycloak__realm_selector__list-item-split">
-      <SplitItem isFilled>{firstUpperCase(value)}</SplitItem>
+      <SplitItem isFilled>{toUpperCase(value)}</SplitItem>
       <SplitItem>{value === realm && <CheckIcon />}</SplitItem>
     </Split>
   );
@@ -100,9 +99,9 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
     <>
       {realmList.length > 5 && (
         <ContextSelector
-          toggleText={firstUpperCase(realm)}
+          toggleText={toUpperCase(realm)}
           isOpen={open}
-          screenReaderLabel={firstUpperCase(realm)}
+          screenReaderLabel={toUpperCase(realm)}
           onToggle={() => setOpen(!open)}
           onSelect={(_, r) => {
             const value = ((r as unknown) as any).props.value;
@@ -135,7 +134,7 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
               onToggle={() => setOpen(!open)}
               className="keycloak__realm_selector_dropdown__toggle"
             >
-              {firstUpperCase(realm)}
+              {toUpperCase(realm)}
             </DropdownToggle>
           }
           dropdownItems={[...dropdownItems, addRealmComponent]}

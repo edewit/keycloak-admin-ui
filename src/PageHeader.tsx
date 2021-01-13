@@ -66,7 +66,7 @@ export const Header = () => {
           setRealm("master");
         }}
       >
-        {t("providerInfo")}
+        {t("realmInfo")}
       </DropdownItem>
     );
   };

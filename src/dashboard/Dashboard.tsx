@@ -29,7 +29,7 @@ import { useRealm } from "../context/realm-context/RealmContext";
 import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 
 import "./dashboard.css";
-import { firstUpperCase } from "../util";
+import { toUpperCase } from "../util";
 
 const EmptyDashboard = () => {
   const { t } = useTranslation("dashboard");
@@ -80,7 +80,7 @@ const Dashboard = () => {
     <>
       <PageSection variant="light">
         <TextContent className="pf-u-mr-sm">
-          <Text component="h1">{firstUpperCase(realm)} realm</Text>
+          <Text component="h1">{toUpperCase(realm)} realm</Text>
         </TextContent>
       </PageSection>
       <PageSection>

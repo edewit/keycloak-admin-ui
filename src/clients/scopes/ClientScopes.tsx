@@ -27,7 +27,7 @@ import {
   useAdminClient,
   asyncStateFetch,
 } from "../../context/auth/AdminClient";
-import { firstUpperCase } from "../../util";
+import { toUpperCase } from "../../util";
 import { TableToolbar } from "../../components/table-toolbar/TableToolbar";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 import { AddScopeDialog } from "./AddScopeDialog";
@@ -65,7 +65,7 @@ const removeScope = async (
   clientScope: ClientScopeRepresentation,
   type: ClientScopeType
 ) => {
-  const typeToName = firstUpperCase(type);
+  const typeToName = toUpperCase(type);
   await castAdminClient(adminClient)[`del${typeToName}ClientScope`]({
     id: clientId,
     clientScopeId: clientScope.id!,
@@ -78,7 +78,7 @@ const addScope = async (
   clientScope: ClientScopeRepresentation,
   type: ClientScopeType
 ) => {
-  const typeToName = firstUpperCase(type);
+  const typeToName = toUpperCase(type);
   await castAdminClient(adminClient)[`add${typeToName}ClientScope`]({
     id: clientId,
     clientScopeId: clientScope.id!,
