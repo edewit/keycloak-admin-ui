@@ -70,7 +70,7 @@ export const WhoAmIContextProvider = ({ children }: WhoAmIProviderProps) => {
     return asyncStateFetch(
       () =>
         adminClient.whoAmI.find({
-          realm: adminClient.keycloak?.realm,
+          realm: adminClient.keycloak?.realm || realm,
         }),
       (me) => {
         const whoAmI = new WhoAmI(adminClient.keycloak?.realm, me);

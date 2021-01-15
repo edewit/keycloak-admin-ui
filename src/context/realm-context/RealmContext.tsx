@@ -15,7 +15,7 @@ type RealmContextProviderProps = { children: React.ReactNode };
 export const RealmContextProvider = ({
   children,
 }: RealmContextProviderProps) => {
-  const [realm, setRealm] = useState("");
+  const [realm, setRealm] = useState("master");
 
   return (
     <RealmContext.Provider value={{ realm, setRealm }}>
