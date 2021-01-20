@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import {
   AlertVariant,
   ButtonVariant,
@@ -55,6 +55,7 @@ export const RealmRoleTabs = () => {
   const [role, setRole] = useState<RoleFormType>();
 
   const { id } = useParams<{ id: string }>();
+  const { url } = useRouteMatch();
   const { addAlert } = useAlerts();
 
   const [open, setOpen] = useState(false);
@@ -102,7 +103,7 @@ export const RealmRoleTabs = () => {
           name: role.name!,
         });
         setRole(convert(createdRole));
-        history.push(`/${realm}/roles/${createdRole.id}`);
+        history.push(url.substr(0, url.lastIndexOf("/") + 1) + createdRole.id);
       }
       addAlert(t(id ? "roleSaveSuccess" : "roleCreated"), AlertVariant.success);
     } catch (error) {

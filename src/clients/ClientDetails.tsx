@@ -31,6 +31,7 @@ import {
 } from "../components/multi-line-input/MultiLineInput";
 import { ClientScopes } from "./scopes/ClientScopes";
 import { EvaluateScopes } from "./scopes/EvaluateScopes";
+import { RealmRolesList } from "../realm-roles/RealmRolesList";
 import { ServiceAccount } from "./service-account/ServiceAccount";
 import { KeycloakTabs } from "../components/keycloak-tabs/KeycloakTabs";
 
@@ -216,6 +217,12 @@ export const ClientDetails = () => {
               <Credentials clientId={id} form={form} save={save} />
             </Tab>
           )}
+          <Tab
+            eventKey="roles"
+            title={<TabTitleText>{t("roles")}</TabTitleText>}
+          >
+            <RealmRolesList />
+          </Tab>
           <Tab
             eventKey="clientScopes"
             title={<TabTitleText>{t("clientScopes")}</TabTitleText>}
