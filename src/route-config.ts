@@ -71,13 +71,13 @@ export const routes: RoutesFn = (t: TFunction) => [
     access: "manage-realm",
   },
   {
-    path: "/:realm/clients/:id/roles/:id",
+    path: "/:realm/clients/:clientId/roles/:id",
     component: RealmRoleTabs,
     breadcrumb: t("roles:roleDetails"),
     access: "view-realm",
   },
   {
-    path: "/:realm/clients/:id/roles/:id/:tab",
+    path: "/:realm/clients/:clientId/roles/:id/:tab",
     component: RealmRoleTabs,
     breadcrumb: null,
     access: "view-realm",
