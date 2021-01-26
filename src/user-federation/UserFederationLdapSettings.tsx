@@ -16,6 +16,7 @@ import { LdapSettingsGeneral } from "./ldap/LdapSettingsGeneral";
 import { LdapSettingsConnection } from "./ldap/LdapSettingsConnection";
 import { LdapSettingsSearching } from "./ldap/LdapSettingsSearching";
 import { ScrollForm } from "../components/scroll-form/ScrollForm";
+import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 
 import { useHistory, useParams } from "react-router-dom";
 import { useRealm } from "../context/realm-context/RealmContext";
@@ -35,6 +36,21 @@ export const UserFederationLdapSettings = () => {
 
   const { id } = useParams<{ id: string }>();
   const { addAlert } = useAlerts();
+
+  const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
+    titleKey: t("removeImportedUsers"),
+    messageKey: t("removeImportedUsersMessage"),
+    continueButtonLabel: "common:remove",
+    onConfirm: async () => {
+      // try {
+      //   await something? :-)
+      //   refresh();
+      //   addAlert(t("removeImportedUsersSuccess"), AlertVariant.success);
+      // } catch (error) {
+      //   addAlert(t("removeImportedUsersError", { error }), AlertVariant.danger);
+      // }
+    },
+  });
 
   useEffect(() => {
     (async () => {
