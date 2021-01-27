@@ -12,7 +12,12 @@ import { useAlerts } from "../components/alert/Alerts";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { emptyFormatter, boolFormatter } from "../util";
 
-export const RealmRolesList = () => {
+type RolesListProps = {
+  loader: (first?: number, max?: number, search?: string) => Promise<RoleRepresentation[]>;
+  paginated?: boolean;
+}
+
+export const RolesList = ({ loader, paginated = true }: RolesListProps) => {
   const { t } = useTranslation("roles");
   const history = useHistory();
   const adminClient = useAdminClient();
@@ -20,15 +25,6 @@ export const RealmRolesList = () => {
   const { url } = useRouteMatch();
 
   const [selectedRole, setSelectedRole] = useState<RoleRepresentation>();
-
-  const loader = async (to?: number, max?: number, search?: string) => {
-    const params: { [name: string]: string | number } = {
-      to: to!,
-      max: max!,
-      search: search!,
-    };
-    return await adminClient.roles.find(params);
-  };
 
   const RoleDetailLink = (role: RoleRepresentation) => (
     <>
@@ -67,7 +63,7 @@ export const RealmRolesList = () => {
         loader={loader}
         ariaLabelKey="roles:roleList"
         searchPlaceholderKey="roles:searchFor"
-        isPaginated
+        isPaginated={paginated}
         toolbarItem={
           <>
             <Button onClick={goToCreate}>{t("createRole")}</Button>
