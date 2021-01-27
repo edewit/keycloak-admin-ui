@@ -13,9 +13,13 @@ import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { emptyFormatter, boolFormatter } from "../util";
 
 type RolesListProps = {
-  loader: (first?: number, max?: number, search?: string) => Promise<RoleRepresentation[]>;
+  loader: (
+    first?: number,
+    max?: number,
+    search?: string
+  ) => Promise<RoleRepresentation[]>;
   paginated?: boolean;
-}
+};
 
 export const RolesList = ({ loader, paginated = true }: RolesListProps) => {
   const { t } = useTranslation("roles");
