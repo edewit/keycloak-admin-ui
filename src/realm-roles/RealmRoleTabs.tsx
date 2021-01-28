@@ -114,6 +114,12 @@ export const RealmRoleTabs = () => {
             id: clientId,
             name: role.name,
           });
+          if (role.description) {
+            await adminClient.clients.updateRole(
+              { id: clientId, roleName: role.name! },
+              role
+            );
+          }
           createdRole = await adminClient.clients.findRole({
             id: clientId,
             roleName: role.name!,
@@ -148,7 +154,8 @@ export const RealmRoleTabs = () => {
           await adminClient.clients.delRole({ id: clientId, roleName: name });
         }
         addAlert(t("roleDeletedSuccess"), AlertVariant.success);
-        history.replace(`${url.substr(0, url.lastIndexOf("/"))}`);
+        const loc = url.replaceAll("/attributes", "");
+        history.replace(`${loc.substr(0, loc.lastIndexOf("/"))}`);
       } catch (error) {
         addAlert(`${t("roleDeleteError")} ${error}`, AlertVariant.danger);
       }
