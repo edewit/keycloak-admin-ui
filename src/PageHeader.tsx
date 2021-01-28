@@ -75,10 +75,10 @@ export const Header = () => {
 
   const HelpDropdownItem = () => {
     const { t } = useTranslation();
-    const { toggleHelp } = useContext(HelpContext);
+    const { enabled, toggleHelp } = useContext(HelpContext);
     return (
       <DropdownItem icon={<HelpIcon />} onClick={toggleHelp}>
-        {t("help")}
+        {t("help")} {enabled ? t("on") : t("off")}
       </DropdownItem>
     );
   };
