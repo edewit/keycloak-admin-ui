@@ -95,13 +95,13 @@ export const RealmRoleTabs = () => {
         }
         if (!clientId) {
           await adminClient.roles.updateById({ id }, roleRepresentation);
-          setRole(role);
         } else {
           await adminClient.clients.updateRole(
             { id: clientId, roleName: role.name! },
-            role
+            roleRepresentation
           );
         }
+        setRole(role);
       } else {
         let createdRole;
         if (!clientId) {
@@ -117,7 +117,7 @@ export const RealmRoleTabs = () => {
           if (role.description) {
             await adminClient.clients.updateRole(
               { id: clientId, roleName: role.name! },
-              role
+              roleRepresentation
             );
           }
           createdRole = await adminClient.clients.findRole({
@@ -154,7 +154,7 @@ export const RealmRoleTabs = () => {
           await adminClient.clients.delRole({ id: clientId, roleName: name });
         }
         addAlert(t("roleDeletedSuccess"), AlertVariant.success);
-        const loc = url.replaceAll("/attributes", "");
+        const loc = url.replace(/\/attributes/g, "");
         history.replace(`${loc.substr(0, loc.lastIndexOf("/"))}`);
       } catch (error) {
         addAlert(`${t("roleDeleteError")} ${error}`, AlertVariant.danger);
