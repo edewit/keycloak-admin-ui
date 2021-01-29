@@ -7,8 +7,13 @@ import {
   Label,
   PageSection,
   ToolbarItem,
+  Tooltip,
 } from "@patternfly/react-core";
-import { InfoCircleIcon, WarningTriangleIcon } from "@patternfly/react-icons";
+import {
+  ExclamationCircleIcon,
+  InfoCircleIcon,
+  WarningTriangleIcon,
+} from "@patternfly/react-icons";
 import UserRepresentation from "keycloak-admin/lib/defs/userRepresentation";
 
 import { asyncStateFetch, useAdminClient } from "../context/auth/AdminClient";
@@ -18,6 +23,10 @@ import { useAlerts } from "../components/alert/Alerts";
 import { RealmContext } from "../context/realm-context/RealmContext";
 import { SearchUser } from "./SearchUser";
 import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
+import { emptyFormatter } from "../util";
+import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
+
+import "./user-section.css";
 
 type BruteUser = UserRepresentation & {
   brute?: Record<string, object>;
@@ -30,6 +39,7 @@ export const UsersSection = () => {
   const { realm: realmName } = useContext(RealmContext);
   const [listUsers, setListUsers] = useState(false);
   const [initialSearch, setInitialSearch] = useState("");
+  const [selectedRows, setSelectedRows] = useState<UserRepresentation[]>([]);
 
   const [key, setKey] = useState("");
   const refresh = () => setKey(`${new Date().getTime()}`);
@@ -87,15 +97,24 @@ export const UsersSection = () => {
     return users;
   };
 
-  const deleteUser = async (user: UserRepresentation) => {
-    try {
-      await adminClient.users.del({ id: user.id! });
-      refresh();
-      addAlert(t("userDeletedSuccess"), AlertVariant.success);
-    } catch (error) {
-      addAlert(t("userDeletedError", { error }), AlertVariant.danger);
-    }
-  };
+  const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
+    titleKey: "users:deleteConfirm",
+    messageKey: t("deleteConfirmDialog", { count: selectedRows.length }),
+    continueButtonLabel: "delete",
+    continueButtonVariant: ButtonVariant.danger,
+    onConfirm: async () => {
+      try {
+        for (const user of selectedRows) {
+          await adminClient.users.del({ id: user.id! });
+        }
+        setSelectedRows([]);
+        refresh();
+        addAlert(t("userDeletedSuccess"), AlertVariant.success);
+      } catch (error) {
+        addAlert(t("userDeletedError", { error }), AlertVariant.danger);
+      }
+    },
+  });
 
   const StatusRow = (user: BruteUser) => {
     return (
@@ -110,12 +129,30 @@ export const UsersSection = () => {
             {t("temporaryDisabled")}
           </Label>
         )}
+        {user.enabled && !user.brute?.disabled && "—"}
+      </>
+    );
+  };
+
+  const ValidatedEmail = (user: UserRepresentation) => {
+    return (
+      <>
+        {!user.emailVerified && (
+          <Tooltip
+            key={`email-verified-${user.id}`}
+            content={<>{t("notVerified")}</>}
+          >
+            <ExclamationCircleIcon className="keycloak__user-section__email-verified" />
+          </Tooltip>
+        )}{" "}
+        {emptyFormatter()(user.email)}
       </>
     );
   };
 
   return (
     <>
+      <DeleteConfirm />
       <ViewHeader titleKey="users:title" subKey="users:userExplain" />
       <PageSection variant="light">
         {!listUsers && !initialSearch && (
@@ -132,6 +169,8 @@ export const UsersSection = () => {
             isPaginated
             ariaLabelKey="users:title"
             searchPlaceholderKey="users:searchForUser"
+            canSelectAll
+            onSelect={(rows) => setSelectedRows([...rows])}
             emptyState={
               <ListEmptyState
                 message={t("noUsersFound")}
@@ -146,7 +185,10 @@ export const UsersSection = () => {
                   <Button>{t("addUser")}</Button>
                 </ToolbarItem>
                 <ToolbarItem>
-                  <Button variant={ButtonVariant.plain}>
+                  <Button
+                    variant={ButtonVariant.plain}
+                    onClick={toggleDeleteDialog}
+                  >
                     {t("deleteUser")}
                   </Button>
                 </ToolbarItem>
@@ -156,7 +198,8 @@ export const UsersSection = () => {
               {
                 title: t("common:delete"),
                 onRowClick: (user) => {
-                  deleteUser(user);
+                  setSelectedRows([user]);
+                  toggleDeleteDialog();
                 },
               },
             ]}
@@ -168,14 +211,17 @@ export const UsersSection = () => {
               {
                 name: "email",
                 displayKey: "users:email",
+                cellRenderer: ValidatedEmail,
               },
               {
                 name: "lastName",
                 displayKey: "users:lastName",
+                cellFormatters: [emptyFormatter()],
               },
               {
                 name: "firstName",
                 displayKey: "users:firstName",
+                cellFormatters: [emptyFormatter()],
               },
               {
                 name: "status",
