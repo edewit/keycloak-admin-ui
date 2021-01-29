@@ -40,7 +40,14 @@ export const NewRealmForm = () => {
   const handleFileChange = (value: string | File) => {
     const defaultRealm = { id: "", realm: "", enabled: true };
 
-    const obj = value ? JSON.parse(value as string) : defaultRealm;
+    let obj: { [name: string]: any } = defaultRealm;
+    if (value) {
+      try {
+        obj = JSON.parse(value as string);
+      } catch (error) {
+        console.warn("Invalid json, ignoring value using default");
+      }
+    }
     Object.keys(obj).forEach((k) => {
       setValue(k, obj[k]);
     });
