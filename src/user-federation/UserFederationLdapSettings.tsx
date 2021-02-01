@@ -41,7 +41,7 @@ const LdapSettingsHeader = ({
   onChange,
   value,
   toggleDeleteDialog,
-  toggleRemoveUsersDialog
+  toggleRemoveUsersDialog,
 }: LdapSettingsHeaderProps) => {
   const { t } = useTranslation("user-federation");
   const [toggleDisableDialog, DisableConfirm] = useConfirmDialog({
@@ -59,22 +59,31 @@ const LdapSettingsHeader = ({
         titleKey="LDAP"
         subKey=""
         dropdownItems={[
-          <DropdownItem key="sync" onClick={() => console.log("Sync users TBD")}>
-          Sync changed users
-        </DropdownItem>,
-          <DropdownItem key="syncall" onClick={() => console.log("Sync all users TBD")}>
-          Sync all users
-        </DropdownItem>,
-          <DropdownItem key="unlink" onClick={() => console.log("Unlink users TBD")}>
-          Unlink users
-        </DropdownItem>,
+          <DropdownItem
+            key="sync"
+            onClick={() => console.log("Sync users TBD")}
+          >
+            {t("syncChangedUsers")}
+          </DropdownItem>,
+          <DropdownItem
+            key="syncall"
+            onClick={() => console.log("Sync all users TBD")}
+          >
+            {t("syncAllUsers")}
+          </DropdownItem>,
+          <DropdownItem
+            key="unlink"
+            onClick={() => console.log("Unlink users TBD")}
+          >
+            {t("unlinkUsers")}
+          </DropdownItem>,
           <DropdownItem key="remove" onClick={() => toggleRemoveUsersDialog()}>
-          Remove imported
-        </DropdownItem>,
+            {t("removeImported")}
+          </DropdownItem>,
           <DropdownItem key="delete" onClick={() => toggleDeleteDialog()}>
-          {t("deleteProvider")}
-        </DropdownItem>,
-    ]}
+            {t("deleteProvider")}
+          </DropdownItem>,
+        ]}
         isEnabled={value === "true"}
         onToggle={(value) => {
           if (!value) {
@@ -133,7 +142,7 @@ export const UserFederationLdapSettings = () => {
     continueButtonLabel: "common:remove",
     onConfirm: async () => {
       try {
-        console.log("Imported users removed.");
+        console.log("Remove imported TBD");
         // TODO await remove imported users command
         addAlert(t("removeImportedUsersSuccess"), AlertVariant.success);
       } catch (error) {
