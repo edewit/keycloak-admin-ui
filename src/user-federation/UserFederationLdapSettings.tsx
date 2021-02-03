@@ -5,6 +5,7 @@ import {
   Button,
   ButtonVariant,
   DropdownItem,
+  DropdownSeparator,
   Form,
   PageSection,
 } from "@patternfly/react-core";
@@ -80,6 +81,7 @@ const LdapSettingsHeader = ({
           <DropdownItem key="remove" onClick={() => toggleRemoveUsersDialog()}>
             {t("removeImported")}
           </DropdownItem>,
+          <DropdownSeparator key="separator" />,
           <DropdownItem key="delete" onClick={() => toggleDeleteDialog()}>
             {t("deleteProvider")}
           </DropdownItem>,
