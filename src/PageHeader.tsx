@@ -78,7 +78,7 @@ export const Header = () => {
     const { enabled, toggleHelp } = useContext(HelpContext);
     return (
       <DropdownItem icon={<HelpIcon />} onClick={toggleHelp}>
-        {t("help")} {enabled ? t("on") : t("off")}
+        {enabled ? t("helpEnabled") : t("helpDisabled")}
       </DropdownItem>
     );
   };
