@@ -32,8 +32,9 @@ import { useHistory, useParams } from "react-router-dom";
 import { ScrollForm } from "../components/scroll-form/ScrollForm";
 
 type LdapSettingsHeaderProps = {
-  onChange: (...event: any[]) => void;
-  value: any;
+  onChange: (value: string) => void;
+  value: string;
+  save: () => void;
   toggleDeleteDialog: () => void;
   toggleRemoveUsersDialog: () => void;
 };
@@ -41,6 +42,7 @@ type LdapSettingsHeaderProps = {
 const LdapSettingsHeader = ({
   onChange,
   value,
+  save,
   toggleDeleteDialog,
   toggleRemoveUsersDialog,
 }: LdapSettingsHeaderProps) => {
@@ -50,7 +52,8 @@ const LdapSettingsHeader = ({
     messageKey: "user-federation:userFedDisableConfirm",
     continueButtonLabel: "common:disable",
     onConfirm: () => {
-      onChange(!value);
+      onChange("false");
+      save();
     },
   });
   return (
@@ -92,6 +95,7 @@ const LdapSettingsHeader = ({
             toggleDisableDialog();
           } else {
             onChange("" + value);
+            save();
           }
         }}
       />
@@ -180,7 +184,8 @@ export const UserFederationLdapSettings = () => {
         render={({ onChange, value }) => (
           <LdapSettingsHeader
             value={value}
-            onChange={(value) => onChange("" + value)}
+            save={() => save(form.getValues())}
+            onChange={onChange}
             toggleDeleteDialog={toggleDeleteDialog}
             toggleRemoveUsersDialog={toggleRemoveUsersDialog}
           />
