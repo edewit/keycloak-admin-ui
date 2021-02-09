@@ -78,23 +78,27 @@ export const UsersSection = () => {
     if (!listUsers && !searchParam) {
       return [];
     }
-    const users = await adminClient.users.find({ ...params });
-    const realm = await adminClient.realms.findOne({ realm: realmName });
-    if (realm?.bruteForceProtected) {
-      const brutes = await Promise.all(
-        users.map((user: BruteUser) =>
-          adminClient.attackDetection.findOne({
-            id: user.id!,
-          })
-        )
-      );
-      for (let index = 0; index < users.length; index++) {
-        const user: BruteUser = users[index];
-        user.brute = brutes[index];
+    try {
+      const users = await adminClient.users.find({ ...params });
+      const realm = await adminClient.realms.findOne({ realm: realmName });
+      if (realm?.bruteForceProtected) {
+        const brutes = await Promise.all(
+          users.map((user: BruteUser) =>
+            adminClient.attackDetection.findOne({
+              id: user.id!,
+            })
+          )
+        );
+        for (let index = 0; index < users.length; index++) {
+          const user: BruteUser = users[index];
+          user.brute = brutes[index];
+        }
       }
+      return users;
+    } catch (error) {
+      addAlert(t("noUsersFoundError", { error }), AlertVariant.danger);
+      return [];
     }
-
-    return users;
   };
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
