@@ -11,7 +11,7 @@
     "tableOfGroups": "Table of groups",
     "groupsDescription": "Description goes here",
     "groupCreated": "Group created",
-    "couldNotCreateGroup": "Could not create group",
+    "couldNotCreateGroup": "Could not create group {{error}}",
     "createAGroup": "Create a group",
     "create": "Create",
     "noSearchResults": "No search results",

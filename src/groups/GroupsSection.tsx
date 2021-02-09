@@ -84,7 +84,6 @@ export const GroupsSection = () => {
   const { t } = useTranslation("groups");
   const adminClient = useAdminClient();
   const [isKebabOpen, setIsKebabOpen] = useState(false);
-  const [createGroupName, setCreateGroupName] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<GroupRepresentation[]>([]);
   const { subGroups, setSubGroups } = useSubGroups();
@@ -265,14 +264,12 @@ export const GroupsSection = () => {
           }
         />
 
-        <GroupsCreateModal
-          isCreateModalOpen={isCreateModalOpen}
-          handleModalToggle={handleModalToggle}
-          setIsCreateModalOpen={setIsCreateModalOpen}
-          createGroupName={createGroupName}
-          setCreateGroupName={setCreateGroupName}
-          refresh={refresh}
-        />
+        {isCreateModalOpen && (
+          <GroupsCreateModal
+            handleModalToggle={handleModalToggle}
+            refresh={refresh}
+          />
+        )}
       </PageSection>
     </>
   );
