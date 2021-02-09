@@ -266,6 +266,7 @@ export const GroupsSection = () => {
 
         {isCreateModalOpen && (
           <GroupsCreateModal
+            id={id}
             handleModalToggle={handleModalToggle}
             refresh={refresh}
           />

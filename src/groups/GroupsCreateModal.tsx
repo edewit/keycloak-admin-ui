@@ -17,11 +17,13 @@ import { useAdminClient } from "../context/auth/AdminClient";
 import { useAlerts } from "../components/alert/Alerts";
 
 type GroupsCreateModalProps = {
+  id?: string;
   handleModalToggle: () => void;
   refresh: () => void;
 };
 
 export const GroupsCreateModal = ({
+  id,
   handleModalToggle,
   refresh,
 }: GroupsCreateModalProps) => {
@@ -32,7 +34,12 @@ export const GroupsCreateModal = ({
 
   const submitForm = async (group: GroupRepresentation) => {
     try {
-      await adminClient.groups.create({ name: group.name });
+      if (!id) {
+        await adminClient.groups.create({ name: group.name });
+      } else {
+        await adminClient.groups.setOrCreateChild({ id }, { name: group.name });
+      }
+
       refresh();
       handleModalToggle();
       addAlert(t("groupCreated"), AlertVariant.success);
