@@ -245,6 +245,15 @@ export const routes: RoutesFn = (t: TFunction) => [
     access: "anyone",
   },
   {
+    path: "/:realm/groups",
+    component: GroupsSection,
+    breadcrumb: null,
+    matchOptions: {
+      exact: false,
+    },
+    access: "query-groups",
+  },
+  {
     path: "/",
     component: DashboardSection,
     breadcrumb: t("common:home"),
@@ -255,14 +264,5 @@ export const routes: RoutesFn = (t: TFunction) => [
     component: PageNotFoundSection,
     breadcrumb: null,
     access: "anyone",
-  },
-  {
-    path: "/:realm/groups",
-    component: GroupsSection,
-    breadcrumb: null,
-    matchOptions: {
-      exact: false,
-    },
-    access: "query-groups",
   },
 ];
