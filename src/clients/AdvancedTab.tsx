@@ -182,15 +182,20 @@ export const AdvancedTab = ({
             </FormGroup>
             <ActionGroup>
               <Button
+                id="setToNow"
                 variant="tertiary"
                 onClick={() => setNotBefore(moment.now() / 1000)}
               >
                 {t("setToNow")}
               </Button>
-              <Button variant="tertiary" onClick={() => setNotBefore(0)}>
+              <Button
+                id="clear"
+                variant="tertiary"
+                onClick={() => setNotBefore(0)}
+              >
                 {t("clear")}
               </Button>
-              <Button variant="secondary" onClick={push}>
+              <Button id="push" variant="secondary" onClick={push}>
                 {t("push")}
               </Button>
             </ActionGroup>

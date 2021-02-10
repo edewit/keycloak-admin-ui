@@ -237,6 +237,7 @@ export const ClientDetails = () => {
         <FormProvider {...form}>
           <KeycloakTabs isBox>
             <Tab
+              id="settings"
               eventKey="settings"
               title={<TabTitleText>{t("common:settings")}</TabTitleText>}
             >
@@ -244,6 +245,7 @@ export const ClientDetails = () => {
             </Tab>
             {publicClient && (
               <Tab
+                id="credentials"
                 eventKey="credentials"
                 title={<TabTitleText>{t("credentials")}</TabTitleText>}
               >
@@ -251,23 +253,27 @@ export const ClientDetails = () => {
               </Tab>
             )}
             <Tab
+              id="roles"
               eventKey="roles"
               title={<TabTitleText>{t("roles")}</TabTitleText>}
             >
               <RolesList loader={loader} paginated={false} />
             </Tab>
             <Tab
+              id="clientScopes"
               eventKey="clientScopes"
               title={<TabTitleText>{t("clientScopes")}</TabTitleText>}
             >
               <KeycloakTabs paramName="subtab" isSecondary>
                 <Tab
+                  id="setup"
                   eventKey="setup"
                   title={<TabTitleText>{t("setup")}</TabTitleText>}
                 >
                   <ClientScopes clientId={id} protocol={client!.protocol!} />
                 </Tab>
                 <Tab
+                  id="evaluate"
                   eventKey="evaluate"
                   title={<TabTitleText>{t("evaluate")}</TabTitleText>}
                 >
@@ -277,6 +283,7 @@ export const ClientDetails = () => {
             </Tab>
             {client!.serviceAccountsEnabled && (
               <Tab
+                id="serviceAccount"
                 eventKey="serviceAccount"
                 title={<TabTitleText>{t("serviceAccount")}</TabTitleText>}
               >
@@ -284,6 +291,7 @@ export const ClientDetails = () => {
               </Tab>
             )}
             <Tab
+              id="advanced"
               eventKey="advanced"
               title={<TabTitleText>{t("advanced")}</TabTitleText>}
             >

@@ -4,6 +4,7 @@ import ListingPage from "../support/pages/admin_console/ListingPage";
 import SidebarPage from "../support/pages/admin_console/SidebarPage";
 import CreateClientPage from "../support/pages/admin_console/manage/clients/CreateClientPage";
 import ModalUtils from "../support/util/ModalUtils";
+import AdvancedTab from "../support/pages/admin_console/manage/clients/AdvancedTab";
 
 let itemId = "client_crud";
 const loginPage = new LoginPage();
@@ -75,6 +76,30 @@ describe("Clients test", function () {
       masthead.checkNotificationMessage("The client has been deleted");
 
       listingPage.itemExist(itemId, false);
+    });
+
+    describe("Client details", () => {
+      const advancedTab = new AdvancedTab();
+      it("Advanced tab test", () => {
+        const client =
+          "client_" + (Math.random() + 1).toString(36).substring(7);
+
+        listingPage.goToCreateItem();
+
+        createClientPage
+          .selectClientType("openid-connect")
+          .fillClientData(client)
+          .continue()
+          .continue();
+
+        sidebarPage.goToClients();
+        listingPage.goToItemDetails(client);
+        advancedTab.goToTab();
+
+        advancedTab.checkNone();
+
+        advancedTab.clickSetToNow().checkSetToNow();
+      });
     });
   });
 });
