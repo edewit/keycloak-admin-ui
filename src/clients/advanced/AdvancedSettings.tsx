@@ -42,7 +42,7 @@ export const AdvancedSettings = ({
         }
       >
         <Controller
-          name="attributes.access_token_lifespan"
+          name="attributes.access-token-lifespan"
           defaultValue=""
           control={control}
           render={({ onChange, value }) => (
@@ -67,7 +67,7 @@ export const AdvancedSettings = ({
         }
       >
         <Controller
-          name="attributes.tls_client_certificate_bound_access_tokens"
+          name="attributes.tls-client-certificate-bound-access-tokens"
           defaultValue={false}
           control={control}
           render={({ onChange, value }) => (
@@ -94,7 +94,7 @@ export const AdvancedSettings = ({
         }
       >
         <Controller
-          name="attributes.pkce_code_challenge_method"
+          name="attributes.pkce-code-challenge-method"
           defaultValue={false}
           control={control}
           render={({ onChange, value }) => (

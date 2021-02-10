@@ -25,14 +25,14 @@ export const OpenIdConnectCompatibilityModes = ({
         fieldId="excludeSessionStateFromAuthenticationResponse"
         labelIcon={
           <HelpItem
-            helpText="clients-help:excludeSessionStateFromAuthenticationResponsem"
+            helpText="clients-help:excludeSessionStateFromAuthenticationResponse"
             forLabel={t("excludeSessionStateFromAuthenticationResponse")}
             forID="excludeSessionStateFromAuthenticationResponse"
           />
         }
       >
         <Controller
-          name="attributes.exclude_session_state_from_auth_response"
+          name="attributes.exclude-session-state-from-auth-response"
           defaultValue=""
           control={control}
           render={({ onChange, value }) => (

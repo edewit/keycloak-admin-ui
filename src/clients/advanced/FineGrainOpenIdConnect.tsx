@@ -122,7 +122,7 @@ export const FineGrainOpenIdConnect = ({
         }
       >
         <Controller
-          name="attributes.access_token_signed_response_alg"
+          name="attributes.access-token-signed-response-alg"
           defaultValue=""
           control={control}
           render={({ onChange, value }) => (
@@ -154,7 +154,7 @@ export const FineGrainOpenIdConnect = ({
         }
       >
         <Controller
-          name="attributes.id_token_signed_response_alg"
+          name="attributes.id-token-signed-response-alg"
           defaultValue=""
           control={control}
           render={({ onChange, value }) => (
@@ -186,7 +186,7 @@ export const FineGrainOpenIdConnect = ({
         }
       >
         <Controller
-          name="attributes.id_token_encrypted_response_alg"
+          name="attributes.id-token-encrypted-response-alg"
           defaultValue=""
           control={control}
           render={({ onChange, value }) => (
@@ -220,7 +220,7 @@ export const FineGrainOpenIdConnect = ({
         }
       >
         <Controller
-          name="attributes.id_token_encrypted_response_enc"
+          name="attributes.id-token-encrypted-response-enc"
           defaultValue=""
           control={control}
           render={({ onChange, value }) => (
@@ -252,7 +252,7 @@ export const FineGrainOpenIdConnect = ({
         }
       >
         <Controller
-          name="attributes.user_info_response_signature_alg"
+          name="attributes.user-info-response-signature-alg"
           defaultValue=""
           control={control}
           render={({ onChange, value }) => (
@@ -320,7 +320,7 @@ export const FineGrainOpenIdConnect = ({
         }
       >
         <Controller
-          name="attributes.request_object_required"
+          name="attributes.request-object-required"
           defaultValue=""
           control={control}
           render={({ onChange, value }) => (
