@@ -16,7 +16,7 @@ export default {
 } as Meta;
 
 const Template: Story<MultiLineInputProps> = (args) => {
-  const form = useForm();
+  const form = useForm({ mode: "onChange" });
   return (
     <form
       onSubmit={form.handleSubmit((data) => {
