@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Controller, UseFormMethods } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import moment from "moment";
 import {
   ActionGroup,
@@ -15,6 +15,7 @@ import {
   SplitItem,
   Text,
   TextInput,
+  ToolbarItem,
 } from "@patternfly/react-core";
 
 import GlobalRequestResult from "keycloak-admin/lib/defs/globalRequestResult";
@@ -32,22 +33,24 @@ import { useAdminClient } from "../context/auth/AdminClient";
 import { useAlerts } from "../components/alert/Alerts";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { AddHostDialog } from "./advanced/AddHostDialog";
+import { FineGrainSamlEndpointConfig } from "./advanced/FineGrainSamlEndpointConfig";
 
 type AdvancedProps = {
-  form: UseFormMethods;
   save: () => void;
   client: ClientRepresentation;
 };
 
 export const AdvancedTab = ({
-  form: { getValues, setValue, register, control },
   save,
-  client: { id, registeredNodes, attributes },
+  client: { id, registeredNodes, attributes, protocol },
 }: AdvancedProps) => {
   const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
   const { addAlert } = useAlerts();
   const revocationFieldName = "notBefore";
+  const openIdConnect = "openid-connect";
+
+  const { getValues, setValue, register, control } = useFormContext();
   const [expanded, setExpanded] = useState(false);
   const [selectedNode, setSelectedNode] = useState("");
   const [addNodeOpen, setAddNodeOpen] = useState(false);
@@ -145,15 +148,30 @@ export const AdvancedTab = ({
       sections={[
         t("revocation"),
         t("clustering"),
-        t("fineGrainOpenIdConnectConfiguration"),
+        protocol === openIdConnect
+          ? t("fineGrainOpenIdConnectConfiguration")
+          : t("fineGrainSamlEndpointConfig"),
         t("openIdConnectCompatibilityModes"),
         t("advancedSettings"),
       ]}
     >
       <Card>
         <CardBody>
+          <Text>{t("clients-help:notBeforeIntro")}</Text>
+        </CardBody>
+        <CardBody>
           <FormAccess role="manage-clients" isHorizontal>
-            <FormGroup label={t("notBefore")} fieldId="kc-not-before">
+            <FormGroup
+              label={t("notBefore")}
+              fieldId="kc-not-before"
+              labelIcon={
+                <HelpItem
+                  helpText="clients-help:notBefore"
+                  forLabel={t("notBefore")}
+                  forID="kc-not-before"
+                />
+              }
+            >
               <TextInput
                 type="text"
                 id="kc-not-before"
@@ -241,19 +259,23 @@ export const AdvancedTab = ({
               }
               toolbarItem={
                 <>
-                  <Button
-                    onClick={testCluster}
-                    variant={ButtonVariant.tertiary}
-                    isDisabled={Object.keys(nodes).length === 0}
-                  >
-                    {t("testClusterAvailability")}
-                  </Button>
-                  <Button
-                    onClick={() => setAddNodeOpen(true)}
-                    variant={ButtonVariant.secondary}
-                  >
-                    {t("registerNodeManually")}
-                  </Button>
+                  <ToolbarItem>
+                    <Button
+                      onClick={testCluster}
+                      variant={ButtonVariant.secondary}
+                      isDisabled={Object.keys(nodes).length === 0}
+                    >
+                      {t("testClusterAvailability")}
+                    </Button>
+                  </ToolbarItem>
+                  <ToolbarItem>
+                    <Button
+                      onClick={() => setAddNodeOpen(true)}
+                      variant={ButtonVariant.tertiary}
+                    >
+                      {t("registerNodeManually")}
+                    </Button>
+                  </ToolbarItem>
                 </>
               }
               actions={[
@@ -288,18 +310,41 @@ export const AdvancedTab = ({
         </CardBody>
       </Card>
       <Card>
-        <CardBody>
-          <Text>{t("clients-help:fineGrainOpenIdConnectConfiguration")}</Text>
-        </CardBody>
-        <CardBody>
-          <FineGrainOpenIdConnect
-            control={control}
-            save={save}
-            reset={() =>
-              convertToFormValues(attributes, "attributes", setValue)
-            }
-          />
-        </CardBody>
+        {protocol === openIdConnect && (
+          <>
+            <CardBody>
+              <Text>
+                {t("clients-help:fineGrainOpenIdConnectConfiguration")}
+              </Text>
+            </CardBody>
+            <CardBody>
+              <FineGrainOpenIdConnect
+                control={control}
+                save={save}
+                reset={() =>
+                  convertToFormValues(attributes, "attributes", setValue)
+                }
+              />
+            </CardBody>
+          </>
+        )}
+        {protocol !== openIdConnect && (
+          <>
+            <CardBody>
+              <Text>{t("clients-help:fineGrainSamlEndpointConfig")}</Text>
+            </CardBody>
+
+            <CardBody>
+              <FineGrainSamlEndpointConfig
+                control={control}
+                save={save}
+                reset={() =>
+                  convertToFormValues(attributes, "attributes", setValue)
+                }
+              />
+            </CardBody>
+          </>
+        )}
       </Card>
       <Card>
         <CardBody>
