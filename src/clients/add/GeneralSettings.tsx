@@ -6,7 +6,7 @@ import {
   SelectOption,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
-import { Controller, UseFormMethods } from "react-hook-form";
+import { Controller, FormProvider, UseFormMethods } from "react-hook-form";
 
 import { useLoginProviders } from "../../context/server-info/ServerInfoProvider";
 import { ClientDescription } from "../ClientDescription";
@@ -63,7 +63,9 @@ export const GeneralSettings = ({ form }: GeneralSettingsProps) => {
           )}
         />
       </FormGroup>
-      <ClientDescription form={form} />
+      <FormProvider {...form}>
+        <ClientDescription />
+      </FormProvider>
     </FormAccess>
   );
 };

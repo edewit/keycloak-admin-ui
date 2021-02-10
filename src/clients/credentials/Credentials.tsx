@@ -19,6 +19,7 @@ import {
 } from "@patternfly/react-core";
 import CredentialRepresentation from "keycloak-admin/lib/defs/credentialRepresentation";
 
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { useAlerts } from "../../components/alert/Alerts";
 import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
 import { FormAccess } from "../../components/form-access/FormAccess";
@@ -48,17 +49,20 @@ type AccessToken = {
 
 export type CredentialsProps = {
   clientId: string;
-  form: UseFormMethods;
   save: () => void;
 };
 
-export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
+export const Credentials = ({ clientId, save }: CredentialsProps) => {
   const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
   const handleError = useErrorHandler();
   const { addAlert } = useAlerts();
+  const {
+    control,
+    formState: { isDirty },
+  } = useFormContext();
   const clientAuthenticatorType = useWatch({
-    control: form.control,
+    control: control,
     name: "clientAuthenticatorType",
   });
 
@@ -158,7 +162,7 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
           >
             <Controller
               name="clientAuthenticatorType"
-              control={form.control}
+              control={control}
               render={({ onChange, value }) => (
                 <Select
                   toggleId="kc-client-authenticator-type"
@@ -186,15 +190,13 @@ export const Credentials = ({ clientId, form, save }: CredentialsProps) => {
               )}
             />
           </FormGroup>
-          {clientAuthenticatorType === "client-jwt" && (
-            <SignedJWT form={form} />
-          )}
-          {clientAuthenticatorType === "client-x509" && <X509 form={form} />}
+          {clientAuthenticatorType === "client-jwt" && <SignedJWT />}
+          {clientAuthenticatorType === "client-x509" && <X509 />}
           <ActionGroup>
             <Button
               variant="primary"
               onClick={() => save()}
-              isDisabled={!form.formState.isDirty}
+              isDisabled={!isDirty}
             >
               {t("common:save")}
             </Button>

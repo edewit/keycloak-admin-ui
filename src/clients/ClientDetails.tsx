@@ -11,13 +11,13 @@ import {
 import { useParams } from "react-router-dom";
 import { useErrorHandler } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
 
 import { ClientSettings } from "./ClientSettings";
 import { useAlerts } from "../components/alert/Alerts";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
-import { useDownloadDialog } from "../components/download-dialog/DownloadDialog";
+import { DownloadDialog } from "../components/download-dialog/DownloadDialog";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { useAdminClient, asyncStateFetch } from "../context/auth/AdminClient";
 import { Credentials } from "./credentials/Credentials";
@@ -28,6 +28,7 @@ import {
 } from "../util";
 import {
   convertToMultiline,
+  MultiLine,
   toValue,
 } from "../components/multi-line-input/MultiLineInput";
 import { ClientScopes } from "./scopes/ClientScopes";
@@ -95,14 +96,20 @@ const ClientDetailHeader = ({
   );
 };
 
+export type ClientForm = Omit<ClientRepresentation, "redirectUris"> & {
+  redirectUris: MultiLine[];
+};
+
 export const ClientDetails = () => {
   const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
   const handleError = useErrorHandler();
 
   const { addAlert } = useAlerts();
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
+  const toggleDownloadDialog = () => setDownloadDialogOpen(!downloadDialogOpen);
 
-  const form = useForm();
+  const form = useForm<ClientForm>();
   const publicClient = useWatch({
     control: form.control,
     name: "publicClient",
@@ -144,16 +151,12 @@ export const ClientDetails = () => {
     },
   });
 
-  const [toggleDownloadDialog, DownloadDialog] = useDownloadDialog({
-    id,
-    protocol: form.getValues("protocol"),
-  });
-
   const setupForm = (client: ClientRepresentation) => {
-    form.reset(client);
+    const { redirectUris, ...formValues } = client;
+    form.reset(formValues);
     Object.entries(client).map((entry) => {
       if (entry[0] === "redirectUris" || entry[0] === "webOrigins") {
-        form.setValue(entry[0], convertToMultiline(entry[1]));
+        form.setValue(entry[0], convertToMultiline(redirectUris!));
       } else if (entry[0] === "attributes") {
         convertToFormValues(entry[1], "attributes", form.setValue);
       } else {
@@ -171,25 +174,26 @@ export const ClientDetails = () => {
       },
       handleError
     );
-  }, []);
+  }, [id]);
 
   const save = async () => {
     if (await form.trigger()) {
       const redirectUris = toValue(form.getValues()["redirectUris"]);
       const webOrigins = toValue(form.getValues()["webOrigins"]);
-      const attributes = form.getValues()["attributes"]
-        ? convertFormValuesToObject(form.getValues()["attributes"])
-        : {};
+      const attributes = convertFormValuesToObject(
+        form.getValues()["attributes"]
+      );
 
       try {
-        const client = {
+        const client: ClientRepresentation = {
           ...form.getValues(),
           redirectUris,
           webOrigins,
           attributes,
+          id,
         };
         await adminClient.clients.update({ id }, client);
-        setupForm(client as ClientRepresentation);
+        setupForm(client);
         setClient(client);
         addAlert(t("clientSaveSuccess"), AlertVariant.success);
       } catch (error) {
@@ -208,7 +212,12 @@ export const ClientDetails = () => {
   return (
     <>
       <DeleteConfirm />
-      <DownloadDialog />
+      <DownloadDialog
+        id={client.id!}
+        protocol={client.protocol}
+        open={downloadDialogOpen}
+        toggleDialog={toggleDownloadDialog}
+      />
       <Controller
         name="enabled"
         control={form.control}
@@ -225,63 +234,63 @@ export const ClientDetails = () => {
         )}
       />
       <PageSection variant="light">
-        <KeycloakTabs isBox>
-          <Tab
-            eventKey="settings"
-            title={<TabTitleText>{t("common:settings")}</TabTitleText>}
-          >
-            <ClientSettings form={form} save={save} />
-          </Tab>
-          {publicClient && (
+        <FormProvider {...form}>
+          <KeycloakTabs isBox>
             <Tab
-              eventKey="credentials"
-              title={<TabTitleText>{t("credentials")}</TabTitleText>}
+              eventKey="settings"
+              title={<TabTitleText>{t("common:settings")}</TabTitleText>}
             >
-              <Credentials clientId={id} form={form} save={save} />
+              <ClientSettings save={save} />
             </Tab>
-          )}
-          <Tab
-            eventKey="roles"
-            title={<TabTitleText>{t("roles")}</TabTitleText>}
-          >
-            <RolesList loader={loader} paginated={false} />
-          </Tab>
-          <Tab
-            eventKey="clientScopes"
-            title={<TabTitleText>{t("clientScopes")}</TabTitleText>}
-          >
-            <KeycloakTabs paramName="subtab" isSecondary>
+            {publicClient && (
               <Tab
-                eventKey="setup"
-                title={<TabTitleText>{t("setup")}</TabTitleText>}
+                eventKey="credentials"
+                title={<TabTitleText>{t("credentials")}</TabTitleText>}
               >
-                <ClientScopes clientId={id} protocol={client!.protocol!} />
+                <Credentials clientId={id} save={save} />
               </Tab>
-              <Tab
-                eventKey="evaluate"
-                title={<TabTitleText>{t("evaluate")}</TabTitleText>}
-              >
-                <EvaluateScopes clientId={id} protocol={client!.protocol!} />
-              </Tab>
-            </KeycloakTabs>
-          </Tab>
-          {client && client.serviceAccountsEnabled && (
+            )}
             <Tab
-              eventKey="serviceAccount"
-              title={<TabTitleText>{t("serviceAccount")}</TabTitleText>}
+              eventKey="roles"
+              title={<TabTitleText>{t("roles")}</TabTitleText>}
             >
-              <ServiceAccount clientId={id} />
+              <RolesList loader={loader} paginated={false} />
             </Tab>
-          )}
-          {client && (
+            <Tab
+              eventKey="clientScopes"
+              title={<TabTitleText>{t("clientScopes")}</TabTitleText>}
+            >
+              <KeycloakTabs paramName="subtab" isSecondary>
+                <Tab
+                  eventKey="setup"
+                  title={<TabTitleText>{t("setup")}</TabTitleText>}
+                >
+                  <ClientScopes clientId={id} protocol={client!.protocol!} />
+                </Tab>
+                <Tab
+                  eventKey="evaluate"
+                  title={<TabTitleText>{t("evaluate")}</TabTitleText>}
+                >
+                  <EvaluateScopes clientId={id} protocol={client!.protocol!} />
+                </Tab>
+              </KeycloakTabs>
+            </Tab>
+            {client!.serviceAccountsEnabled && (
+              <Tab
+                eventKey="serviceAccount"
+                title={<TabTitleText>{t("serviceAccount")}</TabTitleText>}
+              >
+                <ServiceAccount clientId={id} />
+              </Tab>
+            )}
             <Tab
               eventKey="advanced"
               title={<TabTitleText>{t("advanced")}</TabTitleText>}
             >
-              <AdvancedTab form={form} save={save} client={client} />
+              <AdvancedTab save={save} client={client} />
             </Tab>
-          )}
-        </KeycloakTabs>
+          </KeycloakTabs>
+        </FormProvider>
       </PageSection>
     </>
   );
