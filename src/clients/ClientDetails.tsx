@@ -185,16 +185,16 @@ export const ClientDetails = () => {
       );
 
       try {
-        const client: ClientRepresentation = {
+        const newClient: ClientRepresentation = {
+          ...client,
           ...form.getValues(),
           redirectUris,
           webOrigins,
           attributes,
-          id,
         };
-        await adminClient.clients.update({ id }, client);
-        setupForm(client);
-        setClient(client);
+        await adminClient.clients.update({ id }, newClient);
+        setupForm(newClient);
+        setClient(newClient);
         addAlert(t("clientSaveSuccess"), AlertVariant.success);
       } catch (error) {
         addAlert(`${t("clientSaveError")} '${error}'`, AlertVariant.danger);

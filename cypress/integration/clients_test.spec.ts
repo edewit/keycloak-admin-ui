@@ -77,29 +77,69 @@ describe("Clients test", function () {
 
       listingPage.itemExist(itemId, false);
     });
+  });
 
-    describe("Client details", () => {
-      const advancedTab = new AdvancedTab();
-      it("Advanced tab test", () => {
-        const client =
-          "client_" + (Math.random() + 1).toString(36).substring(7);
+  describe("Advanced tab test", () => {
+    const advancedTab = new AdvancedTab();
+    let client: string;
 
-        listingPage.goToCreateItem();
+    beforeEach(() => {
+      cy.visit("");
+      loginPage.logIn();
+      sidebarPage.goToClients();
 
-        createClientPage
-          .selectClientType("openid-connect")
-          .fillClientData(client)
-          .continue()
-          .continue();
+      client = "client_" + (Math.random() + 1).toString(36).substring(7);
 
-        sidebarPage.goToClients();
-        listingPage.goToItemDetails(client);
-        advancedTab.goToTab();
+      listingPage.goToCreateItem();
 
-        advancedTab.checkNone();
+      createClientPage
+        .selectClientType("openid-connect")
+        .fillClientData(client)
+        .continue()
+        .continue();
 
-        advancedTab.clickSetToNow().checkSetToNow();
-      });
+      sidebarPage.goToClients();
+      listingPage.goToItemDetails(client);
+      advancedTab.goToTab();
+    });
+
+    afterEach(() => {
+      sidebarPage.goToClients();
+      listingPage.deleteItem(client);
+    });
+
+    it("Revocation", () => {
+      advancedTab.checkNone();
+
+      advancedTab.clickSetToNow().checkSetToNow();
+      advancedTab.clickClear().checkNone();
+
+      advancedTab.clickPush();
+      masthead.checkNotificationMessage(
+        "No push sent. No admin URI configured or no registered cluster nodes available"
+      );
+    });
+
+    it("Clustering", () => {
+      advancedTab.expandClusterNode().checkTestClusterAvailability(false);
+
+      advancedTab
+        .clickRegisterNodeManually()
+        .fillHost("localhost")
+        .clickSaveHost();
+      advancedTab.checkTestClusterAvailability(true);
+    });
+
+    it("Fine grain OpenID connect configuration", () => {
+      const algorithm = "ES384";
+      advancedTab
+        .selectAccessTokenSignatureAlgorithm(algorithm)
+        .clickSaveFineGrain();
+
+      advancedTab
+        .selectAccessTokenSignatureAlgorithm("HS384")
+        .clickReloadFineGrain();
+      advancedTab.checkAccessTokenSignatureAlgorithm(algorithm);
     });
   });
 });

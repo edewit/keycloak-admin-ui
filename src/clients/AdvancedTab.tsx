@@ -266,6 +266,7 @@ export const AdvancedTab = ({
                 <>
                   <ToolbarItem>
                     <Button
+                      id="testClusterAvailability"
                       onClick={testCluster}
                       variant={ButtonVariant.secondary}
                       isDisabled={Object.keys(nodes).length === 0}
@@ -275,6 +276,7 @@ export const AdvancedTab = ({
                   </ToolbarItem>
                   <ToolbarItem>
                     <Button
+                      id="registerNodeManually"
                       onClick={() => setAddNodeOpen(true)}
                       variant={ButtonVariant.tertiary}
                     >
