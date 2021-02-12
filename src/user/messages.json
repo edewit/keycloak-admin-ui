@@ -1,10 +1,8 @@
 {
   "users": {
     "title": "Users",
-    "userExplain": "This is the description",
     "searchForUser": "Search user",
     "startBySearchingAUser": "Start by searching a user",
-    "startIntro": "You can search for users in the local or a federation provider if there are any. To start a search, specify a provider first.",
     "createNewUser": "Create new user",
     "noUsersFound": "No users found",
     "noUsersFoundError": "No users found due to {{error}}",

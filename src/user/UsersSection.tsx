@@ -157,7 +157,7 @@ export const UsersSection = () => {
   return (
     <>
       <DeleteConfirm />
-      <ViewHeader titleKey="users:title" subKey="users:userExplain" />
+      <ViewHeader titleKey="users:title" subKey="" />
       <PageSection variant="light">
         {!listUsers && !initialSearch && (
           <SearchUser
