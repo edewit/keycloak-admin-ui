@@ -143,18 +143,20 @@ export const AdvancedTab = ({
     }
   };
 
+  const sections = [
+    t("revocation"),
+    t("clustering"),
+    protocol === openIdConnect
+      ? t("fineGrainOpenIdConnectConfiguration")
+      : t("fineGrainSamlEndpointConfig"),
+    t("advancedSettings"),
+  ];
+  if (protocol === openIdConnect) {
+    sections.splice(3, 0, t("openIdConnectCompatibilityModes"));
+  }
+
   return (
-    <ScrollForm
-      sections={[
-        t("revocation"),
-        t("clustering"),
-        protocol === openIdConnect
-          ? t("fineGrainOpenIdConnectConfiguration")
-          : t("fineGrainSamlEndpointConfig"),
-        t("openIdConnectCompatibilityModes"),
-        t("advancedSettings"),
-      ]}
-    >
+    <ScrollForm sections={sections}>
       <Card>
         <CardBody>
           <Text>{t("clients-help:notBeforeIntro")}</Text>
@@ -353,31 +355,38 @@ export const AdvancedTab = ({
           </>
         )}
       </Card>
-      <Card>
-        <CardBody>
-          <Text>{t("clients-help:openIdConnectCompatibilityModes")}</Text>
-        </CardBody>
-        <CardBody>
-          <OpenIdConnectCompatibilityModes
-            control={control}
-            save={save}
-            reset={() =>
-              setValue(
-                "attributes.exclude_session_state_from_auth_response",
-                attributes
-                  ? attributes["exclude.session.state.from.auth.response"]
-                  : ""
-              )
-            }
-          />
-        </CardBody>
-      </Card>
+      {protocol === openIdConnect && (
+        <Card>
+          <CardBody>
+            <Text>{t("clients-help:openIdConnectCompatibilityModes")}</Text>
+          </CardBody>
+          <CardBody>
+            <OpenIdConnectCompatibilityModes
+              control={control}
+              save={save}
+              reset={() =>
+                setValue(
+                  "attributes.exclude_session_state_from_auth_response",
+                  attributes
+                    ? attributes["exclude.session.state.from.auth.response"]
+                    : ""
+                )
+              }
+            />
+          </CardBody>
+        </Card>
+      )}
       <Card>
         <CardBody>
           <Text>{t("clients-help:advancedSettings")}</Text>
         </CardBody>
         <CardBody>
-          <AdvancedSettings control={control} save={save} reset={() => {}} />
+          <AdvancedSettings
+            protocol={protocol}
+            control={control}
+            save={save}
+            reset={() => {}}
+          />
         </CardBody>
       </Card>
     </ScrollForm>

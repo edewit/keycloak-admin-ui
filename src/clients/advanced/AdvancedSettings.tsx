@@ -19,103 +19,136 @@ type AdvancedSettingsProps = {
   control: Control<Record<string, any>>;
   save: () => void;
   reset: () => void;
+  protocol?: string;
 };
 
 export const AdvancedSettings = ({
   control,
   save,
   reset,
+  protocol,
 }: AdvancedSettingsProps) => {
   const { t } = useTranslation("clients");
   const [open, setOpen] = useState(false);
   return (
     <FormAccess role="manage-realm" isHorizontal>
-      <FormGroup
-        label={t("accessTokenLifespan")}
-        fieldId="accessTokenLifespan"
-        labelIcon={
-          <HelpItem
-            helpText="clients-help:accessTokenLifespan"
-            forLabel={t("accessTokenLifespan")}
-            forID="accessTokenLifespan"
-          />
-        }
-      >
-        <Controller
-          name="attributes.access-token-lifespan"
-          defaultValue=""
-          control={control}
-          render={({ onChange, value }) => (
-            <TimeSelector
-              units={["minutes", "days", "hours"]}
-              value={value}
-              onChange={onChange}
+      {protocol !== "openid-connect" && (
+        <FormGroup
+          label={t("assertionLifespan")}
+          fieldId="assertionLifespan"
+          labelIcon={
+            <HelpItem
+              helpText="clients-help:assertionLifespan"
+              forLabel={t("assertionLifespan")}
+              forID="assertionLifespan"
             />
-          )}
-        />
-      </FormGroup>
-      <FormGroup
-        label={t("oAuthMutual")}
-        fieldId="oAuthMutual"
-        hasNoPaddingTop
-        labelIcon={
-          <HelpItem
-            helpText="clients-help:oAuthMutual"
-            forLabel={t("oAuthMutual")}
-            forID="oAuthMutual"
+          }
+        >
+          <Controller
+            name="attributes.saml-assertion-lifespan"
+            defaultValue=""
+            control={control}
+            render={({ onChange, value }) => (
+              <TimeSelector
+                units={["minutes", "days", "hours"]}
+                value={value}
+                onChange={onChange}
+              />
+            )}
           />
-        }
-      >
-        <Controller
-          name="attributes.tls-client-certificate-bound-access-tokens"
-          defaultValue={false}
-          control={control}
-          render={({ onChange, value }) => (
-            <Switch
-              id="oAuthMutual"
-              label={t("common:on")}
-              labelOff={t("common:off")}
-              isChecked={value === "true"}
-              onChange={(value) => onChange("" + value)}
+        </FormGroup>
+      )}
+      {protocol === "openid-connect" && (
+        <>
+          <FormGroup
+            label={t("accessTokenLifespan")}
+            fieldId="accessTokenLifespan"
+            labelIcon={
+              <HelpItem
+                helpText="clients-help:accessTokenLifespan"
+                forLabel={t("accessTokenLifespan")}
+                forID="accessTokenLifespan"
+              />
+            }
+          >
+            <Controller
+              name="attributes.access-token-lifespan"
+              defaultValue=""
+              control={control}
+              render={({ onChange, value }) => (
+                <TimeSelector
+                  units={["minutes", "days", "hours"]}
+                  value={value}
+                  onChange={onChange}
+                />
+              )}
             />
-          )}
-        />
-      </FormGroup>
-      <FormGroup
-        label={t("keyForCodeExchange")}
-        fieldId="keyForCodeExchange"
-        hasNoPaddingTop
-        labelIcon={
-          <HelpItem
-            helpText="clients-help:keyForCodeExchange"
-            forLabel={t("keyForCodeExchange")}
-            forID="keyForCodeExchange"
-          />
-        }
-      >
-        <Controller
-          name="attributes.pkce-code-challenge-method"
-          defaultValue={false}
-          control={control}
-          render={({ onChange, value }) => (
-            <Select
-              toggleId="keyForCodeExchange"
-              variant={SelectVariant.single}
-              onToggle={() => setOpen(!open)}
-              isOpen={open}
-              onSelect={(_, value) => {
-                onChange(value);
-                setOpen(false);
-              }}
-              selections={[value]}
-            >
-              {["", "S256", "plain"].map((v) => (
-                <SelectOption key={v} value={v} />
-              ))}
-            </Select>
-          )}
-        />
-      </FormGroup>
+          </FormGroup>
+
+          <FormGroup
+            label={t("oAuthMutual")}
+            fieldId="oAuthMutual"
+            hasNoPaddingTop
+            labelIcon={
+              <HelpItem
+                helpText="clients-help:oAuthMutual"
+                forLabel={t("oAuthMutual")}
+                forID="oAuthMutual"
+              />
+            }
+          >
+            <Controller
+              name="attributes.tls-client-certificate-bound-access-tokens"
+              defaultValue={false}
+              control={control}
+              render={({ onChange, value }) => (
+                <Switch
+                  id="oAuthMutual"
+                  label={t("common:on")}
+                  labelOff={t("common:off")}
+                  isChecked={value === "true"}
+                  onChange={(value) => onChange("" + value)}
+                />
+              )}
+            />
+          </FormGroup>
+          <FormGroup
+            label={t("keyForCodeExchange")}
+            fieldId="keyForCodeExchange"
+            hasNoPaddingTop
+            labelIcon={
+              <HelpItem
+                helpText="clients-help:keyForCodeExchange"
+                forLabel={t("keyForCodeExchange")}
+                forID="keyForCodeExchange"
+              />
+            }
+          >
+            <Controller
+              name="attributes.pkce-code-challenge-method"
+              defaultValue={false}
+              control={control}
+              render={({ onChange, value }) => (
+                <Select
+                  toggleId="keyForCodeExchange"
+                  variant={SelectVariant.single}
+                  onToggle={() => setOpen(!open)}
+                  isOpen={open}
+                  onSelect={(_, value) => {
+                    onChange(value);
+                    setOpen(false);
+                  }}
+                  selections={[value]}
+                >
+                  {["", "S256", "plain"].map((v) => (
+                    <SelectOption key={v} value={v} />
+                  ))}
+                </Select>
+              )}
+            />
+          </FormGroup>
+        </>
+      )}
       <ActionGroup>
         <Button variant="tertiary" onClick={save}>
           {t("common:save")}
