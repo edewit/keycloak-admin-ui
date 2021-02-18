@@ -109,7 +109,7 @@ export const FineGrainOpenIdConnect = ({
     return selectOption?.props.children || selectOption?.props.value;
   };
   return (
-    <FormAccess role="manage-realm" isHorizontal>
+    <FormAccess role="manage-clients" isHorizontal>
       <FormGroup
         label={t("accessTokenSignatureAlgorithm")}
         fieldId="accessTokenSignatureAlgorithm"

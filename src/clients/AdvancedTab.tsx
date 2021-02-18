@@ -20,7 +20,7 @@ import {
 
 import GlobalRequestResult from "keycloak-admin/lib/defs/globalRequestResult";
 import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
-import { convertToFormValues } from "../util";
+import { convertToFormValues, toUpperCase } from "../util";
 import { FormAccess } from "../components/form-access/FormAccess";
 import { ScrollForm } from "../components/scroll-form/ScrollForm";
 import { HelpItem } from "../components/help-enabler/HelpItem";
@@ -34,6 +34,7 @@ import { useAlerts } from "../components/alert/Alerts";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { AddHostDialog } from "./advanced/AddHostDialog";
 import { FineGrainSamlEndpointConfig } from "./advanced/FineGrainSamlEndpointConfig";
+import { AuthenticationOverrides } from "./advanced/AuthenticationOverrides";
 
 type AdvancedProps = {
   save: () => void;
@@ -150,6 +151,7 @@ export const AdvancedTab = ({
       ? t("fineGrainOpenIdConnectConfiguration")
       : t("fineGrainSamlEndpointConfig"),
     t("advancedSettings"),
+    t("authenticationOverrides"),
   ];
   if (protocol === openIdConnect) {
     sections.splice(3, 0, t("openIdConnectCompatibilityModes"));
@@ -378,10 +380,25 @@ export const AdvancedTab = ({
       )}
       <Card>
         <CardBody>
-          <Text>{t("clients-help:advancedSettings")}</Text>
+          <Text>
+            {t("clients-help:advancedSettings" + toUpperCase(protocol!))}
+          </Text>
         </CardBody>
         <CardBody>
           <AdvancedSettings
+            protocol={protocol}
+            control={control}
+            save={save}
+            reset={() => {}}
+          />
+        </CardBody>
+      </Card>
+      <Card>
+        <CardBody>
+          <Text>{t("clients-help:authenticationOverrides")}</Text>
+        </CardBody>
+        <CardBody>
+          <AuthenticationOverrides
             protocol={protocol}
             control={control}
             save={save}
