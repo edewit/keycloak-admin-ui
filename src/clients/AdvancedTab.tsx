@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { Trans, useTranslation } from "react-i18next";
 import { Controller, useFormContext } from "react-hook-form";
 import moment from "moment";
 import {
@@ -35,6 +36,7 @@ import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { AddHostDialog } from "./advanced/AddHostDialog";
 import { FineGrainSamlEndpointConfig } from "./advanced/FineGrainSamlEndpointConfig";
 import { AuthenticationOverrides } from "./advanced/AuthenticationOverrides";
+import { useRealm } from "../context/realm-context/RealmContext";
 
 type AdvancedProps = {
   save: () => void;
@@ -47,6 +49,7 @@ export const AdvancedTab = ({
 }: AdvancedProps) => {
   const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
+  const { realm } = useRealm();
   const { addAlert } = useAlerts();
   const revocationFieldName = "notBefore";
   const openIdConnect = "openid-connect";
@@ -161,7 +164,15 @@ export const AdvancedTab = ({
     <ScrollForm sections={sections}>
       <Card>
         <CardBody>
-          <Text>{t("clients-help:notBeforeIntro")}</Text>
+          <Text>
+            <Trans i18nKey="clients-help:notBeforeIntro">
+              In order to successfully push setup url on
+              <Link to={`/${realm}/clients/${id}/settings`}>
+                {t("settings")}
+              </Link>
+              tab
+            </Trans>
+          </Text>
         </CardBody>
         <CardBody>
           <FormAccess role="manage-clients" isHorizontal>
