@@ -5,6 +5,7 @@ import SidebarPage from "../support/pages/admin_console/SidebarPage";
 import CreateClientPage from "../support/pages/admin_console/manage/clients/CreateClientPage";
 import ModalUtils from "../support/util/ModalUtils";
 import AdvancedTab from "../support/pages/admin_console/manage/clients/AdvancedTab";
+import AdminClient from "../support/util/AdminClient";
 
 let itemId = "client_crud";
 const loginPage = new LoginPage();
@@ -104,8 +105,7 @@ describe("Clients test", function () {
     });
 
     afterEach(() => {
-      sidebarPage.goToClients();
-      listingPage.deleteItem(client);
+      new AdminClient().deleteClient(client);
     });
 
     it("Revocation", () => {
