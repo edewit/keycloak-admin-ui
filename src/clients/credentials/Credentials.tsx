@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Controller, UseFormMethods, useWatch } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useErrorHandler } from "react-error-boundary";
 import {
@@ -19,7 +19,6 @@ import {
 } from "@patternfly/react-core";
 import CredentialRepresentation from "keycloak-admin/lib/defs/credentialRepresentation";
 
-import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { useAlerts } from "../../components/alert/Alerts";
 import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
 import { FormAccess } from "../../components/form-access/FormAccess";
