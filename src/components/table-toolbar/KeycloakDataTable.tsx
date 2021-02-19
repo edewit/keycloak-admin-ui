@@ -285,7 +285,9 @@ export function KeycloakDataTable<T>({
           }
           inputGroupOnChange={searchOnChange}
           inputGroupOnClick={() => {}}
-          inputGroupPlaceholder={t(searchPlaceholderKey || "")}
+          inputGroupPlaceholder={
+            searchPlaceholderKey ? t(searchPlaceholderKey) : undefined
+          }
           toolbarItem={toolbarItem}
           searchTypeComponent={searchTypeComponent}
         >

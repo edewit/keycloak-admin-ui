@@ -31,7 +31,7 @@ export const ListEmptyState = ({
   message,
   instructions,
   onPrimaryAction,
-  hasIcon,
+  hasIcon = true,
   isSearchVariant,
   primaryActionText,
   secondaryActions,
@@ -42,7 +42,7 @@ export const ListEmptyState = ({
         {hasIcon && isSearchVariant ? (
           <EmptyStateIcon icon={SearchIcon} />
         ) : (
-          <EmptyStateIcon icon={PlusCircleIcon} />
+          hasIcon && <EmptyStateIcon icon={PlusCircleIcon} />
         )}
         <Title headingLevel="h4" size="lg">
           {message}

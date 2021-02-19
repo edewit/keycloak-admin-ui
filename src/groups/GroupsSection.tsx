@@ -188,7 +188,24 @@ export const GroupsSection = () => {
 
   return (
     <>
-      <ViewHeader titleKey="groups:groups" subKey="groups:groupsDescription" />
+      <ViewHeader
+        titleKey="groups:groups"
+        subKey="groups:groupsDescription"
+        dropdownItems={[
+          <DropdownItem
+            key="searchGroup"
+            onClick={() => history.push(`/${realm}/groups/search`)}
+          >
+            {t("searchGroup")}
+          </DropdownItem>,
+          <DropdownItem key="renameGroup" onClick={() => {}}>
+            {t("renameGroup")}
+          </DropdownItem>,
+          <DropdownItem key="deleteGroup" onClick={() => deleteGroup({ id })}>
+            {t("deleteGroup")}
+          </DropdownItem>,
+        ]}
+      />
       <PageSection variant={PageSectionVariants.light}>
         <KeycloakDataTable
           key={key}
