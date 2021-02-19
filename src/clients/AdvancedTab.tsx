@@ -45,7 +45,13 @@ type AdvancedProps = {
 
 export const AdvancedTab = ({
   save,
-  client: { id, registeredNodes, attributes, protocol },
+  client: {
+    id,
+    registeredNodes,
+    attributes,
+    protocol,
+    authenticationFlowBindingOverrides,
+  },
 }: AdvancedProps) => {
   const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
@@ -88,6 +94,18 @@ export const AdvancedTab = ({
         AlertVariant.success
       );
     }
+  };
+
+  const resetFields = (names: string[]) => {
+    for (const name of names) {
+      resetField(name);
+    }
+  };
+  const resetField = (name: string) => {
+    setValue(
+      `attributes.${name}`,
+      attributes ? attributes[name.replace(/-/g, ".")] : ""
+    );
   };
 
   const push = async () => {
@@ -378,12 +396,7 @@ export const AdvancedTab = ({
               control={control}
               save={save}
               reset={() =>
-                setValue(
-                  "attributes.exclude_session_state_from_auth_response",
-                  attributes
-                    ? attributes["exclude.session.state.from.auth.response"]
-                    : ""
-                )
+                resetField("exclude-session-state-from-auth-response")
               }
             />
           </CardBody>
@@ -400,7 +413,14 @@ export const AdvancedTab = ({
             protocol={protocol}
             control={control}
             save={save}
-            reset={() => {}}
+            reset={() => {
+              resetFields([
+                "saml-assertion-lifespan",
+                "access-token-lifespan",
+                "tls-client-certificate-bound-access-tokens",
+                "pkce-code-challenge-method",
+              ]);
+            }}
           />
         </CardBody>
       </Card>
@@ -413,7 +433,16 @@ export const AdvancedTab = ({
             protocol={protocol}
             control={control}
             save={save}
-            reset={() => {}}
+            reset={() => {
+              setValue(
+                "authenticationFlowBindingOverrides.browser",
+                authenticationFlowBindingOverrides?.browser
+              );
+              setValue(
+                "authenticationFlowBindingOverrides.direct_grant",
+                authenticationFlowBindingOverrides?.direct_grant
+              );
+            }}
           />
         </CardBody>
       </Card>

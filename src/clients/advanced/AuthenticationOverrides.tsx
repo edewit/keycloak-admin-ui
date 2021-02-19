@@ -39,18 +39,19 @@ export const AuthenticationOverrides = ({
     () =>
       asyncStateFetch(
         () => adminClient.authenticationManagement.getFlows(),
-        (flows) => {
+        (flows) =>
           setFlows([
             <SelectOption key="empty" value="">
               {t("common:choose")}
             </SelectOption>,
-            ...flows.map((flow) => (
-              <SelectOption key={flow.id} value={flow.id}>
-                {flow.alias}
-              </SelectOption>
-            )),
-          ]);
-        }
+            ...flows
+              .filter((flow) => flow.providerId !== "client-flow")
+              .map((flow) => (
+                <SelectOption key={flow.id} value={flow.id}>
+                  {flow.alias}
+                </SelectOption>
+              )),
+          ])
       ),
     []
   );
