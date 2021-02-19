@@ -13,8 +13,8 @@ declare namespace Cypress {
      * Get one or more DOM elements by `data-testid`.
      *
      * @example
-     * cy.getBy('searchButton')  // Gets the <button data-testid="searchButton">Search</button>
+     * cy.getId('searchButton')  // Gets the <button data-testid="searchButton">Search</button>
      */
-    getBy(selector: string, ...args): Chainable<any>;
+    getId(selector: string, ...args): Chainable<any>;
   }
 }

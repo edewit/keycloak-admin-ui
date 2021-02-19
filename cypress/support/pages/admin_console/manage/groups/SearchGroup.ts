@@ -3,12 +3,12 @@ export class SearchGroupPage {
   private searchButton = "search-button";
 
   searchGroup(search: string) {
-    cy.getBy(this.searchField).type(search);
+    cy.getId(this.searchField).type(search);
     return this;
   }
 
   clickSearchButton() {
-    cy.getBy(this.searchButton).click();
+    cy.getId(this.searchButton).click();
     return this;
   }
 

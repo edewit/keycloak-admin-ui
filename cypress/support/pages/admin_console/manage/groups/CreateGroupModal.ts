@@ -3,13 +3,13 @@ export default class CreateGroupModal {
   private createButton = "createGroup";
 
   fillGroupForm(name = "") {
-    cy.getBy(this.nameInput).clear();
-    cy.getBy(this.nameInput).type(name);
+    cy.getId(this.nameInput).clear();
+    cy.getId(this.nameInput).type(name);
     return this;
   }
 
   clickCreate() {
-    cy.getBy(this.createButton).click();
+    cy.getId(this.createButton).click();
     return this;
   }
 }
