@@ -57,6 +57,7 @@ export const GroupsCreateModal = ({
         onClose={handleModalToggle}
         actions={[
           <Button
+            data-testid="createGroup"
             key="confirm"
             variant="primary"
             type="submit"
@@ -78,6 +79,7 @@ export const GroupsCreateModal = ({
             isRequired
           >
             <TextInput
+              data-testid="groupNameInput"
               ref={register({ required: true })}
               autoFocus
               type="text"

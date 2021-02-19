@@ -112,7 +112,7 @@ export const SearchGroups = () => {
           <InputGroup>
             <TextInput
               name="search"
-              id="group-search"
+              data-testid="group-search"
               type="search"
               aria-label={t("search")}
               placeholder={t("searchGroups")}
@@ -120,6 +120,7 @@ export const SearchGroups = () => {
               onChange={(value) => setSearchTerm(value)}
             />
             <Button
+              data-testid="search-button"
               variant={ButtonVariant.control}
               aria-label={t("search")}
               onClick={addTerm}

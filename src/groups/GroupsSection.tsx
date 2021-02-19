@@ -193,15 +193,24 @@ export const GroupsSection = () => {
         subKey="groups:groupsDescription"
         dropdownItems={[
           <DropdownItem
+            data-testid="searchGroup"
             key="searchGroup"
             onClick={() => history.push(`/${realm}/groups/search`)}
           >
             {t("searchGroup")}
           </DropdownItem>,
-          <DropdownItem key="renameGroup" onClick={() => {}}>
+          <DropdownItem
+            data-testid="renameGroup"
+            key="renameGroup"
+            onClick={() => addAlert("Not implemented")}
+          >
             {t("renameGroup")}
           </DropdownItem>,
-          <DropdownItem key="deleteGroup" onClick={() => deleteGroup({ id })}>
+          <DropdownItem
+            data-testid="deleteGroup"
+            key="deleteGroup"
+            onClick={() => deleteGroup({ id })}
+          >
             {t("deleteGroup")}
           </DropdownItem>,
         ]}
