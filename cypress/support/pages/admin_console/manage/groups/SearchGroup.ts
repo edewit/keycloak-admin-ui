@@ -1,4 +1,3 @@
-/// <reference types="../../../.." />
 export class SearchGroupPage {
   private searchField = "group-search";
   private searchButton = "search-button";

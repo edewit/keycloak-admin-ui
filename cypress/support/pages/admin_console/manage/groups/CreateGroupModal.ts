@@ -1,5 +1,3 @@
-/// <reference types="../../../.." />
-
 export default class CreateGroupModal {
   private nameInput = "groupNameInput";
   private createButton = "createGroup";

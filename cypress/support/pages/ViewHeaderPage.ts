@@ -1,5 +1,3 @@
-/// <reference types=".." />
-
 export default class ListingPage {
   private actionMenu = "viewheader-action";
 

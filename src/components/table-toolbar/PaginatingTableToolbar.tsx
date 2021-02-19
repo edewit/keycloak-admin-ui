@@ -60,7 +60,7 @@ export const PaginatingTableToolbar = ({
   );
 
   if (count === 0) {
-    return children;
+    <>{children}</>;
   }
   return (
     <TableToolbar
