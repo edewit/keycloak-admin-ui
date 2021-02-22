@@ -1,8 +1,8 @@
 export default class ListingPage {
-  private actionMenu = "viewheader-action";
+  private actionMenu = "action-dropdown";
 
   clickAction(action: string) {
-    cy.get("[data-cy=action-dropdown]").click().getId(action).click();
+    cy.getId(this.actionMenu).click().getId(action).click();
     return this;
   }
 }
