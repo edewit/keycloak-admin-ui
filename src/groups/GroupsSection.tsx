@@ -226,7 +226,11 @@ export const GroupsSection = () => {
           toolbarItem={
             <>
               <ToolbarItem>
-                <Button variant="primary" onClick={handleModalToggle}>
+                <Button
+                  data-testid="openCreateGroupModal"
+                  variant="primary"
+                  onClick={handleModalToggle}
+                >
                   {t("createGroup")}
                 </Button>
               </ToolbarItem>

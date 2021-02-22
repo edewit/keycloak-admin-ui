@@ -25,9 +25,8 @@ describe("Group test", () => {
 
     it("Group CRUD test", () => {
       groupName += "_" + (Math.random() + 1).toString(36).substring(7);
-      listingPage.itemExist(groupName, false).goToCreateItem();
 
-      createGroupModal.fillGroupForm(groupName).clickCreate();
+      createGroupModal.open().fillGroupForm(groupName).clickCreate();
 
       masthead.checkNotificationMessage("Group created");
 

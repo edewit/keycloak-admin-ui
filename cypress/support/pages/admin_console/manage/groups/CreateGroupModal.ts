@@ -1,6 +1,12 @@
 export default class CreateGroupModal {
+  private openButton = "openCreateGroupModal";
   private nameInput = "groupNameInput";
   private createButton = "createGroup";
+
+  open() {
+    cy.getId(this.openButton).click();
+    return this;
+  }
 
   fillGroupForm(name = "") {
     cy.getId(this.nameInput).clear();
