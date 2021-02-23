@@ -68,7 +68,7 @@ export const ClientsSection = () => {
       <Link key={client.id} to={`${url}/${client.id}`}>
         {client.clientId}
         {!client.enabled && (
-          <Badge isRead className="pf-u-ml-sm">
+          <Badge key={`${client.id}-disabled`} isRead className="pf-u-ml-sm">
             Disabled
           </Badge>
         )}
