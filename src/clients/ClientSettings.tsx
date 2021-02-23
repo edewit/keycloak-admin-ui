@@ -71,7 +71,7 @@ export const ClientSettings = ({ save }: ClientSettingsProps) => {
               />
             }
           >
-            <MultiLineInput form={form} name="webOrigins" />
+            <MultiLineInput name="webOrigins" />
           </FormGroup>
           <FormGroup
             label={t("adminURL")}
@@ -88,7 +88,7 @@ export const ClientSettings = ({ save }: ClientSettingsProps) => {
               type="text"
               id="kc-admin-url"
               name="adminUrl"
-              ref={form.register}
+              ref={register}
             />
           </FormGroup>
         </FormAccess>

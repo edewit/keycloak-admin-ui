@@ -96,8 +96,12 @@ const ClientDetailHeader = ({
   );
 };
 
-export type ClientForm = Omit<ClientRepresentation, "redirectUris"> & {
+export type ClientForm = Omit<
+  ClientRepresentation,
+  "redirectUris" | "webOrigins"
+> & {
   redirectUris: MultiLine[];
+  webOrigins: MultiLine[];
 };
 
 export const ClientDetails = () => {
@@ -152,11 +156,12 @@ export const ClientDetails = () => {
   });
 
   const setupForm = (client: ClientRepresentation) => {
-    const { redirectUris, ...formValues } = client;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { redirectUris, webOrigins, ...formValues } = client;
     form.reset(formValues);
     Object.entries(client).map((entry) => {
       if (entry[0] === "redirectUris" || entry[0] === "webOrigins") {
-        form.setValue(entry[0], convertToMultiline(redirectUris!));
+        form.setValue(entry[0], convertToMultiline(entry[1]));
       } else if (entry[0] === "attributes") {
         convertToFormValues(entry[1], "attributes", form.setValue);
       } else {

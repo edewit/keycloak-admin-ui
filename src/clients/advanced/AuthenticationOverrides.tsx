@@ -15,6 +15,7 @@ import {
   useAdminClient,
 } from "../../context/auth/AdminClient";
 import { SaveReset } from "./SaveReset";
+import { useErrorHandler } from "react-error-boundary";
 
 type AuthenticationOverridesProps = {
   control: Control<Record<string, any>>;
@@ -32,6 +33,7 @@ export const AuthenticationOverrides = ({
   const adminClient = useAdminClient();
   const { t } = useTranslation("clients");
   const [flows, setFlows] = useState<JSX.Element[]>([]);
+  const handleError = useErrorHandler();
   const [browserFlowOpen, setBrowserFlowOpen] = useState(false);
   const [directGrantOpen, setDirectGrantOpen] = useState(false);
 
@@ -51,7 +53,8 @@ export const AuthenticationOverrides = ({
                   {flow.alias}
                 </SelectOption>
               )),
-          ])
+          ]),
+        handleError
       ),
     []
   );
