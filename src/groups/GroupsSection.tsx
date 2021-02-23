@@ -286,8 +286,10 @@ export const GroupsSection = () => {
           emptyState={
             <ListEmptyState
               hasIcon={true}
-              message={t("noGroupsInThisRealm")}
-              instructions={t("noGroupsInThisRealmInstructions")}
+              message={t(`noGroupsInThis${id ? "SubGroup" : "Realm"}`)}
+              instructions={t(
+                `noGroupsInThis${id ? "SubGroup" : "Realm"}Instructions`
+              )}
               primaryActionText={t("createGroup")}
               onPrimaryAction={() => handleModalToggle()}
             />
