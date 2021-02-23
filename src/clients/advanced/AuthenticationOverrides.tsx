@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Control, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import _ from "lodash";
 import {
   FormGroup,
   Select,
@@ -41,19 +42,22 @@ export const AuthenticationOverrides = ({
     () =>
       asyncStateFetch(
         () => adminClient.authenticationManagement.getFlows(),
-        (flows) =>
+        (flows) => {
+          let filteredFlows = [
+            ...flows.filter((flow) => flow.providerId !== "client-flow"),
+          ];
+          filteredFlows = _.sortBy(filteredFlows, [(f) => f.alias]);
           setFlows([
             <SelectOption key="empty" value="">
               {t("common:choose")}
             </SelectOption>,
-            ...flows
-              .filter((flow) => flow.providerId !== "client-flow")
-              .map((flow) => (
-                <SelectOption key={flow.id} value={flow.id}>
-                  {flow.alias}
-                </SelectOption>
-              )),
-          ]),
+            ...filteredFlows.map((flow) => (
+              <SelectOption key={flow.id} value={flow.id}>
+                {flow.alias}
+              </SelectOption>
+            )),
+          ]);
+        },
         handleError
       ),
     []

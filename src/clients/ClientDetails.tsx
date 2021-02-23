@@ -13,6 +13,7 @@ import { useErrorHandler } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
+import _ from "lodash";
 
 import { ClientSettings } from "./ClientSettings";
 import { useAlerts } from "../components/alert/Alerts";
@@ -126,18 +127,7 @@ export const ClientDetails = () => {
 
   const loader = async () => {
     const roles = await adminClient.clients.listRoles({ id });
-    return roles.sort((r1, r2) => {
-      const r1Name = r1.name?.toUpperCase();
-      const r2Name = r2.name?.toUpperCase();
-      if (r1Name! < r2Name!) {
-        return -1;
-      }
-      if (r1Name! > r2Name!) {
-        return 1;
-      }
-
-      return 0;
-    });
+    return _.sortBy(roles, (role) => role.name?.toUpperCase());
   };
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
