@@ -60,7 +60,7 @@ export const AdvancedTab = ({
   const revocationFieldName = "notBefore";
   const openIdConnect = "openid-connect";
 
-  const { getValues, setValue, register, control } = useFormContext();
+  const { getValues, setValue, register, control, reset } = useFormContext();
   const [expanded, setExpanded] = useState(false);
   const [selectedNode, setSelectedNode] = useState("");
   const [addNodeOpen, setAddNodeOpen] = useState(false);
@@ -97,15 +97,13 @@ export const AdvancedTab = ({
   };
 
   const resetFields = (names: string[]) => {
+    const values: { [name: string]: string } = {};
     for (const name of names) {
-      resetField(name);
+      values[`attributes.${name}`] = attributes
+        ? attributes[name.replace(/-/g, ".")] || ""
+        : "";
     }
-  };
-  const resetField = (name: string) => {
-    setValue(
-      `attributes.${name}`,
-      attributes ? attributes[name.replace(/-/g, ".")] : ""
-    );
+    reset(values);
   };
 
   const push = async () => {
@@ -396,7 +394,7 @@ export const AdvancedTab = ({
               control={control}
               save={save}
               reset={() =>
-                resetField("exclude-session-state-from-auth-response")
+                resetFields(["exclude-session-state-from-auth-response"])
               }
             />
           </CardBody>

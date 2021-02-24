@@ -14,7 +14,7 @@ export type Unit = "seconds" | "minutes" | "hours" | "days";
 export type TimeSelectorProps = {
   value: number;
   units?: Unit[];
-  onChange: (time: number) => void;
+  onChange: (time: number | string) => void;
 };
 
 export const TimeSelector = ({
@@ -23,9 +23,6 @@ export const TimeSelector = ({
   onChange,
 }: TimeSelectorProps) => {
   const { t } = useTranslation("common");
-  const [timeValue, setTimeValue] = useState(1);
-  const [multiplier, setMultiplier] = useState(1);
-  const [open, setOpen] = useState(false);
 
   const allTimes: { unit: Unit; label: string; multiplier: number }[] = [
     { unit: "seconds", label: t("times.seconds"), multiplier: 1 },
@@ -35,6 +32,12 @@ export const TimeSelector = ({
   ];
 
   const times = allTimes.filter((t) => units.includes(t.unit));
+  const defaultMultiplier = allTimes.find((time) => time.unit === units[0])
+    ?.multiplier;
+
+  const [timeValue, setTimeValue] = useState<"" | number>("");
+  const [multiplier, setMultiplier] = useState(defaultMultiplier);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const x = times.reduce(
@@ -48,14 +51,22 @@ export const TimeSelector = ({
     if (value) {
       setMultiplier(x);
       setTimeValue(value / x);
+    } else {
+      setTimeValue("");
+      setMultiplier(defaultMultiplier);
     }
   }, [value]);
 
   const updateTimeout = (
-    timeout: number,
+    timeout: "" | number,
     times: number | undefined = multiplier
   ) => {
-    onChange(timeout * times);
+    if (timeout !== "") {
+      onChange(timeout * (times || 1));
+      setTimeValue(timeout);
+    } else {
+      onChange("");
+    }
   };
 
   return (
@@ -64,11 +75,10 @@ export const TimeSelector = ({
         <TextInput
           type="number"
           id={`kc-time-${new Date().getTime()}`}
+          min="0"
           value={timeValue}
           onChange={(value) => {
-            const timeOut = parseInt(value);
-            setTimeValue(timeOut);
-            updateTimeout(timeOut);
+            updateTimeout("" === value ? value : parseInt(value));
           }}
         />
       </SplitItem>
