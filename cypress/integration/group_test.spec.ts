@@ -26,7 +26,10 @@ describe("Group test", () => {
     it("Group CRUD test", () => {
       groupName += "_" + (Math.random() + 1).toString(36).substring(7);
 
-      createGroupModal.open().fillGroupForm(groupName).clickCreate();
+      createGroupModal
+        .open("empty-primary-action")
+        .fillGroupForm(groupName)
+        .clickCreate();
 
       masthead.checkNotificationMessage("Group created");
 

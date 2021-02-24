@@ -3,8 +3,8 @@ export default class CreateGroupModal {
   private nameInput = "groupNameInput";
   private createButton = "createGroup";
 
-  open() {
-    cy.getId(this.openButton).click();
+  open(name?: string) {
+    cy.getId(name || this.openButton).click();
     return this;
   }
 

@@ -243,7 +243,7 @@ export function KeycloakDataTable<T>({
   return (
     <>
       {!rows && <Loading />}
-      {rows && rows.length > 0 && isPaginated && (
+      {rows && (rows.length > 0 || !emptyState) && isPaginated && (
         <PaginatingTableToolbar
           count={rows.length}
           first={first}
@@ -259,9 +259,7 @@ export function KeycloakDataTable<T>({
           }
           inputGroupOnChange={searchOnChange}
           inputGroupOnClick={refresh}
-          inputGroupPlaceholder={
-            searchPlaceholderKey ? t(searchPlaceholderKey) : undefined
-          }
+          inputGroupPlaceholder={t(searchPlaceholderKey || "")}
           searchTypeComponent={searchTypeComponent}
           toolbarItem={toolbarItem}
         >
@@ -277,16 +275,14 @@ export function KeycloakDataTable<T>({
           {loading && <Loading />}
         </PaginatingTableToolbar>
       )}
-      {rows && rows.length > 0 && !isPaginated && (
+      {rows && (rows.length > 0 || !emptyState) && !isPaginated && (
         <TableToolbar
           inputGroupName={
             searchPlaceholderKey ? `${ariaLabelKey}input` : undefined
           }
           inputGroupOnChange={searchOnChange}
           inputGroupOnClick={() => {}}
-          inputGroupPlaceholder={
-            searchPlaceholderKey ? t(searchPlaceholderKey) : undefined
-          }
+          inputGroupPlaceholder={t(searchPlaceholderKey || "")}
           toolbarItem={toolbarItem}
           searchTypeComponent={searchTypeComponent}
         >
