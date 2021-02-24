@@ -99,8 +99,6 @@ describe("Clients test", function () {
         .continue()
         .continue();
 
-      sidebarPage.goToClients();
-      listingPage.goToItemDetails(client);
       advancedTab.goToTab();
     });
 
