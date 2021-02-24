@@ -4,7 +4,7 @@ import {
   SelectVariant,
   Split,
   SplitItem,
-  NumberInput,
+  TextInput,
 } from "@patternfly/react-core";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,18 +23,16 @@ export const TimeSelector = ({
   onChange,
 }: TimeSelectorProps) => {
   const { t } = useTranslation("common");
+  const [timeValue, setTimeValue] = useState(1);
+  const [multiplier, setMultiplier] = useState(1);
+  const [open, setOpen] = useState(false);
+
   const allTimes: { unit: Unit; label: string; multiplier: number }[] = [
     { unit: "seconds", label: t("times.seconds"), multiplier: 1 },
     { unit: "minutes", label: t("times.minutes"), multiplier: 60 },
     { unit: "hours", label: t("times.hours"), multiplier: 3600 },
     { unit: "days", label: t("times.days"), multiplier: 86400 },
   ];
-
-  const [timeValue, setTimeValue] = useState<number>(0);
-  const [multiplier, setMultiplier] = useState(
-    allTimes.find((time) => time.unit === units[0])?.multiplier
-  );
-  const [open, setOpen] = useState(false);
 
   const times = allTimes.filter((t) => units.includes(t.unit));
 
@@ -57,24 +55,21 @@ export const TimeSelector = ({
     timeout: number,
     times: number | undefined = multiplier
   ) => {
-    onChange(timeout * (times || 1));
-    setTimeValue(timeout);
+    onChange(timeout * times);
   };
 
   return (
     <Split hasGutter>
       <SplitItem>
-        <NumberInput
+        <TextInput
+          type="number"
+          id={`kc-time-${new Date().getTime()}`}
           value={timeValue}
-          min={0}
-          onChange={(event) => {
-            const value = ((event.target as unknown) as { value: number })
-              .value;
-            const timeOut = isNaN(value) ? 0 : Number(value);
+          onChange={(value) => {
+            const timeOut = parseInt(value);
+            setTimeValue(timeOut);
             updateTimeout(timeOut);
           }}
-          onPlus={() => updateTimeout(Number(timeValue) + 1)}
-          onMinus={() => updateTimeout(Number(timeValue) - 1)}
         />
       </SplitItem>
       <SplitItem>
