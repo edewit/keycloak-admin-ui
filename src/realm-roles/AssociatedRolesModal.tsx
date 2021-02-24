@@ -211,10 +211,6 @@ export const AssociatedRolesModal = (props: AssociatedRolesModalProps) => {
     setIsFilterDropdownOpen(!isFilterDropdownOpen);
   };
 
-  const setRefresher = (refresher: () => void) => {
-    tableRefresher.current = refresher;
-  };
-
   return (
     <Modal
       title={t("roles:associatedRolesModalTitle", { name })}
@@ -250,7 +246,6 @@ export const AssociatedRolesModal = (props: AssociatedRolesModalProps) => {
         loader={filterType == "roles" ? loader : clientRolesLoader}
         ariaLabelKey="roles:roleList"
         searchPlaceholderKey="roles:searchFor"
-        setRefresher={setRefresher}
         searchTypeComponent={
           <Dropdown
             onSelect={() => onFilterDropdownSelect(filterType)}
