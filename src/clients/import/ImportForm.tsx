@@ -1,7 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Controller, useForm, useWatch } from "react-hook-form";
 import {
   PageSection,
   FormGroup,
@@ -9,7 +8,6 @@ import {
   ActionGroup,
   Button,
   AlertVariant,
-  Switch,
 } from "@patternfly/react-core";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -89,17 +87,17 @@ export const ImportForm = () => {
                 ref={register()}
               />
             </FormGroup>
-          <CapabilityConfig form={form} unWrap={true} />
+            <CapabilityConfig unWrap={true} />
             <ActionGroup>
               <Button variant="primary" type="submit">
                 {t("common:save")}
               </Button>
-            <Button
-              variant="link"
-              onClick={() => history.push(`/${realm}/clients`)}
-            >
-              {t("common:cancel")}
-            </Button>
+              <Button
+                variant="link"
+                onClick={() => history.push(`/${realm}/clients`)}
+              >
+                {t("common:cancel")}
+              </Button>
             </ActionGroup>
           </FormProvider>
         </FormAccess>

@@ -10,6 +10,7 @@ import {
 import { Controller, useFormContext } from "react-hook-form";
 import { FormAccess } from "../../components/form-access/FormAccess";
 import { ClientForm } from "../ClientDetails";
+import { HelpItem } from "../../components/help-enabler/HelpItem";
 
 type CapabilityConfigProps = {
   unWrap?: boolean;
@@ -21,8 +22,8 @@ export const CapabilityConfig = ({
   protocol: type,
 }: CapabilityConfigProps) => {
   const { t } = useTranslation("clients");
-  const { control } = useFormContext<ClientForm>();
-  const protocol = type || form.watch("protocol");
+  const { control, watch } = useFormContext<ClientForm>();
+  const protocol = type || watch("protocol");
 
   return (
     <FormAccess isHorizontal role="manage-clients" unWrap={unWrap}>
@@ -37,7 +38,7 @@ export const CapabilityConfig = ({
               <Controller
                 name="publicClient"
                 defaultValue={false}
-          control={control}
+                control={control}
                 render={({ onChange, value }) => (
                   <Switch
                     id="kc-authentication"
@@ -58,7 +59,7 @@ export const CapabilityConfig = ({
               <Controller
                 name="authorizationServicesEnabled"
                 defaultValue={false}
-          control={control}
+                control={control}
                 render={({ onChange, value }) => (
                   <Switch
                     id="kc-authorization"
@@ -81,7 +82,7 @@ export const CapabilityConfig = ({
                   <Controller
                     name="standardFlowEnabled"
                     defaultValue={false}
-              control={control}
+                    control={control}
                     render={({ onChange, value }) => (
                       <Checkbox
                         label={t("standardFlow")}
@@ -97,7 +98,7 @@ export const CapabilityConfig = ({
                   <Controller
                     name="directAccessGrantsEnabled"
                     defaultValue={false}
-              control={control}
+                    control={control}
                     render={({ onChange, value }) => (
                       <Checkbox
                         label={t("directAccess")}
@@ -113,7 +114,7 @@ export const CapabilityConfig = ({
                   <Controller
                     name="implicitFlowEnabled"
                     defaultValue={false}
-              control={control}
+                    control={control}
                     render={({ onChange, value }) => (
                       <Checkbox
                         label={t("implicitFlow")}
@@ -129,7 +130,7 @@ export const CapabilityConfig = ({
                   <Controller
                     name="serviceAccountsEnabled"
                     defaultValue={false}
-              control={control}
+                    control={control}
                     render={({ onChange, value }) => (
                       <Checkbox
                         label={t("serviceAccount")}
@@ -162,7 +163,7 @@ export const CapabilityConfig = ({
             >
               <Controller
                 name="attributes.saml_encrypt"
-                control={form.control}
+                control={control}
                 defaultValue="false"
                 render={({ onChange, value }) => (
                   <Switch
@@ -188,7 +189,7 @@ export const CapabilityConfig = ({
             >
               <Controller
                 name="attributes.saml_client_signature"
-                control={form.control}
+                control={control}
                 defaultValue="false"
                 render={({ onChange, value }) => (
                   <Switch
