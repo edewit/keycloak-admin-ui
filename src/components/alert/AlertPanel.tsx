@@ -23,6 +23,7 @@ export function AlertPanel({ alerts, onCloseAlert }: AlertPanelProps) {
     <AlertGroup isToast>
       {alerts.map(({ key, variant, message, description }) => (
         <Alert
+          timeout={true}
           key={key}
           isLiveRegion
           variant={AlertVariant[variant]}
