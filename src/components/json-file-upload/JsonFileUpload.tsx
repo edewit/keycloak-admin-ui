@@ -103,7 +103,6 @@ export const JsonFileUpload = ({
           value={fileUpload.value}
           filename={fileUpload.filename}
           onChange={handleChange}
-          allowEditingUploadedText
           onReadStarted={() =>
             setFileUpload({ ...fileUpload, isLoading: true })
           }
