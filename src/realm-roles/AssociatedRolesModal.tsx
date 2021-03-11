@@ -25,7 +25,7 @@ export type AssociatedRolesModalProps = {
 };
 
 const attributesToArray = (attributes: { [key: string]: string }): any => {
-  if (!attributes || Object.keys(attributes).length == 0) {
+  if (!attributes || Object.keys(attributes).length === 0) {
     return [
       {
         key: "",
@@ -144,7 +144,7 @@ export const AssociatedRolesModal = (props: AssociatedRolesModalProps) => {
     })();
   }, []);
 
-  const setupForm = (role: RoleRepresentation) => {
+  const setupForm = (role: RoleRepresentation) =>
     Object.entries(role).map((entry) => {
       if (entry[0] === "attributes") {
         form.setValue(entry[0], attributesToArray(entry[1]));
@@ -152,17 +152,16 @@ export const AssociatedRolesModal = (props: AssociatedRolesModalProps) => {
         form.setValue(entry[0], entry[1]);
       }
     });
-  };
 
   const onFilterDropdownToggle = () => {
     setIsFilterDropdownOpen(!isFilterDropdownOpen);
   };
 
   const onFilterDropdownSelect = (filterType: string) => {
-    if (filterType == "roles") {
+    if (filterType === "roles") {
       setFilterType("clients");
     }
-    if (filterType == "clients") {
+    if (filterType === "clients") {
       setFilterType("roles");
     }
     setIsFilterDropdownOpen(!isFilterDropdownOpen);
@@ -200,7 +199,7 @@ export const AssociatedRolesModal = (props: AssociatedRolesModalProps) => {
     >
       <KeycloakDataTable
         key={key}
-        loader={filterType == "roles" ? loader : clientRolesLoader}
+        loader={filterType === "roles" ? loader : clientRolesLoader}
         ariaLabelKey="roles:roleList"
         searchPlaceholderKey="roles:searchFor"
         searchTypeComponent={
@@ -223,7 +222,7 @@ export const AssociatedRolesModal = (props: AssociatedRolesModalProps) => {
                 data-testid="filter-type-dropdown-item"
                 key="filter-type"
               >
-                {filterType == "roles"
+                {filterType === "roles"
                   ? t("filterByClients")
                   : t("filterByRoles")}{" "}
               </DropdownItem>,
