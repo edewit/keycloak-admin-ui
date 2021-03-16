@@ -225,113 +225,117 @@ export const AdvancedTab = ({
           </ActionGroup>
         </FormAccess>
       </>
-      <FormAccess role="manage-clients" isHorizontal>
-        <FormGroup
-          label={t("nodeReRegistrationTimeout")}
-          fieldId="kc-node-reregistration-timeout"
-          labelIcon={
-            <HelpItem
-              helpText="clients-help:nodeReRegistrationTimeout"
-              forLabel={t("nodeReRegistrationTimeout")}
-              forID="nodeReRegistrationTimeout"
-            />
-          }
-        >
-          <Split hasGutter>
-            <SplitItem>
-              <Controller
-                name="nodeReRegistrationTimeout"
-                defaultValue=""
-                control={control}
-                render={({ onChange, value }) => (
-                  <TimeSelector value={value} onChange={onChange} />
-                )}
-              />
-            </SplitItem>
-            <SplitItem>
-              <Button variant={ButtonVariant.secondary} onClick={save}>
-                {t("common:save")}
-              </Button>
-            </SplitItem>
-          </Split>
-        </FormGroup>
-      </FormAccess>
       <>
-        <DeleteNodeConfirm />
-        <AddHostDialog
-          clientId={id!}
-          isOpen={addNodeOpen}
-          onAdded={(node) => {
-            nodes[node] = moment.now() / 1000;
-            refresh();
-          }}
-          onClose={() => setAddNodeOpen(false)}
-        />
-        <ExpandableSection
-          toggleText={t("registeredClusterNodes")}
-          onToggle={() => setExpanded(!expanded)}
-          isExpanded={expanded}
-        >
-          <KeycloakDataTable
-            key={key}
-            ariaLabelKey="registeredClusterNodes"
-            loader={() =>
-              Promise.resolve(
-                Object.entries(nodes || {}).map((entry) => {
-                  return { host: entry[0], registration: entry[1] };
-                })
-              )
+        <FormAccess role="manage-clients" isHorizontal>
+          <FormGroup
+            label={t("nodeReRegistrationTimeout")}
+            fieldId="kc-node-reregistration-timeout"
+            labelIcon={
+              <HelpItem
+                helpText="clients-help:nodeReRegistrationTimeout"
+                forLabel={t("nodeReRegistrationTimeout")}
+                forID="nodeReRegistrationTimeout"
+              />
             }
-            toolbarItem={
-              <>
-                <ToolbarItem>
-                  <Button
-                    id="testClusterAvailability"
-                    onClick={testCluster}
-                    variant={ButtonVariant.secondary}
-                    isDisabled={Object.keys(nodes).length === 0}
-                  >
-                    {t("testClusterAvailability")}
-                  </Button>
-                </ToolbarItem>
-                <ToolbarItem>
-                  <Button
-                    id="registerNodeManually"
-                    onClick={() => setAddNodeOpen(true)}
-                    variant={ButtonVariant.tertiary}
-                  >
-                    {t("registerNodeManually")}
-                  </Button>
-                </ToolbarItem>
-              </>
-            }
-            actions={[
-              {
-                title: t("common:delete"),
-                onRowClick: (node) => {
-                  setSelectedNode(node.host);
-                  toggleDeleteNodeConfirm();
-                },
-              },
-            ]}
-            columns={[
-              {
-                name: "host",
-                displayKey: "clients:nodeHost",
-              },
-              {
-                name: "registration",
-                displayKey: "clients:lastRegistration",
-                cellFormatters: [
-                  (value) =>
-                    value
-                      ? moment(parseInt(value.toString()) * 1000).format("LLL")
-                      : "",
-                ],
-              },
-            ]}
+          >
+            <Split hasGutter>
+              <SplitItem>
+                <Controller
+                  name="nodeReRegistrationTimeout"
+                  defaultValue=""
+                  control={control}
+                  render={({ onChange, value }) => (
+                    <TimeSelector value={value} onChange={onChange} />
+                  )}
+                />
+              </SplitItem>
+              <SplitItem>
+                <Button variant={ButtonVariant.secondary} onClick={save}>
+                  {t("common:save")}
+                </Button>
+              </SplitItem>
+            </Split>
+          </FormGroup>
+        </FormAccess>
+        <>
+          <DeleteNodeConfirm />
+          <AddHostDialog
+            clientId={id!}
+            isOpen={addNodeOpen}
+            onAdded={(node) => {
+              nodes[node] = moment.now() / 1000;
+              refresh();
+            }}
+            onClose={() => setAddNodeOpen(false)}
           />
-        </ExpandableSection>
+          <ExpandableSection
+            toggleText={t("registeredClusterNodes")}
+            onToggle={() => setExpanded(!expanded)}
+            isExpanded={expanded}
+          >
+            <KeycloakDataTable
+              key={key}
+              ariaLabelKey="registeredClusterNodes"
+              loader={() =>
+                Promise.resolve(
+                  Object.entries(nodes || {}).map((entry) => {
+                    return { host: entry[0], registration: entry[1] };
+                  })
+                )
+              }
+              toolbarItem={
+                <>
+                  <ToolbarItem>
+                    <Button
+                      id="testClusterAvailability"
+                      onClick={testCluster}
+                      variant={ButtonVariant.secondary}
+                      isDisabled={Object.keys(nodes).length === 0}
+                    >
+                      {t("testClusterAvailability")}
+                    </Button>
+                  </ToolbarItem>
+                  <ToolbarItem>
+                    <Button
+                      id="registerNodeManually"
+                      onClick={() => setAddNodeOpen(true)}
+                      variant={ButtonVariant.tertiary}
+                    >
+                      {t("registerNodeManually")}
+                    </Button>
+                  </ToolbarItem>
+                </>
+              }
+              actions={[
+                {
+                  title: t("common:delete"),
+                  onRowClick: (node) => {
+                    setSelectedNode(node.host);
+                    toggleDeleteNodeConfirm();
+                  },
+                },
+              ]}
+              columns={[
+                {
+                  name: "host",
+                  displayKey: "clients:nodeHost",
+                },
+                {
+                  name: "registration",
+                  displayKey: "clients:lastRegistration",
+                  cellFormatters: [
+                    (value) =>
+                      value
+                        ? moment(parseInt(value.toString()) * 1000).format(
+                            "LLL"
+                          )
+                        : "",
+                  ],
+                },
+              ]}
+            />
+          </ExpandableSection>
+        </>
       </>
       <>
         {protocol === openIdConnect && (
