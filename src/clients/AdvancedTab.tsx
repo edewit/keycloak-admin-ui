@@ -35,9 +35,10 @@ import { AddHostDialog } from "./advanced/AddHostDialog";
 import { FineGrainSamlEndpointConfig } from "./advanced/FineGrainSamlEndpointConfig";
 import { AuthenticationOverrides } from "./advanced/AuthenticationOverrides";
 import { useRealm } from "../context/realm-context/RealmContext";
+import { SaveOptions } from "./ClientDetails";
 
 type AdvancedProps = {
-  save: () => void;
+  save: (options?: SaveOptions) => void;
   client: ClientRepresentation;
 };
 
@@ -66,9 +67,9 @@ export const AdvancedTab = ({
   const refresh = () => setKey(new Date().getTime());
   const [nodes, setNodes] = useState(registeredNodes || {});
 
-  const setNotBefore = (time: number) => {
+  const setNotBefore = (time: number, messageKey: string) => {
     setValue(revocationFieldName, time);
-    save();
+    save({ messageKey });
   };
 
   const parseResult = (result: GlobalRequestResult, prefixKey: string) => {
@@ -208,14 +209,18 @@ export const AdvancedTab = ({
             <Button
               id="setToNow"
               variant="tertiary"
-              onClick={() => setNotBefore(moment.now() / 1000)}
+              onClick={() => {
+                setNotBefore(moment.now() / 1000, "notBeforeSetToNow");
+              }}
             >
               {t("setToNow")}
             </Button>
             <Button
               id="clear"
               variant="tertiary"
-              onClick={() => setNotBefore(0)}
+              onClick={() => {
+                setNotBefore(0, "notBeforeNowClear");
+              }}
             >
               {t("clear")}
             </Button>
@@ -250,7 +255,10 @@ export const AdvancedTab = ({
                 />
               </SplitItem>
               <SplitItem>
-                <Button variant={ButtonVariant.secondary} onClick={save}>
+                <Button
+                  variant={ButtonVariant.secondary}
+                  onClick={() => save()}
+                >
                   {t("common:save")}
                 </Button>
               </SplitItem>
@@ -345,7 +353,7 @@ export const AdvancedTab = ({
             </Text>
             <FineGrainOpenIdConnect
               control={control}
-              save={save}
+              save={() => save()}
               reset={() =>
                 convertToFormValues(attributes, "attributes", setValue)
               }
@@ -359,7 +367,7 @@ export const AdvancedTab = ({
             </Text>
             <FineGrainSamlEndpointConfig
               control={control}
-              save={save}
+              save={() => save()}
               reset={() =>
                 convertToFormValues(attributes, "attributes", setValue)
               }
@@ -374,7 +382,7 @@ export const AdvancedTab = ({
           </Text>
           <OpenIdConnectCompatibilityModes
             control={control}
-            save={save}
+            save={() => save()}
             reset={() =>
               resetFields(["exclude-session-state-from-auth-response"])
             }
@@ -388,7 +396,7 @@ export const AdvancedTab = ({
         <AdvancedSettings
           protocol={protocol}
           control={control}
-          save={save}
+          save={() => save()}
           reset={() => {
             resetFields([
               "saml-assertion-lifespan",
@@ -406,7 +414,7 @@ export const AdvancedTab = ({
         <AuthenticationOverrides
           protocol={protocol}
           control={control}
-          save={save}
+          save={() => save()}
           reset={() => {
             setValue(
               "authenticationFlowBindingOverrides.browser",
