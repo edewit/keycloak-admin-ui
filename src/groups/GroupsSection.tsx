@@ -23,6 +23,7 @@ import { GroupTable } from "./GroupTable";
 import { getId, getLastId } from "./groupIdUtils";
 import { Members } from "./Members";
 import { GroupAttributes } from "./GroupAttributes";
+import { GroupsModal } from "./GroupsModal";
 
 import "./GroupsSection.css";
 
@@ -31,10 +32,12 @@ export const GroupsSection = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const adminClient = useAdminClient();
-  const { subGroups, setSubGroups } = useSubGroups();
+  const { subGroups, setSubGroups, currentGroup } = useSubGroups();
   const { addAlert } = useAlerts();
   const { realm } = useRealm();
   const errorHandler = useErrorHandler();
+
+  const [rename, setRename] = useState<string>();
 
   const history = useHistory();
   const location = useLocation();
@@ -87,6 +90,16 @@ export const GroupsSection = () => {
 
   return (
     <>
+      {rename && (
+        <GroupsModal
+          id={id}
+          rename={rename}
+          refresh={(group) =>
+            setSubGroups([...subGroups.slice(0, subGroups.length - 1), group!])
+          }
+          handleModalToggle={() => setRename(undefined)}
+        />
+      )}
       <ViewHeader
         titleKey="groups:groups"
         subKey="groups:groupsDescription"
@@ -101,14 +114,19 @@ export const GroupsSection = () => {
           <DropdownItem
             data-testid="renameGroup"
             key="renameGroup"
-            onClick={() => addAlert("Not implemented")}
+            onClick={() => setRename(currentGroup().name)}
           >
             {t("renameGroup")}
           </DropdownItem>,
           <DropdownItem
             data-testid="deleteGroup"
             key="deleteGroup"
-            onClick={() => deleteGroup({ id })}
+            onClick={() => {
+              deleteGroup({ id });
+              history.push(
+                location.pathname.substr(0, location.pathname.lastIndexOf("/"))
+              );
+            }}
           >
             {t("deleteGroup")}
           </DropdownItem>,
