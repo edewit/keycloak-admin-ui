@@ -39,7 +39,6 @@ const savedSuccessMessage = "User federation provider successfully saved";
 const deletedSuccessMessage = "The user federation provider has been deleted.";
 const deleteModalTitle = "Delete user federation provider?";
 const disableModalTitle = "Disable user federation provider?";
-import { keycloakBefore } from "../support/util/keycloak_before";
 
 describe("User Fed Kerberos tests", () => {
   beforeEach(() => {
