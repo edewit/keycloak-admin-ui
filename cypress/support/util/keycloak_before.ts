@@ -6,6 +6,9 @@ export const keycloakBefore = () => {
          GET /admin/master/console/whoami
     */
   cy.on("uncaught:exception", (err, runnable) => {
+    console.log("-------------------");
+    console.log(err);
+    console.log("--------------------");
     return false;
   });
   cy.visit("");
