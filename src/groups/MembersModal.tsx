@@ -57,7 +57,7 @@ export const MemberModal = ({ groupId, onClose }: MemberModalProps) => {
       onClose={onClose}
       actions={[
         <Button
-          data-testid="addMember"
+          data-testid="add"
           key="confirm"
           variant="primary"
           onClick={async () => {

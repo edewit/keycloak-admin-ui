@@ -93,6 +93,17 @@ describe("Group test", () => {
         .checkListMembers(["user0", "user3", "user1", "user4", "user2"]);
     });
 
+    it("Should add members", () => {
+      listingPage.goToItemDetails(groups[0]);
+      detailPage
+        .clickMembersTab()
+        .clickAddMembers()
+        .checkSelectableMembers(["user1", "user4"]);
+      detailPage.selectUsers(["user1"]).clickAdd();
+
+      masthead.checkNotificationMessage("1 user added to the group");
+    });
+
     it("Attributes CRUD test", () => {
       listingPage.goToItemDetails(groups[0]);
       detailPage
