@@ -81,7 +81,7 @@ export const MapperList = ({ clientScope, refresh }: MapperListProps) => {
 
   const loader = async () =>
     Promise.resolve(
-      mapperList
+      (mapperList || [])
         .map((mapper) => {
           const mapperType = mapperTypes.filter(
             (type) => type.id === mapper.protocolMapper
