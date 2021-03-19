@@ -88,6 +88,16 @@ export const GroupsSection = () => {
     [id]
   );
 
+  const SearchDropdown = (
+    <DropdownItem
+      data-testid="searchGroup"
+      key="searchGroup"
+      onClick={() => history.push(`/${realm}/groups/search`)}
+    >
+      {t("searchGroup")}
+    </DropdownItem>
+  );
+
   return (
     <>
       {rename && (
@@ -103,34 +113,35 @@ export const GroupsSection = () => {
       <ViewHeader
         titleKey="groups:groups"
         subKey="groups:groupsDescription"
-        dropdownItems={[
-          <DropdownItem
-            data-testid="searchGroup"
-            key="searchGroup"
-            onClick={() => history.push(`/${realm}/groups/search`)}
-          >
-            {t("searchGroup")}
-          </DropdownItem>,
-          <DropdownItem
-            data-testid="renameGroup"
-            key="renameGroup"
-            onClick={() => setRename(currentGroup().name)}
-          >
-            {t("renameGroup")}
-          </DropdownItem>,
-          <DropdownItem
-            data-testid="deleteGroup"
-            key="deleteGroup"
-            onClick={() => {
-              deleteGroup({ id });
-              history.push(
-                location.pathname.substr(0, location.pathname.lastIndexOf("/"))
-              );
-            }}
-          >
-            {t("deleteGroup")}
-          </DropdownItem>,
-        ]}
+        dropdownItems={
+          id
+            ? [
+                SearchDropdown,
+                <DropdownItem
+                  data-testid="renameGroup"
+                  key="renameGroup"
+                  onClick={() => setRename(currentGroup().name)}
+                >
+                  {t("renameGroup")}
+                </DropdownItem>,
+                <DropdownItem
+                  data-testid="deleteGroup"
+                  key="deleteGroup"
+                  onClick={() => {
+                    deleteGroup({ id });
+                    history.push(
+                      location.pathname.substr(
+                        0,
+                        location.pathname.lastIndexOf("/")
+                      )
+                    );
+                  }}
+                >
+                  {t("deleteGroup")}
+                </DropdownItem>,
+              ]
+            : [SearchDropdown]
+        }
       />
       <PageSection variant={PageSectionVariants.light}>
         {subGroups.length > 0 && (
