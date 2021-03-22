@@ -118,7 +118,7 @@ export const GroupsSection = () => {
             ? [
                 SearchDropdown,
                 <DropdownItem
-                  data-testid="renameGroup"
+                  data-testid="renameGroupAction"
                   key="renameGroup"
                   onClick={() => setRename(currentGroup().name)}
                 >
