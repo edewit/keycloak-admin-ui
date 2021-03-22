@@ -70,10 +70,14 @@ export const MoveGroupDialog = ({
   return (
     <Modal
       variant={ModalVariant.large}
-      title={t("moveToGroup", {
-        group1: group.name,
-        group2: currentGroup()?.name,
-      })}
+      title={
+        currentGroup()
+          ? t("moveToGroup", {
+              group1: group.name,
+              group2: currentGroup().name,
+            })
+          : t("moveTo")
+      }
       isOpen={true}
       onClose={onClose}
       actions={[
@@ -131,7 +135,7 @@ export const MoveGroupDialog = ({
             key={group.id}
             id={group.id}
           >
-            <DataListItemRow>
+            <DataListItemRow data-testid={group.name}>
               <DataListItemCells
                 dataListCells={[
                   <DataListCell key={`name-${group.id}`}>

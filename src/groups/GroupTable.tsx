@@ -213,14 +213,20 @@ export const GroupTable = () => {
           onMove={async (id) => {
             delete move.membersLength;
             try {
-              await adminClient.groups.setOrCreateChild({ id }, move);
+              try {
+                await adminClient.groups.setOrCreateChild({ id }, move);
+              } catch (error) {
+                if (error.response) {
+                  throw error;
+                }
+              }
               setMove(undefined);
               refresh();
               addAlert(t("moveGroupSuccess"), AlertVariant.success);
             } catch (error) {
               addAlert(
                 t("moveGroupError", {
-                  error: error.response.data?.errorMessage || error,
+                  error: error.response?.data?.errorMessage || error,
                 }),
                 AlertVariant.danger
               );
