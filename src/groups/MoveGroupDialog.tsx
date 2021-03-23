@@ -24,6 +24,7 @@ import { AngleRightIcon, SearchIcon } from "@patternfly/react-icons";
 
 import GroupRepresentation from "keycloak-admin/lib/defs/groupRepresentation";
 import { asyncStateFetch, useAdminClient } from "../context/auth/AdminClient";
+import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
 
 type MoveGroupDialogProps = {
   group: GroupRepresentation;
@@ -188,6 +189,13 @@ export const MoveGroupDialog = ({
             </DataListItemRow>
           </DataListItem>
         ))}
+        {(filtered || groups).length === 0 && (
+          <ListEmptyState
+            hasIcon={false}
+            message={t("moveGroupEmpty")}
+            instructions={t("moveGroupEmptyInstructions")}
+          />
+        )}
       </DataList>
     </Modal>
   );

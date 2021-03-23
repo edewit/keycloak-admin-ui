@@ -25,6 +25,8 @@
     "moveTo": "Move to",
     "moveToGroup": "Move {{group1}} to {{group2}}",
     "moveHere": "Move here",
+    "moveGroupEmpty": "No sub groups",
+    "moveGroupEmptyInstructions": "There are no sub groups, select 'Move here' to move the selected group as a subgroup of this group",
     "moveGroupSuccess": "Group moved",
     "moveGroupError": "Could not move group {{error}}",
     "tableOfGroups": "Table of groups",
