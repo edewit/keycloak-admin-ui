@@ -93,6 +93,14 @@ export const MoveGroupDialog = ({
         >
           {t("moveHere")}
         </Button>,
+        <Button
+          data-testid="moveCancel"
+          key="cancel"
+          variant="secondary"
+          onClick={onClose}
+        >
+          {t("common:cancel")}
+        </Button>,
       ]}
     >
       <Breadcrumb>
