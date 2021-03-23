@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorHandler } from "react-error-boundary";
 import {
+  Breadcrumb,
+  BreadcrumbItem,
   Button,
   ButtonVariant,
   DataList,
@@ -92,6 +94,36 @@ export const MoveGroupDialog = ({
         </Button>,
       ]}
     >
+      <Breadcrumb>
+        <BreadcrumbItem key="home">
+          <Button
+            variant="link"
+            onClick={() => {
+              setId(undefined);
+              setNavigation([]);
+            }}
+          >
+            {t("groups")}
+          </Button>
+        </BreadcrumbItem>
+        {navigation.map((group, i) => (
+          <BreadcrumbItem key={i}>
+            {navigation.length - 1 !== i && (
+              <Button
+                variant="link"
+                onClick={() => {
+                  setId(group.id);
+                  setNavigation([...navigation].slice(0, i));
+                }}
+              >
+                {group.name}
+              </Button>
+            )}
+            {navigation.length - 1 === i && <>{group.name}</>}
+          </BreadcrumbItem>
+        ))}
+      </Breadcrumb>
+
       <Toolbar>
         <ToolbarContent>
           <ToolbarItem>
@@ -112,7 +144,7 @@ export const MoveGroupDialog = ({
                 aria-label={t("common:search")}
                 onClick={() =>
                   setFiltered(
-                    currentGroup().subGroups!.filter((group) =>
+                    groups.filter((group) =>
                       group.name?.toLowerCase().includes(filter.toLowerCase())
                     )
                   )
