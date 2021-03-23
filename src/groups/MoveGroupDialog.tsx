@@ -60,9 +60,9 @@ export const MoveGroupDialog = ({
             return { groups: await adminClient.groups.find() };
           }
         },
-        ({ group, groups }) => {
-          if (group) setNavigation([...navigation, group]);
-          setGroups(groups);
+        ({ group: selectedGroup, groups }) => {
+          if (selectedGroup) setNavigation([...navigation, selectedGroup]);
+          setGroups(groups.filter((g) => g.id !== group.id));
         },
         errorHandler
       ),
