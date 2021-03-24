@@ -33,16 +33,16 @@ export const MemberModal = ({ groupId, onClose }: MemberModalProps) => {
   const goToCreate = () => history.push(`/${realm}/users/add-user`);
 
   const loader = async (first?: number, max?: number, search?: string) => {
+    const members = await adminClient.groups.listMembers({ id: groupId });
     const params: { [name: string]: string | number } = {
       first: first!,
-      max: max!,
+      max: max! + members.length,
       search: search || "",
     };
 
     try {
       const users = await adminClient.users.find({ ...params });
-      const members = await adminClient.groups.listMembers({ id: groupId });
-      return _.xorBy(users, members, "id");
+      return _.xorBy(users, members, "id").slice(0, max);
     } catch (error) {
       addAlert(t("noUsersFoundError", { error }), AlertVariant.danger);
       return [];
@@ -78,6 +78,14 @@ export const MemberModal = ({ groupId, onClose }: MemberModalProps) => {
           }}
         >
           {t("common:add")}
+        </Button>,
+        <Button
+          data-testid="cancel"
+          key="cancel"
+          variant="secondary"
+          onClick={onClose}
+        >
+          {t("common:cancel")}
         </Button>,
       ]}
     >
