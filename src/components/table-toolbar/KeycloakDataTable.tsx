@@ -44,10 +44,12 @@ function DataTable<T>({
   ariaLabelKey,
   onSelect,
   canSelectAll,
+  ...props
 }: DataTableProps<T>) {
   const { t } = useTranslation();
   return (
     <Table
+      {...props}
       variant={TableVariant.compact}
       onSelect={
         onSelect
@@ -135,6 +137,7 @@ export function KeycloakDataTable<T>({
   searchTypeComponent,
   toolbarItem,
   emptyState,
+  ...props
 }: DataListProps<T>) {
   const { t } = useTranslation();
   const [selected, setSelected] = useState<T[]>([]);
@@ -286,6 +289,7 @@ export function KeycloakDataTable<T>({
         >
           {!loading && (filteredData || rows).length > 0 && (
             <DataTable
+              {...props}
               canSelectAll={canSelectAll}
               onSelect={onSelect ? _onSelect : undefined}
               actions={convertAction()}
@@ -295,14 +299,17 @@ export function KeycloakDataTable<T>({
               ariaLabelKey={ariaLabelKey}
             />
           )}
-          {!loading && rows.length === 0 && search !== "" && (
-            <ListEmptyState
-              hasIcon={true}
-              isSearchVariant={true}
-              message={t("noSearchResults")}
-              instructions={t("noSearchResultsInstructions")}
-            />
-          )}
+          {!loading &&
+            rows.length === 0 &&
+            search !== "" &&
+            searchPlaceholderKey && (
+              <ListEmptyState
+                hasIcon={true}
+                isSearchVariant={true}
+                message={t("noSearchResults")}
+                instructions={t("noSearchResultsInstructions")}
+              />
+            )}
           {loading && <Loading />}
         </PaginatingTableToolbar>
       )}

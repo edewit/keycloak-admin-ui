@@ -173,6 +173,7 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
         />
       )}
       <KeycloakDataTable
+        data-testid="assigned-roles"
         key={key}
         loader={loader}
         onSelect={() => {}}
