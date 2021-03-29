@@ -72,12 +72,12 @@ describe("Group test", () => {
 
     it("Should move group", () => {
       const targetGroupName = "target";
-      createGroupModal
+      groupModal
         .open("empty-primary-action")
         .fillGroupForm(groupName)
         .clickCreate();
 
-      createGroupModal.open().fillGroupForm(targetGroupName).clickCreate();
+      groupModal.open().fillGroupForm(targetGroupName).clickCreate();
 
       listingPage.clickRowDetails(groupName).clickDetailMenu("Move to");
       moveGroupModal
