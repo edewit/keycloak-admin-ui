@@ -1,3 +1,4 @@
+const expect = chai.expect;
 export default class ServiceAccountTab {
   private tab = "#pf-tab-serviceAccount-serviceAccount";
   private assignedRolesTable = "assigned-roles";
