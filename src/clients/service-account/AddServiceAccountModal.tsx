@@ -37,6 +37,10 @@ type ClientRole = ClientRepresentation & {
   numberOfRoles: number;
 };
 
+const realmRole = {
+  name: "realmRoles",
+} as ClientRepresentation;
+
 export const AddServiceAccountModal = ({
   clientId,
   serviceAccountId,
@@ -91,7 +95,7 @@ export const AddServiceAccountModal = ({
     []
   );
 
-  useEffect(refresh, [selectedClients]);
+  useEffect(refresh, [searchToggle]);
 
   const removeClient = (client: ClientRole) => {
     setSelectedClients(selectedClients.filter((item) => item.id !== client.id));
@@ -150,15 +154,7 @@ export const AddServiceAccountModal = ({
 
   const createSelectGroup = (clients: ClientRepresentation[]) => [
     <SelectGroup key="role" label={t("realmRoles")}>
-      <SelectOption
-        key="realmRoles"
-        value={
-          {
-            name: "realmRoles",
-            clientId: t("realmRoles"),
-          } as ClientRepresentation
-        }
-      >
+      <SelectOption key="realmRoles" value={realmRole}>
         {t("realmRoles")}
       </SelectOption>
     </SelectGroup>,
@@ -237,9 +233,12 @@ export const AddServiceAccountModal = ({
           {selectedClients.map((client) => (
             <Chip
               key={`chip-${client.id}`}
-              onClick={() => removeClient(client)}
+              onClick={() => {
+                removeClient(client);
+                refresh();
+              }}
             >
-              {client.clientId}
+              {client.clientId || t("realmRoles")}
               <Badge isRead={true}>{client.numberOfRoles}</Badge>
             </Chip>
           ))}
