@@ -89,6 +89,7 @@ export const MoveGroupDialog = ({
           key="confirm"
           variant="primary"
           form="group-form"
+          isDisabled={!currentGroup()}
           onClick={() => onMove(currentGroup().id!)}
         >
           {t("moveHere")}
