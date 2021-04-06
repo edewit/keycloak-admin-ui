@@ -171,14 +171,16 @@ export const AddServiceAccountModal = ({
   return (
     <Modal
       variant={ModalVariant.large}
-      title={t("assignRolesTo", { client: clientId })}
+      title={t("assignRolesTo", {
+        client: clients.find((client) => client.id === clientId)?.clientId,
+      })}
       isOpen={true}
       onClose={onClose}
       actions={[
         <Button
           data-testid="assign"
           key="confirm"
-          isDisabled={selectedRows?.length === 0}
+          isDisabled={!selectedRows}
           variant="primary"
           onClick={() => {
             onAssign(selectedRows!);
