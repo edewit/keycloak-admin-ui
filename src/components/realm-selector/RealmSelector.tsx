@@ -46,7 +46,7 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
     </Split>
   );
 
-  const AddRealm = ({ className }: { className?: string }) => (
+  const AddRealm = () => (
     <Button
       component="div"
       isBlock
@@ -54,7 +54,6 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
         history.push(`/${realm}/add-realm`);
         setOpen(!open);
       }}
-      className={className}
     >
       {t("createRealm")}
     </Button>
@@ -73,7 +72,6 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
   const selectRealm = (realm: string) => {
     setRealm(realm);
     recentUsed.setRecentUsed(realm);
-    history.push(`/${realm}/`);
     setOpen(!open);
   };
 
@@ -86,6 +84,7 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
       key={`realm-dropdown-item-${r.realm}`}
       onClick={() => {
         selectRealm(r.realm!);
+        history.push(`/${realm}/`);
       }}
     >
       <RealmText value={r.realm!} />
