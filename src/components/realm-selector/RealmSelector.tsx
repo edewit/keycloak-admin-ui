@@ -37,7 +37,6 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
   const history = useHistory();
   const { t } = useTranslation("common");
   const recentUsed = new RecentUsed();
-  recentUsed.clean(realmList.map((r) => r.realm!));
 
   const RealmText = ({ value }: { value: string }) => (
     <Split className="keycloak__realm_selector__list-item-split">
@@ -71,7 +70,6 @@ export const RealmSelector = ({ realmList }: RealmSelectorProps) => {
 
   const selectRealm = (realm: string) => {
     setRealm(realm);
-    recentUsed.setRecentUsed(realm);
     setOpen(!open);
   };
 
