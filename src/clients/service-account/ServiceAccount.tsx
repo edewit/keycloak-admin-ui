@@ -7,8 +7,6 @@ import RoleRepresentation, {
 } from "keycloak-admin/lib/defs/roleRepresentation";
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { RealmContext } from "../../context/realm-context/RealmContext";
-
-import "./service-account.css";
 import { useAlerts } from "../../components/alert/Alerts";
 import {
   CompositeRole,

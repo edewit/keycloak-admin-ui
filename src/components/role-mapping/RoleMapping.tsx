@@ -1,12 +1,25 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Badge, Button, Checkbox, ToolbarItem } from "@patternfly/react-core";
+import {
+  AlertVariant,
+  Badge,
+  Button,
+  ButtonVariant,
+  Checkbox,
+  ToolbarItem,
+} from "@patternfly/react-core";
 
 import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
 import { AddRoleMappingModal, MappingType } from "./AddRoleMappingModal";
 import { KeycloakDataTable } from "../table-toolbar/KeycloakDataTable";
 import { emptyFormatter } from "../../util";
+
+import "./role-mapping.css";
+import { useConfirmDialog } from "../confirm-dialog/ConfirmDialog";
+import { useAdminClient } from "../../context/auth/AdminClient";
+import { useAlerts } from "../alert/Alerts";
+import _ from "lodash";
 
 export type CompositeRole = RoleRepresentation & {
   parent: RoleRepresentation;
@@ -23,7 +36,7 @@ export const ServiceRole = ({ role, client }: Row) => (
       <Badge
         key={`${client.id}-${role.id}`}
         isRead
-        className="keycloak-admin--service-account__client-name"
+        className="keycloak-admin--role-mapping__client-name"
       >
         {client.clientId}
       </Badge>
@@ -50,17 +63,76 @@ export const RoleMapping = ({
   onHideRolesToggle,
 }: RoleMappingProps) => {
   const { t } = useTranslation("clients");
+  const adminClient = useAdminClient();
+  const { addAlert } = useAlerts();
 
   const [key, setKey] = useState(0);
   const refresh = () => setKey(new Date().getTime());
 
   const [hide, setHide] = useState(false);
   const [showAssign, setShowAssign] = useState(false);
+  const [selected, setSelected] = useState<Row[]>([]);
 
   const assignRoles = async (rows: Row[]) => {
     await save(rows);
     refresh();
   };
+
+  const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
+    titleKey: "clients:removeMappingTitle",
+    messageKey: t("removeMappingConfirm", { count: selected.length }),
+    continueButtonLabel: "common:delete",
+    continueButtonVariant: ButtonVariant.danger,
+    onConfirm: async () => {
+      try {
+        if (type === "service-account") {
+          await Promise.all(
+            selected.map((row) => {
+              const role = { id: row.role.id!, name: row.role.name! };
+              if (row.client) {
+                return adminClient.users.delClientRoleMappings({
+                  id,
+                  clientUniqueId: row.client!.id!,
+                  roles: [role],
+                });
+              } else {
+                return adminClient.users.delRealmRoleMappings({
+                  id,
+                  roles: [role],
+                });
+              }
+            })
+          );
+        } else if (type === "client-scope") {
+          await Promise.all(
+            selected.map((row) => {
+              const role = { id: row.role.id!, name: row.role.name! };
+              if (row.client) {
+                return adminClient.clientScopes.delClientScopeMappings(
+                  {
+                    id,
+                    client: row.client!.id!,
+                  },
+                  [role]
+                );
+              } else {
+                return adminClient.clientScopes.delRealmScopeMappings(
+                  {
+                    id,
+                  },
+                  [role]
+                );
+              }
+            })
+          );
+        }
+        addAlert(t("clientDeletedSuccess"), AlertVariant.success);
+        refresh();
+      } catch (error) {
+        addAlert(t("clientDeleteError", { error }), AlertVariant.danger);
+      }
+    },
+  });
 
   return (
     <>
@@ -73,11 +145,13 @@ export const RoleMapping = ({
           onClose={() => setShowAssign(false)}
         />
       )}
+      <DeleteConfirm />
       <KeycloakDataTable
         data-testid="assigned-roles"
         key={key}
         loader={loader}
-        onSelect={() => {}}
+        canSelectAll={hide}
+        onSelect={hide ? (rows) => setSelected(rows) : undefined}
         searchPlaceholderKey="clients:searchByName"
         ariaLabelKey="clients:clientScopeList"
         toolbarItem={
@@ -100,6 +174,16 @@ export const RoleMapping = ({
                 onClick={() => setShowAssign(true)}
               >
                 {t("assignRole")}
+              </Button>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button
+                variant="link"
+                data-testid="unAssignRole"
+                onClick={toggleDeleteDialog}
+                isDisabled={selected.length === 0}
+              >
+                {t("unAssignRole")}
               </Button>
             </ToolbarItem>
           </>
