@@ -54,6 +54,8 @@
     "mappingTable": "Table with predefined mapping",
     "roleGroup": "Use a realm role from:",
     "clientGroup": "Use a client role from:",
-    "scope": "Scope"
+    "scope": "Scope",
+    "roleMappingUpdatedSuccess": "Role mapping updated",
+    "roleMappingUpdatedError": "Could not update role mapping {{error}}"
   }
 }

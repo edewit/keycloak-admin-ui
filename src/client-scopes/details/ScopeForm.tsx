@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Switch, useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Controller, useForm, useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import {
   Form,
   FormGroup,

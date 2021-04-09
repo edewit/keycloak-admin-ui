@@ -4,7 +4,7 @@ import { Badge, Button, Checkbox, ToolbarItem } from "@patternfly/react-core";
 
 import ClientRepresentation from "keycloak-admin/lib/defs/clientRepresentation";
 import RoleRepresentation from "keycloak-admin/lib/defs/roleRepresentation";
-import { AddServiceAccountModal } from "../../clients/service-account/AddServiceAccountModal";
+import { AddRoleMappingModal, MappingType } from "./AddRoleMappingModal";
 import { KeycloakDataTable } from "../table-toolbar/KeycloakDataTable";
 import { emptyFormatter } from "../../util";
 
@@ -33,12 +33,18 @@ export const ServiceRole = ({ role, client }: Row) => (
 );
 
 type RoleMappingProps = {
+  name: string;
+  id: string;
+  type: MappingType;
   loader: () => Promise<Row[]>;
   save: (rows: Row[]) => Promise<void>;
   onHideRolesToggle: () => void;
 };
 
 export const RoleMapping = ({
+  name,
+  id,
+  type,
   loader,
   save,
   onHideRolesToggle,
@@ -58,14 +64,15 @@ export const RoleMapping = ({
 
   return (
     <>
-      {/* {showAssign && (
-        <AddServiceAccountModal
-          clientId={clientId}
-          serviceAccountId={serviceAccountId}
+      {showAssign && (
+        <AddRoleMappingModal
+          id={id}
+          type={type}
+          name={name}
           onAssign={assignRoles}
           onClose={() => setShowAssign(false)}
         />
-      )} */}
+      )}
       <KeycloakDataTable
         data-testid="assigned-roles"
         key={key}

@@ -22,12 +22,14 @@ import { convertFormValuesToObject, convertToFormValues } from "../../util";
 import { MapperList } from "../details/MapperList";
 import { ScopeForm } from "../details/ScopeForm";
 import { RoleMapping, Row } from "../../components/role-mapping/RoleMapping";
+import { RoleMappingPayload } from "keycloak-admin/lib/defs/roleRepresentation";
 
 export const ClientScopeForm = () => {
   const { t } = useTranslation("client-scopes");
   const form = useForm<ClientScopeRepresentation>();
   const { setValue } = form;
   const [clientScope, setClientScope] = useState<ClientScopeRepresentation>();
+  const [hide, setHide] = useState(false);
 
   const adminClient = useAdminClient();
   const handleError = useErrorHandler();
@@ -61,22 +63,32 @@ export const ClientScopeForm = () => {
   }, [key]);
 
   const loader = async () => {
-    const assignedRoles = await adminClient.clientScopes.listCompositeRealmScopeMappings(
-      { id }
-    );
+    const assignedRoles = hide
+      ? await adminClient.clientScopes.listRealmScopeMappings({ id })
+      : await adminClient.clientScopes.listCompositeRealmScopeMappings({ id });
     const clients = await adminClient.clients.find();
 
-    const clientRoles = await Promise.all(
-      clients.map(async (client) => {
-        const clientScope = await adminClient.clientScopes.listCompositeClientScopeMappings(
-          { id, client: client.id! }
-        );
-        return {
-          client,
-          role: clientScope,
-        };
-      })
-    );
+    const clientRoles = (
+      await Promise.all(
+        clients.map(async (client) => {
+          const clientScope = hide
+            ? await adminClient.clientScopes.listClientScopeMappings({
+                id,
+                client: client.id!,
+              })
+            : await adminClient.clientScopes.listCompositeClientScopeMappings({
+                id,
+                client: client.id!,
+              });
+          return clientScope.map((scope) => {
+            return {
+              client,
+              role: scope,
+            };
+          });
+        })
+      )
+    ).flat();
 
     return [
       ...assignedRoles.map((role) => {
@@ -108,6 +120,42 @@ export const ClientScopeForm = () => {
     }
   };
 
+  const assignRoles = async (rows: Row[]) => {
+    try {
+      const realmRoles = rows
+        .filter((row) => row.client === undefined)
+        .map((row) => row.role as RoleMappingPayload)
+        .flat();
+      adminClient.clientScopes.addRealmScopeMappings(
+        {
+          id,
+        },
+        realmRoles
+      );
+      await Promise.all(
+        rows
+          .filter((row) => row.client !== undefined)
+          .map((row) =>
+            adminClient.clientScopes.addClientScopeMappings(
+              {
+                id,
+                client: row.client!.id!,
+              },
+              [row.role as RoleMappingPayload]
+            )
+          )
+      );
+      addAlert(t("roleMappingUpdatedSuccess"), AlertVariant.success);
+    } catch (error) {
+      addAlert(
+        t("roleMappingUpdatedError", {
+          error: error.response?.data?.errorMessage || error,
+        }),
+        AlertVariant.danger
+      );
+    }
+  };
+
   return (
     <>
       <ViewHeader
@@ -122,7 +170,7 @@ export const ClientScopeForm = () => {
       <PageSection variant="light">
         <FormProvider {...form}>
           {!id && <ScopeForm save={save} />}
-          {id && (
+          {clientScope && (
             <KeycloakTabs isBox>
               <Tab
                 eventKey="settings"
@@ -134,18 +182,19 @@ export const ClientScopeForm = () => {
                 eventKey="mappers"
                 title={<TabTitleText>{t("common:mappers")}</TabTitleText>}
               >
-                {clientScope && (
-                  <MapperList clientScope={clientScope} refresh={refresh} />
-                )}
+                <MapperList clientScope={clientScope} refresh={refresh} />
               </Tab>
               <Tab
                 eventKey="scope"
                 title={<TabTitleText>{t("scope")}</TabTitleText>}
               >
                 <RoleMapping
+                  id={id}
+                  name={clientScope.name!}
+                  type={"client-scope"}
                   loader={loader}
-                  save={() => Promise.resolve()}
-                  onHideRolesToggle={() => {}}
+                  save={assignRoles}
+                  onHideRolesToggle={() => setHide(!hide)}
                 />
               </Tab>
             </KeycloakTabs>

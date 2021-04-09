@@ -28,6 +28,7 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
 
   const [hide, setHide] = useState(false);
   const [serviceAccountId, setServiceAccountId] = useState("");
+  const [name, setName] = useState("");
 
   const loader = async () => {
     const serviceAccount = await adminClient.clients.getServiceAccountUser({
@@ -42,6 +43,7 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
     });
 
     const clients = await adminClient.clients.find();
+    setName(clients.find((c) => c.id === clientId)?.clientId!);
     const clientRoles = (
       await Promise.all(
         clients.map(async (client) => {
@@ -130,6 +132,9 @@ export const ServiceAccount = ({ clientId }: ServiceAccountProps) => {
   };
   return (
     <RoleMapping
+      name={name}
+      id={serviceAccountId}
+      type={"service-account"}
       loader={loader}
       save={assignRoles}
       onHideRolesToggle={() => setHide(!hide)}
