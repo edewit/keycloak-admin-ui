@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Switch, useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   Form,
   FormGroup,
@@ -17,18 +17,29 @@ import {
 import ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useLoginProviders } from "../../context/server-info/ServerInfoProvider";
+import { convertToFormValues } from "../../util";
 
 type ScopeFormProps = {
+  clientScope: ClientScopeRepresentation;
   save: (clientScope: ClientScopeRepresentation) => void;
 };
 
-export const ScopeForm = ({ save }: ScopeFormProps) => {
+export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
   const { t } = useTranslation("client-scopes");
-  const { register, control, handleSubmit, errors } = useFormContext();
+  const { register, control, handleSubmit, errors, setValue } = useForm();
   const history = useHistory();
   const providers = useLoginProviders();
   const [open, isOpen] = useState(false);
   const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    Object.entries(clientScope).map((entry) => {
+      if (entry[0] === "attributes") {
+        convertToFormValues(entry[1], "attributes", setValue);
+      }
+      setValue(entry[0], entry[1]);
+    });
+  }, [clientScope]);
 
   return (
     <Form isHorizontal onSubmit={handleSubmit(save)} className="pf-u-mt-md">

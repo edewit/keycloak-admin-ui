@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useErrorHandler } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
-import { FormProvider, useForm } from "react-hook-form";
 import {
   AlertVariant,
   PageSection,
+  Spinner,
   Tab,
   TabTitleText,
 } from "@patternfly/react-core";
@@ -18,7 +18,7 @@ import {
 import { KeycloakTabs } from "../../components/keycloak-tabs/KeycloakTabs";
 import { useAlerts } from "../../components/alert/Alerts";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
-import { convertFormValuesToObject, convertToFormValues } from "../../util";
+import { convertFormValuesToObject } from "../../util";
 import { MapperList } from "../details/MapperList";
 import { ScopeForm } from "../details/ScopeForm";
 import { RoleMapping, Row } from "../../components/role-mapping/RoleMapping";
@@ -26,8 +26,6 @@ import { RoleMappingPayload } from "keycloak-admin/lib/defs/roleRepresentation";
 
 export const ClientScopeForm = () => {
   const { t } = useTranslation("client-scopes");
-  const form = useForm<ClientScopeRepresentation>();
-  const { setValue } = form;
   const [clientScope, setClientScope] = useState<ClientScopeRepresentation>();
   const [hide, setHide] = useState(false);
 
@@ -44,23 +42,15 @@ export const ClientScopeForm = () => {
     return asyncStateFetch(
       async () => {
         if (id) {
-          const data = await adminClient.clientScopes.findOne({ id });
-          if (data) {
-            Object.entries(data).map((entry) => {
-              if (entry[0] === "attributes") {
-                convertToFormValues(entry[1], "attributes", setValue);
-              }
-              setValue(entry[0], entry[1]);
-            });
-          }
-
-          return data;
+          return await adminClient.clientScopes.findOne({ id });
         }
       },
-      (data) => setClientScope(data),
+      (clientScope) => {
+        setClientScope(clientScope);
+      },
       handleError
     );
-  }, [key]);
+  }, [key, id]);
 
   const loader = async () => {
     const assignedRoles = hide
@@ -126,7 +116,7 @@ export const ClientScopeForm = () => {
         .filter((row) => row.client === undefined)
         .map((row) => row.role as RoleMappingPayload)
         .flat();
-      adminClient.clientScopes.addRealmScopeMappings(
+      await adminClient.clientScopes.addRealmScopeMappings(
         {
           id,
         },
@@ -156,6 +146,14 @@ export const ClientScopeForm = () => {
     }
   };
 
+  if (id && !clientScope) {
+    return (
+      <div className="pf-u-text-align-center">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <>
       <ViewHeader
@@ -167,39 +165,44 @@ export const ClientScopeForm = () => {
         divider={!id}
       />
 
-      <PageSection variant="light">
-        <FormProvider {...form}>
-          {!id && <ScopeForm save={save} />}
-          {clientScope && (
-            <KeycloakTabs isBox>
-              <Tab
-                eventKey="settings"
-                title={<TabTitleText>{t("common:settings")}</TabTitleText>}
-              >
-                <ScopeForm save={save} />
-              </Tab>
-              <Tab
-                eventKey="mappers"
-                title={<TabTitleText>{t("common:mappers")}</TabTitleText>}
-              >
-                <MapperList clientScope={clientScope} refresh={refresh} />
-              </Tab>
-              <Tab
-                eventKey="scope"
-                title={<TabTitleText>{t("scope")}</TabTitleText>}
-              >
-                <RoleMapping
-                  id={id}
-                  name={clientScope.name!}
-                  type={"client-scope"}
-                  loader={loader}
-                  save={assignRoles}
-                  onHideRolesToggle={() => setHide(!hide)}
-                />
-              </Tab>
-            </KeycloakTabs>
-          )}
-        </FormProvider>
+      <PageSection variant="light" className="pf-u-p-0">
+        {!id && (
+          <PageSection variant="light">
+            <ScopeForm save={save} clientScope={{}} />
+          </PageSection>
+        )}
+        {id && clientScope && (
+          <KeycloakTabs isBox>
+            <Tab
+              eventKey="settings"
+              title={<TabTitleText>{t("common:settings")}</TabTitleText>}
+            >
+              <PageSection variant="light">
+                <ScopeForm save={save} clientScope={clientScope} />
+              </PageSection>
+            </Tab>
+            <Tab
+              eventKey="mappers"
+              title={<TabTitleText>{t("common:mappers")}</TabTitleText>}
+            >
+              <MapperList clientScope={clientScope} refresh={refresh} />
+            </Tab>
+            <Tab
+              data-testid="scopeTab"
+              eventKey="scope"
+              title={<TabTitleText>{t("scope")}</TabTitleText>}
+            >
+              <RoleMapping
+                id={id}
+                name={clientScope.name!}
+                type={"client-scope"}
+                loader={loader}
+                save={assignRoles}
+                onHideRolesToggle={() => setHide(!hide)}
+              />
+            </Tab>
+          </KeycloakTabs>
+        )}
       </PageSection>
     </>
   );

@@ -58,7 +58,7 @@ export const RoleMapping = ({
   const [showAssign, setShowAssign] = useState(false);
 
   const assignRoles = async (rows: Row[]) => {
-    save(rows);
+    await save(rows);
     refresh();
   };
 
@@ -95,7 +95,10 @@ export const RoleMapping = ({
               />
             </ToolbarItem>
             <ToolbarItem>
-              <Button onClick={() => setShowAssign(true)}>
+              <Button
+                data-testid="assignRole"
+                onClick={() => setShowAssign(true)}
+              >
                 {t("assignRole")}
               </Button>
             </ToolbarItem>
