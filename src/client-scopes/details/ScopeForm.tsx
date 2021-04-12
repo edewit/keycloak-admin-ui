@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Switch, useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -10,6 +10,7 @@ import {
   Select,
   SelectVariant,
   SelectOption,
+  Switch,
   ActionGroup,
   Button,
 } from "@patternfly/react-core";
@@ -80,9 +81,7 @@ export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
         }
         fieldId="kc-description"
         validated={
-          errors.description
-            ? ValidatedOptions.error
-            : ValidatedOptions.default
+          errors.description ? ValidatedOptions.error : ValidatedOptions.default
         }
         helperTextInvalid={t("common:maxLength", { length: 255 })}
       >

@@ -57,6 +57,7 @@ export const AddRoleMappingModal = ({
   const errorHandler = useErrorHandler();
 
   const [clients, setClients] = useState<ClientRole[]>([]);
+  const [name, setName] = useState<string>();
   const [searchToggle, setSearchToggle] = useState(false);
 
   const [key, setKey] = useState(0);
@@ -70,6 +71,7 @@ export const AddRoleMappingModal = ({
       asyncStateFetch(
         async () => {
           const clients = await adminClient.clients.find();
+          setName(clients.find((client) => client.id === clientId)?.clientId);
           return (
             await Promise.all(
               clients.map(async (client) => {
@@ -201,7 +203,13 @@ export const AddRoleMappingModal = ({
   return (
     <Modal
       variant={ModalVariant.large}
+<<<<<<< HEAD:src/clients/service-account/AddServiceAccountModal.tsx
+      title={t("assignRolesTo", {
+        client: name,
+      })}
+=======
       title={t("assignRolesTo", { client: name })}
+>>>>>>> 0f6f6ab (fixed assign):src/components/role-mapping/AddRoleMappingModal.tsx
       isOpen={true}
       onClose={onClose}
       actions={[
