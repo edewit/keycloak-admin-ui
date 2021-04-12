@@ -25,6 +25,7 @@ import { AngleRightIcon, SearchIcon } from "@patternfly/react-icons";
 import GroupRepresentation from "keycloak-admin/lib/defs/groupRepresentation";
 import { asyncStateFetch, useAdminClient } from "../context/auth/AdminClient";
 import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
+import { GroupQuery } from "keycloak-admin/lib/resources/groups";
 
 type MoveGroupDialogProps = {
   group: GroupRepresentation;
@@ -45,10 +46,33 @@ export const MoveGroupDialog = ({
   const [navigation, setNavigation] = useState<GroupRepresentation[]>([]);
   const [groups, setGroups] = useState<GroupRepresentation[]>([]);
   const [filtered, setFiltered] = useState<GroupRepresentation[]>();
+  const [searchValue, setSearchValue] = useState("");
   const [filter, setFilter] = useState("");
 
   const [id, setId] = useState<string>();
   const currentGroup = () => navigation[navigation.length - 1];
+
+  const getLeafGroup = (
+    groups: GroupRepresentation[]
+  ): GroupRepresentation[] => {
+    let result: GroupRepresentation[] = [];
+
+    for (const group of groups) {
+      if (group.subGroups?.length === 0) {
+        result.push(group);
+      } else {
+        result = result.concat(getLeafGroup(group.subGroups!));
+      }
+    }
+
+    return result;
+  };
+
+  const handleKeyDown = (e: { key: string }) => {
+    if (e.key === "Enter") {
+      setFilter(searchValue);
+    }
+  };
 
   useEffect(
     () =>
@@ -58,16 +82,24 @@ export const MoveGroupDialog = ({
             const group = await adminClient.groups.findOne({ id });
             return { group, groups: group.subGroups! };
           } else {
-            return { groups: await adminClient.groups.find() };
+            const params: GroupQuery = {};
+            if (filter !== "") {
+              params.search = filter;
+            }
+            return { groups: await adminClient.groups.find(params) };
           }
         },
         ({ group: selectedGroup, groups }) => {
           if (selectedGroup) setNavigation([...navigation, selectedGroup]);
-          setGroups(groups.filter((g) => g.id !== group.id));
+          if (filter) {
+            setFiltered(getLeafGroup(groups));
+          } else {
+            setGroups(groups.filter((g) => g.id !== group.id));
+          }
         },
         errorHandler
       ),
-    [id]
+    [id, filter]
   );
 
   return (
@@ -75,7 +107,7 @@ export const MoveGroupDialog = ({
       variant={ModalVariant.large}
       title={t("moveToGroup", {
         group1: group.name,
-        group2: currentGroup() ? currentGroup().name : t("root"),
+        group2: currentGroup() ? currentGroup().name : filter ? "" : t("root"),
       })}
       isOpen={true}
       onClose={onClose}
@@ -85,6 +117,7 @@ export const MoveGroupDialog = ({
           key="confirm"
           variant="primary"
           form="group-form"
+          isDisabled={!!filter}
           onClick={() => onMove(currentGroup()?.id)}
         >
           {t("moveHere")}
@@ -92,43 +125,13 @@ export const MoveGroupDialog = ({
         <Button
           data-testid="moveCancel"
           key="cancel"
-          variant="secondary"
+          variant="link"
           onClick={onClose}
         >
           {t("common:cancel")}
         </Button>,
       ]}
     >
-      <Breadcrumb>
-        <BreadcrumbItem key="home">
-          <Button
-            variant="link"
-            onClick={() => {
-              setId(undefined);
-              setNavigation([]);
-            }}
-          >
-            {t("groups")}
-          </Button>
-        </BreadcrumbItem>
-        {navigation.map((group, i) => (
-          <BreadcrumbItem key={i}>
-            {navigation.length - 1 !== i && (
-              <Button
-                variant="link"
-                onClick={() => {
-                  setId(group.id);
-                  setNavigation([...navigation].slice(0, i));
-                }}
-              >
-                {group.name}
-              </Button>
-            )}
-            {navigation.length - 1 === i && <>{group.name}</>}
-          </BreadcrumbItem>
-        ))}
-      </Breadcrumb>
-
       <Toolbar>
         <ToolbarContent>
           <ToolbarItem>
@@ -137,23 +140,13 @@ export const MoveGroupDialog = ({
                 type="search"
                 aria-label={t("common:search")}
                 placeholder={t("searchForGroups")}
-                onChange={(value) => {
-                  if (value === "") {
-                    setFiltered(undefined);
-                  }
-                  setFilter(value);
-                }}
+                onChange={(value) => setSearchValue(value)}
+                onKeyDown={handleKeyDown}
               />
               <Button
                 variant={ButtonVariant.control}
                 aria-label={t("common:search")}
-                onClick={() =>
-                  setFiltered(
-                    groups.filter((group) =>
-                      group.name?.toLowerCase().includes(filter.toLowerCase())
-                    )
-                  )
-                }
+                onClick={() => setFilter(searchValue)}
               >
                 <SearchIcon />
               </Button>
@@ -161,8 +154,44 @@ export const MoveGroupDialog = ({
           </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
+      {!filter && (
+        <Breadcrumb>
+          <BreadcrumbItem key="home">
+            <Button
+              variant="link"
+              onClick={() => {
+                setId(undefined);
+                setNavigation([]);
+              }}
+            >
+              {t("groups")}
+            </Button>
+          </BreadcrumbItem>
+          {navigation.map((group, i) => (
+            <BreadcrumbItem key={i}>
+              {navigation.length - 1 !== i && (
+                <Button
+                  variant="link"
+                  onClick={() => {
+                    setId(group.id);
+                    setNavigation([...navigation].slice(0, i));
+                  }}
+                >
+                  {group.name}
+                </Button>
+              )}
+              {navigation.length - 1 === i && <>{group.name}</>}
+            </BreadcrumbItem>
+          ))}
+        </Breadcrumb>
+      )}
+
       <DataList
-        onSelectDataListItem={(value) => setId(value)}
+        onSelectDataListItem={(value) => {
+          setFilter("");
+          setFiltered(undefined);
+          setId(value);
+        }}
         aria-label={t("groups")}
         isCompact
       >
@@ -176,7 +205,11 @@ export const MoveGroupDialog = ({
               <DataListItemCells
                 dataListCells={[
                   <DataListCell key={`name-${group.id}`}>
-                    <>{group.name}</>
+                    <>
+                      {filtered && filtered?.length !== 0
+                        ? group.path
+                        : group.name}
+                    </>
                   </DataListCell>,
                 ]}
               />

@@ -49,7 +49,7 @@ export const TableToolbar = ({
     }
   };
 
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = (e: { key: string }) => {
     if (e.key === "Enter") {
       onSearch();
     }
