@@ -1,32 +1,33 @@
 import React, { useContext, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { Trans, useTranslation } from "react-i18next";
+import moment from "moment";
 import {
   Button,
-  Label,
   PageSection,
   Tab,
   TabTitleText,
   ToolbarItem,
 } from "@patternfly/react-core";
-import moment from "moment";
+import { CheckCircleIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import EventRepresentation from "keycloak-admin/lib/defs/eventRepresentation";
 
 import { useAdminClient } from "../context/auth/AdminClient";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { KeycloakDataTable } from "../components/table-toolbar/KeycloakDataTable";
 import { RealmContext } from "../context/realm-context/RealmContext";
-import { InfoCircleIcon } from "@patternfly/react-icons";
 import { AdminEvents } from "./AdminEvents";
 import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
 import { KeycloakTabs } from "../components/keycloak-tabs/KeycloakTabs";
+import { cellWidth } from "@patternfly/react-table";
 
 export const EventsSection = () => {
   const { t } = useTranslation("events");
   const adminClient = useAdminClient();
   const { realm } = useContext(RealmContext);
 
-  const [key, setKey] = useState("");
-  const refresh = () => setKey(`${new Date().getTime()}`);
+  const [key, setKey] = useState(0);
+  const refresh = () => setKey(new Date().getTime());
 
   const loader = async (first?: number, max?: number, search?: string) => {
     const params = {
@@ -41,20 +42,38 @@ export const EventsSection = () => {
   };
 
   const StatusRow = (event: EventRepresentation) => {
+    const error = event.type?.indexOf("ERROR") !== -1;
     return (
       <>
-        <Label color="red" icon={<InfoCircleIcon />}>
-          {event.type}
-        </Label>
+        <>
+          {error && <WarningTriangleIcon color="orange" />}
+          {!error && <CheckCircleIcon color="green" />}
+        </>{" "}
+        {event.type}
       </>
     );
   };
+
+  const UserDetailLink = (event: EventRepresentation) => (
+    <>
+      <Link key={event.userId} to={`/${realm}/users/${event.userId}/details`}>
+        {event.userId}
+      </Link>
+    </>
+  );
 
   return (
     <>
       <ViewHeader
         titleKey="events:title"
-        subKey="events:eventExplain"
+        subKey={
+          <Trans i18nKey="events:eventExplain">
+            If you want to configure user events, Admin events or Event
+            listeners, please enter
+            <Link to={`/${realm}/`}>{t("eventConfig")}</Link>
+            page realm settings to configure.
+          </Trans>
+        }
         divider={false}
       />
       <PageSection variant="light" className="pf-u-p-0">
@@ -80,11 +99,12 @@ export const EventsSection = () => {
                 {
                   name: "time",
                   displayKey: "events:time",
-                  cellRenderer: (row) => moment(row.time).fromNow(),
+                  cellRenderer: (row) => moment(row.time).format("LLL"),
                 },
                 {
                   name: "userId",
                   displayKey: "events:user",
+                  cellRenderer: UserDetailLink,
                 },
                 {
                   name: "type",
@@ -94,6 +114,7 @@ export const EventsSection = () => {
                 {
                   name: "ipAddress",
                   displayKey: "events:ipAddress",
+                  transforms: [cellWidth(10)],
                 },
                 {
                   name: "clientId",
