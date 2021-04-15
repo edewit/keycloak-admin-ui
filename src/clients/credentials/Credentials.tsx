@@ -203,18 +203,17 @@ export const Credentials = ({ clientId, save }: CredentialsProps) => {
               </Button>
             </ActionGroup>
           </CardBody>
-          <CardBody>
-            {(clientAuthenticatorType === "client-secret" ||
-              clientAuthenticatorType === "client-secret-jwt") && (
-              <>
-                <Divider className="pf-u-mb-md" />
-                <ClientSecret
-                  secret={secret}
-                  toggle={toggleClientSecretConfirm}
-                />
-              </>
-            )}
-          </CardBody>
+          {(clientAuthenticatorType === "client-secret" ||
+            clientAuthenticatorType === "client-secret-jwt") && <Divider />}
+          {(clientAuthenticatorType === "client-secret" ||
+            clientAuthenticatorType === "client-secret-jwt") && (
+            <CardBody>
+              <ClientSecret
+                secret={secret}
+                toggle={toggleClientSecretConfirm}
+              />
+            </CardBody>
+          )}
         </Card>
         <Card isFlat>
           <CardBody>
