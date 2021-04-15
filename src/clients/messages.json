@@ -32,7 +32,7 @@
     "assignRole": "Assign role",
     "unAssignRole": "Unassign",
     "removeMappingTitle": "Remove mapping?",
-    "removeMappingConfirm": "Are you sure you want to remove this mappings",
+    "removeMappingConfirm": "Are you sure you want to remove this mapping?",
     "removeMappingConfirm_plural": "Are you sure you want to remove {{count}} mappings",
     "clientScopeSearch": {
       "client": "Client scope",

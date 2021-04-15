@@ -81,7 +81,7 @@ export const RoleMapping = ({
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: "clients:removeMappingTitle",
     messageKey: t("removeMappingConfirm", { count: selected.length }),
-    continueButtonLabel: "common:delete",
+    continueButtonLabel: "common:remove",
     continueButtonVariant: ButtonVariant.danger,
     onConfirm: async () => {
       try {
@@ -126,10 +126,10 @@ export const RoleMapping = ({
             })
           );
         }
-        addAlert(t("clientDeletedSuccess"), AlertVariant.success);
+        addAlert(t("clientScopeRemoveSuccess"), AlertVariant.success);
         refresh();
       } catch (error) {
-        addAlert(t("clientDeleteError", { error }), AlertVariant.danger);
+        addAlert(t("clientScopeRemoveError", { error }), AlertVariant.danger);
       }
     },
   });
