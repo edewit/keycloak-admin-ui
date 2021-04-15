@@ -4,11 +4,17 @@ import { Trans, useTranslation } from "react-i18next";
 import moment from "moment";
 import {
   Button,
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
   PageSection,
   Tab,
   TabTitleText,
   ToolbarItem,
+  Tooltip,
 } from "@patternfly/react-core";
+import { cellWidth, expandable } from "@patternfly/react-table";
 import { CheckCircleIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import EventRepresentation from "keycloak-admin/lib/defs/eventRepresentation";
 
@@ -19,7 +25,8 @@ import { RealmContext } from "../context/realm-context/RealmContext";
 import { AdminEvents } from "./AdminEvents";
 import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
 import { KeycloakTabs } from "../components/keycloak-tabs/KeycloakTabs";
-import { cellWidth } from "@patternfly/react-table";
+
+import "./events-section.css";
 
 export const EventsSection = () => {
   const { t } = useTranslation("events");
@@ -41,24 +48,57 @@ export const EventsSection = () => {
     return await adminClient.realms.findEvents({ ...params });
   };
 
-  const StatusRow = (event: EventRepresentation) => {
-    const error = event.type?.indexOf("ERROR") !== -1;
-    return (
-      <>
-        <>
-          {error && <WarningTriangleIcon color="orange" />}
-          {!error && <CheckCircleIcon color="green" />}
-        </>{" "}
-        {event.type}
-      </>
-    );
-  };
+  const StatusRow = (event: EventRepresentation) => (
+    <>
+      {!event.error && (
+        <span key={`status-${event.time}-${event.type}`}>
+          <CheckCircleIcon
+            color="green"
+            key={`circle-${event.time}-${event.type}`}
+          />{" "}
+          {event.type}
+        </span>
+      )}
+      {event.error && (
+        <Tooltip
+          content={event.error}
+          key={`tooltip-${event.time}-${event.type}`}
+        >
+          <span key={`label-${event.time}-${event.type}`}>
+            <WarningTriangleIcon
+              color="orange"
+              key={`triangle-${event.time}-${event.type}`}
+            />{" "}
+            {event.type}
+          </span>
+        </Tooltip>
+      )}
+    </>
+  );
 
   const UserDetailLink = (event: EventRepresentation) => (
     <>
-      <Link key={event.userId} to={`/${realm}/users/${event.userId}/details`}>
+      <Link
+        key={`link-${event.time}-${event.type}`}
+        to={`/${realm}/users/${event.userId}/details`}
+      >
         {event.userId}
       </Link>
+    </>
+  );
+
+  const DetailCell = (event: EventRepresentation) => (
+    <>
+      <DescriptionList isHorizontal className="keycloak_eventsection_details">
+        {Object.keys(event.details!).map((k) => (
+          <DescriptionListGroup key={`detail-${event.time}-${event.type}`}>
+            <DescriptionListTerm>{k}</DescriptionListTerm>
+            <DescriptionListDescription>
+              {event.details![k]}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+        ))}
+      </DescriptionList>
     </>
   );
 
@@ -85,6 +125,13 @@ export const EventsSection = () => {
             <KeycloakDataTable
               key={key}
               loader={loader}
+              detailColumns={[
+                {
+                  name: "details",
+                  enabled: (event) => event.details !== undefined,
+                  cellRenderer: DetailCell,
+                },
+              ]}
               isPaginated
               ariaLabelKey="events:title"
               searchPlaceholderKey="events:searchForEvent"
@@ -100,6 +147,7 @@ export const EventsSection = () => {
                   name: "time",
                   displayKey: "events:time",
                   cellRenderer: (row) => moment(row.time).format("LLL"),
+                  cellFormatters: [expandable],
                 },
                 {
                   name: "userId",
