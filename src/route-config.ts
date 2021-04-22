@@ -31,6 +31,7 @@ import { SearchGroups } from "./groups/SearchGroups";
 import { CreateInitialAccessToken } from "./clients/initial-access/CreateInitialAccessToken";
 import { LdapMapperDetails } from "./user-federation/ldap/mappers/LdapMapperDetails";
 import { AddIdentityProvider } from "./identity-providers/add/AddIdentityProvider";
+import { DetailSettings } from "./identity-providers/add/DetailSettings";
 
 export type RouteDef = BreadcrumbsRoute & {
   access: AccessType;
@@ -194,6 +195,12 @@ export const routes: RoutesFn = (t: TFunction) => [
     path: "/:realm/identity-providers/:id",
     component: AddIdentityProvider,
     breadcrumb: t("identity-providers:provider"),
+    access: "manage-identity-providers",
+  },
+  {
+    path: "/:realm/identity-providers/:id/detail",
+    component: DetailSettings,
+    breadcrumb: null,
     access: "manage-identity-providers",
   },
   {
