@@ -29,21 +29,6 @@ export const DiscoveryResultDialog = ({
       variant="small"
     >
       <DescriptionList isHorizontal>
-        <DescriptionListGroup>
-          <DescriptionListTerm>
-            {t("authorization_endpoint")}
-          </DescriptionListTerm>
-          <DescriptionListDescription>
-            {result.authorization_endpoint}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>{t("token_endpoint")}</DescriptionListTerm>
-          <DescriptionListDescription>
-            {result.token_endpoint}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-
         {Object.keys(result).map((key) => (
           <DescriptionListGroup key={key}>
             <DescriptionListTerm>{t(key)}</DescriptionListTerm>

@@ -10,7 +10,10 @@ import {
 
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useTranslation } from "react-i18next";
-import { asyncStateFetch } from "../../context/auth/AdminClient";
+import {
+  asyncStateFetch,
+  useAdminClient,
+} from "../../context/auth/AdminClient";
 import { DiscoveryResultDialog } from "./DiscoveryResultDailog";
 import { OIDCConfigurationRepresentation } from "../OIDCConfigurationRepresentation";
 import { JsonFileUpload } from "../../components/json-file-upload/JsonFileUpload";
@@ -22,8 +25,10 @@ type Result = OIDCConfigurationRepresentation & {
 
 export const OpenIdConnectSettings = () => {
   const { t } = useTranslation("identity-providers");
-  const errorHandler = useErrorHandler();
+  const id = "oidc";
 
+  const adminClient = useAdminClient();
+  const errorHandler = useErrorHandler();
   const { setValue } = useFormContext();
 
   const [discovery, setDiscovery] = useState(true);
@@ -39,14 +44,17 @@ export const OpenIdConnectSettings = () => {
         return asyncStateFetch(
           async () => {
             try {
-              const response = await fetch(discoveryUrl);
-              return await response.json();
+              return adminClient.identityProviders.importFromUrl({
+                providerId: id,
+                fromUrl: discoveryUrl,
+              });
             } catch (error) {
               return { error };
             }
           },
           (result) => {
             setDiscoveryResult(result);
+            Object.keys(result).map((k) => setValue(`config.${k}`, result[k]));
             setDiscovering(false);
           },
           errorHandler
@@ -125,7 +133,7 @@ export const OpenIdConnectSettings = () => {
                 : ""
             }
           />
-          {!discoveryResult?.error && discoveryUrl && (
+          {discoveryResult && !discoveryResult.error && (
             <Button variant="link" onClick={() => setDiscoveryDialogOpen(true)}>
               {t("viewMetaData")}
             </Button>
@@ -146,6 +154,7 @@ export const OpenIdConnectSettings = () => {
           validated={
             discoveryResult && discoveryResult.error ? "error" : "default"
           }
+          helperTextInvalid={discoveryResult?.error?.toString()}
         >
           <JsonFileUpload
             id="kc-import-config"

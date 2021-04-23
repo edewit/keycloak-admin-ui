@@ -11,7 +11,7 @@ import {
 
 import IdentityProviderRepresentation from "keycloak-admin/lib/defs/identityProviderRepresentation";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
-import { getBaseUrl, toUpperCase } from "../../util";
+import { toUpperCase } from "../../util";
 import { FormAccess } from "../../components/form-access/FormAccess";
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { useRealm } from "../../context/realm-context/RealmContext";
@@ -31,8 +31,6 @@ export const AddIdentityProvider = () => {
   const { addAlert } = useAlerts();
   const history = useHistory();
   const { realm } = useRealm();
-
-  const callbackUrl = `${getBaseUrl(adminClient)}/realms/${realm}/broker`;
 
   const save = async (provider: IdentityProviderRepresentation) => {
     try {
@@ -60,7 +58,7 @@ export const AddIdentityProvider = () => {
           onSubmit={handleSubmit(save)}
         >
           <FormProvider {...form}>
-            <GeneralSettings callbackUrl={callbackUrl} />
+            <GeneralSettings />
           </FormProvider>
           <ActionGroup>
             <Button

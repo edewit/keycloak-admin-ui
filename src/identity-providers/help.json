@@ -1,6 +1,8 @@
 {
   "identity-providers-help": {
     "redirectURI": "The redirect uri to use when configuring the identity provider.",
+    "alias": "The alias uniquely identifies an identity provider and it is also used to build the redirect uri.",
+    "displayName": "Friendly name for Identity Providers.",
     "clientId": "The client identifier registered with the identity provider.",
     "clientSecret": "The client secret registered with the identity provider. This field is able to obtain its value from vault, use ${vault.ID} format.",
     "displayOrder": "Number defining order of the provider in GUI (for example, on Login page).",
@@ -16,7 +18,7 @@
     "issuer": "The issuer identifier for the issuer of the response. If not provided, no validation will be performed.",
     "prompt": "Specifies whether the Authorization Server prompts the End-User for reauthentication and consent.",
     "acceptsPromptNone": "This is just used together with Identity Provider Authenticator or when kc_idp_hint points to this identity provider. In case that client sends a request with prompt=none and user is not yet authenticated, the error will not be directly returned to client, but the request with prompt=none will be forwarded to this identity provider.",
-    "validateSignatures": "Enable/disable signature validation of external IDP signatures.",
+    "validateSignature": "Enable/disable signature validation of external IDP signatures.",
     "useJwksUrl": "If the switch is on, identity provider public keys will be downloaded from given JWKS URL. This allows great flexibility because new keys will be always re-downloaded again when identity provider generates new keypair. If the switch is off, public key (or certificate) from the Keycloak DB is used, so when the identity provider keypair changes, you always need to import the new key to the Keycloak DB as well.",
     "jwksUrl": "URL where identity provider keys in JWK format are stored. See JWK specification for more details. If you use external Keycloak identity provider, you can use URL like 'http://broker-keycloak:8180/auth/realms/test/protocol/openid-connect/certs' assuming your brokered Keycloak is running on 'http://broker-keycloak:8180' and its realm is 'test' .",
     "allowedClockSkew": "Clock skew in seconds that is tolerated when validating identity provider tokens. Default value is zero.",

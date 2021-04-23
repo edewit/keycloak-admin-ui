@@ -7,11 +7,8 @@ import { useParams } from "react-router-dom";
 import { FormAccess } from "../../components/form-access/FormAccess";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
 import { useAdminClient } from "../../context/auth/AdminClient";
-import { useRealm } from "../../context/realm-context/RealmContext";
-import { getBaseUrl, toUpperCase } from "../../util";
-import { DiscoverySettings } from "./DiscoverySettings";
+import { toUpperCase } from "../../util";
 import { GeneralSettings } from "./GeneralSettings";
-import { OpenIdConnectSettings } from "./OpenIdConnectSettings";
 
 export const DetailSettings = () => {
   const { t } = useTranslation("identity-providers");
@@ -21,9 +18,6 @@ export const DetailSettings = () => {
   const { handleSubmit } = form;
 
   const adminClient = useAdminClient();
-  const { realm } = useRealm();
-
-  const callbackUrl = `${getBaseUrl(adminClient)}/realms/${realm}/broker`;
 
   const save = (provider: IdentityProviderRepresentation) => {
     console.log(provider);
@@ -41,9 +35,7 @@ export const DetailSettings = () => {
             isHorizontal
             onSubmit={handleSubmit(save)}
           >
-            <GeneralSettings callbackUrl={callbackUrl} />
-            <OpenIdConnectSettings />
-            <DiscoverySettings />
+            <GeneralSettings />
           </FormAccess>
         </FormProvider>
       </PageSection>
