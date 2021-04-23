@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useErrorHandler } from "react-error-boundary";
+import { useFormContext } from "react-hook-form";
 import {
   Button,
   FormGroup,
@@ -17,7 +18,7 @@ import {
 import { DiscoveryResultDialog } from "./DiscoveryResultDailog";
 import { OIDCConfigurationRepresentation } from "../OIDCConfigurationRepresentation";
 import { JsonFileUpload } from "../../components/json-file-upload/JsonFileUpload";
-import { useFormContext } from "react-hook-form";
+import { useRealm } from "../../context/realm-context/RealmContext";
 
 type Result = OIDCConfigurationRepresentation & {
   error: string;
@@ -28,6 +29,7 @@ export const OpenIdConnectSettings = () => {
   const id = "oidc";
 
   const adminClient = useAdminClient();
+  const { realm } = useRealm();
   const errorHandler = useErrorHandler();
   const { setValue } = useFormContext();
 
@@ -164,11 +166,25 @@ export const OpenIdConnectSettings = () => {
             validated={
               discoveryResult && discoveryResult.error ? "error" : "default"
             }
-            onChange={(value) => {
+            onChange={async (value) => {
               if (value !== "") {
+                const formData = new FormData();
+                formData.append("providerId", id);
+                formData.append("file", new Blob([value]));
+
                 try {
-                  const config = JSON.parse(value as string);
-                  Object.keys(config).map((k) => setValue(k, config[k]));
+                  const response = await fetch(
+                    `${adminClient.baseUrl}/admin/realms/${realm}/identity-provider/import-config`,
+                    {
+                      method: "POST",
+                      body: formData,
+                      headers: {
+                        Authorization: `bearer ${await adminClient.getAccessToken()}`,
+                      },
+                    }
+                  );
+                  const result = await response.json();
+                  setDiscoveryResult(result);
                 } catch (error) {
                   setDiscoveryResult({ error });
                 }
