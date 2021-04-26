@@ -65,6 +65,20 @@
     "useJwksUrl": "Use JWKS URL",
     "jwksUrl": "JWKS URL",
     "allowedClockSkew": "Allowed clock skew",
-    "forwardParameters": "Forwarded query parameters"
+    "forwardParameters": "Forwarded query parameters",
+    "generalSettings": "General settings",
+    "advancedSettings": "Advanced settings",
+    "storeTokens": "Store tokens",
+    "trustEmail": "Trust Email",
+    "accountLinkingOnly": "Account linking only",
+    "hideOnLoginPage": "Hide on login page",
+    "firstBrokerLoginFlowAlias": "First login flow",
+    "postBrokerLoginFlowAlias": "Post login flow",
+    "syncMode": "Sync mode",
+    "syncModes": {
+      "import": "Import",
+      "legacy": "Legacy",
+      "force": "Force"
+    }
   }
 }
