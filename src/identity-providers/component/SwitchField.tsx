@@ -3,15 +3,25 @@ import { useTranslation } from "react-i18next";
 import { Controller, useFormContext } from "react-hook-form";
 import { Switch } from "@patternfly/react-core";
 
-import { FormGroupField } from "./FormGroupField";
+import { FieldProps, FormGroupField } from "./FormGroupField";
 
-export const SwitchField = ({ label, field }: FieldProps) => {
+type FieldType = "boolean" | "string";
+
+type SwitchFieldProps = FieldProps & {
+  fieldType?: FieldType;
+};
+
+export const SwitchField = ({
+  label,
+  field,
+  fieldType = "string",
+}: SwitchFieldProps) => {
   const { t } = useTranslation("identity-providers");
   const { control } = useFormContext();
   return (
     <FormGroupField label={label}>
       <Controller
-        name={field!}
+        name={field}
         defaultValue="false"
         control={control}
         render={({ onChange, value }) => (
@@ -19,8 +29,12 @@ export const SwitchField = ({ label, field }: FieldProps) => {
             id={label}
             label={t("common:on")}
             labelOff={t("common:off")}
-            isChecked={value === "true"}
-            onChange={(value) => onChange("" + value)}
+            isChecked={
+              fieldType === "string" ? value === "true" : (value as boolean)
+            }
+            onChange={(value) =>
+              onChange(fieldType === "string" ? "" + value : value)
+            }
           />
         )}
       />

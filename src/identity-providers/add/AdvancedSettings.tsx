@@ -100,14 +100,18 @@ export const AdvancedSettings = () => {
   return (
     <>
       <TextField field="config.defaultScope" label="scopes" />
-      <SwitchField field="storeToken" label="storeTokens" />
+      <SwitchField field="storeToken" label="storeTokens" fieldType="boolean" />
       <SwitchField
         field="config.acceptsPromptNoneForwardFromClient"
         label="acceptsPromptNone"
       />
       <SwitchField field="config.disableUserInfo" label="disableUserInfo" />
-      <SwitchField field="trustEmail" label="trustEmail" />
-      <SwitchField field="linkOnly" label="accountLinkingOnly" />
+      <SwitchField field="trustEmail" label="trustEmail" fieldType="boolean" />
+      <SwitchField
+        field="linkOnly"
+        label="accountLinkingOnly"
+        fieldType="boolean"
+      />
       <SwitchField field="config.hideOnLoginPage" label="hideOnLoginPage" />
 
       <LoginFlow
