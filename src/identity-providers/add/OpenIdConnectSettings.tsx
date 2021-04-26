@@ -64,6 +64,33 @@ export const OpenIdConnectSettings = () => {
     }
   }, [discovering]);
 
+  const fileUpload = async (value: string) => {
+    if (value !== "") {
+      const formData = new FormData();
+      formData.append("providerId", id);
+      formData.append("file", new Blob([value]));
+
+      try {
+        const response = await fetch(
+          `${adminClient.baseUrl}/admin/realms/${realm}/identity-provider/import-config`,
+          {
+            method: "POST",
+            body: formData,
+            headers: {
+              Authorization: `bearer ${await adminClient.getAccessToken()}`,
+            },
+          }
+        );
+        const result = await response.json();
+        setDiscoveryResult(result);
+      } catch (error) {
+        setDiscoveryResult({ error });
+      }
+    } else {
+      setDiscoveryResult(undefined);
+    }
+  };
+
   return (
     <>
       <Title headingLevel="h4" size="xl" className="kc-form-panel__title">
@@ -166,32 +193,7 @@ export const OpenIdConnectSettings = () => {
             validated={
               discoveryResult && discoveryResult.error ? "error" : "default"
             }
-            onChange={async (value) => {
-              if (value !== "") {
-                const formData = new FormData();
-                formData.append("providerId", id);
-                formData.append("file", new Blob([value]));
-
-                try {
-                  const response = await fetch(
-                    `${adminClient.baseUrl}/admin/realms/${realm}/identity-provider/import-config`,
-                    {
-                      method: "POST",
-                      body: formData,
-                      headers: {
-                        Authorization: `bearer ${await adminClient.getAccessToken()}`,
-                      },
-                    }
-                  );
-                  const result = await response.json();
-                  setDiscoveryResult(result);
-                } catch (error) {
-                  setDiscoveryResult({ error });
-                }
-              } else {
-                setDiscoveryResult(undefined);
-              }
-            }}
+            onChange={(value) => fileUpload(value as string)}
           />
         </FormGroup>
       )}

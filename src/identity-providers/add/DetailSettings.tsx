@@ -6,7 +6,10 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import {
   AlertVariant,
   ButtonVariant,
+  CardBody,
+  Divider,
   DropdownItem,
+  Form,
   PageSection,
   Tab,
   TabTitleText,
@@ -27,6 +30,10 @@ import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog"
 import { useAlerts } from "../../components/alert/Alerts";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { KeycloakTabs } from "../../components/keycloak-tabs/KeycloakTabs";
+import { ExtendedNonDiscoverySettings } from "./ExtendedNonDiscoverySettings";
+import { DiscoverySettings } from "./DiscoverySettings";
+import { OIDCGeneralSettings } from "./OIDCGeneralSettings";
+import { OIDCAuthentication } from "./OIDCAuthentication";
 
 type HeaderProps = {
   onChange: (value: boolean) => void;
@@ -128,6 +135,13 @@ export const DetailSettings = () => {
     },
   });
 
+  const sections = [t("generalSettings"), t("advancedSettings")];
+  const isOIDC = id === "oidc";
+
+  if (isOIDC) {
+    sections.splice(1, 0, t("oidcSettings"));
+  }
+
   return (
     <>
       <DeleteConfirm />
@@ -153,17 +167,25 @@ export const DetailSettings = () => {
               eventKey="settings"
               title={<TabTitleText>{t("common:settings")}</TabTitleText>}
             >
-              <ScrollForm
-                className="pf-u-px-lg"
-                sections={[t("generalSettings"), t("advancedSettings")]}
-              >
+              <ScrollForm className="pf-u-px-lg" sections={sections}>
                 <FormAccess
                   role="manage-identity-providers"
                   isHorizontal
                   onSubmit={handleSubmit(save)}
                 >
-                  <GeneralSettings />
+                  {!isOIDC && <GeneralSettings />}
+                  {isOIDC && <OIDCGeneralSettings />}
                 </FormAccess>
+                {isOIDC && (
+                  <>
+                    <DiscoverySettings />
+                    <Form isHorizontal className="pf-u-py-lg">
+                      <Divider />
+                      <OIDCAuthentication />
+                    </Form>
+                    <ExtendedNonDiscoverySettings />
+                  </>
+                )}
                 <FormAccess
                   role="manage-identity-providers"
                   isHorizontal
