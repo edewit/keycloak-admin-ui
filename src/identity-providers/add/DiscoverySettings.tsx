@@ -104,6 +104,7 @@ export const DiscoverySettings = () => {
         <SwitchField field="config.disableUserInfo" label="disableUserInfo" />
         <TextField field="config.userInfoUrl" label="userInfoUrl" />
         <TextField field="config.issuer" label="issuer" />
+        <TextField field="config.defaultScope" label="scopes" />
         <FormGroupField label="prompt">
           <Controller
             name="config.prompt"
