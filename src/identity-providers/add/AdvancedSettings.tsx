@@ -142,7 +142,7 @@ export const AdvancedSettings = ({ isOIDC }: { isOIDC: boolean }) => {
       >
         <Controller
           name="config.syncMode"
-          defaultValue=""
+          defaultValue={syncModes[0]}
           control={control}
           render={({ onChange, value }) => (
             <Select
@@ -153,29 +153,20 @@ export const AdvancedSettings = ({ isOIDC }: { isOIDC: boolean }) => {
                 onChange(value as string);
                 setSyncModeOpen(false);
               }}
-              selections={
-                value === ""
-                  ? t("common:choose")
-                  : t(`syncModes.${value.toLowerCase()}`)
-              }
+              selections={t(`syncModes.${value.toLowerCase()}`)}
               variant={SelectVariant.single}
               aria-label={t("syncMode")}
               isOpen={syncModeOpen}
             >
-              <SelectOption key="empty" value="">
-                {t("common:choose")}
-              </SelectOption>
-              <>
-                {syncModes.map((option) => (
-                  <SelectOption
-                    selected={option === value}
-                    key={option}
-                    value={option.toUpperCase()}
-                  >
-                    {t(`syncModes.${option}`)}
-                  </SelectOption>
-                ))}
-              </>
+              {syncModes.map((option) => (
+                <SelectOption
+                  selected={option === value}
+                  key={option}
+                  value={option.toUpperCase()}
+                >
+                  {t(`syncModes.${option}`)}
+                </SelectOption>
+              ))}
             </Select>
           )}
         />
