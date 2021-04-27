@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useErrorHandler } from "react-error-boundary";
 import { useFormContext } from "react-hook-form";
-import {
-  Button,
-  FormGroup,
-  Switch,
-  TextInput,
-  Title,
-} from "@patternfly/react-core";
+import { FormGroup, Switch, TextInput, Title } from "@patternfly/react-core";
 
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useTranslation } from "react-i18next";
-import {
-  asyncStateFetch,
-  useAdminClient,
-} from "../../context/auth/AdminClient";
-import { DiscoveryResultDialog } from "./DiscoveryResultDailog";
+import { useAdminClient } from "../../context/auth/AdminClient";
 import { OIDCConfigurationRepresentation } from "../OIDCConfigurationRepresentation";
 import { JsonFileUpload } from "../../components/json-file-upload/JsonFileUpload";
 import { useRealm } from "../../context/realm-context/RealmContext";
+import { DiscoverySettings } from "./DiscoverySettings";
+import { getBaseUrl } from "../../util";
 
 type Result = OIDCConfigurationRepresentation & {
   error: string;
@@ -30,37 +21,36 @@ export const OpenIdConnectSettings = () => {
 
   const adminClient = useAdminClient();
   const { realm } = useRealm();
-  const errorHandler = useErrorHandler();
   const { setValue } = useFormContext();
 
   const [discovery, setDiscovery] = useState(true);
-  const [discoveryDialogOpen, setDiscoveryDialogOpen] = useState(false);
   const [discoveryUrl, setDiscoveryUrl] = useState("");
   const [discovering, setDiscovering] = useState(false);
   const [discoveryResult, setDiscoveryResult] = useState<Result>();
+
+  const setupForm = (result: any) => {
+    Object.keys(result).map((k) => setValue(`config.${k}`, result[k]));
+  };
 
   useEffect(() => {
     if (discovering) {
       setDiscovering(!!discoveryUrl);
       if (discoveryUrl)
-        return asyncStateFetch(
-          async () => {
-            try {
-              return adminClient.identityProviders.importFromUrl({
-                providerId: id,
-                fromUrl: discoveryUrl,
-              });
-            } catch (error) {
-              return { error };
-            }
-          },
-          (result) => {
-            setDiscoveryResult(result);
-            Object.keys(result).map((k) => setValue(`config.${k}`, result[k]));
-            setDiscovering(false);
-          },
-          errorHandler
-        );
+        (async () => {
+          let result;
+          try {
+            result = await adminClient.identityProviders.importFromUrl({
+              providerId: id,
+              fromUrl: discoveryUrl,
+            });
+          } catch (error) {
+            result = { error };
+          }
+
+          setDiscoveryResult(result as Result);
+          setupForm(result);
+          setDiscovering(false);
+        })();
     }
   }, [discovering]);
 
@@ -72,7 +62,9 @@ export const OpenIdConnectSettings = () => {
 
       try {
         const response = await fetch(
-          `${adminClient.baseUrl}/admin/realms/${realm}/identity-provider/import-config`,
+          `${getBaseUrl(
+            adminClient
+          )}/admin/realms/${realm}/identity-provider/import-config`,
           {
             method: "POST",
             body: formData,
@@ -82,12 +74,10 @@ export const OpenIdConnectSettings = () => {
           }
         );
         const result = await response.json();
-        setDiscoveryResult(result);
+        setupForm(result);
       } catch (error) {
         setDiscoveryResult({ error });
       }
-    } else {
-      setDiscoveryResult(undefined);
     }
   };
 
@@ -96,12 +86,6 @@ export const OpenIdConnectSettings = () => {
       <Title headingLevel="h4" size="xl" className="kc-form-panel__title">
         {t("OpenID Connect settings")}
       </Title>
-      {discoveryDialogOpen && (
-        <DiscoveryResultDialog
-          result={discoveryResult!}
-          onClose={() => setDiscoveryDialogOpen(false)}
-        />
-      )}
       <FormGroup
         label={t("useDiscoveryEndpoint")}
         fieldId="kc-discovery-endpoint-switch"
@@ -162,11 +146,6 @@ export const OpenIdConnectSettings = () => {
                 : ""
             }
           />
-          {discoveryResult && !discoveryResult.error && (
-            <Button variant="link" onClick={() => setDiscoveryDialogOpen(true)}>
-              {t("viewMetaData")}
-            </Button>
-          )}
         </FormGroup>
       )}
       {!discovery && (
@@ -197,6 +176,10 @@ export const OpenIdConnectSettings = () => {
           />
         </FormGroup>
       )}
+      {discovery && discoveryResult && !discoveryResult.error && (
+        <DiscoverySettings readOnly={true} />
+      )}
+      {!discovery && <DiscoverySettings readOnly={false} />}
     </>
   );
 };

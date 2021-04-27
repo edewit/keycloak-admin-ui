@@ -15,6 +15,7 @@ export const SwitchField = ({
   label,
   field,
   fieldType = "string",
+  isReadOnly = false,
 }: SwitchFieldProps) => {
   const { t } = useTranslation("identity-providers");
   const { control } = useFormContext();
@@ -35,6 +36,7 @@ export const SwitchField = ({
             onChange={(value) =>
               onChange(fieldType === "string" ? "" + value : value)
             }
+            readOnly={isReadOnly}
           />
         )}
       />

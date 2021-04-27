@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import {
   FormGroup,
   Select,
@@ -25,18 +25,23 @@ export const OIDCAuthentication = () => {
   const { control } = useFormContext();
   const [openClientAuth, setOpenClientAuth] = useState(false);
 
+  const clientAuthMethod = useWatch({
+    control: control,
+    name: "config.clientAuthMethod",
+  });
+
   return (
     <>
       <FormGroup
-        label={t("clientId")}
+        label={t("clientAuthentication")}
         labelIcon={
           <HelpItem
-            helpText={th("clientId")}
-            forLabel={t("clientId")}
-            forID="kc-client-id"
+            helpText={th("clientAuthentication")}
+            forLabel={t("clientAuthentication")}
+            forID="clientAuthentication"
           />
         }
-        fieldId="kc-client-id"
+        fieldId="clientAuthentication"
       >
         <Controller
           name="config.clientAuthMethod"
@@ -62,14 +67,16 @@ export const OIDCAuthentication = () => {
                   key={option}
                   value={option}
                 >
-                  {t(`clientAuthentication.${option}`)}
+                  {t(`clientAuthentications.${option}`)}
                 </SelectOption>
               ))}
             </Select>
           )}
         />
       </FormGroup>
-      <ClientIdSecret />
+      <ClientIdSecret
+        secretRequired={clientAuthMethod !== "clientAuth_privatekey_jwt"}
+      />
     </>
   );
 };

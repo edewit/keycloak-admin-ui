@@ -93,19 +93,23 @@ const LoginFlow = ({
 
 const syncModes = ["import", "legacy", "force"];
 
-export const AdvancedSettings = () => {
+export const AdvancedSettings = ({ isOIDC }: { isOIDC: boolean }) => {
   const { t } = useTranslation("identity-providers");
   const { control } = useFormContext();
   const [syncModeOpen, setSyncModeOpen] = useState(false);
   return (
     <>
-      <TextField field="config.defaultScope" label="scopes" />
+      {!isOIDC && <TextField field="config.defaultScope" label="scopes" />}
       <SwitchField field="storeToken" label="storeTokens" fieldType="boolean" />
-      <SwitchField
-        field="config.acceptsPromptNoneForwardFromClient"
-        label="acceptsPromptNone"
-      />
-      <SwitchField field="config.disableUserInfo" label="disableUserInfo" />
+      {!isOIDC && (
+        <>
+          <SwitchField
+            field="config.acceptsPromptNoneForwardFromClient"
+            label="acceptsPromptNone"
+          />
+          <SwitchField field="config.disableUserInfo" label="disableUserInfo" />
+        </>
+      )}
       <SwitchField field="trustEmail" label="trustEmail" fieldType="boolean" />
       <SwitchField
         field="linkOnly"

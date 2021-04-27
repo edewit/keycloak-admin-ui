@@ -6,7 +6,6 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import {
   AlertVariant,
   ButtonVariant,
-  CardBody,
   Divider,
   DropdownItem,
   Form,
@@ -178,7 +177,7 @@ export const DetailSettings = () => {
                 </FormAccess>
                 {isOIDC && (
                   <>
-                    <DiscoverySettings />
+                    <DiscoverySettings readOnly={false} />
                     <Form isHorizontal className="pf-u-py-lg">
                       <Divider />
                       <OIDCAuthentication />
@@ -191,7 +190,7 @@ export const DetailSettings = () => {
                   isHorizontal
                   onSubmit={handleSubmit(save)}
                 >
-                  <AdvancedSettings />
+                  <AdvancedSettings isOIDC={isOIDC} />
                 </FormAccess>
               </ScrollForm>
             </Tab>

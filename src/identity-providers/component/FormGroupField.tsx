@@ -4,7 +4,7 @@ import { FormGroup } from "@patternfly/react-core";
 
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 
-export type FieldProps = { label: string; field: string };
+export type FieldProps = { label: string; field: string; isReadOnly?: boolean };
 export type FormGroupFieldProps = { label: string; children: ReactNode };
 
 export const FormGroupField = ({ label, children }: FormGroupFieldProps) => {

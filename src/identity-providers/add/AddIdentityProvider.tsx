@@ -40,7 +40,7 @@ export const AddIdentityProvider = () => {
         alias: id,
       });
       addAlert(t("createSuccess"), AlertVariant.success);
-      history.push(`/${realm}/identity-providers`);
+      history.push(`/${realm}/identity-providers/${id}/settings`);
     } catch (error) {
       addAlert(t("createError", { error }), AlertVariant.danger);
     }

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFormContext, useWatch } from "react-hook-form";
 import {
-  Form,
+  ExpandableSection,
   FormGroup,
   TextInput,
   ValidatedOptions,
@@ -11,7 +11,11 @@ import {
 import { SwitchField } from "../component/SwitchField";
 import { TextField } from "../component/TextField";
 
-export const DiscoverySettings = () => {
+type DiscoverySettingsProps = {
+  readOnly: boolean;
+};
+
+const Fields = ({ readOnly }: DiscoverySettingsProps) => {
   const { t } = useTranslation("identity-providers");
   const { register, control, errors } = useFormContext();
 
@@ -25,7 +29,7 @@ export const DiscoverySettings = () => {
   });
 
   return (
-    <Form isHorizontal>
+    <div className="pf-c-form pf-m-horizontal">
       <FormGroup
         label={t("authorizationUrl")}
         fieldId="kc-authorization-url"
@@ -47,6 +51,7 @@ export const DiscoverySettings = () => {
               ? ValidatedOptions.error
               : ValidatedOptions.default
           }
+          isReadOnly={readOnly}
         />
       </FormGroup>
 
@@ -71,20 +76,61 @@ export const DiscoverySettings = () => {
               ? ValidatedOptions.error
               : ValidatedOptions.default
           }
+          isReadOnly={readOnly}
         />
       </FormGroup>
-      <TextField field="config.logoutUrl" label="logoutUrl" />
-      <TextField field="config.userInfoUrl" label="userInfoUrl" />
-      <TextField field="config.issuer" label="issuer" />
-      <SwitchField field="config.validateSignature" label="validateSignature" />
+      <TextField
+        field="config.logoutUrl"
+        label="logoutUrl"
+        isReadOnly={readOnly}
+      />
+      <TextField
+        field="config.userInfoUrl"
+        label="userInfoUrl"
+        isReadOnly={readOnly}
+      />
+      <TextField field="config.issuer" label="issuer" isReadOnly={readOnly} />
+      <SwitchField
+        field="config.validateSignature"
+        label="validateSignature"
+        isReadOnly={readOnly}
+      />
       {validateSignature === "true" && (
         <>
-          <SwitchField field="config.useJwksUrl" label="useJwksUrl" />
+          <SwitchField
+            field="config.useJwksUrl"
+            label="useJwksUrl"
+            isReadOnly={readOnly}
+          />
           {useJwks === "true" && (
-            <TextField field="config.jwksUrl" label="jwksUrl" />
+            <TextField
+              field="config.jwksUrl"
+              label="jwksUrl"
+              isReadOnly={readOnly}
+            />
           )}
         </>
       )}
-    </Form>
+    </div>
+  );
+};
+
+export const DiscoverySettings = ({ readOnly }: DiscoverySettingsProps) => {
+  const { t } = useTranslation("identity-providers");
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <>
+      {readOnly && (
+        <ExpandableSection
+          toggleText={isExpanded ? t("hideMetaData") : t("showMetaData")}
+          onToggle={() => setIsExpanded(!isExpanded)}
+          isExpanded={isExpanded}
+        >
+          <Fields readOnly={readOnly} />
+        </ExpandableSection>
+      )}
+      {!readOnly && <Fields readOnly={readOnly} />}
+    </>
   );
 };

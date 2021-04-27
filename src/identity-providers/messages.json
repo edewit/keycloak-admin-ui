@@ -38,7 +38,9 @@
     "useDiscoveryEndpoint": "Use discovery endpoint",
     "discoveryEndpoint": "Discovery endpoint",
     "importConfig": "Import config from file",
-    "viewMetaData": "View metadata",
+    "showMetaData": "Show metadata",
+    "hideMetaData": "Hide metadata",
+    "noValidMetaDataFound": "No valid metadata was found at this URL",
     "advanced": "Advanced",
     "metadataOfDiscoveryEndpoint": "Metadata of the discovery endpoint",
     "authorizationUrl": "Authorization URL",
@@ -59,7 +61,8 @@
       "login": "Login",
       "select_account": "Select account"
     },
-    "clientAuthentication": {
+    "clientAuthentication" : "Client authentication",
+    "clientAuthentications": {
       "clientAuth_post": "Client secret sent as post",
       "clientAuth_basic" : "Client secret sent as basic auth",
       "clientAuth_secret_jwt" : "Client secret as jwt",

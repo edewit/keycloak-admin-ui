@@ -5,7 +5,11 @@ import { FormGroup, TextInput, ValidatedOptions } from "@patternfly/react-core";
 
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 
-export const ClientIdSecret = () => {
+export const ClientIdSecret = ({
+  secretRequired = true,
+}: {
+  secretRequired?: boolean;
+}) => {
   const { t } = useTranslation("identity-providers");
   const { t: th } = useTranslation("identity-providers-help");
 
@@ -50,7 +54,7 @@ export const ClientIdSecret = () => {
           />
         }
         fieldId="kc-client-secret"
-        isRequired
+        isRequired={secretRequired}
         validated={
           errors.config && errors.config.clientSecret
             ? ValidatedOptions.error
@@ -59,12 +63,12 @@ export const ClientIdSecret = () => {
         helperTextInvalid={t("common:required")}
       >
         <TextInput
-          isRequired
+          isRequired={secretRequired}
           type="password"
           id="kc-client-secret"
           data-testid="clientSecret"
           name="config.clientSecret"
-          ref={register({ required: true })}
+          ref={register({ required: secretRequired })}
         />
       </FormGroup>
     </>

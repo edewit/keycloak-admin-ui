@@ -4,11 +4,17 @@ import { TextInput } from "@patternfly/react-core";
 
 import { FieldProps, FormGroupField } from "./FormGroupField";
 
-export const TextField = ({ label, field }: FieldProps) => {
+export const TextField = ({ label, field, isReadOnly = false }: FieldProps) => {
   const { register } = useFormContext();
   return (
     <FormGroupField label={label}>
-      <TextInput type="text" id={label} name={field} ref={register} />
+      <TextInput
+        type="text"
+        id={label}
+        name={field}
+        ref={register}
+        isReadOnly={isReadOnly}
+      />
     </FormGroupField>
   );
 };
