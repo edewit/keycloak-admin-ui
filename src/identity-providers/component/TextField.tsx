@@ -11,6 +11,7 @@ export const TextField = ({ label, field, isReadOnly = false }: FieldProps) => {
       <TextInput
         type="text"
         id={label}
+        data-testid={label}
         name={field}
         ref={register}
         isReadOnly={isReadOnly}

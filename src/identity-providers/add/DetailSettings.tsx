@@ -114,7 +114,12 @@ export const DetailSettings = () => {
       );
       addAlert(t("updateSuccess"), AlertVariant.success);
     } catch (error) {
-      addAlert(t("updateError", { error }), AlertVariant.danger);
+      addAlert(
+        t("updateError", {
+          error: error.response?.data?.errorMessage || error,
+        }),
+        AlertVariant.danger
+      );
     }
   };
 

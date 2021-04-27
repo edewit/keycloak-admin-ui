@@ -128,6 +128,7 @@ export const OpenIdConnectSettings = () => {
         >
           <TextInput
             type="text"
+            data-testid="discoveryEndpoint"
             id="kc-discovery-endpoint"
             placeholder="https://hostname/.well-known/openid-configuration"
             value={discoveryUrl}

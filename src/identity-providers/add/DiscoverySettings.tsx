@@ -43,6 +43,7 @@ const Fields = ({ readOnly }: DiscoverySettingsProps) => {
       >
         <TextInput
           type="text"
+          data-testid="authorizationUrl"
           id="kc-authorization-url"
           name="config.authorizationUrl"
           ref={register({ required: true })}
