@@ -52,7 +52,7 @@
     "disableUserInfo": "Disable user info",
     "userInfoUrl": "User Info URL",
     "issuer": "Issuer",
-    "scopes": "Scopes",
+    "scopes": "Default scopes",
     "prompt": "Prompt",
     "prompts": {
       "unspecified": "Unspecified",
