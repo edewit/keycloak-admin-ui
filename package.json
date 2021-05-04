@@ -39,7 +39,7 @@
     "use-react-router-breadcrumbs": "^1.0.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.5",
+    "@babel/core": "^7.14.0",
     "@babel/preset-typescript": "^7.10.4",
     "@jest/types": "^26.6.2",
     "@snowpack/app-scripts-react": "^1.10.0",
