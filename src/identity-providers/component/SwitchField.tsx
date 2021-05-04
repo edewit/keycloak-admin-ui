@@ -23,7 +23,7 @@ export const SwitchField = ({
     <FormGroupField label={label}>
       <Controller
         name={field}
-        defaultValue="false"
+        defaultValue={fieldType === "string" ? "false" : false}
         control={control}
         render={({ onChange, value }) => (
           <Switch

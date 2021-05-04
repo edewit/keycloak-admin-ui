@@ -148,6 +148,7 @@ export const AdvancedSettings = ({ isOIDC }: { isOIDC: boolean }) => {
             <Select
               toggleId="syncMode"
               required
+              direction="up"
               onToggle={() => setSyncModeOpen(!syncModeOpen)}
               onSelect={(_, value) => {
                 onChange(value as string);
