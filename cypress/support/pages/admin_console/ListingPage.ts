@@ -69,8 +69,17 @@ export default class ListingPage {
     return this;
   }
 
-  goToItemDetails(itemName: string) {
+  goToItemDetails(itemName: string, wait = true) {
+    if (wait) {
+      const membersUrl = `/auth/admin/realms/master/groups/*/members`;
+      cy.intercept(membersUrl).as("groupFetch");
+    }
+
     cy.get(this.itemsRows).contains(itemName).click();
+
+    if (wait) {
+      cy.wait(["@groupFetch"]);
+    }
 
     return this;
   }
