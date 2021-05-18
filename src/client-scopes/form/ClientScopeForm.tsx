@@ -11,7 +11,6 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 
-import type ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
 import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { KeycloakTabs } from "../../components/keycloak-tabs/KeycloakTabs";
 import { useAlerts } from "../../components/alert/Alerts";
@@ -22,14 +21,21 @@ import { ScopeForm } from "../details/ScopeForm";
 import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
 import { RoleMapping, Row } from "../../components/role-mapping/RoleMapping";
 import type { RoleMappingPayload } from "keycloak-admin/lib/defs/roleRepresentation";
+import {
+  AllClientScopes,
+  changeScope,
+  ClientScopeDefaultOptionalType,
+} from "../../components/client-scope/ClientScopeTypes";
 
 export const ClientScopeForm = () => {
   const { t } = useTranslation("client-scopes");
-  const [clientScope, setClientScope] = useState<ClientScopeRepresentation>();
+  const [clientScope, setClientScope] = useState<
+    ClientScopeDefaultOptionalType
+  >();
   const [hide, setHide] = useState(false);
 
   const adminClient = useAdminClient();
-  const { id } = useParams<{ id: string }>();
+  const { id, type } = useParams<{ id: string; type: AllClientScopes }>();
 
   const { addAlert } = useAlerts();
 
@@ -39,7 +45,10 @@ export const ClientScopeForm = () => {
   useFetch(
     async () => {
       if (id) {
-        return await adminClient.clientScopes.findOne({ id });
+        return {
+          ...(await adminClient.clientScopes.findOne({ id })),
+          type,
+        } as ClientScopeDefaultOptionalType;
       }
     },
     (clientScope) => {
@@ -86,7 +95,7 @@ export const ClientScopeForm = () => {
     ];
   };
 
-  const save = async (clientScopes: ClientScopeRepresentation) => {
+  const save = async (clientScopes: ClientScopeDefaultOptionalType) => {
     try {
       clientScopes.attributes = convertFormValuesToObject(
         clientScopes.attributes!
@@ -94,8 +103,21 @@ export const ClientScopeForm = () => {
 
       if (id) {
         await adminClient.clientScopes.update({ id }, clientScopes);
+        changeScope(
+          adminClient,
+          { ...clientScopes, id, type },
+          clientScopes.type
+        );
       } else {
         await adminClient.clientScopes.create(clientScopes);
+        const scope = await adminClient.clientScopes.findOneByName({
+          name: clientScopes.name!,
+        });
+        changeScope(
+          adminClient,
+          { ...clientScopes, id: scope.id },
+          clientScopes.type
+        );
       }
       addAlert(t((id ? "update" : "create") + "Success"), AlertVariant.success);
     } catch (error) {

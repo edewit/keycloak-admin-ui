@@ -16,7 +16,11 @@ import {
 } from "@patternfly/react-core";
 
 import type ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
-import { clientScopeTypesSelectOptions } from "../../components/client-scope/ClientScopeTypes";
+import {
+  clientScopeTypesSelectOptions,
+  allClientScopeTypes,
+  ClientScopeDefaultOptionalType,
+} from "../../components/client-scope/ClientScopeTypes";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useLoginProviders } from "../../context/server-info/ServerInfoProvider";
 import { convertToFormValues } from "../../util";
@@ -24,7 +28,7 @@ import { useRealm } from "../../context/realm-context/RealmContext";
 
 type ScopeFormProps = {
   clientScope: ClientScopeRepresentation;
-  save: (clientScope: ClientScopeRepresentation) => void;
+  save: (clientScope: ClientScopeDefaultOptionalType) => void;
 };
 
 export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
@@ -136,7 +140,7 @@ export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
                 setOpenType(false);
               }}
             >
-              {clientScopeTypesSelectOptions(t)}
+              {clientScopeTypesSelectOptions(t, allClientScopeTypes)}
             </Select>
           )}
         />
