@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
@@ -14,7 +14,6 @@ import { UsersIcon } from "@patternfly/react-icons";
 
 import GroupRepresentation from "keycloak-admin/lib/defs/groupRepresentation";
 import { useAdminClient } from "../context/auth/AdminClient";
-import { useSubGroups } from "./SubGroupsContext";
 import { useAlerts } from "../components/alert/Alerts";
 import { useRealm } from "../context/realm-context/RealmContext";
 import { KeycloakDataTable } from "../components/table-toolbar/KeycloakDataTable";
@@ -22,6 +21,7 @@ import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
 import { GroupsModal } from "./GroupsModal";
 import { getLastId } from "./groupIdUtils";
 import { MoveGroupDialog } from "./MoveGroupDialog";
+import { useSubGroups } from "./SubGroupsContext";
 
 type GroupTableData = GroupRepresentation & {
   membersLength?: number;
@@ -38,7 +38,7 @@ export const GroupTable = () => {
   const [selectedRows, setSelectedRows] = useState<GroupRepresentation[]>([]);
   const [move, setMove] = useState<GroupTableData>();
 
-  const { subGroups } = useSubGroups();
+  const { subGroups, setSubGroups } = useSubGroups();
 
   const [key, setKey] = useState(0);
   const refresh = () => setKey(new Date().getTime());
@@ -46,10 +46,6 @@ export const GroupTable = () => {
   const history = useHistory();
   const location = useLocation();
   const id = getLastId(location.pathname);
-
-  useEffect(() => {
-    refresh();
-  }, [subGroups]);
 
   const getMembers = async (id: string) => {
     const response = await adminClient.groups.listMembers({ id });
@@ -69,7 +65,7 @@ export const GroupTable = () => {
     }
 
     const groupsData = id
-      ? (await adminClient.groups.findOne({ id, ...params })).subGroups
+      ? (await adminClient.groups.findOne({ id })).subGroups
       : await adminClient.groups.find(params);
 
     if (groupsData) {
@@ -111,7 +107,14 @@ export const GroupTable = () => {
 
   const GroupNameCell = (group: GroupTableData) => (
     <>
-      <Link key={group.id} to={`${location.pathname}/${group.id}`}>
+      <Link
+        key={group.id}
+        to={`${location.pathname}/${group.id}`}
+        onClick={() => {
+          delete group.membersLength;
+          setSubGroups([...subGroups, group]);
+        }}
+      >
         {group.name}
       </Link>
     </>
@@ -131,7 +134,7 @@ export const GroupTable = () => {
   return (
     <>
       <KeycloakDataTable
-        key={key}
+        key={`${id}${key}`}
         isPaginated
         onSelect={(rows) => setSelectedRows([...rows])}
         canSelectAll={false}
