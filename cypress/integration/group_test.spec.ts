@@ -22,17 +22,11 @@ describe("Group test", () => {
 
   let groupName = "group";
 
-  const goToItemDetails = (itemName: string, wait = true) => {
-    if (wait) {
-      const membersUrl = `/auth/admin/realms/master/groups/*/members`;
-      cy.intercept(membersUrl).as("groupFetch");
-    }
-
+  const clickGroup = (itemName: string) => {
+    const membersUrl = `/auth/admin/realms/master/groups/*/members`;
+    cy.intercept(membersUrl).as("groupFetch");
     cy.get("table").contains(itemName).click();
-
-    if (wait) {
-      cy.wait(["@groupFetch"]);
-    }
+    cy.wait(["@groupFetch"]);
 
     return this;
   };
@@ -67,7 +61,7 @@ describe("Group test", () => {
         .open("empty-primary-action")
         .fillGroupForm(groupName)
         .clickCreate();
-      goToItemDetails(groupName);
+      clickGroup(groupName);
       viewHeaderPage.clickAction("renameGroupAction");
 
       const newName = "Renamed group";
@@ -95,7 +89,7 @@ describe("Group test", () => {
 
       masthead.checkNotificationMessage("Group moved");
       listingPage.itemExist(groupName, false);
-      goToItemDetails(targetGroupName);
+      clickGroup(targetGroupName);
       listingPage.itemExist(groupName);
       sidebarPage.goToGroups();
       listingPage.deleteItem(targetGroupName);
@@ -157,7 +151,7 @@ describe("Group test", () => {
     });
 
     it("Should display all the subgroups", () => {
-      goToItemDetails(groups[0]);
+      clickGroup(groups[0]);
       detailPage.checkListSubGroup([groups[1]]);
 
       const added = "addedGroup";
@@ -167,7 +161,7 @@ describe("Group test", () => {
     });
 
     it("Should display members", () => {
-      goToItemDetails(groups[0]);
+      clickGroup(groups[0]);
       detailPage.clickMembersTab().checkListMembers(["user0", "user3"]);
       detailPage
         .clickIncludeSubGroups()
@@ -175,7 +169,7 @@ describe("Group test", () => {
     });
 
     it("Should add members", () => {
-      goToItemDetails(groups[0]);
+      clickGroup(groups[0]);
       detailPage
         .clickMembersTab()
         .clickAddMembers()
@@ -187,7 +181,7 @@ describe("Group test", () => {
     });
 
     it("Attributes CRUD test", () => {
-      goToItemDetails(groups[0]);
+      clickGroup(groups[0]);
       detailPage
         .clickAttributesTab()
         .fillAttribute("key", "value")

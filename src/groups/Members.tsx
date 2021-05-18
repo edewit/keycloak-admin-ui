@@ -103,7 +103,7 @@ export const Members = () => {
         />
       )}
       <KeycloakDataTable
-        key={`${id}${key}`}
+        key={`${id}${key}${includeSubGroup}`}
         loader={loader}
         ariaLabelKey="groups:members"
         isPaginated
