@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { DropdownItem, Select, SelectOption } from "@patternfly/react-core";
 
 import type ClientScopeRepresentation from "keycloak-admin/lib/defs/clientScopeRepresentation";
-import KeycloakAdminClient from "keycloak-admin";
+import type KeycloakAdminClient from "keycloak-admin";
 
 export enum ClientScope {
   default = "default",
