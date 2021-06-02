@@ -91,7 +91,8 @@ export const DetailSettings = () => {
   useFetch(
     () => adminClient.identityProviders.findOne({ alias: id }),
     (provider) => {
-      Object.entries(provider).map((entry) => setValue(entry[0], entry[1]));
+      if (provider)
+        Object.entries(provider).map((entry) => setValue(entry[0], entry[1]));
     },
     []
   );
