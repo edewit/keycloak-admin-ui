@@ -15,7 +15,7 @@ export const RedirectUrl = () => {
 
   const adminClient = useAdminClient();
   const { realm } = useRealm();
-  const callbackUrl = `${getBaseUrl(adminClient)}/realms/${realm}/broker`;
+  const callbackUrl = `${getBaseUrl(adminClient)}realms/${realm}/broker`;
 
   return (
     <FormGroup

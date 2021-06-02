@@ -31,6 +31,7 @@ export const DisplayOrder = () => {
           <NumberInput
             value={value}
             data-testid="displayOrder"
+            min={0}
             onMinus={() => onChange(value - 1)}
             onChange={onChange}
             onPlus={() => onChange(value + 1)}

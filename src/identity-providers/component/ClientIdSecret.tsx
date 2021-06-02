@@ -4,6 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { FormGroup, TextInput, ValidatedOptions } from "@patternfly/react-core";
 
 import { HelpItem } from "../../components/help-enabler/HelpItem";
+import { PasswordInput } from "../../components/password-input/PasswordInput";
 
 export const ClientIdSecret = ({
   secretRequired = true,
@@ -62,7 +63,7 @@ export const ClientIdSecret = ({
         }
         helperTextInvalid={t("common:required")}
       >
-        <TextInput
+        <PasswordInput
           isRequired={secretRequired}
           type="password"
           id="kc-client-secret"

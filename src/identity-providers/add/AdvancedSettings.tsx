@@ -29,7 +29,12 @@ const LoginFlow = ({
   const [flows, setFlows] = useState<AuthenticationFlowRepresentation[]>();
   const [open, setOpen] = useState(false);
 
-  useFetch(() => adminClient.authenticationManagement.getFlows(), setFlows, []);
+  useFetch(
+    () => adminClient.authenticationManagement.getFlows(),
+    (flows) =>
+      setFlows(flows?.filter((flow) => flow.providerId === "basic-flow")),
+    []
+  );
 
   return (
     <FormGroup
@@ -60,6 +65,7 @@ const LoginFlow = ({
             variant={SelectVariant.single}
             aria-label={t(label)}
             isOpen={open}
+            placeholderText={t("common:choose")}
           >
             {flows &&
               flows.map((option) => (
@@ -82,7 +88,7 @@ const syncModes = ["import", "legacy", "force"];
 
 export const AdvancedSettings = ({ isOIDC }: { isOIDC: boolean }) => {
   const { t } = useTranslation("identity-providers");
-  const { control } = useFormContext();
+  const { control, reset } = useFormContext();
   const [syncModeOpen, setSyncModeOpen] = useState(false);
   return (
     <>
@@ -161,10 +167,16 @@ export const AdvancedSettings = ({ isOIDC }: { isOIDC: boolean }) => {
       </FormGroup>
 
       <ActionGroup className="keycloak__form_actions">
-        <Button data-testid={"save"} variant="tertiary" type="submit">
+        <Button data-testid={"save"} type="submit">
           {t("common:save")}
         </Button>
-        <Button data-testid={"revert"} variant="link" onClick={() => {}}>
+        <Button
+          data-testid={"revert"}
+          variant="link"
+          onClick={() => {
+            reset();
+          }}
+        >
           {t("common:revert")}
         </Button>
       </ActionGroup>
