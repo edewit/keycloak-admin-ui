@@ -53,7 +53,11 @@ describe("Client Scopes test", function () {
       cy.get(".pf-c-spinner__tail-ball").should("not.exist");
 
       // Delete
-      listingPage.itemExist(itemId).deleteItem(itemId);
+      listingPage
+        .searchItem(itemId, false)
+        .itemExist(itemId)
+        .deleteItem(itemId);
+
       modalUtils
         .checkModalMessage("Are you sure you want to delete this client scope")
         .confirmModal();
