@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import {
+  ActionGroup,
   AlertVariant,
+  Button,
   ButtonVariant,
   Divider,
   DropdownItem,
@@ -80,8 +82,9 @@ export const DetailSettings = () => {
   const { t } = useTranslation("identity-providers");
   const { id } = useParams<{ id: string }>();
 
+  const [provider, setProvider] = useState<IdentityProviderRepresentation>();
   const form = useForm<IdentityProviderRepresentation>();
-  const { handleSubmit, setValue, getValues } = form;
+  const { handleSubmit, setValue, getValues, reset } = form;
 
   const adminClient = useAdminClient();
   const { addAlert } = useAlerts();
@@ -91,8 +94,10 @@ export const DetailSettings = () => {
   useFetch(
     () => adminClient.identityProviders.findOne({ alias: id }),
     (provider) => {
-      if (provider)
+      if (provider) {
+        setProvider(provider);
         Object.entries(provider).map((entry) => setValue(entry[0], entry[1]));
+      }
     },
     []
   );
@@ -104,6 +109,7 @@ export const DetailSettings = () => {
         { alias: id },
         { ...p, alias: id, providerId: id }
       );
+      setProvider(p);
       addAlert(t("updateSuccess"), AlertVariant.success);
     } catch (error) {
       addAlert(
@@ -188,6 +194,20 @@ export const DetailSettings = () => {
                   onSubmit={handleSubmit(save)}
                 >
                   <AdvancedSettings isOIDC={isOIDC} />
+                  <ActionGroup className="keycloak__form_actions">
+                    <Button data-testid={"save"} type="submit">
+                      {t("common:save")}
+                    </Button>
+                    <Button
+                      data-testid={"revert"}
+                      variant="link"
+                      onClick={() => {
+                        reset(provider);
+                      }}
+                    >
+                      {t("common:revert")}
+                    </Button>
+                  </ActionGroup>
                 </FormAccess>
               </ScrollForm>
             </Tab>

@@ -96,7 +96,7 @@ const syncModes = ["import", "legacy", "force"];
 
 export const AdvancedSettings = ({ isOIDC }: { isOIDC: boolean }) => {
   const { t } = useTranslation("identity-providers");
-  const { control, reset } = useFormContext();
+  const { control } = useFormContext();
   const [syncModeOpen, setSyncModeOpen] = useState(false);
   return (
     <>
@@ -143,7 +143,7 @@ export const AdvancedSettings = ({ isOIDC }: { isOIDC: boolean }) => {
       >
         <Controller
           name="config.syncMode"
-          defaultValue={syncModes[0]}
+          defaultValue={syncModes[1]}
           control={control}
           render={({ onChange, value }) => (
             <Select
@@ -173,21 +173,6 @@ export const AdvancedSettings = ({ isOIDC }: { isOIDC: boolean }) => {
           )}
         />
       </FormGroup>
-
-      <ActionGroup className="keycloak__form_actions">
-        <Button data-testid={"save"} type="submit">
-          {t("common:save")}
-        </Button>
-        <Button
-          data-testid={"revert"}
-          variant="link"
-          onClick={() => {
-            reset();
-          }}
-        >
-          {t("common:revert")}
-        </Button>
-      </ActionGroup>
     </>
   );
 };
