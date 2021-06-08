@@ -8,8 +8,10 @@ import { PasswordInput } from "../../components/password-input/PasswordInput";
 
 export const ClientIdSecret = ({
   secretRequired = true,
+  create = true,
 }: {
   secretRequired?: boolean;
+  create?: boolean;
 }) => {
   const { t } = useTranslation("identity-providers");
   const { t: th } = useTranslation("identity-providers-help");
@@ -63,14 +65,25 @@ export const ClientIdSecret = ({
         }
         helperTextInvalid={t("common:required")}
       >
-        <PasswordInput
-          isRequired={secretRequired}
-          type="password"
-          id="kc-client-secret"
-          data-testid="clientSecret"
-          name="config.clientSecret"
-          ref={register({ required: secretRequired })}
-        />
+        {create && (
+          <PasswordInput
+            isRequired={secretRequired}
+            id="kc-client-secret"
+            data-testid="clientSecret"
+            name="config.clientSecret"
+            ref={register({ required: secretRequired })}
+          />
+        )}
+        {!create && (
+          <TextInput
+            isRequired={secretRequired}
+            type="password"
+            id="kc-client-secret"
+            data-testid="clientSecret"
+            name="config.clientSecret"
+            ref={register({ required: secretRequired })}
+          />
+        )}
       </FormGroup>
     </>
   );

@@ -169,7 +169,7 @@ export const DetailSettings = () => {
                   isHorizontal
                   onSubmit={handleSubmit(save)}
                 >
-                  {!isOIDC && <GeneralSettings />}
+                  {!isOIDC && <GeneralSettings create={false} />}
                   {isOIDC && <OIDCGeneralSettings />}
                 </FormAccess>
                 {isOIDC && (
@@ -177,7 +177,7 @@ export const DetailSettings = () => {
                     <DiscoverySettings readOnly={false} />
                     <Form isHorizontal className="pf-u-py-lg">
                       <Divider />
-                      <OIDCAuthentication />
+                      <OIDCAuthentication create={false} />
                     </Form>
                     <ExtendedNonDiscoverySettings />
                   </>

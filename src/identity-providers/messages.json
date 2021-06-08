@@ -4,7 +4,7 @@
     "searchForProvider": "Search for provider",
     "provider": "Provider",
     "addProvider": "Add provider",
-    "addOpenIdProvider": "Add OpenId Connect provider",
+    "addOpenIdProvider": "Add OpenID Connect provider",
     "manageDisplayOrder": "Manage display order",
     "deleteProvider": "Delete provider?",
     "deleteConfirm": "Are you sure you want to permanently delete the provider '{{provider}}'",

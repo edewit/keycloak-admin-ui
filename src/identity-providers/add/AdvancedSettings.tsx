@@ -61,22 +61,30 @@ const LoginFlow = ({
               onChange(value as string);
               setOpen(false);
             }}
-            selections={value}
+            selections={value || t("common:none")}
             variant={SelectVariant.single}
             aria-label={t(label)}
             isOpen={open}
-            placeholderText={t("common:choose")}
           >
-            {flows &&
-              flows.map((option) => (
-                <SelectOption
-                  selected={option.alias === value}
-                  key={option.id}
-                  value={option.alias}
-                >
-                  {option.alias}
+            <>
+              {defaultValue === "" && (
+                <SelectOption key="empty" value={defaultValue}>
+                  {t("common:none")}
                 </SelectOption>
-              ))}
+              )}
+            </>
+            <>
+              {flows &&
+                flows.map((option) => (
+                  <SelectOption
+                    selected={option.alias === value}
+                    key={option.id}
+                    value={option.alias}
+                  >
+                    {option.alias}
+                  </SelectOption>
+                ))}
+            </>
           </Select>
         )}
       />

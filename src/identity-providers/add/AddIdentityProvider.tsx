@@ -48,9 +48,7 @@ export const AddIdentityProvider = () => {
 
   return (
     <>
-      <ViewHeader
-        titleKey={t("addIdentityProvider", { provider: toUpperCase(id) })}
-      />
+      <ViewHeader titleKey={toUpperCase(id)} />
       <PageSection variant="light">
         <FormAccess
           role="manage-identity-providers"

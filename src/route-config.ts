@@ -1,5 +1,8 @@
 import type { TFunction } from "i18next";
-import type { BreadcrumbsRoute } from "use-react-router-breadcrumbs";
+import type {
+  BreadcrumbData,
+  BreadcrumbsRoute,
+} from "use-react-router-breadcrumbs";
 import type { AccessType } from "keycloak-admin/lib/defs/whoAmIRepresentation";
 
 import { AuthenticationSection } from "./authentication/AuthenticationSection";
@@ -33,6 +36,7 @@ import { LdapMapperDetails } from "./user-federation/ldap/mappers/LdapMapperDeta
 import { AddIdentityProvider } from "./identity-providers/add/AddIdentityProvider";
 import { AddOpenIdConnect } from "./identity-providers/add/AddOpenIdConnect";
 import { DetailSettings } from "./identity-providers/add/DetailSettings";
+import { toUpperCase } from "./util";
 
 export type RouteDef = BreadcrumbsRoute & {
   access: AccessType;
@@ -207,7 +211,13 @@ export const routes: RoutesFn = (t: TFunction) => [
   {
     path: "/:realm/identity-providers/:id",
     component: AddIdentityProvider,
-    breadcrumb: t("identity-providers:provider"),
+    breadcrumb: (props: BreadcrumbData) =>
+      t("identity-providers:addIdentityProvider", {
+        provider: toUpperCase(
+          ((props.match as unknown) as { params: { [id: string]: string } })
+            .params.id
+        ),
+      }),
     access: "manage-identity-providers",
   },
   {
