@@ -1,8 +1,5 @@
 import type { TFunction } from "i18next";
-import type {
-  BreadcrumbData,
-  BreadcrumbsRoute,
-} from "use-react-router-breadcrumbs";
+import type { BreadcrumbsRoute } from "use-react-router-breadcrumbs";
 import type { AccessType } from "keycloak-admin/lib/defs/whoAmIRepresentation";
 
 import { AuthenticationSection } from "./authentication/AuthenticationSection";
@@ -33,10 +30,12 @@ import { RealmRoleTabs } from "./realm-roles/RealmRoleTabs";
 import { SearchGroups } from "./groups/SearchGroups";
 import { CreateInitialAccessToken } from "./clients/initial-access/CreateInitialAccessToken";
 import { LdapMapperDetails } from "./user-federation/ldap/mappers/LdapMapperDetails";
-import { AddIdentityProvider } from "./identity-providers/add/AddIdentityProvider";
+import {
+  AddIdentityProvider,
+  IdentityProviderCrumb,
+} from "./identity-providers/add/AddIdentityProvider";
 import { AddOpenIdConnect } from "./identity-providers/add/AddOpenIdConnect";
 import { DetailSettings } from "./identity-providers/add/DetailSettings";
-import { toUpperCase } from "./util";
 
 export type RouteDef = BreadcrumbsRoute & {
   access: AccessType;
@@ -211,13 +210,7 @@ export const routes: RoutesFn = (t: TFunction) => [
   {
     path: "/:realm/identity-providers/:id",
     component: AddIdentityProvider,
-    breadcrumb: (props: BreadcrumbData) =>
-      t("identity-providers:addIdentityProvider", {
-        provider: toUpperCase(
-          ((props.match as unknown) as { params: { [id: string]: string } })
-            .params.id
-        ),
-      }),
+    breadcrumb: IdentityProviderCrumb,
     access: "manage-identity-providers",
   },
   {
