@@ -19,16 +19,25 @@ import { useRealm } from "../../context/realm-context/RealmContext";
 import { useAlerts } from "../../components/alert/Alerts";
 import { GeneralSettings } from "./GeneralSettings";
 
-export const IdentityProviderCrumb = (props: BreadcrumbData) => {
+export const IdentityProviderCrumb = ({ match, location }: BreadcrumbData) => {
   const { t } = useTranslation();
+  const {
+    params: { id },
+  } = (match as unknown) as {
+    params: { [id: string]: string };
+  };
   return (
     <>
-      {t("identity-providers:addIdentityProvider", {
-        provider: toUpperCase(
-          ((props.match as unknown) as { params: { [id: string]: string } })
-            .params.id
-        ),
-      })}
+      {t(
+        `identity-providers:${
+          location.pathname.endsWith("settings")
+            ? "editIdentityProvider"
+            : "addIdentityProvider"
+        }`,
+        {
+          provider: toUpperCase(id),
+        }
+      )}
     </>
   );
 };

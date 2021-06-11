@@ -18,6 +18,7 @@
     "updateError": "Could not update the provider {{error}}",
     "getStarted": "To get started, select a provider from the list below.",
     "addIdentityProvider": "Add {{provider}} provider",
+    "editIdentityProvider": "Edit {{provider}} provider",
     "redirectURI": "Redirect URI",
     "clientId": "Client ID",
     "clientSecret": "Client Secret",

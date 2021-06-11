@@ -57,7 +57,7 @@ const Header = ({ onChange, value, save, toggleDeleteDialog }: HeaderProps) => {
     <>
       <DisableConfirm />
       <ViewHeader
-        titleKey={t("addIdentityProvider", { provider: toUpperCase(id) })}
+        titleKey={toUpperCase(id)}
         divider={false}
         dropdownItems={[
           <DropdownItem key="delete" onClick={() => toggleDeleteDialog()}>

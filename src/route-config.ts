@@ -214,7 +214,7 @@ export const routes: RoutesFn = (t: TFunction) => [
     access: "manage-identity-providers",
   },
   {
-    path: "/:realm/identity-providers/:id/settings",
+    path: "/:realm/identity-providers/:id/:tab?",
     component: DetailSettings,
     breadcrumb: null,
     access: "manage-identity-providers",
