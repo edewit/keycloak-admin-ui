@@ -8,7 +8,7 @@ import { RedirectUrl } from "../component/RedirectUrl";
 import { TextField } from "../component/TextField";
 import { DisplayOrder } from "../component/DisplayOrder";
 
-export const OIDCGeneralSettings = () => {
+export const OIDCGeneralSettings = ({ id }: { id: string }) => {
   const { t } = useTranslation("identity-providers");
   const { t: th } = useTranslation("identity-providers-help");
 
@@ -16,7 +16,7 @@ export const OIDCGeneralSettings = () => {
 
   return (
     <>
-      <RedirectUrl />
+      <RedirectUrl id={id} />
 
       <FormGroup
         label={t("alias")}

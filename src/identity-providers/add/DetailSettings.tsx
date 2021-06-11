@@ -138,7 +138,7 @@ export const DetailSettings = () => {
   });
 
   const sections = [t("generalSettings"), t("advancedSettings")];
-  const isOIDC = id === "oidc";
+  const isOIDC = id.indexOf("oidc") !== -1;
 
   if (isOIDC) {
     sections.splice(1, 0, t("oidcSettings"));
@@ -175,8 +175,8 @@ export const DetailSettings = () => {
                   isHorizontal
                   onSubmit={handleSubmit(save)}
                 >
-                  {!isOIDC && <GeneralSettings create={false} />}
-                  {isOIDC && <OIDCGeneralSettings />}
+                  {!isOIDC && <GeneralSettings create={false} id={id} />}
+                  {isOIDC && <OIDCGeneralSettings id={id} />}
                 </FormAccess>
                 {isOIDC && (
                   <>

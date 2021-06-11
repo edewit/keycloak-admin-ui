@@ -65,7 +65,7 @@ export const AddOpenIdConnect = () => {
             isHorizontal
             onSubmit={handleSubmit(save)}
           >
-            <OIDCGeneralSettings />
+            <OIDCGeneralSettings id={id} />
             <OpenIdConnectSettings />
             <OIDCAuthentication />
             <ActionGroup>

@@ -82,7 +82,7 @@ export const AddIdentityProvider = () => {
           onSubmit={handleSubmit(save)}
         >
           <FormProvider {...form}>
-            <GeneralSettings />
+            <GeneralSettings id={id} />
           </FormProvider>
           <ActionGroup>
             <Button
