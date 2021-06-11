@@ -22,9 +22,9 @@ import { useAlerts } from "../../components/alert/Alerts";
 export const AddOpenIdConnect = () => {
   const { t } = useTranslation("identity-providers");
   const history = useHistory();
-  const id = "oidc";
-
   const { url } = useRouteMatch();
+  const isKeycloak = url.endsWith("keycloak-oidc");
+  const id = `${isKeycloak ? "keycloak-" : ""}oidc`;
 
   const form = useForm<IdentityProviderRepresentation>({
     defaultValues: { alias: id },
@@ -55,9 +55,7 @@ export const AddOpenIdConnect = () => {
     <>
       <ViewHeader
         titleKey={t(
-          url.endsWith("keycloak-oidc")
-            ? "addKeycloakOpenIdProvider"
-            : "addOpenIdProvider"
+          isKeycloak ? "addKeycloakOpenIdProvider" : "addOpenIdProvider"
         )}
       />
       <PageSection variant="light">
