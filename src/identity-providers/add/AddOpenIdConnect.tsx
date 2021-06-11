@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FormProvider, useForm } from "react-hook-form";
 import {
@@ -23,6 +23,8 @@ export const AddOpenIdConnect = () => {
   const { t } = useTranslation("identity-providers");
   const history = useHistory();
   const id = "oidc";
+
+  const { url } = useRouteMatch();
 
   const form = useForm<IdentityProviderRepresentation>({
     defaultValues: { alias: id },
@@ -51,7 +53,13 @@ export const AddOpenIdConnect = () => {
 
   return (
     <>
-      <ViewHeader titleKey={t("addOpenIdProvider")} />
+      <ViewHeader
+        titleKey={t(
+          url.endsWith("keycloak-oidc")
+            ? "addKeycloakOpenIdProvider"
+            : "addOpenIdProvider"
+        )}
+      />
       <PageSection variant="light">
         <FormProvider {...form}>
           <FormAccess

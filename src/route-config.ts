@@ -204,7 +204,7 @@ export const routes: RoutesFn = (t: TFunction) => [
   {
     path: "/:realm/identity-providers/keycloak-oidc",
     component: AddOpenIdConnect,
-    breadcrumb: t("identity-providers:addOpenIdProvider"),
+    breadcrumb: t("identity-providers:addKeycloakOpenIdProvider"),
     access: "manage-identity-providers",
   },
   {

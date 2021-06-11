@@ -31,7 +31,7 @@ export const IdentityProviderCrumb = ({ match, location }: BreadcrumbData) => {
       {t(
         `identity-providers:${
           location.pathname.endsWith("settings")
-            ? "editIdentityProvider"
+            ? "provider"
             : "addIdentityProvider"
         }`,
         {
@@ -72,7 +72,9 @@ export const AddIdentityProvider = () => {
 
   return (
     <>
-      <ViewHeader titleKey={toUpperCase(id)} />
+      <ViewHeader
+        titleKey={t("addIdentityProvider", { provider: toUpperCase(id) })}
+      />
       <PageSection variant="light">
         <FormAccess
           role="manage-identity-providers"
