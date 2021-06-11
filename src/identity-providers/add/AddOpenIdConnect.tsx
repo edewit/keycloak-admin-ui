@@ -47,7 +47,12 @@ export const AddOpenIdConnect = () => {
       addAlert(t("createSuccess"), AlertVariant.success);
       history.push(`/${realm}/identity-providers/${id}/settings`);
     } catch (error) {
-      addAlert(t("createError", { error }), AlertVariant.danger);
+      addAlert(
+        t("createError", {
+          error: error.response?.data?.errorMessage || error,
+        }),
+        AlertVariant.danger
+      );
     }
   };
 

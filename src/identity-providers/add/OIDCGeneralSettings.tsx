@@ -30,7 +30,7 @@ export const OIDCGeneralSettings = ({ id }: { id: string }) => {
         fieldId="alias"
         isRequired
         validated={
-          errors.errors ? ValidatedOptions.error : ValidatedOptions.default
+          errors.alias ? ValidatedOptions.error : ValidatedOptions.default
         }
         helperTextInvalid={t("common:required")}
       >
@@ -40,6 +40,9 @@ export const OIDCGeneralSettings = ({ id }: { id: string }) => {
           id="alias"
           data-testid="alias"
           name="alias"
+          validated={
+            errors.alias ? ValidatedOptions.error : ValidatedOptions.default
+          }
           ref={register({ required: true })}
         />
       </FormGroup>
