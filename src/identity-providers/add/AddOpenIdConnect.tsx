@@ -19,6 +19,10 @@ import { useRealm } from "../../context/realm-context/RealmContext";
 import { OIDCAuthentication } from "./OIDCAuthentication";
 import { useAlerts } from "../../components/alert/Alerts";
 
+type DiscoveryIdentity = IdentityProviderRepresentation & {
+  discoveryEndpoint?: string;
+};
+
 export const AddOpenIdConnect = () => {
   const { t } = useTranslation("identity-providers");
   const history = useHistory();
@@ -38,7 +42,8 @@ export const AddOpenIdConnect = () => {
   const { addAlert } = useAlerts();
   const { realm } = useRealm();
 
-  const save = async (provider: IdentityProviderRepresentation) => {
+  const save = async (provider: DiscoveryIdentity) => {
+    delete provider.discoveryEndpoint;
     try {
       await adminClient.identityProviders.create({
         ...provider,
