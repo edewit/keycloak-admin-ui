@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import {
@@ -16,6 +16,7 @@ import type GroupRepresentation from "keycloak-admin/lib/defs/groupRepresentatio
 import type UserRepresentation from "keycloak-admin/lib/defs/userRepresentation";
 import { KeycloakDataTable } from "../components/table-toolbar/KeycloakDataTable";
 import { useAdminClient } from "../context/auth/AdminClient";
+import { useRealm } from "../context/realm-context/RealmContext";
 import { useAlerts } from "../components/alert/Alerts";
 import { emptyFormatter } from "../util";
 
@@ -23,6 +24,7 @@ import { getLastId } from "./groupIdUtils";
 import { useSubGroups } from "./SubGroupsContext";
 import { MemberModal } from "./MembersModal";
 import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
+import { GroupPath } from "../components/group/GroupPath";
 
 type MembersOf = UserRepresentation & {
   membership: GroupRepresentation[];
@@ -31,6 +33,7 @@ type MembersOf = UserRepresentation & {
 export const Members = () => {
   const { t } = useTranslation("groups");
   const adminClient = useAdminClient();
+  const { realm } = useRealm();
   const { addAlert } = useAlerts();
   const location = useLocation();
   const id = getLastId(location.pathname);
@@ -85,12 +88,19 @@ export const Members = () => {
     return (
       <>
         {member.membership.map((group) => (
-          <>{group.path} </>
+          <GroupPath key={group.id} group={group} />
         ))}
       </>
     );
   };
 
+  const UserDetailLink = (user: MembersOf) => (
+    <>
+      <Link key={user.id} to={`/${realm}/users/${user.id}/settings`}>
+        {user.username}
+      </Link>
+    </>
+  );
   return (
     <>
       {addMembers && (
@@ -132,7 +142,10 @@ export const Members = () => {
             <ToolbarItem>
               <Dropdown
                 toggle={
-                  <KebabToggle onToggle={() => setIsKebabOpen(!isKebabOpen)} />
+                  <KebabToggle
+                    onToggle={() => setIsKebabOpen(!isKebabOpen)}
+                    isDisabled={selectedRows.length === 0}
+                  />
                 }
                 isOpen={isKebabOpen}
                 isPlain
@@ -173,6 +186,7 @@ export const Members = () => {
           {
             name: "username",
             displayKey: "common:name",
+            cellRenderer: UserDetailLink,
           },
           {
             name: "email",
