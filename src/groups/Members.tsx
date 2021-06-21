@@ -182,6 +182,24 @@ export const Members = () => {
             </ToolbarItem>
           </>
         }
+        actions={[
+          {
+            title: t("leave"),
+            onRowClick: async (user) => {
+              try {
+                await adminClient.users.delFromGroup({
+                  id: user.id!,
+                  groupId: id!,
+                });
+                addAlert(t("usersLeft", { count: 1 }), AlertVariant.success);
+              } catch (error) {
+                addAlert(t("usersLeftError"), AlertVariant.danger);
+              }
+
+              return true;
+            },
+          },
+        ]}
         columns={[
           {
             name: "username",
