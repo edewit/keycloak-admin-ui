@@ -87,8 +87,11 @@ export const Members = () => {
   const MemberOfRenderer = (member: MembersOf) => {
     return (
       <>
-        {member.membership.map((group) => (
-          <GroupPath key={group.id} group={group} />
+        {member.membership.map((group, index) => (
+          <>
+            <GroupPath key={group.id} group={group} />
+            {member.membership[index + 1] ? ", " : ""}
+          </>
         ))}
       </>
     );
