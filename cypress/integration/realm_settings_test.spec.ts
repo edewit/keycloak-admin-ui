@@ -204,4 +204,13 @@ describe("Realm settings", () => {
       "Success! The localization text has been created."
     );
   });
+
+  it("Realm header settings", () => {
+    sidebarPage.goToRealmSettings();
+    cy.get("#pf-tab-securityDefences-securityDefences").click();
+    cy.getId("headers-form-tab-save").should("be.disabled");
+    cy.get("#xFrameOptions").clear().type("DENY");
+    cy.getId("headers-form-tab-save").should("be.enabled").click();
+    masthead.checkNotificationMessage("Realm successfully updated");
+  });
 });
