@@ -145,47 +145,20 @@ export const RealmSettingsSection = () => {
     useServerInfo().componentTypes!["org.keycloak.keys.KeyProvider"];
 
   useFetch(
-    () => adminClient.realms.findOne({ realm: realmName }),
-    (realm) => {
-      setupForm(realm);
-      setRealm(realm);
-    },
-    []
-  );
-
-  useFetch(
-    () => adminClient.users.findOne({ id: whoAmI.getUserId()! }),
-
-    (user) => {
-      setCurrentUser(user);
-    },
-    []
-  );
-
-  useEffect(() => {
-    const update = async () => {
-      const realmComponents = await adminClient.components.find({
-        type: "org.keycloak.keys.KeyProvider",
-        realm: realmName,
-      });
-      setRealmComponents(realmComponents);
-    };
-    setTimeout(update, 100);
-  }, [key]);
-
-  useFetch(
     async () => {
       const realm = await adminClient.realms.findOne({ realm: realmName });
       const realmComponents = await adminClient.components.find({
         type: "org.keycloak.keys.KeyProvider",
         realm: realmName,
       });
+      const user = await adminClient.users.findOne({ id: whoAmI.getUserId()! });
 
-      return { realm, realmComponents };
+      return { user, realm, realmComponents };
     },
-    (result) => {
-      setRealm(result.realm);
-      setRealmComponents(result.realmComponents);
+    ({ user, realm, realmComponents }) => {
+      setRealmComponents(realmComponents);
+      setCurrentUser(user);
+      setRealm(realm);
     },
     [key]
   );
@@ -195,13 +168,11 @@ export const RealmSettingsSection = () => {
   };
 
   useEffect(() => {
-    if (realm) setupForm(realm);
-  }, [realm]);
-
-  const setupForm = (realm: RealmRepresentation) => {
-    resetForm(realm);
-    Object.entries(realm).map((entry) => setValue(entry[0], entry[1]));
-  };
+    if (realm) {
+      Object.entries(realm).map((entry) => setValue(entry[0], entry[1]));
+      resetForm({ ...realm });
+    }
+  }, [realm, resetForm]);
 
   const save = async (realm: RealmRepresentation) => {
     try {
@@ -241,7 +212,7 @@ export const RealmSettingsSection = () => {
             >
               <RealmSettingsGeneralTab
                 save={save}
-                reset={() => setupForm(realm!)}
+                reset={() => resetForm(realm!)}
               />
             </Tab>
             <Tab
@@ -267,7 +238,7 @@ export const RealmSettingsSection = () => {
             >
               <RealmSettingsThemesTab
                 save={save}
-                reset={() => setupForm(realm!)}
+                reset={() => resetForm(realm!)}
                 realm={realm!}
               />
             </Tab>
@@ -323,7 +294,7 @@ export const RealmSettingsSection = () => {
                   key={key}
                   refresh={refresh}
                   save={save}
-                  reset={() => setupForm(realm)}
+                  reset={() => resetForm(realm)}
                   realm={realm}
                 />
               )}
@@ -334,7 +305,7 @@ export const RealmSettingsSection = () => {
               title={<TabTitleText>{t("securityDefences")}</TabTitleText>}
             >
               {realm && (
-                <SecurityDefences save={save} reset={() => setupForm(realm)} />
+                <SecurityDefences save={save} reset={() => resetForm(realm)} />
               )}
             </Tab>
           </KeycloakTabs>
