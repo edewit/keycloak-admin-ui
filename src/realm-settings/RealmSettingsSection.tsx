@@ -34,6 +34,7 @@ import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 import { LocalizationTab } from "./LocalizationTab";
 import { WhoAmIContext } from "../context/whoami/WhoAmI";
 import type UserRepresentation from "keycloak-admin/lib/defs/userRepresentation";
+import { SecurityDefences } from "./security-defences/SecurityDefences";
 
 type RealmSettingsHeaderProps = {
   onChange: (value: boolean) => void;
@@ -130,7 +131,7 @@ export const RealmSettingsSection = () => {
   const adminClient = useAdminClient();
   const { realm: realmName } = useRealm();
   const { addAlert } = useAlerts();
-  const form = useForm();
+  const form = useForm({ mode: "onChange" });
   const { control, getValues, setValue, reset: resetForm } = form;
   const [key, setKey] = useState(0);
   const [realm, setRealm] = useState<RealmRepresentation>();
@@ -311,13 +312,13 @@ export const RealmSettingsSection = () => {
               <EventsTab />
             </Tab>
 
-            {realm && (
-              <Tab
-                id="localization"
-                eventKey="localization"
+            <Tab
+              id="localization"
+              eventKey="localization"
                 data-testid="rs-localization-tab"
-                title={<TabTitleText>{t("localization")}</TabTitleText>}
-              >
+              title={<TabTitleText>{t("localization")}</TabTitleText>}
+            >
+              {realm && (
                 <LocalizationTab
                   key={key}
                   refresh={refresh}
@@ -325,8 +326,17 @@ export const RealmSettingsSection = () => {
                   reset={() => setupForm(realm)}
                   realm={realm}
                 />
-              </Tab>
-            )}
+              )}
+            </Tab>
+            <Tab
+              id="securityDefences"
+              eventKey="securityDefences"
+              title={<TabTitleText>{t("securityDefences")}</TabTitleText>}
+            >
+              {realm && (
+                <SecurityDefences save={save} reset={() => setupForm(realm)} />
+              )}
+            </Tab>
           </KeycloakTabs>
         </FormProvider>
       </PageSection>
