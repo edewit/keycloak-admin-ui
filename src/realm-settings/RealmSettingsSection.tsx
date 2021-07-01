@@ -286,7 +286,7 @@ export const RealmSettingsSection = () => {
             <Tab
               id="localization"
               eventKey="localization"
-                data-testid="rs-localization-tab"
+              data-testid="rs-localization-tab"
               title={<TabTitleText>{t("localization")}</TabTitleText>}
             >
               {realm && (
