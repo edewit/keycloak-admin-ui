@@ -404,7 +404,7 @@ export function KeycloakDataTable<T>({
               onCollapse={detailColumns ? onCollapse : undefined}
               actions={convertAction()}
               actionResolver={actionResolver}
-              rows={data}
+              rows={data.slice(0, max)}
               columns={columns}
               isNotCompact={isNotCompact}
               isRadio={isRadio}

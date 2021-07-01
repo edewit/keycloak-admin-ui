@@ -25,7 +25,7 @@ import { GroupPath } from "./GroupPath";
 export type GroupPickerDialogProps = {
   id?: string;
   type: "selectOne" | "selectMany";
-  filterGroups?: string[];
+  filterGroups?: GroupRepresentation[];
   text: { title: string; ok: string };
   onConfirm: (groups: GroupRepresentation[]) => void;
   onClose: () => void;
@@ -60,32 +60,27 @@ export const GroupPickerDialog = ({
 
   useFetch(
     async () => {
-      if (groupId) {
-        const group = await adminClient.groups.findOne({ id: groupId });
-        return { group, groups: group.subGroups! };
-      } else if (id) {
-        const allGroups = await adminClient.groups.find({
+      let group;
+      let groups;
+      let existingUserGroups;
+      if (!groupId) {
+        groups = await adminClient.groups.find({
           first,
-          max,
+          max: max + 1,
           search: filter,
         });
-        const existingUserGroups = await adminClient.users.listGroups({
+      } else {
+        group = await adminClient.groups.findOne({ id: groupId });
+        groups = group.subGroups!;
+      }
+
+      if (id) {
+        existingUserGroups = await adminClient.users.listGroups({
           id,
         });
-        return {
-          groups: allGroups,
-          existingUserGroups,
-        };
-      } else {
-        const allGroups = await adminClient.groups.find({
-          first,
-          max,
-          search: filter,
-        });
-        return {
-          groups: allGroups,
-        };
       }
+
+      return { group, groups, existingUserGroups };
     },
     async ({ group: selectedGroup, groups, existingUserGroups }) => {
       setJoinedGroups(existingUserGroups || []);
@@ -96,17 +91,14 @@ export const GroupPickerDialog = ({
       groups.forEach((group: SelectableGroup) => {
         group.checked = !!selectedRows.find((r) => r.id === group.id);
       });
-      setFirst(0);
-      setMax(10);
       setGroups(groups);
     },
-    [groupId, filter]
+    [groupId, filter, first, max]
   );
 
   const isRowDisabled = (row?: GroupRepresentation) => {
-    return (
-      !!joinedGroups.find((group) => group.id === row?.id) ||
-      filterGroups?.includes(row?.name || "")
+    return !![...joinedGroups, ...(filterGroups || [])].find(
+      (group) => group.id === row?.id
     );
   };
 
@@ -134,7 +126,7 @@ export const GroupPickerDialog = ({
     <Modal
       variant={ModalVariant.small}
       title={t(text.title, {
-        group1: filterGroups && filterGroups[0],
+        group1: filterGroups && filterGroups[0]?.name,
         group2: currentGroup() ? currentGroup().name : t("root"),
       })}
       isOpen
@@ -155,7 +147,7 @@ export const GroupPickerDialog = ({
       ]}
     >
       <PaginatingTableToolbar
-        count={Math.min(groups.length, first + max)}
+        count={groups.length}
         first={first}
         max={max}
         onNextClick={setFirst}
@@ -205,7 +197,7 @@ export const GroupPickerDialog = ({
           ))}
         </Breadcrumb>
         <DataList aria-label={t("groups")} isCompact>
-          {groups.map((group: SelectableGroup) => (
+          {groups.slice(0, max).map((group: SelectableGroup) => (
             <DataListItem
               className={`join-group-dialog-row-${
                 isRowDisabled(group) ? "disabled" : ""
@@ -214,13 +206,13 @@ export const GroupPickerDialog = ({
               key={group.id}
               id={group.id}
               onClick={(e) => {
-                if (isRowDisabled(group)) return;
+                const g = filter !== "" ? findSubGroup(group, filter) : group;
+                if (isRowDisabled(g)) return;
                 if (type === "selectOne") {
-                  setGroupId(
-                    filter !== "" ? findSubGroup(group, filter).id : group.id
-                  );
+                  setGroupId(g.id);
                 } else if (
                   hasSubgroups(group) &&
+                  filter === "" &&
                   (e.target as HTMLInputElement).type !== "checkbox"
                 ) {
                   setGroupId(group.id);
@@ -247,7 +239,10 @@ export const GroupPickerDialog = ({
                           (r) => r.id !== group.id
                         );
                       } else if (group.checked) {
-                        newSelectedRows = [...selectedRows, group];
+                        newSelectedRows = [
+                          ...selectedRows,
+                          filter === "" ? group : findSubGroup(group, filter),
+                        ];
                       }
 
                       setSelectedRows(newSelectedRows);
@@ -273,7 +268,8 @@ export const GroupPickerDialog = ({
                   aria-label={t("groupName")}
                   isPlainButtonAction
                 >
-                  {(hasSubgroups(group) || type === "selectOne") && (
+                  {((hasSubgroups(group) && filter === "") ||
+                    type === "selectOne") && (
                     <Button isDisabled variant="link">
                       <AngleRightIcon />
                     </Button>
@@ -282,11 +278,17 @@ export const GroupPickerDialog = ({
               </DataListItemRow>
             </DataListItem>
           ))}
-          {groups.length === 0 && (
+          {groups.length === 0 && filter === "" && (
             <ListEmptyState
               hasIcon={false}
               message={t("groups:moveGroupEmpty")}
               instructions={t("groups:moveGroupEmptyInstructions")}
+            />
+          )}
+          {groups.length === 0 && filter !== "" && (
+            <ListEmptyState
+              message={t("common:noSearchResults")}
+              instructions={t("common:noSearchResultsInstructions")}
             />
           )}
         </DataList>
