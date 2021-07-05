@@ -126,7 +126,7 @@ export const GroupPickerDialog = ({
     <Modal
       variant={ModalVariant.small}
       title={t(text.title, {
-        group1: filterGroups && filterGroups[0]?.name,
+        group1: filterGroups?.[0]?.name,
         group2: currentGroup() ? currentGroup().name : t("root"),
       })}
       isOpen
