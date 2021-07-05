@@ -508,7 +508,7 @@
     "messageBundleDescription": "You can edit the supported locales. If you haven't selected supported locales yet, you can only edit the English locale.",
     "defaultRoles": "Default roles",
     "defaultGroups": "Default groups",
-    "securityDefences": "Security defences",
+    "securityDefences": "Security defenses",
     "headers": "Headers",
     "bruteForceDetection": "Brute force detection",
     "xFrameOptions": "X-Frame-Options",
