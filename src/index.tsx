@@ -5,6 +5,8 @@ import i18n from "./i18n";
 import init from "./context/auth/keycloak";
 import { KeycloakAdminConsole } from "./KeycloakAdminConsole";
 
+import "@patternfly/patternfly/patternfly.min.css";
+
 console.info("supported languages", ...i18n.languages);
 
 init().then((adminClient) => {
