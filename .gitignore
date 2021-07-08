@@ -130,6 +130,7 @@ sketch
 web_modules/
 build/
 .build/
+.snowpack/
 public/assets/
 
 # server-install
