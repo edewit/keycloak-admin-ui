@@ -524,7 +524,7 @@
     "maxFailureWait": "Max wait",
     "maxDeltaTime": "Failure reset time",
     "quickLoginCheckMilliSeconds": "Quick login check milliseconds",
-    "minimumQuickLoginWait": "Minimum quick login wait"
+    "minimumQuickLoginWaitSeconds": "Minimum quick login wait"
   },
   "partial-import": {
     "partialImportHeaderText": "Partial import allows you to import users, clients, and other resources from a previously exported json file.",
