@@ -153,7 +153,7 @@ export const BruteForceDetection = ({
             />
           </FormGroup>
 
-          <Time name="minimumQuickLoginWait" />
+          <Time name="minimumQuickLoginWaitSeconds" />
         </>
       )}
 
