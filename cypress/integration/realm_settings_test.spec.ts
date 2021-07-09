@@ -117,8 +117,10 @@ describe("Realm settings", () => {
     const listingPage = new ListingPage();
 
     it("Enable user events", () => {
+      cy.intercept("GET", `/auth/admin/realms/${realmName}/keys`).as("load");
       sidebarPage.goToRealmSettings();
       cy.getId("rs-realm-events-tab").click();
+      cy.wait(["@load"]);
 
       realmSettingsPage
         .toggleSwitch(realmSettingsPage.enableEvents)
