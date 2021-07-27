@@ -48,7 +48,7 @@ export const AuthenticationSection = () => {
   const { realm } = useRealm();
   const [key, setKey] = useState(0);
   const refresh = () => setKey(new Date().getTime());
-  const { addAlert } = useAlerts();
+  const { addAlert, addError } = useAlerts();
   const { url } = useRouteMatch();
 
   const [selectedFlow, setSelectedFlow] = useState<AuthenticationType>();
@@ -114,7 +114,7 @@ export const AuthenticationSection = () => {
         refresh();
         addAlert(t("deleteFlowSuccess"), AlertVariant.success);
       } catch (error) {
-        addAlert(t("deleteFlowError", { error }), AlertVariant.danger);
+        addError("authentication:deleteFlowError", error);
       }
     },
   });
@@ -209,20 +209,20 @@ export const AuthenticationSection = () => {
                   },
                 ];
                 // remove delete when it's in use or default flow
-                if (data.builtIn || data.usedBy.values.length > 0) {
-                  return defaultActions;
-                } else {
-                  return [
-                    {
-                      title: t("common:delete"),
-                      onClick: () => {
-                        setSelectedFlow(data);
-                        toggleDeleteDialog();
-                      },
+                //if (data.builtIn || data.usedBy.values.length > 0) {
+                // return defaultActions;
+                // } else {
+                return [
+                  {
+                    title: t("common:delete"),
+                    onClick: () => {
+                      setSelectedFlow(data);
+                      toggleDeleteDialog();
                     },
-                    ...defaultActions,
-                  ];
-                }
+                  },
+                  ...defaultActions,
+                ];
+                // }
               }}
               columns={[
                 {
