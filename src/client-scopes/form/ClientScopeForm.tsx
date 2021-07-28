@@ -126,7 +126,7 @@ export const ClientScopeForm = () => {
       }
       addAlert(t((id ? "update" : "create") + "Success"), AlertVariant.success);
     } catch (error) {
-      addError((id ? "update" : "create") + "Error", error);
+      addError(`client-scopes:${id ? "update" : "create"}Error`, error);
     }
   };
 
