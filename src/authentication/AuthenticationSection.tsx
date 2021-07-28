@@ -209,20 +209,20 @@ export const AuthenticationSection = () => {
                   },
                 ];
                 // remove delete when it's in use or default flow
-                //if (data.builtIn || data.usedBy.values.length > 0) {
-                // return defaultActions;
-                // } else {
-                return [
-                  {
-                    title: t("common:delete"),
-                    onClick: () => {
-                      setSelectedFlow(data);
-                      toggleDeleteDialog();
+                if (data.builtIn || data.usedBy.values.length > 0) {
+                  return defaultActions;
+                } else {
+                  return [
+                    {
+                      title: t("common:delete"),
+                      onClick: () => {
+                        setSelectedFlow(data);
+                        toggleDeleteDialog();
+                      },
                     },
-                  },
-                  ...defaultActions,
-                ];
-                // }
+                    ...defaultActions,
+                  ];
+                }
               }}
               columns={[
                 {
