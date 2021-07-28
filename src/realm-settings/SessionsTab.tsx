@@ -73,7 +73,7 @@ export const RealmSettingsSessionsTab = ({
     <>
       <PageSection variant="light">
         <FormPanel
-          title={t(".pf-c-data-list__item-draggable-iconSSOSessionSettings")}
+          title={t("SSOSessionSettings")}
           className="kc-sso-session-template"
         >
           <FormAccess
@@ -268,9 +268,7 @@ export const RealmSettingsSessionsTab = ({
           </FormAccess>
         </FormPanel>
         <FormPanel
-          title={t(
-            ".pf-c-data-list__item-draggable-iconofflineSessionSettings"
-          )}
+          title={t("offlineSessionSettings")}
           className="kc-offline-session-template"
         >
           <FormAccess

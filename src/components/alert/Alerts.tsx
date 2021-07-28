@@ -1,6 +1,7 @@
 import React, { createContext, ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertVariant } from "@patternfly/react-core";
+import type { AxiosError } from "axios";
 
 import useRequiredContext from "../../utils/useRequiredContext";
 import { AlertPanel, AlertType } from "./AlertPanel";
@@ -39,13 +40,13 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
     setAlerts([{ key, message, variant, description }, ...alerts]);
   };
 
-  const addError = (message: string, error: any) => {
+  const addError = (message: string, error: Error | AxiosError) => {
     addAlert(
       t(message, {
         error:
-          error.response?.data?.errorMessage ||
-          error.response?.data?.error ||
-          error,
+          "response" in error
+            ? error.response?.data?.errorMessage || error.response?.data?.error
+            : error,
       }),
       AlertVariant.danger
     );
