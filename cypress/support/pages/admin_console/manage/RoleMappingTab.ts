@@ -20,7 +20,7 @@ export default class RoleMappingTab {
     return this;
   }
 
-  clickAssignRole(notEmpty: boolean = true) {
+  clickAssignRole(notEmpty = true) {
     cy.getId(notEmpty ? this.assignEmptyRole : this.assignRole).click();
     return this;
   }
