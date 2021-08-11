@@ -22,22 +22,21 @@ export const UsersInRoleTab = () => {
 
   const loader = async (first?: number, max?: number) => {
     const role = await adminClient.roles.findOneById({ id: id });
-    let usersWithRole = [];
+
     if (role.clientRole) {
-      usersWithRole = await adminClient.clients.findUsersWithRole({
+      return adminClient.clients.findUsersWithRole({
         roleName: role.name!,
         id: clientId,
         first,
         max,
       });
-    } else {
-      usersWithRole = await adminClient.roles.findUsersWithRole({
-        name: role.name!,
-        first,
-        max,
-      });
     }
-    return usersWithRole || [];
+
+    return adminClient.roles.findUsersWithRole({
+      name: role.name!,
+      first,
+      max,
+    });
   };
 
   const { enabled } = useHelp();
