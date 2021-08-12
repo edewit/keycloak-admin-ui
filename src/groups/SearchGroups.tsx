@@ -120,36 +120,34 @@ export const SearchGroups = () => {
           key={key}
           isSearching
           toolbarItem={
-            <>
-              <ToolbarItem>
-                <InputGroup>
-                  <TextInput
-                    name="search"
-                    data-testid="group-search"
-                    type="search"
-                    aria-label={t("search")}
-                    placeholder={t("searchGroups")}
-                    value={searchTerm}
-                    onChange={(value) => setSearchTerm(value)}
-                  />
-                  <Button
-                    data-testid="search-button"
-                    variant={ButtonVariant.control}
-                    aria-label={t("search")}
-                    onClick={addTerm}
-                  >
-                    <SearchIcon />
-                  </Button>
-                </InputGroup>
-                <ChipGroup>
-                  {searchTerms.map((term) => (
-                    <Chip key={term} onClick={() => deleteTerm(term)}>
-                      {term}
-                    </Chip>
-                  ))}
-                </ChipGroup>
-              </ToolbarItem>
-            </>
+            <ToolbarItem>
+              <InputGroup>
+                <TextInput
+                  name="search"
+                  data-testid="group-search"
+                  type="search"
+                  aria-label={t("search")}
+                  placeholder={t("searchGroups")}
+                  value={searchTerm}
+                  onChange={(value) => setSearchTerm(value)}
+                />
+                <Button
+                  data-testid="search-button"
+                  variant={ButtonVariant.control}
+                  aria-label={t("search")}
+                  onClick={addTerm}
+                >
+                  <SearchIcon />
+                </Button>
+              </InputGroup>
+              <ChipGroup>
+                {searchTerms.map((term) => (
+                  <Chip key={term} onClick={() => deleteTerm(term)}>
+                    {term}
+                  </Chip>
+                ))}
+              </ChipGroup>
+            </ToolbarItem>
           }
           ariaLabelKey="groups:groups"
           isPaginated

@@ -22,7 +22,6 @@ export const GroupBreadCrumbs = () => {
     });
   }, [history]);
 
-  const isLastGroup = (index: number) => subGroups.length - 1 === index;
   return (
     <>
       {subGroups.length !== 0 && (
@@ -30,25 +29,28 @@ export const GroupBreadCrumbs = () => {
           <BreadcrumbItem key="home">
             <Link to={`/${realm}/groups`}>{t("groups")}</Link>
           </BreadcrumbItem>
-          {subGroups.map((group, i) => (
-            <BreadcrumbItem key={i} isActive={subGroups.length - 1 === i}>
-              {!isLastGroup(i) && (
-                <Link
-                  to={location.pathname.substr(
-                    0,
-                    location.pathname.indexOf(group.id!) + group.id!.length
-                  )}
-                  onClick={() => remove(group)}
-                >
-                  {group.name}
-                </Link>
-              )}
-              {isLastGroup(i) && group.id !== "search" && (
-                <>{t("groups:groupDetails")}</>
-              )}
-              {isLastGroup(i) && group.id === "search" && <>{group.name}</>}
-            </BreadcrumbItem>
-          ))}
+          {subGroups.map((group, i) => {
+            const isLastGroup = i === subGroups.length - 1;
+            return (
+              <BreadcrumbItem key={i} isActive={isLastGroup}>
+                {!isLastGroup && (
+                  <Link
+                    to={location.pathname.substr(
+                      0,
+                      location.pathname.indexOf(group.id!) + group.id!.length
+                    )}
+                    onClick={() => remove(group)}
+                  >
+                    {group.name}
+                  </Link>
+                )}
+                {isLastGroup &&
+                  (group.id === "search"
+                    ? group.name
+                    : t("groups:groupDetails"))}
+              </BreadcrumbItem>
+            );
+          })}
         </Breadcrumb>
       )}
     </>
