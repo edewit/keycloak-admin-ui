@@ -6,13 +6,13 @@ import {
   ButtonVariant,
   Chip,
   ChipGroup,
-  Form,
   InputGroup,
   PageSection,
   PageSectionVariants,
   Text,
   TextContent,
   TextInput,
+  ToolbarItem,
 } from "@patternfly/react-core";
 import { SearchIcon } from "@patternfly/react-icons";
 
@@ -40,7 +40,10 @@ export const SearchGroups = () => {
   const refresh = () => setKey(new Date().getTime());
 
   const { setSubGroups } = useSubGroups();
-  useEffect(() => setSubGroups([{ name: t("searchGroups") }]), []);
+  useEffect(
+    () => setSubGroups([{ name: t("searchGroups"), id: "search" }]),
+    []
+  );
 
   const deleteTerm = (id: string) => {
     const index = searchTerms.indexOf(id);
@@ -55,16 +58,19 @@ export const SearchGroups = () => {
     refresh();
   };
 
-  const GroupNameCell = (group: SearchGroup) => {
-    setSubGroups([{ name: t("searchGroups"), id: "search" }, group]);
-    return (
-      <>
-        <Link key={group.id} to={`/${realm}/groups/search/${group.link}`}>
-          {group.name}
-        </Link>
-      </>
-    );
-  };
+  const GroupNameCell = (group: SearchGroup) => (
+    <>
+      <Link
+        key={group.id}
+        to={`/${realm}/groups/search/${group.link}`}
+        onClick={() =>
+          setSubGroups([{ name: t("searchGroups"), id: "search" }, group])
+        }
+      >
+        {group.name}
+      </Link>
+    </>
+  );
 
   const flatten = (
     groups: GroupRepresentation[],
@@ -108,44 +114,43 @@ export const SearchGroups = () => {
     <>
       <PageSection variant={PageSectionVariants.light}>
         <TextContent className="pf-u-mr-sm">
-          <Text component="h1">{t("searchForGroups")}</Text>
+          <Text component="h1">{t("searchGroups")}</Text>
         </TextContent>
-        <Form
-          className="pf-u-mt-sm keycloak__form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            addTerm();
-          }}
-        >
-          <InputGroup>
-            <TextInput
-              name="search"
-              data-testid="group-search"
-              type="search"
-              aria-label={t("search")}
-              placeholder={t("searchGroups")}
-              value={searchTerm}
-              onChange={(value) => setSearchTerm(value)}
-            />
-            <Button
-              data-testid="search-button"
-              variant={ButtonVariant.control}
-              aria-label={t("search")}
-              onClick={addTerm}
-            >
-              <SearchIcon />
-            </Button>
-          </InputGroup>
-          <ChipGroup>
-            {searchTerms.map((term) => (
-              <Chip key={term} onClick={() => deleteTerm(term)}>
-                {term}
-              </Chip>
-            ))}
-          </ChipGroup>
-        </Form>
         <KeycloakDataTable
           key={key}
+          isSearching
+          toolbarItem={
+            <>
+              <ToolbarItem>
+                <InputGroup>
+                  <TextInput
+                    name="search"
+                    data-testid="group-search"
+                    type="search"
+                    aria-label={t("search")}
+                    placeholder={t("searchGroups")}
+                    value={searchTerm}
+                    onChange={(value) => setSearchTerm(value)}
+                  />
+                  <Button
+                    data-testid="search-button"
+                    variant={ButtonVariant.control}
+                    aria-label={t("search")}
+                    onClick={addTerm}
+                  >
+                    <SearchIcon />
+                  </Button>
+                </InputGroup>
+                <ChipGroup>
+                  {searchTerms.map((term) => (
+                    <Chip key={term} onClick={() => deleteTerm(term)}>
+                      {term}
+                    </Chip>
+                  ))}
+                </ChipGroup>
+              </ToolbarItem>
+            </>
+          }
           ariaLabelKey="groups:groups"
           isPaginated
           loader={loader}

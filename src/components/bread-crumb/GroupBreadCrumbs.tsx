@@ -22,6 +22,7 @@ export const GroupBreadCrumbs = () => {
     });
   }, [history]);
 
+  const isLastGroup = (index: number) => subGroups.length - 1 === index;
   return (
     <>
       {subGroups.length !== 0 && (
@@ -31,7 +32,7 @@ export const GroupBreadCrumbs = () => {
           </BreadcrumbItem>
           {subGroups.map((group, i) => (
             <BreadcrumbItem key={i} isActive={subGroups.length - 1 === i}>
-              {subGroups.length - 1 !== i && (
+              {!isLastGroup(i) && (
                 <Link
                   to={location.pathname.substr(
                     0,
@@ -42,7 +43,10 @@ export const GroupBreadCrumbs = () => {
                   {group.name}
                 </Link>
               )}
-              {subGroups.length - 1 === i && <>{t("groups:groupDetails")}</>}
+              {isLastGroup(i) && group.id !== "search" && (
+                <>{t("groups:groupDetails")}</>
+              )}
+              {isLastGroup(i) && group.id === "search" && <>{group.name}</>}
             </BreadcrumbItem>
           ))}
         </Breadcrumb>
