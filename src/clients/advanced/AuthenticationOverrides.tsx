@@ -124,9 +124,7 @@ export const AuthenticationOverrides = ({
         </FormGroup>
       )}
       <ActionGroup>
-        <Button variant="tertiary" onClick={save}>
-          {t("common:save")}
-        </Button>
+        <Button onClick={save}>{t("common:save")}</Button>
         <Button variant="link" onClick={reset}>
           {t("common:revert")}
         </Button>
