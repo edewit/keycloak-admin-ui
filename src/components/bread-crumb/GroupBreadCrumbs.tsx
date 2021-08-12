@@ -32,7 +32,7 @@ export const GroupBreadCrumbs = () => {
           {subGroups.map((group, i) => {
             const isLastGroup = i === subGroups.length - 1;
             return (
-              <BreadcrumbItem key={i} isActive={isLastGroup}>
+              <BreadcrumbItem key={group.id} isActive={isLastGroup}>
                 {!isLastGroup && (
                   <Link
                     to={location.pathname.substr(
