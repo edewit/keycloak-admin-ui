@@ -165,7 +165,11 @@ const sortByPriority = (components: ComponentRepresentation[]) => {
 export const RealmSettingsSection = () => {
   const { t } = useTranslation("realm-settings");
   const adminClient = useAdminClient();
-  const { realm: realmName } = useRealm();
+  const {
+    realm: realmName,
+    refresh: refreshRealm,
+    setRealm: setCurrentRealm,
+  } = useRealm();
   const { addAlert, addError } = useAlerts();
   const form = useForm({ mode: "onChange" });
   const { control, getValues, setValue, reset: resetForm } = form;
@@ -176,6 +180,7 @@ export const RealmSettingsSection = () => {
     useState<ComponentRepresentation[]>();
   const [currentUser, setCurrentUser] = useState<UserRepresentation>();
   const { whoAmI } = useWhoAmI();
+  const history = useHistory();
 
   const kpComponentTypes =
     useServerInfo().componentTypes?.[KEY_PROVIDER_TYPE] ?? [];
@@ -212,8 +217,17 @@ export const RealmSettingsSection = () => {
 
   const save = async (realm: RealmRepresentation) => {
     try {
-      await adminClient.realms.update({ realm: realmName }, realm);
+      await adminClient.realms.update(
+        { realm: realmName },
+        { ...realm, id: realmName }
+      );
       setRealm(realm);
+      const isRealmRenamed = realmName !== realm.realm;
+      if (isRealmRenamed) {
+        await refreshRealm();
+        setCurrentRealm(realm.realm!);
+        history.push(toRealmSettings({ realm: realm.realm! }));
+      }
       addAlert(t("saveSuccess"), AlertVariant.success);
     } catch (error) {
       addError("realm-settings:saveError", error);
@@ -366,7 +380,12 @@ export const RealmSettingsSection = () => {
               aria-label="tokens-tab"
               title={<TabTitleText>{t("realm-settings:tokens")}</TabTitleText>}
             >
-              <RealmSettingsTokensTab reset={() => resetForm(realm)} />
+              {realm && (
+                <RealmSettingsTokensTab
+                  realm={realm}
+                  reset={() => resetForm(realm)}
+                />
+              )}
             </Tab>
           </KeycloakTabs>
         </FormProvider>

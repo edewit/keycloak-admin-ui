@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Controller, useForm, useFormContext, useWatch } from "react-hook-form";
 import {
@@ -20,7 +20,7 @@ import type RealmRepresentation from "keycloak-admin/lib/defs/realmRepresentatio
 import { FormAccess } from "../components/form-access/FormAccess";
 import { HelpItem } from "../components/help-enabler/HelpItem";
 import { FormPanel } from "../components/scroll-form/FormPanel";
-import { useAdminClient, useFetch } from "../context/auth/AdminClient";
+import { useAdminClient } from "../context/auth/AdminClient";
 import { useAlerts } from "../components/alert/Alerts";
 import { useRealm } from "../context/realm-context/RealmContext";
 
@@ -37,7 +37,7 @@ import {
 } from "../util";
 
 type RealmSettingsSessionsTabProps = {
-  realm?: RealmRepresentation;
+  realm: RealmRepresentation;
   user?: UserRepresentation;
   reset?: () => void;
 };
@@ -91,14 +91,7 @@ export const RealmSettingsTokensTab = ({
     });
   };
 
-  useFetch(
-    () => adminClient.realms.findOne({ realm: realmName }),
-    (realm) => {
-      setRealm(realm);
-      setupForm(realm);
-    },
-    [realmName]
-  );
+  useEffect(() => setupForm(realm), []);
 
   const save = async () => {
     const firstInstanceOnly = true;
