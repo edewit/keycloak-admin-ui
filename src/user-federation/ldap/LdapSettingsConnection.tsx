@@ -80,8 +80,6 @@ export const LdapSettingsConnection = ({
     name: "config.authType",
   });
 
-  const PasswordComponent = edit ? TextInput : PasswordInput;
-
   return (
     <>
       {showSectionHeading && (
@@ -330,7 +328,8 @@ export const LdapSettingsConnection = ({
               }
               isRequired
             >
-              <PasswordComponent
+              <PasswordInput
+                hasReveal={!edit}
                 isRequired
                 id="kc-console-bind-credentials"
                 data-testid="ldap-bind-credentials"
