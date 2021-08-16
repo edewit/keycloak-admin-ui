@@ -138,7 +138,9 @@ export const AdvancedSettings = ({
         </>
       )}
       <ActionGroup>
-        <Button onClick={save}>{t("common:save")}</Button>
+        <Button variant="secondary" onClick={save}>
+          {t("common:save")}
+        </Button>
         <Button variant="link" onClick={reset}>
           {t("common:revert")}
         </Button>
