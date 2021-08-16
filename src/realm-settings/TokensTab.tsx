@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Controller, useForm, useFormContext, useWatch } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import {
   ActionGroup,
   AlertVariant,
@@ -29,7 +29,6 @@ import type UserRepresentation from "keycloak-admin/lib/defs/userRepresentation"
 import { TimeSelector } from "../components/time-selector/TimeSelector";
 import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 import {
-  convertToFormValues,
   forHumans,
   flatten,
   convertFormValuesToObject,
@@ -70,28 +69,14 @@ export const RealmSettingsTokensTab = ({
     javaKeystoreAlgOptions!
   );
 
-  const form = useForm<RealmRepresentation>();
-  const { control } = useFormContext();
+  const form = useFormContext<RealmRepresentation>();
+  const control = form.control;
 
   const offlineSessionMaxEnabled = useWatch({
     control,
     name: "offlineSessionMaxLifespanEnabled",
     defaultValue: realm?.offlineSessionMaxLifespanEnabled,
   });
-
-  const setupForm = (realm: RealmRepresentation) => {
-    const { ...formValues } = realm;
-    form.reset(formValues);
-    Object.entries(realm).map((entry) => {
-      if (entry[0] === "attributes") {
-        convertToFormValues(entry[1], "attributes", form.setValue);
-      } else {
-        form.setValue(entry[0], entry[1]);
-      }
-    });
-  };
-
-  useEffect(() => setupForm(realm), []);
 
   const save = async () => {
     const firstInstanceOnly = true;
@@ -111,7 +96,6 @@ export const RealmSettingsTokensTab = ({
 
       await adminClient.realms.update({ realm: realmName }, newRealm);
 
-      setupForm(newRealm);
       setRealm(newRealm);
       addAlert(t("saveSuccess"), AlertVariant.success);
     } catch (error) {

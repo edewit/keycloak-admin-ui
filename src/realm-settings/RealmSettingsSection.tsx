@@ -6,6 +6,7 @@ import {
   DropdownItem,
   DropdownSeparator,
   PageSection,
+  Spinner,
   Tab,
   Tabs,
   TabTitleText,
@@ -26,7 +27,7 @@ import { useRealm } from "../context/realm-context/RealmContext";
 import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 import { LocalizationTab } from "./LocalizationTab";
 import { useWhoAmI } from "../context/whoami/WhoAmI";
-import { KEY_PROVIDER_TYPE, toUpperCase } from "../util";
+import { convertToFormValues, KEY_PROVIDER_TYPE, toUpperCase } from "../util";
 import { RealmSettingsEmailTab } from "./EmailTab";
 import { EventsTab } from "./event-config/EventsTab";
 import { RealmSettingsGeneralTab } from "./GeneralTab";
@@ -210,10 +211,15 @@ export const RealmSettingsSection = () => {
 
   useEffect(() => {
     if (realm) {
-      Object.entries(realm).map((entry) => setValue(entry[0], entry[1]));
-      resetForm({ ...realm });
+      Object.entries(realm).map((entry) => {
+        if (entry[0] === "attributes") {
+          convertToFormValues(entry[1], "attributes", form.setValue);
+        } else {
+          setValue(entry[0], entry[1]);
+        }
+      });
     }
-  }, [realm, resetForm]);
+  }, [realm]);
 
   const save = async (realm: RealmRepresentation) => {
     try {
@@ -234,6 +240,13 @@ export const RealmSettingsSection = () => {
     }
   };
 
+  if (!realm && !realmComponents) {
+    return (
+      <div className="pf-u-text-align-center">
+        <Spinner />
+      </div>
+    );
+  }
   return (
     <>
       <Controller
@@ -277,9 +290,7 @@ export const RealmSettingsSection = () => {
               data-testid="rs-email-tab"
               aria-label="email-tab"
             >
-              {realm && (
-                <RealmSettingsEmailTab user={currentUser!} realm={realm} />
-              )}
+              <RealmSettingsEmailTab user={currentUser!} realm={realm!} />
             </Tab>
             <Tab
               eventKey="themes"
@@ -299,35 +310,33 @@ export const RealmSettingsSection = () => {
               data-testid="rs-keys-tab"
               aria-label="keys-tab"
             >
-              {realmComponents && (
-                <Tabs
-                  activeKey={activeTab}
-                  onSelect={(_, key) => setActiveTab(key as number)}
+              <Tabs
+                activeKey={activeTab}
+                onSelect={(_, key) => setActiveTab(key as number)}
+              >
+                <Tab
+                  id="keysList"
+                  eventKey={0}
+                  data-testid="rs-keys-list-tab"
+                  aria-label="keys-list-subtab"
+                  title={<TabTitleText>{t("keysList")}</TabTitleText>}
                 >
-                  <Tab
-                    id="keysList"
-                    eventKey={0}
-                    data-testid="rs-keys-list-tab"
-                    aria-label="keys-list-subtab"
-                    title={<TabTitleText>{t("keysList")}</TabTitleText>}
-                  >
-                    <KeysListTab realmComponents={realmComponents} />
-                  </Tab>
-                  <Tab
-                    id="providers"
-                    data-testid="rs-providers-tab"
-                    aria-label="rs-providers-tab"
-                    eventKey={1}
-                    title={<TabTitleText>{t("providers")}</TabTitleText>}
-                  >
-                    <KeysProvidersTab
-                      realmComponents={realmComponents}
-                      keyProviderComponentTypes={kpComponentTypes}
-                      refresh={refresh}
-                    />
-                  </Tab>
-                </Tabs>
-              )}
+                  <KeysListTab realmComponents={realmComponents!} />
+                </Tab>
+                <Tab
+                  id="providers"
+                  data-testid="rs-providers-tab"
+                  aria-label="rs-providers-tab"
+                  eventKey={1}
+                  title={<TabTitleText>{t("providers")}</TabTitleText>}
+                >
+                  <KeysProvidersTab
+                    realmComponents={realmComponents!}
+                    keyProviderComponentTypes={kpComponentTypes}
+                    refresh={refresh}
+                  />
+                </Tab>
+              </Tabs>
             </Tab>
             <Tab
               eventKey="events"
@@ -343,24 +352,20 @@ export const RealmSettingsSection = () => {
               data-testid="rs-localization-tab"
               title={<TabTitleText>{t("localization")}</TabTitleText>}
             >
-              {realm && (
-                <LocalizationTab
-                  key={key}
-                  refresh={refresh}
-                  save={save}
-                  reset={() => resetForm(realm)}
-                  realm={realm}
-                />
-              )}
+              <LocalizationTab
+                key={key}
+                refresh={refresh}
+                save={save}
+                reset={() => resetForm(realm)}
+                realm={realm!}
+              />
             </Tab>
             <Tab
               id="securityDefences"
               eventKey="securityDefences"
               title={<TabTitleText>{t("securityDefences")}</TabTitleText>}
             >
-              {realm && (
-                <SecurityDefences save={save} reset={() => resetForm(realm)} />
-              )}
+              <SecurityDefences save={save} reset={() => resetForm(realm)} />
             </Tab>
             <Tab
               id="sessions"
@@ -371,7 +376,7 @@ export const RealmSettingsSection = () => {
                 <TabTitleText>{t("realm-settings:sessions")}</TabTitleText>
               }
             >
-              {realm && <RealmSettingsSessionsTab key={key} realm={realm} />}
+              <RealmSettingsSessionsTab key={key} realm={realm} />
             </Tab>
             <Tab
               id="tokens"
@@ -380,12 +385,10 @@ export const RealmSettingsSection = () => {
               aria-label="tokens-tab"
               title={<TabTitleText>{t("realm-settings:tokens")}</TabTitleText>}
             >
-              {realm && (
-                <RealmSettingsTokensTab
-                  realm={realm}
-                  reset={() => resetForm(realm)}
-                />
-              )}
+              <RealmSettingsTokensTab
+                realm={realm!}
+                reset={() => resetForm(realm)}
+              />
             </Tab>
           </KeycloakTabs>
         </FormProvider>
