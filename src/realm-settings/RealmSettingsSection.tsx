@@ -240,7 +240,7 @@ export const RealmSettingsSection = () => {
     }
   };
 
-  if (!realm && !realmComponents) {
+  if (!realm || !realmComponents) {
     return (
       <div className="pf-u-text-align-center">
         <Spinner />
