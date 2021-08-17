@@ -357,7 +357,7 @@ export const RealmSettingsSection = () => {
                 refresh={refresh}
                 save={save}
                 reset={() => resetForm(realm)}
-                realm={realm!}
+                realm={realm}
               />
             </Tab>
             <Tab
