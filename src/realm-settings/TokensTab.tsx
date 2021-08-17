@@ -70,7 +70,7 @@ export const RealmSettingsTokensTab = ({
   );
 
   const form = useFormContext<RealmRepresentation>();
-  const control = form.control;
+  const { control } = form;
 
   const offlineSessionMaxEnabled = useWatch({
     control,
