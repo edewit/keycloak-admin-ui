@@ -312,7 +312,7 @@ export const RealmSettingsSection = () => {
             >
               <Tabs
                 activeKey={activeTab}
-                onSelect={(_, key) => setActiveTab(key as number)}
+                onSelect={(_, key) => setActiveTab(Number(key))}
               >
                 <Tab
                   id="keysList"
