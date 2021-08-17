@@ -211,11 +211,11 @@ export const RealmSettingsSection = () => {
 
   useEffect(() => {
     if (realm) {
-      Object.entries(realm).map((entry) => {
-        if (entry[0] === "attributes") {
-          convertToFormValues(entry[1], "attributes", form.setValue);
+      Object.entries(realm).map(([key, value]) => {
+        if (key === "attributes") {
+          convertToFormValues(value, "attributes", form.setValue);
         } else {
-          setValue(entry[0], entry[1]);
+          setValue(key, value);
         }
       });
     }
