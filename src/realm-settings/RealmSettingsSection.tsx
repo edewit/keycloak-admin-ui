@@ -321,7 +321,7 @@ export const RealmSettingsSection = () => {
                   aria-label="keys-list-subtab"
                   title={<TabTitleText>{t("keysList")}</TabTitleText>}
                 >
-                  <KeysListTab realmComponents={realmComponents!} />
+                  <KeysListTab realmComponents={realmComponents} />
                 </Tab>
                 <Tab
                   id="providers"
