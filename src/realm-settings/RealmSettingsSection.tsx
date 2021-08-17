@@ -193,7 +193,7 @@ export const RealmSettingsSection = () => {
         type: KEY_PROVIDER_TYPE,
         realm: realmName,
       });
-      const user = await adminClient.users.findOne({ id: whoAmI.getUserId()! });
+      const user = await adminClient.users.findOne({ id: whoAmI.getUserId() });
 
       return { user, realm, realmComponents };
     },
@@ -240,7 +240,7 @@ export const RealmSettingsSection = () => {
     }
   };
 
-  if (!realm || !realmComponents) {
+  if (!realm || !realmComponents || !currentUser) {
     return (
       <div className="pf-u-text-align-center">
         <Spinner />
@@ -282,7 +282,7 @@ export const RealmSettingsSection = () => {
               data-testid="rs-login-tab"
               aria-label="login-tab"
             >
-              <RealmSettingsLoginTab save={save} realm={realm!} />
+              <RealmSettingsLoginTab save={save} realm={realm} />
             </Tab>
             <Tab
               eventKey="email"
@@ -301,7 +301,7 @@ export const RealmSettingsSection = () => {
               <RealmSettingsThemesTab
                 save={save}
                 reset={() => resetForm(realm)}
-                realm={realm!}
+                realm={realm}
               />
             </Tab>
             <Tab
