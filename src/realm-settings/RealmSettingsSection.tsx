@@ -386,7 +386,7 @@ export const RealmSettingsSection = () => {
               title={<TabTitleText>{t("realm-settings:tokens")}</TabTitleText>}
             >
               <RealmSettingsTokensTab
-                realm={realm!}
+                realm={realm}
                 reset={() => resetForm(realm)}
               />
             </Tab>
