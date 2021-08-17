@@ -331,7 +331,7 @@ export const RealmSettingsSection = () => {
                   title={<TabTitleText>{t("providers")}</TabTitleText>}
                 >
                   <KeysProvidersTab
-                    realmComponents={realmComponents!}
+                    realmComponents={realmComponents}
                     keyProviderComponentTypes={kpComponentTypes}
                     refresh={refresh}
                   />
