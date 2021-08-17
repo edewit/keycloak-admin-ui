@@ -290,7 +290,7 @@ export const RealmSettingsSection = () => {
               data-testid="rs-email-tab"
               aria-label="email-tab"
             >
-              <RealmSettingsEmailTab user={currentUser!} realm={realm!} />
+              <RealmSettingsEmailTab user={currentUser} realm={realm} />
             </Tab>
             <Tab
               eventKey="themes"
