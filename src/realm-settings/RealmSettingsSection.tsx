@@ -218,7 +218,7 @@ export const RealmSettingsSection = () => {
           setValue(key, value);
         }
       });
-      resetForm(realm);
+      resetForm(getValues());
     }
   }, [realm]);
 
