@@ -37,18 +37,22 @@ export const UserRoleMapping = ({ id, name }: UserRoleMappingProps) => {
     const clientRoles = (
       await Promise.all(
         clients.map(async (client) => {
-          const clientAssignedRoles = (
-            await adminClient.users.listClientRoleMappings({
-              id,
-              clientUniqueId: client.id!,
-            })
-          ).map((role) => ({ role, client }));
-          const clientEffectiveRoles = (
-            await adminClient.users.listCompositeClientRoleMappings({
-              id,
-              clientUniqueId: client.id!,
-            })
-          ).map((role) => ({ role, client }));
+          const [clientAssignedRoles, clientEffectiveRoles] = await Promise.all(
+            [
+              adminClient.users
+                .listClientRoleMappings({
+                  id,
+                  clientUniqueId: client.id!,
+                })
+                .then((roles) => roles.map((role) => ({ role, client }))),
+              adminClient.users
+                .listCompositeClientRoleMappings({
+                  id,
+                  clientUniqueId: client.id!,
+                })
+                .then((roles) => roles.map((role) => ({ role, client }))),
+            ]
+          );
           return mapRoles(clientAssignedRoles, clientEffectiveRoles, hide);
         })
       )
