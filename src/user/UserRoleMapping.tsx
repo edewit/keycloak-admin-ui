@@ -24,12 +24,14 @@ export const UserRoleMapping = ({ id, name }: UserRoleMappingProps) => {
   const [hide, setHide] = useState(false);
 
   const loader = async () => {
-    const assignedRoles = (
-      await adminClient.users.listRealmRoleMappings({ id })
-    ).map((role) => ({ role }));
-    const effectiveRoles = (
-      await adminClient.users.listCompositeRealmRoleMappings({ id })
-    ).map((role) => ({ role }));
+    const [assignedRoles, effectiveRoles] = await Promise.all([
+      adminClient.users
+        .listRealmRoleMappings({ id })
+        .then((roles) => roles.map((role) => ({ role }))),
+      adminClient.users
+        .listCompositeRealmRoleMappings({ id })
+        .then((roles) => roles.map((role) => ({ role }))),
+    ]);
 
     const clients = await adminClient.clients.find();
     const clientRoles = (
