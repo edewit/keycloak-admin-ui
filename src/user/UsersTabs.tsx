@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import {
   AlertVariant,
+  ButtonVariant,
+  DropdownItem,
   PageSection,
   Tab,
   TabTitleText,
@@ -20,10 +22,12 @@ import { UserGroups } from "./UserGroups";
 import { UserConsents } from "./UserConsents";
 import { useRealm } from "../context/realm-context/RealmContext";
 import { UserIdentityProviderLinks } from "./UserIdentityProviderLinks";
+import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { toUser } from "./routes/User";
+import { toUsers } from "./routes/Users";
 
 export const UsersTabs = () => {
-  const { t } = useTranslation("roles");
+  const { t } = useTranslation("users");
   const { addAlert, addError } = useAlerts();
   const history = useHistory();
   const { realm } = useRealm();
@@ -89,10 +93,33 @@ export const UsersTabs = () => {
     }
   };
 
+  const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
+    titleKey: "users:deleteConfirm",
+    messageKey: "users:deleteConfirmCurrentUser",
+    continueButtonLabel: "common:delete",
+    continueButtonVariant: ButtonVariant.danger,
+    onConfirm: async () => {
+      try {
+        await adminClient.users.del({ id });
+        addAlert(t("userDeletedSuccess"), AlertVariant.success);
+        history.push(toUsers({ realm }));
+      } catch (error) {
+        addError("users:userDeletedError", error);
+      }
+    },
+  });
+
   return (
     <>
+      <DeleteConfirm />
       <ViewHeader
         titleKey={user?.username || t("users:createUser")}
+        divider={!id}
+        dropdownItems={[
+          <DropdownItem key="delete" onClick={() => toggleDeleteDialog()}>
+            {t("common:delete")}
+          </DropdownItem>,
+        ]}
         divider={!id}
       />
       <PageSection variant="light" className="pf-u-p-0">

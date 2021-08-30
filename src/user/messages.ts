@@ -48,6 +48,8 @@ export default {
     addUser: "Add user",
     deleteUser: "Delete user",
     deleteConfirm: "Delete user?",
+    deleteConfirmCurrentUser:
+      "Are you sure you want to permanently delete this user",
     deleteConfirmDialog:
       "Are you sure you want to permanently delete {{count}} selected user",
     deleteConfirmDialog_plural:
