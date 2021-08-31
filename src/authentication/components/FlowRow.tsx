@@ -16,9 +16,10 @@ import type AuthenticationExecutionInfoRepresentation from "@keycloak/keycloak-a
 import type { ExpandableExecution } from "../execution-model";
 import { FlowTitle } from "./FlowTitle";
 import { FlowRequirementDropdown } from "./FlowRequirementDropdown";
+import { ExecutionConfigModal } from "./ExecutionConfigModal";
+import { EditFlowDropdown } from "./EditFlowDropdown";
 
 import "./flow-row.css";
-import { ExecutionConfigModal } from "./ExecutionConfigModal";
 
 type FlowRowProps = {
   execution: ExpandableExecution;
@@ -86,6 +87,7 @@ export const FlowRow = ({
                 {execution.configurable && (
                   <ExecutionConfigModal execution={execution} />
                 )}
+                {execution.executionList && <EditFlowDropdown />}
               </DataListCell>,
             ]}
           />
