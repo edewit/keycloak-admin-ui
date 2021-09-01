@@ -41,6 +41,8 @@ export default {
     addExecution: "Add execution",
     addSubFlowTitle: "Add a sub-flow",
     addSubFlow: "Add sub-flow",
+    addCondition: "Add condition",
+    addStep: "Add step",
     steps: "Steps",
     requirement: "Requirement",
     requirements: {
