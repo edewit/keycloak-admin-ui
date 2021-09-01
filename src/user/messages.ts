@@ -38,7 +38,7 @@ export default {
     firstName: "First name",
     status: "Status",
     disabled: "Disabled",
-    temporaryLocked: "Temporary locked",
+    temporaryLocked: "Temporarily locked",
     unlockSuccess: "User successfully unlocked",
     unlockError: "Could not unlock user due to {{error}}",
     emailInvalid: "You must enter a valid email.",
