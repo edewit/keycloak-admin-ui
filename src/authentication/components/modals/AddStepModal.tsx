@@ -1,29 +1,68 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Button,
+  ButtonVariant,
   Form,
-  FormGroup,
   Modal,
   ModalVariant,
+  PageSection,
   Radio,
 } from "@patternfly/react-core";
 
 import type { AuthenticationProviderRepresentation } from "@keycloak/keycloak-admin-client/lib/defs/authenticatorConfigRepresentation";
+import { PaginatingTableToolbar } from "../../../components/table-toolbar/PaginatingTableToolbar";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
+
+type AuthenticationProviderListProps = {
+  list?: AuthenticationProviderRepresentation[];
+  setValue: (provider?: AuthenticationProviderRepresentation) => void;
+};
+
+const AuthenticationProviderList = ({
+  list,
+  setValue,
+}: AuthenticationProviderListProps) => {
+  return (
+    <PageSection variant="light" className="pf-u-py-lg">
+      <Form isHorizontal>
+        {list?.map((provider) => (
+          <Radio
+            id={provider.id!}
+            key={provider.id}
+            name="provider"
+            label={provider.displayName}
+            data-testid={provider.id}
+            description={provider.description}
+            onChange={(_val, event) => {
+              const { id } = event.currentTarget;
+              const value = list.find((p) => p.id === id);
+              setValue(value);
+            }}
+          />
+        ))}
+      </Form>
+    </PageSection>
+  );
+};
 
 type FlowType = "client" | "form" | "basic";
 
 type AddStepModalProps = {
   name: string;
   type: FlowType;
-  onSelect: () => void;
+  onSelect: (value?: AuthenticationProviderRepresentation) => void;
 };
 
 export const AddStepModal = ({ name, type, onSelect }: AddStepModalProps) => {
   const { t } = useTranslation("authentication");
   const adminClient = useAdminClient();
 
-  const [, setProviders] = useState<AuthenticationProviderRepresentation[]>();
+  const [value, setValue] = useState<AuthenticationProviderRepresentation>();
+  const [providers, setProviders] =
+    useState<AuthenticationProviderRepresentation[]>();
+  const [max, setMax] = useState(10);
+  const [first, setFirst] = useState(0);
 
   useFetch(
     () => {
@@ -41,32 +80,54 @@ export const AddStepModal = ({ name, type, onSelect }: AddStepModalProps) => {
     []
   );
 
+  const page = providers?.slice(first, first + max + 1);
+
   return (
     <Modal
-      variant={ModalVariant.small}
+      variant={ModalVariant.medium}
       isOpen={true}
-      title={t("executionConfig", { name })}
+      title={t("addStepTo", { name })}
       onClose={() => onSelect()}
-    >
-      <Form>
-        <FormGroup
-          fieldId="simple-form-checkbox-group"
-          label="How can we contact you?"
+      actions={[
+        <Button
+          id="modal-add"
+          data-testid="modal-add"
+          key="add"
+          onClick={() => onSelect(value)}
         >
-          <Radio
-            name="Email"
-            label="Email"
-            id="inlinecheck01"
-            description="Some description can be long and then it will still look nice because patternfly is super and does this kind of things for us"
-          />
-          <Radio name="Email" label="Controlled radio" id="inlinecheck02" />
-          <Radio
-            name="Email"
-            label="Reversed radio example"
-            id="inlinecheck03"
-          />
-        </FormGroup>
-      </Form>
+          {t("common:add")}
+        </Button>,
+        <Button
+          data-testid="cancel"
+          id="modal-cancel"
+          key="cancel"
+          variant={ButtonVariant.link}
+          onClick={() => {
+            onSelect();
+          }}
+        >
+          {t("common:cancel")}
+        </Button>,
+      ]}
+    >
+      {providers && providers.length > max && (
+        <PaginatingTableToolbar
+          count={page?.length || 0}
+          first={first}
+          max={max}
+          onNextClick={setFirst}
+          onPreviousClick={setFirst}
+          onPerPageSelect={(first, max) => {
+            setFirst(first);
+            setMax(max);
+          }}
+        >
+          <AuthenticationProviderList list={page} setValue={setValue} />
+        </PaginatingTableToolbar>
+      )}
+      {providers && providers.length <= max && (
+        <AuthenticationProviderList list={providers} setValue={setValue} />
+      )}
     </Modal>
   );
 };
