@@ -183,13 +183,13 @@ export const UsersTabs = () => {
                 title={<TabTitleText>{t("consents")}</TabTitleText>}
               >
                 <UserConsents />
-            </Tab>
-            <Tab
-              eventKey="role-mapping"
-              data-testid="role-mapping-tab"
-              title={<TabTitleText>{t("roleMapping")}</TabTitleText>}
-            >
-              <UserRoleMapping id={id} name={user} />
+              </Tab>
+              <Tab
+                eventKey="role-mapping"
+                data-testid="role-mapping-tab"
+                title={<TabTitleText>{t("roleMapping")}</TabTitleText>}
+              >
+                <UserRoleMapping id={id} name={user.username!} />
               </Tab>
               <Tab
                 eventKey="identity-provider-links"
