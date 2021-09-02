@@ -87,7 +87,7 @@ export const FlowRow = ({
                 {execution.configurable && (
                   <ExecutionConfigModal execution={execution} />
                 )}
-                {execution.executionList && <EditFlowDropdown />}
+                {execution.authenticationFlow && <EditFlowDropdown />}
               </DataListCell>,
             ]}
           />
