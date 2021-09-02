@@ -128,15 +128,17 @@ export const UsersTabs = () => {
                 title={<TabTitleText>{t("users:consents")}</TabTitleText>}
               >
                 <UserConsents />
-            </Tab>
-            <Tab
-              eventKey="identity-provider-links"
-              data-testid="identity-provider-links-tab"
-              title={
-                <TabTitleText>{t("users:identityProviderLinks")}</TabTitleText>
-              }
-            >
-              <UserIdentityProviderLinks />
+              </Tab>
+              <Tab
+                eventKey="identity-provider-links"
+                data-testid="identity-provider-links-tab"
+                title={
+                  <TabTitleText>
+                    {t("users:identityProviderLinks")}
+                  </TabTitleText>
+                }
+              >
+                <UserIdentityProviderLinks />
               </Tab>
             </KeycloakTabs>
           )}
