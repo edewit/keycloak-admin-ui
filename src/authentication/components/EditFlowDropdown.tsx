@@ -42,7 +42,7 @@ export const EditFlowDropdown = ({
       <Dropdown
         isPlain
         position="right"
-        id="user-dropdown"
+        data-testid={`${execution.displayName}-edit-dropdown`}
         isOpen={open}
         toggle={
           <DropdownToggle onToggle={(open) => setOpen(open)}>
