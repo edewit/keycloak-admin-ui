@@ -49,7 +49,7 @@ export default {
     impersonate: "Impersonate",
     impersonateConfirm: "Impersonate user?",
     impersonateConfirmDialog:
-      "Are you sure you want to login as this user? If this user is in the same realm with you, your current login session will be logged out before you log in as this user",
+      "Are you sure you want to log in as this user? If this user is in the same realm with you, your current login session will be logged out before you log in as this user.",
     impersonateError: "Could not impersonate the user: {{error}}",
 
     deleteUser: "Delete user",
