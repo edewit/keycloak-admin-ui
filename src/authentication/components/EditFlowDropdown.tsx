@@ -5,25 +5,27 @@ import { PlusIcon } from "@patternfly/react-icons";
 
 import type { AuthenticationProviderRepresentation } from "@keycloak/keycloak-admin-client/lib/defs/authenticatorConfigRepresentation";
 import type { ExpandableExecution } from "../execution-model";
-import { AddStepModal } from "./modals/AddStepModal";
+import { AddStepModal, FlowType } from "./modals/AddStepModal";
 import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
-
-type AddedType = "step" | "condition" | "subFlow";
+import { AddSubFlowModal } from "./modals/AddSubFlowModal";
 
 type EditFlowDropdownProps = {
   execution: ExpandableExecution;
-  onSelect: (value?: AuthenticationProviderRepresentation) => void;
+  onAddExecution: (
+    execution: ExpandableExecution,
+    type: AuthenticationProviderRepresentation
+  ) => void;
 };
 
 export const EditFlowDropdown = ({
   execution,
-  onSelect,
+  onAddExecution,
 }: EditFlowDropdownProps) => {
   const { t } = useTranslation("authentication");
   const adminClient = useAdminClient();
 
   const [open, setOpen] = useState(false);
-  const [type, setType] = useState<AddedType>();
+  const [type, setType] = useState<FlowType>();
   const [providerId, setProviderId] = useState<string>();
 
   useFetch(
@@ -48,7 +50,12 @@ export const EditFlowDropdown = ({
           </DropdownToggle>
         }
         dropdownItems={[
-          <DropdownItem key="addStep" onClick={() => setType("step")}>
+          <DropdownItem
+            key="addStep"
+            onClick={() =>
+              setType(providerId === "form-flow" ? "form" : "basic")
+            }
+          >
             {t("addStep")}
           </DropdownItem>,
           <DropdownItem key="addCondition" onClick={() => setType("condition")}>
@@ -60,14 +67,23 @@ export const EditFlowDropdown = ({
         ]}
         onSelect={() => setOpen(false)}
       />
-      {type === "step" && (
+      {type && type !== "subFlow" && (
         <AddStepModal
           name={execution.displayName!}
-          type={providerId === "form-flow" ? "form" : "basic"}
+          type={type}
           onSelect={(type) => {
-            onSelect(type);
+            if (type) {
+              onAddExecution(execution, type);
+            }
             setType(undefined);
           }}
+        />
+      )}
+      {type === "subFlow" && (
+        <AddSubFlowModal
+          name={execution.displayName!}
+          onCancel={() => setType(undefined)}
+          onConfirm={() => setType(undefined)}
         />
       )}
     </>

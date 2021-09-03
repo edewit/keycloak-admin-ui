@@ -41,11 +41,6 @@ export const FlowRow = ({
   const { t } = useTranslation("authentication");
   const hasSubList = !!execution.executionList?.length;
 
-  const onSelect = (value?: AuthenticationProviderRepresentation) => {
-    if (value) {
-      onAddExecution(execution, value);
-    }
-  };
   return (
     <>
       <DataListItem
@@ -100,7 +95,10 @@ export const FlowRow = ({
                   <ExecutionConfigModal execution={execution} />
                 )}
                 {execution.authenticationFlow && (
-                  <EditFlowDropdown execution={execution} onSelect={onSelect} />
+                  <EditFlowDropdown
+                    execution={execution}
+                    onAddExecution={onAddExecution}
+                  />
                 )}
               </DataListCell>,
             ]}

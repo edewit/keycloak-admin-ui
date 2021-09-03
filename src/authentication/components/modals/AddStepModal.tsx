@@ -13,6 +13,7 @@ import {
 import type { AuthenticationProviderRepresentation } from "@keycloak/keycloak-admin-client/lib/defs/authenticatorConfigRepresentation";
 import { PaginatingTableToolbar } from "../../../components/table-toolbar/PaginatingTableToolbar";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
+import { providerConditionFilter } from "../../FlowDetails";
 
 type AuthenticationProviderListProps = {
   list?: AuthenticationProviderRepresentation[];
@@ -46,7 +47,7 @@ const AuthenticationProviderList = ({
   );
 };
 
-type FlowType = "client" | "form" | "basic";
+export type FlowType = "client" | "form" | "basic" | "condition" | "subFlow";
 
 type AddStepModalProps = {
   name: string;
@@ -65,15 +66,23 @@ export const AddStepModal = ({ name, type, onSelect }: AddStepModalProps) => {
   const [first, setFirst] = useState(0);
 
   useFetch(
-    () => {
+    async () => {
       switch (type) {
         case "client":
           return adminClient.authenticationManagement.getClientAuthenticatorProviders();
         case "form":
           return adminClient.authenticationManagement.getFormActionProviders();
+        case "condition": {
+          const providers =
+            await adminClient.authenticationManagement.getAuthenticatorProviders();
+          return providers.filter(providerConditionFilter);
+        }
         case "basic":
-        default:
-          return adminClient.authenticationManagement.getAuthenticatorProviders();
+        default: {
+          const providers =
+            await adminClient.authenticationManagement.getAuthenticatorProviders();
+          return providers.filter((p) => !providerConditionFilter(p));
+        }
       }
     },
     (providers) => setProviders(providers),
