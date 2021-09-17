@@ -7,10 +7,11 @@ export type MapperParams = {
   realm: string;
   id: string;
   mapperId: string;
+  type: string;
 };
 
 export const MapperRoute: RouteDef = {
-  path: "/:realm/client-scopes/:id/mappers/:mapperId",
+  path: "/:realm/client-scopes/:id/:type/mappers/:mapperId",
   component: MappingDetails,
   breadcrumb: (t) => t("common:mappingDetails"),
   access: "view-clients",
