@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import type { FunctionComponent } from "react";
 
 import type { ConfigPropertyRepresentation } from "@keycloak/keycloak-admin-client/lib/defs/authenticatorConfigInfoRepresentation";
 import { StringComponent } from "./StringComponent";
@@ -8,17 +8,13 @@ import { RoleComponent } from "./RoleComponent";
 import { ScriptComponent } from "./ScriptComponent";
 
 export type ComponentProps = Omit<ConfigPropertyRepresentation, "type">;
-export const ComponentTypes: ReadonlyArray<string> = [
-  "String",
-  "boolean",
-  "List",
-  "Role",
-  "Script",
-];
+const ComponentTypes = ["String", "boolean", "List", "Role", "Script"] as const;
 
 export type Components = typeof ComponentTypes[number];
 
-export const COMPONENTS: { [index in Components]: FC<ComponentProps> } = {
+export const COMPONENTS: {
+  [index in Components]: FunctionComponent<ComponentProps>;
+} = {
   String: StringComponent,
   boolean: BooleanComponent,
   List: ListComponent,

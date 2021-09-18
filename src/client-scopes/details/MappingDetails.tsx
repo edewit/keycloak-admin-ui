@@ -26,11 +26,7 @@ import { convertFormValuesToObject, convertToFormValues } from "../../util";
 import { FormAccess } from "../../components/form-access/FormAccess";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import type { MapperParams } from "../routes/Mapper";
-import {
-  Components,
-  COMPONENTS,
-  ComponentTypes,
-} from "../add/components/components";
+import { Components, COMPONENTS } from "../add/components/components";
 
 import "./mapping-details.css";
 import { toClientScope } from "../routes/ClientScope";
@@ -144,6 +140,9 @@ export const MappingDetails = () => {
     }
   };
 
+  const isValidComponentType = (value: string): value is Components =>
+    value in COMPONENTS;
+
   return (
     <>
       <DeleteConfirm />
@@ -217,8 +216,8 @@ export const MappingDetails = () => {
           <FormProvider {...form}>
             {mapping?.properties.map((property) => {
               const componentType = property.type!;
-              if (ComponentTypes.includes(componentType)) {
-                const Component = COMPONENTS[componentType as Components];
+              if (isValidComponentType(componentType)) {
+                const Component = COMPONENTS[componentType];
                 return <Component key={property.name} {...property} />;
               } else {
                 console.warn(
