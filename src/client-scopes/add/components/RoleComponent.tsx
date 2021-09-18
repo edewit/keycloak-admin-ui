@@ -175,7 +175,7 @@ export const RoleComponent = ({ name, label, helpText }: ComponentProps) => {
               </SplitItem>
               <SplitItem>
                 <Select
-                  onToggle={() => setRoleOpen(!roleOpen)}
+                  onToggle={(isExpanded) => setRoleOpen(isExpanded)}
                   isOpen={roleOpen}
                   variant={SelectVariant.typeahead}
                   placeholderText={
