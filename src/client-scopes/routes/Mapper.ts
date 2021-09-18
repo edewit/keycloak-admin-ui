@@ -6,8 +6,8 @@ import { MappingDetails } from "../details/MappingDetails";
 export type MapperParams = {
   realm: string;
   id: string;
-  mapperId: string;
   type: string;
+  mapperId: string;
 };
 
 export const MapperRoute: RouteDef = {
