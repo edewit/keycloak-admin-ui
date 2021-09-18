@@ -41,7 +41,6 @@ export const MapperList = ({ clientScope, type, refresh }: MapperListProps) => {
 
   const history = useHistory();
   const { realm } = useRealm();
-  const url = `/${realm}/client-scopes/${clientScope.id}/${type}/mappers`;
 
   const [mapperAction, setMapperAction] = useState(false);
   const mapperList = clientScope.protocolMappers;
@@ -67,7 +66,14 @@ export const MapperList = ({ clientScope, type, refresh }: MapperListProps) => {
   ): Promise<void> => {
     if (filter === undefined) {
       const mapper = mappers as ProtocolMapperTypeRepresentation;
-      history.push(`${url}/${mapper.id}`);
+      history.push(
+        toMapper({
+          realm,
+          id: clientScope.id!,
+          type,
+          mapperId: mapper.id!,
+        })
+      );
     } else {
       try {
         await adminClient.clientScopes.addMultipleProtocolMappers(
