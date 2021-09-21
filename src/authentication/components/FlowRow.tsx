@@ -46,7 +46,7 @@ export const FlowRow = ({
   onDelete,
 }: FlowRowProps) => {
   const { t } = useTranslation("authentication");
-  const hasSubList = !!execution.executionList.length;
+  const hasSubList = !!execution.executionList?.length;
 
   return (
     <>
@@ -120,21 +120,19 @@ export const FlowRow = ({
           />
         </DataListItemRow>
       </DataListItem>
-      {!execution.isCollapsed && hasSubList && (
-        <>
-          {execution.executionList.map((execution) => (
-            <FlowRow
-              key={execution.id}
-              execution={execution}
-              onRowClick={onRowClick}
-              onRowChange={onRowChange}
-              onAddExecution={onAddExecution}
-              onAddFlow={onAddFlow}
-              onDelete={onDelete}
-            />
-          ))}
-        </>
-      )}
+      {!execution.isCollapsed &&
+        hasSubList &&
+        execution.executionList?.map((execution) => (
+          <FlowRow
+            key={execution.id}
+            execution={execution}
+            onRowClick={onRowClick}
+            onRowChange={onRowChange}
+            onAddExecution={onAddExecution}
+            onAddFlow={onAddFlow}
+            onDelete={onDelete}
+          />
+        ))}
     </>
   );
 };
