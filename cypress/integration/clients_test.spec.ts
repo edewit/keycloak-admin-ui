@@ -7,7 +7,10 @@ import ModalUtils from "../support/util/ModalUtils";
 import AdvancedTab from "../support/pages/admin_console/manage/clients/AdvancedTab";
 import AdminClient from "../support/util/AdminClient";
 import InitialAccessTokenTab from "../support/pages/admin_console/manage/clients/InitialAccessTokenTab";
-import { keycloakBefore } from "../support/util/keycloak_before";
+import {
+  keycloakBefore,
+  keycloakBeforeEach,
+} from "../support/util/keycloak_hooks";
 import RoleMappingTab from "../support/pages/admin_console/manage/RoleMappingTab";
 import KeysTab from "../support/pages/admin_console/manage/clients/KeysTab";
 
@@ -21,9 +24,13 @@ const modalUtils = new ModalUtils();
 
 describe("Clients test", () => {
   describe("Client creation", () => {
-    beforeEach(() => {
+    before(() => {
       keycloakBefore();
       loginPage.logIn();
+    });
+
+    beforeEach(() => {
+      keycloakBeforeEach();
       sidebarPage.goToClients();
     });
 
@@ -98,9 +105,13 @@ describe("Clients test", () => {
     const advancedTab = new AdvancedTab();
     let client: string;
 
-    beforeEach(() => {
+    before(() => {
       keycloakBefore();
       loginPage.logIn();
+    });
+
+    beforeEach(() => {
+      keycloakBeforeEach();
       sidebarPage.goToClients();
 
       client = "client_" + (Math.random() + 1).toString(36).substring(7);
@@ -147,21 +158,24 @@ describe("Clients test", () => {
     const serviceAccountTab = new RoleMappingTab();
     const serviceAccountName = "service-account-client";
 
-    beforeEach(() => {
+    before(() => {
       keycloakBefore();
       loginPage.logIn();
-      sidebarPage.goToClients();
+      cy.then(() =>
+        new AdminClient().createClient({
+          protocol: "openid-connect",
+          clientId: serviceAccountName,
+          publicClient: false,
+          authorizationServicesEnabled: true,
+          serviceAccountsEnabled: true,
+          standardFlowEnabled: true,
+        })
+      );
     });
 
-    before(async () => {
-      await new AdminClient().createClient({
-        protocol: "openid-connect",
-        clientId: serviceAccountName,
-        publicClient: false,
-        authorizationServicesEnabled: true,
-        serviceAccountsEnabled: true,
-        standardFlowEnabled: true,
-      });
+    beforeEach(() => {
+      keycloakBeforeEach();
+      sidebarPage.goToClients();
     });
 
     after(() => {
@@ -182,7 +196,7 @@ describe("Clients test", () => {
       serviceAccountTab
         .goToServiceAccountTab()
         .clickAssignRole(false)
-        .selectRow("create-realm")
+        .selectRow("view-realm")
         .clickAssign();
       masthead.checkNotificationMessage("Role mapping updated");
     });
@@ -191,18 +205,22 @@ describe("Clients test", () => {
   describe("Keys tab test", () => {
     const keysName = "keys-client";
     beforeEach(() => {
-      keycloakBefore();
-      loginPage.logIn();
+      keycloakBeforeEach();
       sidebarPage.goToClients();
       listingPage.searchItem(keysName).goToItemDetails(keysName);
     });
 
     before(() => {
-      new AdminClient().createClient({
-        protocol: "openid-connect",
-        clientId: keysName,
-        publicClient: false,
-      });
+      keycloakBefore();
+      loginPage.logIn();
+
+      cy.then(() =>
+        new AdminClient().createClient({
+          protocol: "openid-connect",
+          clientId: keysName,
+          publicClient: false,
+        })
+      );
     });
 
     after(() => {

@@ -1,6 +1,5 @@
 import LoginPage from "../support/pages/LoginPage";
 import Masthead from "../support/pages/admin_console/Masthead";
-import { keycloakBefore } from "../support/util/keycloak_before";
 
 const username = "admin";
 const password = "admin";
@@ -10,7 +9,7 @@ const masthead = new Masthead();
 
 describe("Logging In", () => {
   beforeEach(() => {
-    keycloakBefore();
+    cy.visit("");
   });
 
   it("displays errors on wrong credentials", () => {

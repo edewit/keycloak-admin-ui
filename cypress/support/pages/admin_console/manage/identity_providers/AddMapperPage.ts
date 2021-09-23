@@ -91,7 +91,7 @@ export default class AddMapperPage {
   }
 
   addRoleToMapperForm() {
-    const load = "/auth/admin/realms/master/roles";
+    const load = "/auth/admin/realms/test/roles";
     cy.intercept(load).as("load");
 
     cy.get(this.radio).eq(0).check();

@@ -5,7 +5,10 @@ import ListingPage from "../support/pages/admin_console/ListingPage";
 import SidebarPage from "../support/pages/admin_console/SidebarPage";
 import CreateRealmRolePage from "../support/pages/admin_console/manage/realm_roles/CreateRealmRolePage";
 import AssociatedRolesPage from "../support/pages/admin_console/manage/realm_roles/AssociatedRolesPage";
-import { keycloakBefore } from "../support/util/keycloak_before";
+import {
+  keycloakBefore,
+  keycloakBeforeEach,
+} from "../support/util/keycloak_hooks";
 
 let itemId = "realm_role_crud";
 const loginPage = new LoginPage();
@@ -18,9 +21,13 @@ const associatedRolesPage = new AssociatedRolesPage();
 
 describe("Realm roles test", () => {
   describe("Realm roles creation", () => {
-    beforeEach(() => {
+    before(() => {
       keycloakBefore();
       loginPage.logIn();
+    });
+
+    beforeEach(() => {
+      keycloakBeforeEach();
       sidebarPage.goToRealmRoles();
     });
 
@@ -51,7 +58,7 @@ describe("Realm roles test", () => {
 
       listingPage.searchItem(itemId).itemExist(itemId);
 
-      const fetchUrl = "/auth/admin/realms/master/roles?first=0&max=11";
+      const fetchUrl = "/auth/admin/realms/test/roles?first=0&max=11";
       cy.intercept(fetchUrl).as("fetch");
 
       listingPage.deleteItem(itemId);
@@ -74,11 +81,9 @@ describe("Realm roles test", () => {
       masthead.checkNotificationMessage("Role created");
 
       // Add associated realm role
-
       associatedRolesPage.addAssociatedRealmRole();
 
       // Add associated client role
-
       associatedRolesPage.addAssociatedClientRole();
     });
   });
