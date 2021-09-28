@@ -66,7 +66,7 @@ export const ProfilesTab = () => {
     [key]
   );
 
-  const loader = async () => Promise.resolve(tableProfiles || []);
+  const loader = async () => tableProfiles ?? [];
 
   const code = useMemo(
     () => JSON.stringify(tableProfiles, null, 2),
