@@ -42,7 +42,7 @@ export const PoliciesTab = () => {
     []
   );
 
-  const loader = async () => Promise.resolve(policies || []);
+  const loader = async () => policies ?? [];
 
   const code = useMemo(() => JSON.stringify(policies, null, 2), [policies]);
 
