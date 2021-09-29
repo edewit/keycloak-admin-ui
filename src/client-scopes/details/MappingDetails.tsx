@@ -82,7 +82,7 @@ export const MappingDetails = () => {
           serverInfo.protocolMapperTypes![scope.protocol!];
         const mapping = protocolMappers.find(
           (mapper) => mapper.id === mapperId
-        )!;
+        );
         if (!mapping) {
           throw new Error(t("common:notFound"));
         }
