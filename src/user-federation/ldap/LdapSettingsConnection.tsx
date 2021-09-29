@@ -235,6 +235,15 @@ export const LdapSettingsConnection = ({
             ref={form.register}
           />
         </FormGroup>
+        <FormGroup fieldId="kc-test-button">
+          <Button
+            variant="secondary"
+            id="kc-test-button"
+            onClick={() => testLdap()}
+          >
+            {t("realm-settings:testConnection")}
+          </Button>
+        </FormGroup>
         <FormGroup
           label={t("bindType")}
           labelIcon={
