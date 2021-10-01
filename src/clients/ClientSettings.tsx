@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FormGroup,
@@ -20,11 +20,20 @@ import { FormAccess } from "../components/form-access/FormAccess";
 import { HelpItem } from "../components/help-enabler/HelpItem";
 import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 import { SaveReset } from "./advanced/SaveReset";
+import { SamlConfig } from "./add/SamlConfig";
+import { SamlSignature } from "./add/SamlSignature";
 
 type ClientSettingsProps = {
   save: () => void;
   reset: () => void;
 };
+
+const baseSections = [
+  "generalSettings",
+  "capabilityConfig",
+  "accessSettings",
+  "loginSettings",
+] as const;
 
 export const ClientSettings = ({ save, reset }: ClientSettingsProps) => {
   const { register, control, watch } = useFormContext();
@@ -36,21 +45,27 @@ export const ClientSettings = ({ save, reset }: ClientSettingsProps) => {
   const displayOnConsentScreen: string = watch(
     "attributes.display-on-consent-screen"
   );
+  const protocol: string = watch("protocol");
+
+  const array = useMemo(() => {
+    const array = [...baseSections] as string[];
+    if (protocol === "saml") {
+      array[1] = "samlCapabilityConfig";
+      array.splice(2, 0, "signatureAndEncryption");
+      return array;
+    }
+  }, [protocol]);
 
   return (
     <ScrollForm
       className="pf-u-px-lg"
-      sections={[
-        t("generalSettings"),
-        t("capabilityConfig"),
-        t("accessSettings"),
-        t("loginSettings"),
-      ]}
+      sections={(array ?? baseSections).map((section) => t(section))}
     >
       <Form isHorizontal>
         <ClientDescription />
       </Form>
-      <CapabilityConfig />
+      {protocol === "saml" ? <SamlConfig /> : <CapabilityConfig />}
+      {protocol === "saml" && <SamlSignature />}
       <FormAccess isHorizontal role="manage-clients">
         <FormGroup
           label={t("rootUrl")}
