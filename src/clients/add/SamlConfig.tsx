@@ -37,6 +37,7 @@ export const Toggle = ({ name, label }: { name: string; label: string }) => {
         render={({ onChange, value }) => (
           <Switch
             id={name!}
+            data-testid={label}
             label={t("common:on")}
             labelOff={t("common:off")}
             isChecked={value === "true"}
