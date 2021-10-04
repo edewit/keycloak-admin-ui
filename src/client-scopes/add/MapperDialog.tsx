@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -50,18 +50,22 @@ export const AddMapperDialog = (props: AddMapperDialogProps) => {
   const builtInMappers = serverInfo.builtinProtocolMappers![protocol];
   const [filter, setFilter] = useState<ProtocolMapperRepresentation[]>([]);
 
-  const allRows = builtInMappers
-    .sort((a, b) => a.name!.localeCompare(b.name!, whoAmI.getLocale()))
-    .map((mapper) => {
-      const mapperType = protocolMappers.filter(
-        (type) => type.id === mapper.protocolMapper
-      )[0];
-      return {
-        item: mapper,
-        selected: false,
-        cells: [mapper.name, mapperType.helpText],
-      };
-    });
+  const allRows = useMemo(
+    () =>
+      builtInMappers
+        .sort((a, b) => a.name!.localeCompare(b.name!, whoAmI.getLocale()))
+        .map((mapper) => {
+          const mapperType = protocolMappers.filter(
+            (type) => type.id === mapper.protocolMapper
+          )[0];
+          return {
+            item: mapper,
+            selected: false,
+            cells: [mapper.name, mapperType.helpText],
+          };
+        }),
+    []
+  );
   const [rows, setRows] = useState(allRows);
 
   if (props.filter && props.filter.length !== filter.length) {
@@ -70,9 +74,10 @@ export const AddMapperDialog = (props: AddMapperDialogProps) => {
     setRows([...allRows.filter((row) => !nameFilter.includes(row.item.name))]);
   }
 
-  const selectedRows = rows
-    .filter((row) => row.selected)
-    .map((row) => row.item);
+  const selectedRows = useMemo(
+    () => rows.filter((row) => row.selected).map((row) => row.item),
+    [rows]
+  );
   const isBuiltIn = !!props.filter;
 
   const header = [t("common:name"), t("common:description")];
