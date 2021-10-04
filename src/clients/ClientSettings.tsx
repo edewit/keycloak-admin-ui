@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FormGroup,
@@ -35,6 +35,14 @@ const baseSections = [
   "loginSettings",
 ] as const;
 
+const samlSections = [
+  "generalSettings",
+  "samlCapabilityConfig",
+  "signatureAndEncryption",
+  "accessSettings",
+  "loginSettings",
+] as const;
+
 export const ClientSettings = ({ save, reset }: ClientSettingsProps) => {
   const { register, control, watch } = useFormContext();
   const { t } = useTranslation("clients");
@@ -46,20 +54,12 @@ export const ClientSettings = ({ save, reset }: ClientSettingsProps) => {
     "attributes.display-on-consent-screen"
   );
   const protocol: string = watch("protocol");
-
-  const array = useMemo(() => {
-    const array = [...baseSections] as string[];
-    if (protocol === "saml") {
-      array[1] = "samlCapabilityConfig";
-      array.splice(2, 0, "signatureAndEncryption");
-      return array;
-    }
-  }, [protocol]);
+  const sections = protocol === "saml" ? samlSections : baseSections;
 
   return (
     <ScrollForm
       className="pf-u-px-lg"
-      sections={(array ?? baseSections).map((section) => t(section))}
+      sections={sections.map((section) => t(section))}
     >
       <Form isHorizontal>
         <ClientDescription />
