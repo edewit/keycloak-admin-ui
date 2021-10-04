@@ -47,7 +47,7 @@ const convertFormToSettings = (form: UseFormMethods) => {
 
   testLdapProperties.forEach((key) => {
     const value = _.get(form.getValues(), `config.${key}`);
-    settings[key] = _.isArray(value) ? value[0] : "";
+    settings[key] = Array.isArray(value) ? value[0] : "";
   });
 
   return settings;

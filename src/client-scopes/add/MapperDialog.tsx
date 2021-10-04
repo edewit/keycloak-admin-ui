@@ -74,10 +74,18 @@ export const AddMapperDialog = (props: AddMapperDialogProps) => {
     setRows([...allRows.filter((row) => !nameFilter.includes(row.item.name))]);
   }
 
-  const selectedRows = useMemo(
-    () => rows.filter((row) => row.selected).map((row) => row.item),
-    [rows]
+  const selectedRows = rows
+    .filter((row) => row.selected)
+    .map((row) => row.item);
+
+  const sortedProtocolMappers = useMemo(
+    () =>
+      protocolMappers.sort((a, b) =>
+        a.name!.localeCompare(b.name!, whoAmI.getLocale())
+      ),
+    [protocolMappers]
   );
+
   const isBuiltIn = !!props.filter;
 
   const header = [t("common:name"), t("common:description")];
@@ -143,28 +151,26 @@ export const AddMapperDialog = (props: AddMapperDialogProps) => {
               />
             </DataListItemRow>
           </DataListItem>
-          {protocolMappers
-            .sort((a, b) => a.name!.localeCompare(b.name!, whoAmI.getLocale()))
-            .map((mapper) => (
-              <DataListItem
-                aria-label={mapper.name}
-                key={mapper.id}
-                id={mapper.id}
-              >
-                <DataListItemRow>
-                  <DataListItemCells
-                    dataListCells={[
-                      <DataListCell key={`name-${mapper.id}`}>
-                        {mapper.name}
-                      </DataListCell>,
-                      <DataListCell key={`helpText-${mapper.id}`}>
-                        {mapper.helpText}
-                      </DataListCell>,
-                    ]}
-                  />
-                </DataListItemRow>
-              </DataListItem>
-            ))}
+          {sortedProtocolMappers.map((mapper) => (
+            <DataListItem
+              aria-label={mapper.name}
+              key={mapper.id}
+              id={mapper.id}
+            >
+              <DataListItemRow>
+                <DataListItemCells
+                  dataListCells={[
+                    <DataListCell key={`name-${mapper.id}`}>
+                      {mapper.name}
+                    </DataListCell>,
+                    <DataListCell key={`helpText-${mapper.id}`}>
+                      {mapper.helpText}
+                    </DataListCell>,
+                  ]}
+                />
+              </DataListItemRow>
+            </DataListItem>
+          ))}
         </DataList>
       )}
       {isBuiltIn && rows.length > 0 && (
