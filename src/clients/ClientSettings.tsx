@@ -22,6 +22,7 @@ import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 import { SaveReset } from "./advanced/SaveReset";
 import { SamlConfig } from "./add/SamlConfig";
 import { SamlSignature } from "./add/SamlSignature";
+import type { ClientForm } from "./ClientDetails";
 
 type ClientSettingsProps = {
   save: () => void;
@@ -44,16 +45,16 @@ const samlSections = [
 ] as const;
 
 export const ClientSettings = ({ save, reset }: ClientSettingsProps) => {
-  const { register, control, watch } = useFormContext();
+  const { register, control, watch } = useFormContext<ClientForm>();
   const { t } = useTranslation("clients");
 
   const [loginThemeOpen, setLoginThemeOpen] = useState(false);
   const loginThemes = useServerInfo().themes!["login"];
-  const consentRequired: boolean = watch("consentRequired");
+  const consentRequired = watch("consentRequired");
   const displayOnConsentScreen: string = watch(
     "attributes.display-on-consent-screen"
   );
-  const protocol: string = watch("protocol");
+  const protocol = watch("protocol");
   const sections = protocol === "saml" ? samlSections : baseSections;
 
   return (
