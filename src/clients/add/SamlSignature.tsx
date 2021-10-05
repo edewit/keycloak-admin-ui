@@ -169,7 +169,7 @@ export const SamlSignature = () => {
                   toggleId="canonicalization"
                   onToggle={(open) => setCanOpen(open)}
                   onSelect={(_, value) => {
-                    onChange(value as string);
+                    onChange(value.toString());
                     setCanOpen(false);
                   }}
                   selections={
