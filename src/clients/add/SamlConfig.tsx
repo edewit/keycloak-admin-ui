@@ -80,7 +80,7 @@ export const SamlConfig = () => {
               toggleId="samlNameIdFormat"
               onToggle={(open) => setNameFormatOpen(open)}
               onSelect={(_, value) => {
-                onChange(value as string);
+                onChange(value.toString());
                 setNameFormatOpen(false);
               }}
               selections={value}
