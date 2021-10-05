@@ -41,7 +41,7 @@ export const Toggle = ({ name, label }: { name: string; label: string }) => {
             label={t("common:on")}
             labelOff={t("common:off")}
             isChecked={value === "true"}
-            onChange={(value) => onChange("" + value)}
+            onChange={(value) => onChange(value.toString())}
           />
         )}
       />
