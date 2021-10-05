@@ -87,7 +87,7 @@ export const SamlSignature = () => {
                   toggleId="signatureAlgorithm"
                   onToggle={(open) => setAlgOpen(open)}
                   onSelect={(_, value) => {
-                    onChange(value as string);
+                    onChange(value.toString());
                     setAlgOpen(false);
                   }}
                   selections={value}
