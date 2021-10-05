@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import React, { useState } from "react";
-import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Button } from "@patternfly/react-core";
 
