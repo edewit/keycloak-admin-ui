@@ -128,7 +128,7 @@ export const SamlSignature = () => {
                   toggleId="signatureKeyName"
                   onToggle={(open) => setKeyOpen(open)}
                   onSelect={(_, value) => {
-                    onChange(value as string);
+                    onChange(value.toString());
                     setKeyOpen(false);
                   }}
                   selections={value}
