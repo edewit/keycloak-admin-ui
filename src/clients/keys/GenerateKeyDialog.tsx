@@ -63,7 +63,7 @@ export const KeyForm = ({
               toggleId="archiveFormat"
               onToggle={(isExpanded) => setOpenArchiveFormat(isExpanded)}
               onSelect={(_, value) => {
-                onChange(value as string);
+                onChange(value.toString());
                 setOpenArchiveFormat(false);
               }}
               selections={value}
