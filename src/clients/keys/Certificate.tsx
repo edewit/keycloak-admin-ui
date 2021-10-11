@@ -29,24 +29,23 @@ export const Certificate = ({ keyInfo, plain = false }: CertificateProps) => {
   return (
     <GenerateId prefix="certificate">
       {(id) => (
-        <>
-          {plain && <CertificateDisplay id={id} keyInfo={keyInfo} />}
-          {!plain && (
-            <FormGroup
-              label={t("certificate")}
-              fieldId={id}
-              labelIcon={
-                <HelpItem
-                  helpText="clients-help:certificate"
-                  forLabel={t("certificate")}
-                  forID={id}
-                />
-              }
-            >
-              <CertificateDisplay id={id} keyInfo={keyInfo} />
-            </FormGroup>
-          )}
-        </>
+        plain ? (
+          <CertificateDisplay id={id} keyInfo={keyInfo} />
+        ) : (
+          <FormGroup
+            label={t("certificate")}
+            fieldId={id}
+            labelIcon={
+              <HelpItem
+                helpText="clients-help:certificate"
+                forLabel={t("certificate")}
+                forID={id}
+              />
+            }
+          >
+            <CertificateDisplay id={id} keyInfo={keyInfo} />
+          </FormGroup>
+        )
       )}
     </GenerateId>
   );
