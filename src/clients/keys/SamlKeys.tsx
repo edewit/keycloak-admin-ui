@@ -155,13 +155,12 @@ export const SamlKeys = ({ clientId, save }: SamlKeysProps) => {
   const { addAlert, addError } = useAlerts();
 
   useFetch(
-    () => {
-      return Promise.all(
+    () =>
+      Promise.all(
         KEYS.map((attr) =>
           adminClient.clients.getKeyInfo({ id: clientId, attr })
         )
-      );
-    },
+      ),
     (info) => setKeyInfo(info),
     [refresh]
   );
