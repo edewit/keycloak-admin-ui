@@ -28,7 +28,7 @@ export const Certificate = ({ keyInfo, plain = false }: CertificateProps) => {
   const { t } = useTranslation("clients");
   return (
     <GenerateId prefix="certificate">
-      {(id) => (
+      {(id) =>
         plain ? (
           <CertificateDisplay id={id} keyInfo={keyInfo} />
         ) : (
@@ -46,7 +46,7 @@ export const Certificate = ({ keyInfo, plain = false }: CertificateProps) => {
             <CertificateDisplay id={id} keyInfo={keyInfo} />
           </FormGroup>
         )
-      )}
+      }
     </GenerateId>
   );
 };
