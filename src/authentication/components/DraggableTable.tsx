@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import _ from "lodash";
+import { get } from "lodash";
 import {
   TableComposable,
   Tbody,
@@ -41,7 +41,7 @@ export function DraggableTable<T>({
   });
 
   const itemOrder: string[] = useMemo(
-    () => data.map((d) => _.get(d, keyField)),
+    () => data.map((d) => get(d, keyField)),
     [data]
   );
 
@@ -186,8 +186,8 @@ export function DraggableTable<T>({
       >
         {data.map((row) => (
           <Tr
-            key={_.get(row, keyField)}
-            id={_.get(row, keyField)}
+            key={get(row, keyField)}
+            id={get(row, keyField)}
             draggable
             onDrop={onDrop}
             onDragEnd={onDragEnd}
@@ -195,17 +195,17 @@ export function DraggableTable<T>({
           >
             <Td
               draggableRow={{
-                id: `draggable-row-${_.get(row, "id")}`,
+                id: `draggable-row-${get(row, "id")}`,
               }}
             />
             {columns.map((column) => (
               <Td
-                key={`${_.get(row, "id")}_${column.name}`}
+                key={`${get(row, "id")}_${column.name}`}
                 dataLabel={column.name}
               >
                 {column.cellRenderer
                   ? column.cellRenderer(row)
-                  : _.get(row, column.name)}
+                  : get(row, column.name)}
               </Td>
             ))}
           </Tr>

@@ -29,10 +29,10 @@ export const RequiredActions = () => {
 
   useFetch(
     async () => {
-      const requiredActions: RequiredActionProviderRepresentation[] =
-        await adminClient.authenticationManagement.getRequiredActions();
-      const unregisteredRequiredActions: RequiredActionProviderSimpleRepresentation[] =
-        await adminClient.authenticationManagement.getUnregisteredRequiredActions();
+      const [requiredActions, unregisteredRequiredActions] = await Promise.all([
+        adminClient.authenticationManagement.getRequiredActions(),
+        adminClient.authenticationManagement.getUnregisteredRequiredActions(),
+      ]);
       return [
         ...requiredActions.map((a) => ({
           name: a.name!,
@@ -52,10 +52,8 @@ export const RequiredActions = () => {
     [key]
   );
 
-  const isUnregisteredAction = (
-    data: DataType
-  ): RequiredActionProviderSimpleRepresentation | undefined => {
-    if (!("alias" in data)) return data;
+  const isUnregisteredAction = (data: DataType): boolean => {
+    return "alias" in data;
   };
 
   const updateAction = async (
