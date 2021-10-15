@@ -53,7 +53,7 @@ export const RequiredActions = () => {
   );
 
   const isUnregisteredAction = (data: DataType): boolean => {
-    return "alias" in data;
+    return !("alias" in data);
   };
 
   const updateAction = async (

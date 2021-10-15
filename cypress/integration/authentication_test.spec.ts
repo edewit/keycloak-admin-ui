@@ -127,7 +127,7 @@ describe("Authentication test", () => {
       new AdminClient().deleteRealm("Test");
     });
 
-    it("should enable verify profile", () => {
+    it("should enable delete account", () => {
       const action = "Delete Account";
       requiredActionsPage.enableAction(action);
       masthead.checkNotificationMessage("Updated required action successfully");
