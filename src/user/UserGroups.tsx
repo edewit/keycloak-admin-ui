@@ -32,7 +32,9 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
   const [key, setKey] = useState(0);
   const refresh = () => setKey(new Date().getTime());
 
-  const [selectedGroup, setSelectedGroup] = useState<GroupRepresentation>();
+  const [selectedGroups, setSelectedGroups] = useState<GroupRepresentation[]>(
+    []
+  );
   const [search, setSearch] = useState("");
 
   const [isDirectMembership, setDirectMembership] = useState(true);
@@ -170,10 +172,12 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: t("leaveGroup", {
-      name: selectedGroup?.name,
+      count: selectedGroups.length,
+      name: selectedGroups[0]?.name,
     }),
     messageKey: t("leaveGroupConfirmDialog", {
-      groupname: selectedGroup?.name,
+      count: selectedGroups.length,
+      groupname: selectedGroups[0]?.name,
       username: user.username,
     }),
     continueButtonLabel: "leave",
@@ -182,7 +186,7 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
       try {
         await adminClient.users.delFromGroup({
           id: user.id!,
-          groupId: selectedGroup!.id!,
+          groupId: selectedGroups![0].id!,
         });
         refresh();
         addAlert(t("removedGroupMembership"), AlertVariant.success);
@@ -192,8 +196,8 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
     },
   });
 
-  const leave = (group: GroupRepresentation) => {
-    setSelectedGroup(group);
+  const leave = (group: GroupRepresentation[]) => {
+    setSelectedGroups(group);
     toggleDeleteDialog();
   };
 
@@ -206,7 +210,7 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
       canLeaveGroup && (
         <Button
           data-testid={`leave-${group.name}`}
-          onClick={() => leave(group)}
+          onClick={() => leave([group])}
           variant="link"
         >
           {t("leave")}
@@ -260,11 +264,15 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
         ariaLabelKey="roles:roleList"
         searchPlaceholderKey="groups:searchGroup"
         canSelectAll
+        onSelect={setSelectedGroups}
+        isRowDisabled={(group) =>
+          !isDirectMembership &&
+          !directMembershipList.some((item) => item.id === group.id)
+        }
         toolbarItem={
           <>
             <Button
               className="kc-join-group-button"
-              key="join-group-button"
               onClick={toggleModal}
               data-testid="add-group-button"
             >
@@ -278,6 +286,15 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
               isChecked={isDirectMembership}
               className="direct-membership-check"
             />
+            <Button
+              onClick={() => leave(selectedGroups)}
+              data-testid="leave-group-button"
+              variant="link"
+              isDisabled={selectedGroups.length === 0}
+            >
+              {t("leave")}
+            </Button>
+
             {enabled && (
               <Popover
                 aria-label="Basic popover"

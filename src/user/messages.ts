@@ -20,8 +20,11 @@ export default {
     searchForGroups: "Search for groups",
     leave: "Leave",
     leaveGroup: "Leave group {{name}}?",
+    leaveGroup_plural: "Leave groups?",
     leaveGroupConfirmDialog:
       "Are you sure you want to remove {{username}} from the group {{groupname}}?",
+    leaveGroupConfirmDialog_plural:
+      "Are you sure you want to remove {{username}} from the {{count}} selected groups?",
     directMembership: "Direct membership",
     groupMembership: "Group membership",
     addedGroupMembership: "Added group membership",
