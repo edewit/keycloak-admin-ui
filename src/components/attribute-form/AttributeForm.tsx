@@ -12,8 +12,6 @@ import {
 } from "@patternfly/react-table";
 import { MinusCircleIcon, PlusCircleIcon } from "@patternfly/react-icons";
 
-import { FormAccess } from "../form-access/FormAccess";
-
 import "./attribute-form.css";
 
 export type KeyValueType = { key: string; value: string };
@@ -90,10 +88,7 @@ export const AttributesForm = ({
   }, [fields]);
 
   return (
-    <FormAccess
-      role="manage-realm"
-      onSubmit={save ? handleSubmit(save) : undefined}
-    >
+    <>
       <TableComposable
         className="kc-attributes__table"
         aria-label="Role attribute keys and values"
@@ -207,8 +202,8 @@ export const AttributesForm = ({
           <Button
             data-testid="save-attributes"
             variant="primary"
-            type="submit"
             isDisabled={!watchLast}
+            onClick={() => (save ? handleSubmit(save)() : undefined)}
           >
             {t("common:save")}
           </Button>
@@ -221,6 +216,6 @@ export const AttributesForm = ({
           </Button>
         </ActionGroup>
       )}
-    </FormAccess>
+    </>
   );
 };

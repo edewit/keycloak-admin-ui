@@ -30,6 +30,7 @@ import { KeycloakTabs } from "../components/keycloak-tabs/KeycloakTabs";
 import { AssociatedRolesTab } from "./AssociatedRolesTab";
 import { UsersInRoleTab } from "./UsersInRoleTab";
 import type RealmRepresentation from "@keycloak/keycloak-admin-client/lib/defs/realmRepresentation";
+import { FormAccess } from "../components/form-access/FormAccess";
 
 export type RoleFormType = Omit<RoleRepresentation, "attributes"> & {
   attributes: KeyValueType[];
@@ -377,12 +378,14 @@ export default function RealmRoleTabs() {
                 className="kc-attributes-tab"
                 title={<TabTitleText>{t("common:attributes")}</TabTitleText>}
               >
-                <AttributesForm
-                  form={form}
-                  save={save}
-                  array={{ fields, append, remove }}
-                  reset={() => form.reset(role)}
-                />
+                <FormAccess role="manage-realm">
+                  <AttributesForm
+                    form={form}
+                    save={save}
+                    array={{ fields, append, remove }}
+                    reset={() => form.reset(role)}
+                  />
+                </FormAccess>
               </Tab>
             )}
             {form.getValues().name !== realm?.defaultRole?.name && (

@@ -17,6 +17,7 @@ import {
   attributesToArray,
 } from "../components/attribute-form/AttributeForm";
 import { useAdminClient } from "../context/auth/AdminClient";
+import { FormAccess } from "../components/form-access/FormAccess";
 
 type UserAttributesProps = {
   user: UserRepresentation;
@@ -56,16 +57,18 @@ export const UserAttributes = ({ user }: UserAttributesProps) => {
 
   return (
     <PageSection variant={PageSectionVariants.light}>
-      <AttributesForm
-        form={form}
-        save={save}
-        array={{ fields, append, remove }}
-        reset={() =>
-          form.reset({
-            attributes: convertAttributes(),
-          })
-        }
-      />
+      <FormAccess role="manage-users">
+        <AttributesForm
+          form={form}
+          save={save}
+          array={{ fields, append, remove }}
+          reset={() =>
+            form.reset({
+              attributes: convertAttributes(),
+            })
+          }
+        />
+      </FormAccess>
     </PageSection>
   );
 };

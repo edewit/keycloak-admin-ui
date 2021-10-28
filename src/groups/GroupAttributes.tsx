@@ -16,6 +16,7 @@ import {
 } from "../components/attribute-form/AttributeForm";
 import { useAdminClient } from "../context/auth/AdminClient";
 
+import { FormAccess } from "../components/form-access/FormAccess";
 import { getLastId } from "./groupIdUtils";
 import { useSubGroups } from "./SubGroupsContext";
 import { useLocation } from "react-router-dom";
@@ -63,16 +64,18 @@ export const GroupAttributes = () => {
 
   return (
     <PageSection variant={PageSectionVariants.light}>
-      <AttributesForm
-        form={form}
-        save={save}
-        array={{ fields, append, remove }}
-        reset={() =>
-          form.reset({
-            attributes: convertAttributes(),
-          })
-        }
-      />
+      <FormAccess role="query-groups">
+        <AttributesForm
+          form={form}
+          save={save}
+          array={{ fields, append, remove }}
+          reset={() =>
+            form.reset({
+              attributes: convertAttributes(),
+            })
+          }
+        />
+      </FormAccess>
     </PageSection>
   );
 };
