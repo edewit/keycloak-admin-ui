@@ -10,41 +10,31 @@ import {
   ValidatedOptions,
 } from "@patternfly/react-core";
 
-import { HelpItem } from "../../components/help-enabler/HelpItem";
-import _ from "lodash";
-import type IdentityProviderMapperRepresentation from "@keycloak/keycloak-admin-client/lib/defs/identityProviderMapperRepresentation";
-import type { IdentityProviderAddMapperParams } from "../routes/AddMapper";
-import { useParams } from "react-router-dom";
+import type { IdentityProviderMapperTypeRepresentation } from "@keycloak/keycloak-admin-client/lib/defs/identityProviderMapperTypeRepresentation";
 import type { IdPMapperRepresentationWithAttributes } from "./AddMapper";
+import { HelpItem } from "../../components/help-enabler/HelpItem";
+import { camelCase } from "lodash";
 
 type AddMapperFormProps = {
-  mapperTypes?: Record<string, IdentityProviderMapperRepresentation>;
-  mapperType: string;
+  mapperTypes?: Record<string, IdentityProviderMapperTypeRepresentation>;
   id: string;
-  updateMapperType: (mapperType: string) => void;
   form: UseFormMethods<IdPMapperRepresentationWithAttributes>;
-  formValues: IdPMapperRepresentationWithAttributes;
-  isSocialIdP: boolean;
 };
 
 export const AddMapperForm = ({
   mapperTypes,
-  mapperType,
   form,
   id,
-  updateMapperType,
-  formValues,
-  isSocialIdP,
 }: AddMapperFormProps) => {
   const { t } = useTranslation("identity-providers");
 
-  const { control, register, errors } = form;
+  const { control, register, errors, watch } = form;
+  const mapperType = watch("identityProviderMapper");
 
   const [mapperTypeOpen, setMapperTypeOpen] = useState(false);
 
   const syncModes = ["inherit", "import", "legacy", "force"];
   const [syncModeOpen, setSyncModeOpen] = useState(false);
-  const { providerId } = useParams<IdentityProviderAddMapperParams>();
 
   return (
     <>
@@ -127,15 +117,7 @@ export const AddMapperForm = ({
         label={t("mapperType")}
         labelIcon={
           <HelpItem
-            helpText={
-              formValues.identityProviderMapper ===
-                "saml-user-attribute-idp-mapper" &&
-              (providerId === "oidc" ||
-                providerId === "keycloak-oidc" ||
-                isSocialIdP)
-                ? `identity-providers-help:oidcAttributeImporter`
-                : `identity-providers-help:${mapperType}`
-            }
+            helpText={mapperTypes?.[mapperType!]?.helpText}
             forLabel={t("mapperType")}
             forID={t(`common:helpLabel`, { label: t("mapperType") })}
           />
@@ -144,13 +126,6 @@ export const AddMapperForm = ({
       >
         <Controller
           name="identityProviderMapper"
-          defaultValue={
-            isSocialIdP
-              ? `${providerId.toLowerCase()}-user-attribute-mapper`
-              : providerId === "saml"
-              ? "saml-advanced-role-idp-mapper"
-              : "hardcoded-user-session-attribute-idp-mapper"
-          }
           control={control}
           render={({ onChange, value }) => (
             <Select
@@ -160,17 +135,8 @@ export const AddMapperForm = ({
               required
               direction="down"
               onToggle={() => setMapperTypeOpen(!mapperTypeOpen)}
-              onSelect={(e, value) => {
-                const theMapper =
-                  mapperTypes &&
-                  Object.values(mapperTypes).find(
-                    (item) =>
-                      item.name?.toLowerCase() ===
-                      value.toString().toLowerCase()
-                  );
-
-                updateMapperType(_.camelCase(value.toString()));
-                onChange(theMapper?.id);
+              onSelect={(_, value) => {
+                onChange(value);
                 setMapperTypeOpen(false);
               }}
               selections={
@@ -188,10 +154,10 @@ export const AddMapperForm = ({
                   <SelectOption
                     selected={option === value}
                     datatest-id={option.id}
-                    key={option.name}
-                    value={option.name?.toUpperCase()}
+                    key={option.id}
+                    value={option.id}
                   >
-                    {t(`mapperTypes.${_.camelCase(option.name)}`)}
+                    {t(`mapperTypes.${camelCase(option.name)}`)}
                   </SelectOption>
                 ))}
             </Select>

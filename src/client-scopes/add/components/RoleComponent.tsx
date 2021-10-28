@@ -33,7 +33,7 @@ export const RoleComponent = ({ name, label, helpText }: ComponentProps) => {
   const [clientRoles, setClientRoles] = useState<RoleRepresentation[]>([]);
   const [selectedRole, setSelectedRole] = useState<RoleRepresentation>();
 
-  const fieldName = `config.${name?.replaceAll(".", "-")}`;
+  const escapedName = name?.replaceAll(".", "-");
 
   useFetch(
     async () => {
@@ -125,15 +125,14 @@ export const RoleComponent = ({ name, label, helpText }: ComponentProps) => {
       labelIcon={
         <HelpItem helpText={t(helpText!)} forLabel={name!} forID={name!} />
       }
-      validated={errors[fieldName] ? "error" : "default"}
+      validated={errors.config?.[escapedName!] ? "error" : "default"}
       helperTextInvalid={t("common:required")}
       fieldId={name!}
     >
       <Controller
-        name={fieldName}
+        name={`config.${escapedName}`}
         defaultValue=""
         control={control}
-        rules={{ required: true }}
         render={({ onChange, value }) => {
           const [client, role] = value?.split(".") || ["", ""];
           return (
@@ -169,6 +168,9 @@ export const RoleComponent = ({ name, label, helpText }: ComponentProps) => {
                       setSelectedClient(value as ClientRepresentation);
                       setClientsOpen(false);
                     }}
+                    validated={
+                      errors.config?.[escapedName!] ? "error" : "default"
+                    }
                   >
                     {createSelectGroup(clients)}
                   </Select>

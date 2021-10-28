@@ -8,6 +8,7 @@ import { RoleComponent } from "./RoleComponent";
 import { ScriptComponent } from "./ScriptComponent";
 import { MultivaluedListComponent } from "./MultivaluedListComponent";
 import { ClientSelectComponent } from "./ClientSelectComponent";
+import { MapComponent } from "./MapComponent";
 
 export type ComponentProps = Omit<ConfigPropertyRepresentation, "type">;
 const ComponentTypes = [
@@ -18,6 +19,7 @@ const ComponentTypes = [
   "Script",
   "MultivaluedList",
   "ClientList",
+  "Map",
 ] as const;
 
 export type Components = typeof ComponentTypes[number];
@@ -32,6 +34,7 @@ export const COMPONENTS: {
   Script: ScriptComponent,
   MultivaluedList: MultivaluedListComponent,
   ClientList: ClientSelectComponent,
+  Map: MapComponent,
 } as const;
 
 export const isValidComponentType = (value: string): value is Components =>

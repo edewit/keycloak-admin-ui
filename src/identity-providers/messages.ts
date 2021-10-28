@@ -173,7 +173,7 @@ export default {
     regexClaimValues: "Regex Claim Values",
     selectRole: "Select role",
     mapperCreateSuccess: "Mapper created successfully.",
-    mapperCreateError: "Error creating mapper.",
+    mapperCreateError: "Error creating mapper: {{error}}",
     mapperSaveSuccess: "Mapper saved successfully.",
     mapperSaveError: "Error saving mapper: {{error}}",
     userAttribute: "User Attribute",
