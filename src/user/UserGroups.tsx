@@ -186,7 +186,7 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
       try {
         await adminClient.users.delFromGroup({
           id: user.id!,
-          groupId: selectedGroups![0].id!,
+          groupId: selectedGroups[0].id!,
         });
         refresh();
         addAlert(t("removedGroupMembership"), AlertVariant.success);
