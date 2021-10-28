@@ -267,7 +267,7 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
         onSelect={setSelectedGroups}
         isRowDisabled={(group) =>
           !isDirectMembership &&
-          !directMembershipList.some((item) => item.id === group.id)
+          directMembershipList.every((item) => item.id !== group.id)
         }
         toolbarItem={
           <>
