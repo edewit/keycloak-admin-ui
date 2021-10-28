@@ -3,8 +3,9 @@ import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FormGroup, Switch } from "@patternfly/react-core";
 
-import type { ComponentProps } from "./components";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
+import { createKey } from "../../../util";
+import type { ComponentProps } from "./components";
 
 export const BooleanComponent = ({
   name,
@@ -25,7 +26,7 @@ export const BooleanComponent = ({
       }
     >
       <Controller
-        name={`config.${name?.replaceAll(".", "-")}`}
+        name={`config.${createKey(name)}`}
         data-testid={name}
         defaultValue={defaultValue || "false"}
         control={control}

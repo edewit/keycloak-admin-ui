@@ -4,6 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { FormGroup, TextInput } from "@patternfly/react-core";
 
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
+import { createKey } from "../../../util";
 import type { ComponentProps } from "./components";
 
 export const StringComponent = ({
@@ -28,7 +29,7 @@ export const StringComponent = ({
         data-testid={name}
         ref={register()}
         type="text"
-        name={`config.${name?.replaceAll(".", "-")}`}
+        name={`config.${createKey(name)}`}
         defaultValue={defaultValue?.toString()}
       />
     </FormGroup>

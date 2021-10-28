@@ -5,6 +5,7 @@ import { FormGroup } from "@patternfly/react-core";
 import { CodeEditor, Language } from "@patternfly/react-code-editor";
 
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
+import { createKey } from "../../../util";
 import type { ComponentProps } from "./components";
 
 export const ScriptComponent = ({
@@ -29,7 +30,7 @@ export const ScriptComponent = ({
       fieldId={name!}
     >
       <Controller
-        name={`config.${name?.replaceAll(".", "-")}`}
+        name={`config.${createKey(name)}`}
         defaultValue={defaultValue}
         control={control}
         render={({ onChange, value }) => (

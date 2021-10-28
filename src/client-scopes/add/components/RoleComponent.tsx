@@ -17,6 +17,7 @@ import type RoleRepresentation from "@keycloak/keycloak-admin-client/lib/defs/ro
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 import { useRealm } from "../../../context/realm-context/RealmContext";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
+import { createKey } from "../../../util";
 import type { ComponentProps } from "./components";
 
 export const RoleComponent = ({ name, label, helpText }: ComponentProps) => {
@@ -33,7 +34,7 @@ export const RoleComponent = ({ name, label, helpText }: ComponentProps) => {
   const [clientRoles, setClientRoles] = useState<RoleRepresentation[]>([]);
   const [selectedRole, setSelectedRole] = useState<RoleRepresentation>();
 
-  const escapedName = name?.replaceAll(".", "-");
+  const escapedName = createKey(name);
 
   useFetch(
     async () => {

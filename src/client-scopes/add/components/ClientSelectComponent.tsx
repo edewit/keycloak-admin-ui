@@ -11,6 +11,7 @@ import {
 import type { ClientQuery } from "@keycloak/keycloak-admin-client/lib/resources/clients";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
+import { createKey } from "../../../util";
 import type { ComponentProps } from "./components";
 
 export const ClientSelectComponent = ({
@@ -57,7 +58,7 @@ export const ClientSelectComponent = ({
       fieldId={name!}
     >
       <Controller
-        name={`config.${name?.replaceAll(".", "-")}`}
+        name={`config.${createKey(name)}`}
         defaultValue={defaultValue || ""}
         control={control}
         render={({ onChange, value }) => (

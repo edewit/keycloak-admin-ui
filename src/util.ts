@@ -54,13 +54,15 @@ export const exportClient = (client: ClientRepresentation): void => {
 export const toUpperCase = <T extends string>(name: T) =>
   (name.charAt(0).toUpperCase() + name.slice(1)) as Capitalize<T>;
 
+export const createKey = (name?: string) => name?.replaceAll(".", "-");
+
 export const convertToFormValues = (
   obj: any,
   prefix: string,
   setValue: (name: string, value: any) => void
 ) => {
   return Object.keys(obj).map((key) => {
-    const newKey = key.replace(/\./g, "-");
+    const newKey = createKey(key);
     setValue(prefix + "." + newKey, obj[key]);
   });
 };

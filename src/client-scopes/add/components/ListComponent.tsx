@@ -9,6 +9,7 @@ import {
 } from "@patternfly/react-core";
 
 import type { ComponentProps } from "./components";
+import { createKey } from "../../../util";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
 
 export const ListComponent = ({
@@ -31,7 +32,7 @@ export const ListComponent = ({
       fieldId={name!}
     >
       <Controller
-        name={`config.${name?.replaceAll(".", "-")}`}
+        name={`config.${createKey(name)}`}
         data-testid={name}
         defaultValue={defaultValue || ""}
         control={control}
