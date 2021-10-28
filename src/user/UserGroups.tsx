@@ -9,7 +9,7 @@ import { QuestionCircleIcon } from "@patternfly/react-icons";
 import { cellWidth } from "@patternfly/react-table";
 import type GroupRepresentation from "@keycloak/keycloak-admin-client/lib/defs/groupRepresentation";
 import type UserRepresentation from "@keycloak/keycloak-admin-client/lib/defs/userRepresentation";
-import _ from "lodash";
+import { intersectionBy, sortBy } from "lodash";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAlerts } from "../components/alert/Alerts";
@@ -47,7 +47,7 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
 
   const adminClient = useAdminClient();
   const alphabetize = (groupsList: GroupRepresentation[]) => {
-    return _.sortBy(groupsList, (group) => group.path?.toUpperCase());
+    return sortBy(groupsList, (group) => group.path?.toUpperCase());
   };
 
   const loader = async (first?: number, max?: number, search?: string) => {
@@ -264,7 +264,13 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
         ariaLabelKey="roles:roleList"
         searchPlaceholderKey="groups:searchGroup"
         canSelectAll
-        onSelect={setSelectedGroups}
+        onSelect={(groups) =>
+          isDirectMembership
+            ? setSelectedGroups(groups)
+            : setSelectedGroups(
+                intersectionBy(groups, directMembershipList, "id")
+              )
+        }
         isRowDisabled={(group) =>
           !isDirectMembership &&
           directMembershipList.every((item) => item.id !== group.id)
