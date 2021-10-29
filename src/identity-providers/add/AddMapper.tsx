@@ -74,6 +74,7 @@ export default function AddMapper() {
         ? "saml-advanced-role-idp-mapper"
         : "hardcoded-user-session-attribute-idp-mapper",
     },
+    shouldUnregister: false,
   });
 
   const { handleSubmit, watch } = form;
@@ -151,9 +152,9 @@ export default function AddMapper() {
     Object.entries(mapper).map(([key, value]) => {
       if (key === "config") {
         convertToFormValues(value, "config", form.setValue);
+      } else {
+        form.setValue(key, value);
       }
-
-      form.setValue(key, value);
     });
   };
 
