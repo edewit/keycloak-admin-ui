@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   ActionGroup,
   AlertVariant,
@@ -17,7 +17,7 @@ import type ComponentRepresentation from "@keycloak/keycloak-admin-client/lib/de
 
 import { Controller, useForm } from "react-hook-form";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
-import { useAdminClient } from "../context/auth/AdminClient";
+import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import { useAlerts } from "../components/alert/Alerts";
 import { useTranslation } from "react-i18next";
 import { ViewHeader } from "../components/view-header/ViewHeader";
@@ -90,18 +90,21 @@ export default function UserFederationKerberosSettings() {
 
   const { addAlert, addError } = useAlerts();
 
-  useEffect(() => {
-    (async () => {
+  useFetch(
+    async () => {
       if (id !== "new") {
-        const fetchedComponent = await adminClient.components.findOne({ id });
-        if (fetchedComponent) {
-          setupForm(fetchedComponent);
-        } else {
-          throw new Error(t("common:notFound"));
-        }
+        return adminClient.components.findOne({ id });
       }
-    })();
-  }, []);
+    },
+    (fetchedComponent) => {
+      if (fetchedComponent) {
+        setupForm(fetchedComponent);
+      } else {
+        throw new Error(t("common:notFound"));
+      }
+    },
+    []
+  );
 
   const setupForm = (component: ComponentRepresentation) => {
     form.reset();
