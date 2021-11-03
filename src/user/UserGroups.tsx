@@ -184,10 +184,14 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
     continueButtonVariant: ButtonVariant.danger,
     onConfirm: async () => {
       try {
-        await adminClient.users.delFromGroup({
-          id: user.id!,
-          groupId: selectedGroups[0].id!,
-        });
+        await Promise.all(
+          selectedGroups.map((group) =>
+            adminClient.users.delFromGroup({
+              id: user.id!,
+              groupId: group.id!,
+            })
+          )
+        );
         refresh();
         addAlert(t("removedGroupMembership"), AlertVariant.success);
       } catch (error) {
@@ -253,6 +257,7 @@ export const UserGroups = ({ user }: UserGroupsProps) => {
           onConfirm={(groups) => {
             addGroups(groups);
             setOpen(false);
+            refresh();
           }}
         />
       )}
