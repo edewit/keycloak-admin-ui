@@ -32,6 +32,7 @@ import {
 } from "./routes/EditClientPolicy";
 import type { EditClientPolicyConditionParams } from "./routes/EditCondition";
 import { convertToMultiline } from "../components/multi-line-input/MultiLineInput";
+import { MultivaluedRoleComponent } from "../client-scopes/add/components/MultivaluedRoleComponent";
 
 export type ItemType = { value: string };
 
@@ -77,10 +78,9 @@ export default function NewClientPolicyCondition() {
 
     Object.entries(condition).map(([key, value]) => {
       if (key === "configuration") {
-        if (
-          conditionName === "client-roles" ||
-          conditionName === "client-updater-source-roles"
-        ) {
+        if (conditionName === "client-roles") {
+          form.setValue("config.client-roles", value["roles"]);
+        } else if (conditionName === "client-updater-source-roles") {
           form.setValue("config.roles", convertToMultiline(value["roles"]));
         } else if (conditionName === "client-scopes") {
           form.setValue("config.scopes", convertToMultiline(value["scopes"]));
@@ -147,6 +147,15 @@ export default function NewClientPolicyCondition() {
       ) {
         return { type: [formValues.config.type] };
       } else if (
+        condition[0]?.condition === "client-roles" ||
+        conditionName === "client-roles"
+      ) {
+        return {
+          roles: conditionName
+            ? Object.values(formValues)[0]["client-roles"]
+            : configValues["roles"],
+        };
+      } else if (
         condition[0]?.condition === "client-updater-context" ||
         conditionName === "client-updater-context"
       ) {
@@ -163,12 +172,12 @@ export default function NewClientPolicyCondition() {
             (item) => (item as ItemType).value
           ),
         };
-      } else
-        return {
-          [Object.keys(configValues)[0]]: Object.values(
-            configValues?.[Object.keys(configValues)[0]]
-          ).map((item) => (item as ItemType).value),
-        };
+      }
+      return {
+        [Object.keys(configValues)[0]]: Object.values(
+          configValues?.[Object.keys(configValues)[0]]
+        ).map((item) => (item as ItemType).value),
+      };
     };
 
     const updatedPolicies = policies.map((policy) => {
@@ -316,19 +325,34 @@ export default function NewClientPolicyCondition() {
               )}
             />
           </FormGroup>
-          <FormProvider {...form}>
-            <DynamicComponents
-              properties={conditionProperties}
-              selectedValues={
-                conditionName === "client-access-type"
-                  ? selectedVals
-                  : conditionName === "client-updater-context"
-                  ? selectedVals?.["update-client-source"]
-                  : []
-              }
-              parentCallback={handleCallback}
-            />
-          </FormProvider>
+
+          {conditionType === "client-roles" ||
+          conditionName === "client-roles" ? (
+            <FormProvider {...form}>
+              <MultivaluedRoleComponent
+                name={conditionName || conditionProperties[0].name}
+                key={conditionName || conditionProperties[0].name}
+                label={t("clientRoles")}
+                helpText={t("realm-settings-help:clientRolesConditionTooltip")}
+                selectedValues={selectedVals}
+                parentCallback={handleCallback}
+              />
+            </FormProvider>
+          ) : (
+            <FormProvider {...form}>
+              <DynamicComponents
+                properties={conditionProperties}
+                selectedValues={
+                  conditionName === "client-access-type"
+                    ? selectedVals
+                    : conditionName === "client-updater-context"
+                    ? selectedVals?.["update-client-source"]
+                    : []
+                }
+                parentCallback={handleCallback}
+              />
+            </FormProvider>
+          )}
           <ActionGroup>
             <Button
               variant="primary"
