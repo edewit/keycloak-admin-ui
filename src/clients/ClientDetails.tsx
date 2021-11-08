@@ -58,6 +58,7 @@ import { MapperList } from "../client-scopes/details/MapperList";
 import type { ProtocolMapperTypeRepresentation } from "@keycloak/keycloak-admin-client/lib/defs/serverInfoRepesentation";
 import type ProtocolMapperRepresentation from "@keycloak/keycloak-admin-client/lib/defs/protocolMapperRepresentation";
 import { toMapper } from "./routes/Mapper";
+import { AuthorizationSettings } from "./authorization/Settings";
 
 type ClientDetailHeaderProps = {
   onChange: (value: boolean) => void;
@@ -184,6 +185,7 @@ export default function ClientDetails() {
   const toggleChangeAuthenticator = () =>
     setChangeAuthenticatorOpen(!changeAuthenticatorOpen);
   const [activeTab2, setActiveTab2] = useState(30);
+  const [activeTab3, setActiveTab3] = useState(40);
 
   const form = useForm<ClientForm>({ shouldUnregister: false });
   const { clientId } = useParams<ClientParams>();
@@ -472,6 +474,26 @@ export default function ClientDetails() {
                       clientId={clientId}
                       protocol={client!.protocol!}
                     />
+                  </Tab>
+                </Tabs>
+              </Tab>
+            )}
+            {client!.serviceAccountsEnabled && (
+              <Tab
+                id="authorization"
+                eventKey="authorization"
+                title={<TabTitleText>{t("authorization")}</TabTitleText>}
+              >
+                <Tabs
+                  activeKey={activeTab3}
+                  onSelect={(_, key) => setActiveTab3(key as number)}
+                >
+                  <Tab
+                    id="settings"
+                    eventKey={40}
+                    title={<TabTitleText>{t("settings")}</TabTitleText>}
+                  >
+                    <AuthorizationSettings clientId={clientId} />
                   </Tab>
                 </Tabs>
               </Tab>
