@@ -59,6 +59,7 @@ import type { ProtocolMapperTypeRepresentation } from "@keycloak/keycloak-admin-
 import type ProtocolMapperRepresentation from "@keycloak/keycloak-admin-client/lib/defs/protocolMapperRepresentation";
 import { toMapper } from "./routes/Mapper";
 import { AuthorizationSettings } from "./authorization/Settings";
+import { AuthorizationResources } from "./authorization/Resources";
 
 type ClientDetailHeaderProps = {
   onChange: (value: boolean) => void;
@@ -494,6 +495,13 @@ export default function ClientDetails() {
                     title={<TabTitleText>{t("settings")}</TabTitleText>}
                   >
                     <AuthorizationSettings clientId={clientId} />
+                  </Tab>
+                  <Tab
+                    id="resources"
+                    eventKey={41}
+                    title={<TabTitleText>{t("resources")}</TabTitleText>}
+                  >
+                    <AuthorizationResources clientId={clientId} />
                   </Tab>
                 </Tabs>
               </Tab>
