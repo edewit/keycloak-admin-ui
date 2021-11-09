@@ -62,6 +62,8 @@ export default {
     resources: "Resources",
     owner: "Owner",
     uris: "URIs",
+    scopes: "Scopes",
+    associatedPermissions: "Associated permission",
     allowRemoteResourceManagement: "Remote resource management",
     assignedClientScope: "Assigned client scope",
     assignedType: "Assigned type",
