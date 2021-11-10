@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  DescriptionList,
-  DescriptionListDescription,
-  DescriptionListGroup,
-  DescriptionListTerm,
+  Alert,
+  AlertVariant,
   Label,
   PageSection,
   Spinner,
@@ -21,8 +19,11 @@ import {
 
 import type ResourceServerRepresentation from "@keycloak/keycloak-admin-client/lib/defs/resourceServerRepresentation";
 import type ResourceRepresentation from "@keycloak/keycloak-admin-client/lib/defs/resourceRepresentation";
-import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
+import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
 import { PaginatingTableToolbar } from "../../components/table-toolbar/PaginatingTableToolbar";
+import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
+import { useAlerts } from "../../components/alert/Alerts";
+import { DetailCell } from "./DetailCell";
 
 type ResourcesProps = {
   clientId: string;
@@ -35,8 +36,16 @@ type ExpandableResourceRepresentation = ResourceRepresentation & {
 export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
   const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
+  const { addAlert, addError } = useAlerts();
   const [resources, setResources] =
     useState<ExpandableResourceRepresentation[]>();
+  const [selectedResource, setSelectedResource] =
+    useState<ResourceRepresentation>();
+  const [permissions, setPermission] =
+    useState<ResourceServerRepresentation[]>();
+
+  const [key, setKey] = useState(0);
+  const refresh = () => setKey(key + 1);
 
   const [max, setMax] = useState(10);
   const [first, setFirst] = useState(0);
@@ -58,7 +67,7 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
       setResources(
         resources.map((resource) => ({ ...resource, isExpanded: false }))
       ),
-    []
+    [key]
   );
 
   const UriRenderer = ({ row }: { row: ResourceRepresentation }) => (
@@ -72,68 +81,51 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
     </>
   );
 
-  const DetailCell = ({ id, uris }: { id: string; uris?: string[] }) => {
-    const [scope, setScope] = useState<{ id: string; name: string }[]>();
-    const [permissions, setPermissions] =
-      useState<ResourceServerRepresentation[]>();
-
-    useFetch(
-      async () => {
-        const scopes = await adminClient.clients.listScopesByResource({
-          id: clientId,
-          resourceName: id,
-        });
-        const permissions = await adminClient.clients.listPermissionsByResource(
-          {
-            id: clientId,
-            resourceId: id,
-          }
-        );
-        return { scopes, permissions };
-      },
-      ({ scopes, permissions }) => {
-        setScope(scopes);
-        setPermissions(permissions);
-      },
-      []
-    );
-    return (
-      <DescriptionList isHorizontal>
-        <DescriptionListGroup>
-          <DescriptionListTerm>{t("uris")}</DescriptionListTerm>
-          <DescriptionListDescription>
-            {uris?.map((uri) => (
-              <span key={uri} className="pf-u-pr-sm">
-                {uri}
-              </span>
-            ))}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>{t("scopes")}</DescriptionListTerm>
-          <DescriptionListDescription>
-            {scope?.map((scope) => (
-              <span key={scope.id} className="pf-u-pr-sm">
-                {scope.name}
-              </span>
-            ))}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>
-            {t("associatedPermissions")}
-          </DescriptionListTerm>
-          <DescriptionListDescription>
-            {permissions?.map((permission) => (
-              <span key={permission.id} className="pf-u-pr-sm">
-                {permission.name}
-              </span>
-            ))}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-      </DescriptionList>
-    );
+  const fetchPermissions = async (id: string) => {
+    return adminClient.clients.listPermissionsByResource({
+      id: clientId,
+      resourceId: id,
+    });
   };
+
+  const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
+    titleKey: "clients:deleteResource",
+    children: (
+      <>
+        {t("deleteResourceConfirm")}
+        {permissions?.length && (
+          <Alert
+            variant="warning"
+            isInline
+            isPlain
+            title={t("deleteResourceWarning")}
+            className="pf-u-pt-lg"
+          >
+            <p className="pf-u-pt-xs">
+              {permissions.map((permission) => (
+                <strong key={permission.id} className="pf-u-pr-md">
+                  {permission.name}
+                </strong>
+              ))}
+            </p>
+          </Alert>
+        )}
+      </>
+    ),
+    continueButtonLabel: "clients:confirm",
+    onConfirm: async () => {
+      try {
+        await adminClient.clients.delResource({
+          id: clientId,
+          resourceId: selectedResource?._id!,
+        });
+        addAlert(t("resourceDeletedSuccess"), AlertVariant.success);
+        refresh();
+      } catch (error) {
+        addError("clients:resourceDeletedError", error);
+      }
+    },
+  });
 
   if (!resources) {
     return <Spinner />;
@@ -141,6 +133,7 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
 
   return (
     <PageSection variant="light" className="pf-u-p-0">
+      <DeleteConfirm />
       <PaginatingTableToolbar
         count={resources.length}
         first={first}
@@ -160,6 +153,7 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
               <Th>{t("common:type")}</Th>
               <Th>{t("owner")}</Th>
               <Th>{t("uris")}</Th>
+              <Th />
             </Tr>
           </Thead>
           {resources.map((resource, rowIndex) => (
@@ -187,6 +181,30 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
                 <Td>
                   <UriRenderer row={resource} />
                 </Td>
+                <Td
+                  actions={{
+                    items: [
+                      {
+                        title: t("common:delete"),
+                        onClick: async () => {
+                          setSelectedResource(resource);
+                          setPermission(await fetchPermissions(resource._id!));
+                          toggleDeleteDialog();
+                        },
+                      },
+                      {
+                        title: t("createPermission"),
+                        className: "pf-m-link",
+                        onClick: () =>
+                          console.log(
+                            "clicked on extra action, on row:",
+                            resource
+                          ),
+                        isOutsideDropdown: true,
+                      },
+                    ],
+                  }}
+                ></Td>
               </Tr>
               <Tr
                 key={`child-${resource._id}`}
@@ -195,7 +213,11 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
                 <Td colSpan={5}>
                   <ExpandableRowContent>
                     {resource.isExpanded && (
-                      <DetailCell id={resource._id!} uris={resource.uris} />
+                      <DetailCell
+                        clientId={clientId}
+                        id={resource._id!}
+                        uris={resource.uris}
+                      />
                     )}
                   </ExpandableRowContent>
                 </Td>

@@ -63,6 +63,14 @@ export default {
     owner: "Owner",
     uris: "URIs",
     scopes: "Scopes",
+    createPermission: "Create permission",
+    deleteResource: "Permanently delete resource?",
+    deleteResourceConfirm:
+      "If you delete this resource, some permissions will be affected.",
+    deleteResourceWarning:
+      "The permissions below will be removed when they are no longer used by other resources:",
+    resourceDeletedSuccess: "The resource successfully deleted",
+    resourceDeletedError: "Could not remove the resource {{error}}",
     associatedPermissions: "Associated permission",
     allowRemoteResourceManagement: "Remote resource management",
     assignedClientScope: "Assigned client scope",
