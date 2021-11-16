@@ -47,36 +47,44 @@ export const DetailCell = ({ id, clientId, uris }: DetailCellProps) => {
   );
   return (
     <DescriptionList isHorizontal className="keycloak_resource_details">
-      <DescriptionListGroup>
-        <DescriptionListTerm>{t("uris")}</DescriptionListTerm>
-        <DescriptionListDescription>
-          {uris?.map((uri) => (
-            <span key={uri} className="pf-u-pr-sm">
-              {uri}
-            </span>
-          ))}
-        </DescriptionListDescription>
-      </DescriptionListGroup>
-      <DescriptionListGroup>
-        <DescriptionListTerm>{t("scopes")}</DescriptionListTerm>
-        <DescriptionListDescription>
-          {scope?.map((scope) => (
-            <span key={scope.id} className="pf-u-pr-sm">
-              {scope.name}
-            </span>
-          ))}
-        </DescriptionListDescription>
-      </DescriptionListGroup>
-      <DescriptionListGroup>
-        <DescriptionListTerm>{t("associatedPermissions")}</DescriptionListTerm>
-        <DescriptionListDescription>
-          {permissions?.map((permission) => (
-            <span key={permission.id} className="pf-u-pr-sm">
-              {permission.name}
-            </span>
-          ))}
-        </DescriptionListDescription>
-      </DescriptionListGroup>
+      {uris?.length !== 0 && (
+        <DescriptionListGroup>
+          <DescriptionListTerm>{t("uris")}</DescriptionListTerm>
+          <DescriptionListDescription>
+            {uris?.map((uri) => (
+              <span key={uri} className="pf-u-pr-sm">
+                {uri}
+              </span>
+            ))}
+          </DescriptionListDescription>
+        </DescriptionListGroup>
+      )}
+      {scope?.length !== 0 && (
+        <DescriptionListGroup>
+          <DescriptionListTerm>{t("scopes")}</DescriptionListTerm>
+          <DescriptionListDescription>
+            {scope?.map((scope) => (
+              <span key={scope.id} className="pf-u-pr-sm">
+                {scope.name}
+              </span>
+            ))}
+          </DescriptionListDescription>
+        </DescriptionListGroup>
+      )}
+      {permissions?.length !== 0 && (
+        <DescriptionListGroup>
+          <DescriptionListTerm>
+            {t("associatedPermissions")}
+          </DescriptionListTerm>
+          <DescriptionListDescription>
+            {permissions?.map((permission) => (
+              <span key={permission.id} className="pf-u-pr-sm">
+                {permission.name}
+              </span>
+            ))}
+          </DescriptionListDescription>
+        </DescriptionListGroup>
+      )}
     </DescriptionList>
   );
 };
