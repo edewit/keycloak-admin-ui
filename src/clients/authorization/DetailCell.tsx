@@ -28,18 +28,18 @@ export const DetailCell = ({ id, clientId, uris }: DetailCellProps) => {
     useState<ResourceServerRepresentation[]>();
 
   useFetch(
-    async () => {
-      const scopes = await adminClient.clients.listScopesByResource({
-        id: clientId,
-        resourceName: id,
-      });
-      const permissions = await adminClient.clients.listPermissionsByResource({
-        id: clientId,
-        resourceId: id,
-      });
-      return { scopes, permissions };
-    },
-    ({ scopes, permissions }) => {
+    () =>
+      Promise.all([
+        adminClient.clients.listScopesByResource({
+          id: clientId,
+          resourceName: id,
+        }),
+        adminClient.clients.listPermissionsByResource({
+          id: clientId,
+          resourceId: id,
+        }),
+      ]),
+    ([scopes, permissions]) => {
       setScope(scopes);
       setPermissions(permissions);
     },
