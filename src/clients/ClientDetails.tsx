@@ -185,8 +185,8 @@ export default function ClientDetails() {
   const [changeAuthenticatorOpen, setChangeAuthenticatorOpen] = useState(false);
   const toggleChangeAuthenticator = () =>
     setChangeAuthenticatorOpen(!changeAuthenticatorOpen);
-  const [activeTab2, setActiveTab2] = useState(30);
-  const [activeTab3, setActiveTab3] = useState(40);
+  const [clientScopeSubTab, setClientScopeSubTab] = useState(30);
+  const [authorizationSubTab, setAuthorizationSubTab] = useState(40);
 
   const form = useForm<ClientForm>({ shouldUnregister: false });
   const { clientId } = useParams<ClientParams>();
@@ -453,8 +453,8 @@ export default function ClientDetails() {
                 title={<TabTitleText>{t("clientScopes")}</TabTitleText>}
               >
                 <Tabs
-                  activeKey={activeTab2}
-                  onSelect={(_, key) => setActiveTab2(key as number)}
+                  activeKey={clientScopeSubTab}
+                  onSelect={(_, key) => setClientScopeSubTab(key as number)}
                 >
                   <Tab
                     id="setup"
@@ -486,8 +486,8 @@ export default function ClientDetails() {
                 title={<TabTitleText>{t("authorization")}</TabTitleText>}
               >
                 <Tabs
-                  activeKey={activeTab3}
-                  onSelect={(_, key) => setActiveTab3(key as number)}
+                  activeKey={authorizationSubTab}
+                  onSelect={(_, key) => setAuthorizationSubTab(key as number)}
                 >
                   <Tab
                     id="settings"

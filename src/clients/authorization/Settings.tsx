@@ -17,27 +17,27 @@ import { FormAccess } from "../../components/form-access/FormAccess";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { SaveReset } from "../advanced/SaveReset";
 
-const PolicyEnforcementModes = ["ENFORCING", "PERMISSIVE", "DISABLED"] as const;
-const DecisionStrategy = ["UNANIMOUS", "AFFIRMATIVE"] as const;
+const POLICY_ENFORCEMENT_MODES = [
+  "ENFORCING",
+  "PERMISSIVE",
+  "DISABLED",
+] as const;
+const DECISION_STRATEGY = ["UNANIMOUS", "AFFIRMATIVE"] as const;
 
 export const AuthorizationSettings = ({ clientId }: { clientId: string }) => {
   const { t } = useTranslation("clients");
   const [resource, setResource] = useState<ResourceServerRepresentation>();
-  const { control, setValue, handleSubmit } =
-    useForm<ResourceServerRepresentation>({
-      shouldUnregister: false,
-    });
+  const { control, reset } = useForm<ResourceServerRepresentation>({
+    shouldUnregister: false,
+  });
 
   const adminClient = useAdminClient();
-
-  const setupForm = (resource: ResourceServerRepresentation) =>
-    Object.entries(resource).map(([key, value]) => setValue(key, value));
 
   useFetch(
     () => adminClient.clients.getResourceServer({ id: clientId }),
     (resource) => {
       setResource(resource);
-      setupForm(resource);
+      reset(resource);
     },
     []
   );
@@ -78,11 +78,11 @@ export const AuthorizationSettings = ({ clientId }: { clientId: string }) => {
           <Controller
             name="policyEnforcementMode"
             data-testid="policyEnforcementMode"
-            defaultValue={DecisionStrategy[0]}
+            defaultValue={DECISION_STRATEGY[0]}
             control={control}
             render={({ onChange, value }) => (
               <>
-                {PolicyEnforcementModes.map((mode) => (
+                {POLICY_ENFORCEMENT_MODES.map((mode) => (
                   <Radio
                     id={mode}
                     key={mode}
@@ -113,11 +113,11 @@ export const AuthorizationSettings = ({ clientId }: { clientId: string }) => {
           <Controller
             name="decisionStrategy"
             data-testid="decisionStrategy"
-            defaultValue={DecisionStrategy[0]}
+            defaultValue={DECISION_STRATEGY[0]}
             control={control}
             render={({ onChange, value }) => (
               <>
-                {DecisionStrategy.map((strategy) => (
+                {DECISION_STRATEGY.map((strategy) => (
                   <Radio
                     id={strategy}
                     key={strategy}
@@ -164,9 +164,9 @@ export const AuthorizationSettings = ({ clientId }: { clientId: string }) => {
         <SaveReset
           name="settings"
           save={(): void => {
-            handleSubmit((value) => console.log(value))();
+            // another PR
           }}
-          reset={() => setupForm(resource)}
+          reset={() => reset(resource)}
         />
       </FormAccess>
     </PageSection>

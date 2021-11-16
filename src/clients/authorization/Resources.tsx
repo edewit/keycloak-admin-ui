@@ -56,7 +56,6 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
         first,
         max,
         deep: false,
-        // search,
       };
       return adminClient.clients.listResources({
         ...params,
@@ -145,7 +144,7 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
           setMax(max);
         }}
       >
-        <TableComposable aria-label="Expandable Table" variant="compact">
+        <TableComposable aria-label={t("resources")} variant="compact">
           <Thead>
             <Tr>
               <Th />
@@ -164,13 +163,11 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
                     rowIndex,
                     isExpanded: resource.isExpanded,
                     onToggle: (_, rowIndex) => {
-                      const row = {
-                        ...resources[rowIndex],
-                        isExpanded: !resource.isExpanded,
-                      };
-                      const rows = [...resources];
-                      rows[rowIndex] = row;
-                      console.log(rows);
+                      const rows = resources.map((resource, index) =>
+                        index === rowIndex
+                          ? { ...resource, isExpanded: !resource.isExpanded }
+                          : resource
+                      );
                       setResources(rows);
                     },
                   }}
@@ -195,11 +192,6 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
                       {
                         title: t("createPermission"),
                         className: "pf-m-link",
-                        onClick: () =>
-                          console.log(
-                            "clicked on extra action, on row:",
-                            resource
-                          ),
                         isOutsideDropdown: true,
                       },
                     ],
