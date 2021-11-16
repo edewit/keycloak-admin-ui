@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Controller, useFormContext } from "react-hook-form";
 import {
@@ -18,10 +18,21 @@ export const MultiValuedListComponent = ({
   helpText,
   defaultValue,
   options,
+  parentCallback,
+  selectedValues,
 }: ComponentProps) => {
   const { t } = useTranslation("dynamic");
   const { control } = useFormContext();
   const [open, setOpen] = useState(false);
+
+  const [selectedItems, setSelectedItems] = useState<string[]>([defaultValue]);
+
+  useEffect(() => {
+    if (selectedValues) {
+      parentCallback!(selectedValues);
+      setSelectedItems(selectedValues!);
+    }
+  }, []);
 
   return (
     <FormGroup
@@ -48,12 +59,33 @@ export const MultiValuedListComponent = ({
             typeAheadAriaLabel="Select"
             onToggle={(isOpen) => setOpen(isOpen)}
             selections={value}
-            onSelect={(_, selectedValue) => {
-              const option = selectedValue.toString();
-              const changedValue = value.includes(option)
-                ? value.filter((item: string) => item !== option)
-                : [...value, option];
-              onChange(changedValue);
+            onSelect={(_, v) => {
+              const option = v.toString();
+              if (!value) {
+                onChange([option]);
+
+                if (selectedValues) {
+                  parentCallback!([option]);
+                  setSelectedItems([option]);
+                }
+              } else if (value.includes(option)) {
+                if (selectedValues) {
+                  const updatedItems = selectedItems.filter(
+                    (item: string) => item !== option
+                  );
+                  setSelectedItems(updatedItems);
+                  parentCallback!(updatedItems);
+                  onChange(updatedItems);
+                } else {
+                  onChange(value.filter((item: string) => item !== option));
+                }
+              } else {
+                if (selectedValues) {
+                  parentCallback!([...value, option]);
+                  setSelectedItems([...selectedItems, option]);
+                }
+                onChange([...value, option]);
+              }
             }}
             onClear={(event) => {
               event.stopPropagation();

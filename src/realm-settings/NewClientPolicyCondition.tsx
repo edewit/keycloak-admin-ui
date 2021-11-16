@@ -243,8 +243,8 @@ export default function NewClientPolicyCondition() {
     }
   };
 
-  const handleCallback = (childData: any) => {
-    setSelectedVals(childData);
+  const handleCallback = () => {
+    setSelectedVals(form.getValues()["config.role"]);
   };
 
   return (
@@ -335,7 +335,6 @@ export default function NewClientPolicyCondition() {
                 label={t("clientRoles")}
                 helpText={t("realm-settings-help:clientRolesConditionTooltip")}
                 selectedValues={selectedVals}
-                parentCallback={handleCallback}
               />
             </FormProvider>
           ) : (
