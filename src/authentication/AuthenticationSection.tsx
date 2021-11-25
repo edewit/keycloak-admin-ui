@@ -28,6 +28,7 @@ import { DuplicateFlowModal } from "./DuplicateFlowModal";
 import { toCreateFlow } from "./routes/CreateFlow";
 import { toFlow } from "./routes/Flow";
 import { RequiredActions } from "./RequiredActions";
+import { Policies } from "./policies/Policies";
 
 import "./authentication-section.css";
 
@@ -288,6 +289,13 @@ export default function AuthenticationSection() {
             title={<TabTitleText>{t("requiredActions")}</TabTitleText>}
           >
             <RequiredActions />
+          </Tab>
+          <Tab
+            id="policies"
+            eventKey="policies"
+            title={<TabTitleText>{t("policies")}</TabTitleText>}
+          >
+            <Policies />
           </Tab>
         </KeycloakTabs>
       </PageSection>
