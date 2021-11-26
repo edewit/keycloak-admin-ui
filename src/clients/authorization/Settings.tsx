@@ -15,7 +15,9 @@ import { KeycloakSpinner } from "../../components/keycloak-spinner/KeycloakSpinn
 import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { FormAccess } from "../../components/form-access/FormAccess";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
+import { KeycloakSpinner } from "../../components/keycloak-spinner/KeycloakSpinner";
 import { SaveReset } from "../advanced/SaveReset";
+import { ImportDialog } from "./ImportDialog";
 
 const POLICY_ENFORCEMENT_MODES = [
   "ENFORCING",
@@ -27,6 +29,8 @@ const DECISION_STRATEGY = ["UNANIMOUS", "AFFIRMATIVE"] as const;
 export const AuthorizationSettings = ({ clientId }: { clientId: string }) => {
   const { t } = useTranslation("clients");
   const [resource, setResource] = useState<ResourceServerRepresentation>();
+  const [importDialog, setImportDialog] = useState(false);
+
   const { control, reset } = useForm<ResourceServerRepresentation>({
     shouldUnregister: false,
   });
@@ -42,12 +46,22 @@ export const AuthorizationSettings = ({ clientId }: { clientId: string }) => {
     []
   );
 
+  const importResource = () => {
+    //different PR
+  };
+
   if (!resource) {
     return <KeycloakSpinner />;
   }
 
   return (
     <PageSection variant="light">
+      {importDialog && (
+        <ImportDialog
+          onConfirm={importResource}
+          closeDialog={() => setImportDialog(false)}
+        />
+      )}
       <FormAccess role="manage-clients" isHorizontal>
         <FormGroup
           label={t("import")}
@@ -60,7 +74,9 @@ export const AuthorizationSettings = ({ clientId }: { clientId: string }) => {
             />
           }
         >
-          <Button variant="secondary">{t("import")}</Button>
+          <Button variant="secondary" onClick={() => setImportDialog(true)}>
+            {t("import")}
+          </Button>
         </FormGroup>
         <Divider />
         <FormGroup
