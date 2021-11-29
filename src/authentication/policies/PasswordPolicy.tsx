@@ -30,7 +30,7 @@ import { useRealm } from "../../context/realm-context/RealmContext";
 import { useAlerts } from "../../components/alert/Alerts";
 import { parsePolicy, SubmittedValues } from "./util";
 import { PolicyRow } from "./PolicyRow";
-import { toString } from "./util";
+import { serializePolicy } from "./util";
 
 type PolicySelectProps = {
   onSelect: (row: PasswordPolicyTypeRepresentation) => void;
@@ -105,7 +105,10 @@ export const PasswordPolicy = () => {
   );
 
   const save = async (values: SubmittedValues) => {
-    const updatedRealm = { ...realm, passwordPolicy: toString(rows, values) };
+    const updatedRealm = {
+      ...realm,
+      passwordPolicy: serializePolicy(rows, values),
+    };
     try {
       await adminClient.realms.update({ realm: realmName }, updatedRealm);
       setRealm(updatedRealm);
@@ -151,7 +154,8 @@ export const PasswordPolicy = () => {
                     variant="primary"
                     type="submit"
                     isDisabled={
-                      toString(rows, getValues()) === realm.passwordPolicy
+                      serializePolicy(rows, getValues()) ===
+                      realm.passwordPolicy
                     }
                   >
                     {t("common:save")}

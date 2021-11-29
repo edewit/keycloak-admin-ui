@@ -1,9 +1,9 @@
 import type PasswordPolicyTypeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/passwordPolicyTypeRepresentation";
-import { parsePolicy, SubmittedValues, toString } from "./util";
+import { parsePolicy, serializePolicy, SubmittedValues } from "./util";
 
-describe("toString", () => {
+describe("serializePolicy", () => {
   it("returns an empty string if there are no policies", () => {
-    expect(toString([], {})).toEqual("");
+    expect(serializePolicy([], {})).toEqual("");
   });
 
   it("encodes the policies", () => {
@@ -17,7 +17,7 @@ describe("toString", () => {
       two: "value2",
     };
 
-    expect(toString(policies, submittedValues)).toEqual(
+    expect(serializePolicy(policies, submittedValues)).toEqual(
       "one(value1) and two(value2)"
     );
   });

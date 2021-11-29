@@ -4,22 +4,15 @@ export type SubmittedValues = {
   [index: string]: string;
 };
 
-export const toString = (
+const POLICY_SEPARATOR = " and ";
+
+export const serializePolicy = (
   policies: PasswordPolicyTypeRepresentation[],
   submitted: SubmittedValues
-) => {
-  if (!policies.length) {
-    return "";
-  }
-  let policyString = "";
-  for (let i = 0; i < policies.length; i++) {
-    policyString += policies[i].id + "(" + submitted[policies[i].id!] + ")";
-    if (i !== policies.length - 1) {
-      policyString += " and ";
-    }
-  }
-  return policyString;
-};
+) =>
+  policies
+    .map((policy) => `${policy.id}(${submitted[policy.id!]})`)
+    .join(POLICY_SEPARATOR);
 
 type PolicyValue = PasswordPolicyTypeRepresentation & {
   value?: string;
