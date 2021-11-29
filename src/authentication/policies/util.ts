@@ -19,34 +19,42 @@ type PolicyValue = PasswordPolicyTypeRepresentation & {
 };
 
 export const parsePolicy = (
-  policyString: string,
-  passwordPolicies: PasswordPolicyTypeRepresentation[]
-) => {
-  const policies: PolicyValue[] = [];
-  if (!policyString || policyString.length == 0) {
-    return policies;
-  }
+  value: string,
+  policies: PasswordPolicyTypeRepresentation[]
+) =>
+  value
+    .split(POLICY_SEPARATOR)
+    .map(parsePolicyToken)
+    .reduce<PolicyValue[]>((result, { id, value }) => {
+      const matchingPolicy = policies.find((policy) => policy.id === id);
 
-  const policyArray = policyString.split(" and ");
-
-  for (let i = 0; i < policyArray.length; i++) {
-    const policyToken = policyArray[i];
-    let id;
-    let value;
-    if (!policyToken.includes("(")) {
-      id = policyToken.trim();
-    } else {
-      id = policyToken.substring(0, policyToken.indexOf("("));
-      value = policyToken
-        .substring(policyToken.indexOf("(") + 1, policyToken.lastIndexOf(")"))
-        .trim();
-    }
-
-    for (let j = 0; j < passwordPolicies.length; j++) {
-      if (passwordPolicies[j].id == id) {
-        policies.push({ ...passwordPolicies[j], value });
+      if (!matchingPolicy) {
+        return result;
       }
-    }
-  }
-  return policies;
+
+      return result.concat({ ...matchingPolicy, value });
+    }, []);
+
+type PolicyTokenParsed = {
+  id: string;
+  value?: string;
 };
+
+function parsePolicyToken(token: string): PolicyTokenParsed {
+  const valueStart = token.indexOf("(");
+
+  if (valueStart === -1) {
+    return { id: token.trim() };
+  }
+
+  const id = token.substring(0, valueStart).trim();
+  const valueEnd = token.lastIndexOf(")");
+
+  if (valueEnd === -1) {
+    return { id };
+  }
+
+  const value = token.substring(valueStart + 1, valueEnd).trim();
+
+  return { id, value };
+}

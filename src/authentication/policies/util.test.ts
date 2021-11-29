@@ -52,6 +52,20 @@ describe("parsePolicy", () => {
     ]);
   });
 
+  it("parses the policy and it handles unescaped values", () => {
+    const policies: PasswordPolicyTypeRepresentation[] = [{ id: "one" }];
+
+    expect(parsePolicy("one(value1", policies)).toEqual([{ id: "one" }]);
+  });
+
+  it("parses the policy and preserves nested parentheses", () => {
+    const policies: PasswordPolicyTypeRepresentation[] = [{ id: "one" }];
+
+    expect(parsePolicy("one(value1))", policies)).toEqual([
+      { id: "one", value: "value1)" },
+    ]);
+  });
+
   it("parses the policy and preserves only existing entries", () => {
     const policies: PasswordPolicyTypeRepresentation[] = [{ id: "two" }];
 
