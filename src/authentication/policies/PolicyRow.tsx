@@ -73,6 +73,7 @@ export const PolicyRow = ({
                       const newValue = Number(event.currentTarget.value);
                       setValue(!isNaN(newValue) ? newValue : 0);
                     }}
+                    className="keycloak__policies_authentication__number-field"
                   />
                 );
               }}

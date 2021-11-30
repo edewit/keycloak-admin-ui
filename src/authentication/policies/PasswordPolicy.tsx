@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
@@ -10,6 +10,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
+  EmptyStatePrimary,
   PageSection,
   Select,
   SelectOption,
@@ -41,6 +42,15 @@ const PolicySelect = ({ onSelect, selectedPolicies }: PolicySelectProps) => {
   const { t } = useTranslation("authentication");
   const { passwordPolicies } = useServerInfo();
   const [open, setOpen] = useState(false);
+
+  const policies = useMemo(
+    () =>
+      passwordPolicies?.filter(
+        (p) => selectedPolicies.find((o) => o.id === p.id) === undefined
+      ),
+    [selectedPolicies]
+  );
+
   return (
     <Select
       width={300}
@@ -51,16 +61,13 @@ const PolicySelect = ({ onSelect, selectedPolicies }: PolicySelectProps) => {
       onToggle={(value) => setOpen(value)}
       isOpen={open}
       selections={t("addPolicy")}
+      isDisabled={policies?.length === 0}
     >
-      {passwordPolicies
-        ?.filter(
-          (p) => selectedPolicies.find((o) => o.id === p.id) === undefined
-        )
-        ?.map((policy) => (
-          <SelectOption key={policy.id} value={policy}>
-            {policy.displayName}
-          </SelectOption>
-        ))}
+      {policies?.map((policy) => (
+        <SelectOption key={policy.id} value={policy}>
+          {policy.displayName}
+        </SelectOption>
+      ))}
     </Select>
   );
 };
@@ -180,7 +187,9 @@ export const PasswordPolicy = () => {
             {t("noPasswordPolicies")}
           </Title>
           <EmptyStateBody>{t("noPasswordPoliciesInstructions")}</EmptyStateBody>
-          <PolicySelect onSelect={onSelect} selectedPolicies={[]} />
+          <EmptyStatePrimary>
+            <PolicySelect onSelect={onSelect} selectedPolicies={[]} />
+          </EmptyStatePrimary>
         </EmptyState>
       )}
     </PageSection>
