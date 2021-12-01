@@ -26,7 +26,7 @@ export const ImportDialog = ({ onConfirm, closeDialog }: ImportDialogProps) => {
   const [imported, setImported] = useState<ResourceServerRepresentation>({});
   return (
     <Modal
-      title="Import"
+      title={t("import")}
       isOpen
       variant="small"
       onClose={closeDialog}
@@ -130,7 +130,7 @@ export const ImportDialog = ({ onConfirm, closeDialog }: ImportDialogProps) => {
           </Form>
           <div className="pf-u-mt-md">
             {Object.entries(imported)
-              .filter((entry) => Array.isArray(entry[1]))
+              .filter(([, value]) => Array.isArray(value))
               .map(([key, value]) => (
                 <Fragment key={key}>
                   <Divider />
