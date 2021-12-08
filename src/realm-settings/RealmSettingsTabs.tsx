@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
@@ -176,11 +176,6 @@ export const RealmSettingsTabs = ({
   const { refresh: refreshRealms } = useRealms();
   const history = useHistory();
 
-  const match = useRouteMatch();
-
-  const params = match.params as { [index: string]: string };
-  const isLocalizationTabActive = params["tab"] === "localization";
-
   const kpComponentTypes =
     useServerInfo().componentTypes?.[KEY_PROVIDER_TYPE] ?? [];
 
@@ -338,7 +333,6 @@ export const RealmSettingsTabs = ({
             >
               <LocalizationTab
                 key={key}
-                isActive={isLocalizationTabActive}
                 refresh={refresh}
                 save={save}
                 reset={() => resetForm(realm)}
