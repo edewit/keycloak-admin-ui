@@ -329,7 +329,6 @@ export const RealmSettingsTabs = ({
               eventKey="localization"
               data-testid="rs-localization-tab"
               title={<TabTitleText>{t("localization")}</TabTitleText>}
-              onSelect={() => console.log("test")}
             >
               <LocalizationTab
                 key={key}
