@@ -71,7 +71,7 @@ export const OtpPolicy = () => {
       setRealm(updatedRealm);
       reset({ ...updatedRealm });
       addAlert(t("updateOtpSuccess"), AlertVariant.success);
-    } catch (error: any) {
+    } catch (error) {
       addError("authentication:updateOtpError", error);
     }
   };
