@@ -25,7 +25,10 @@ export default {
     supportedActions:
       "Applications that are known to work with the current OTP policy",
     webauthnIntro: "What is this form used for?",
-    webauthnFormHelp: "Tooltip help",
+    webAuthnPolicyFormHelp:
+      "Policy for WebAuthn authentication. This one will be used by 'WebAuthn Register' required action and 'WebAuthn Authenticator' authenticator. Typical usage is, when WebAuthn will be used for the two-factor authentication.",
+    webAuthnPolicyPasswordlessFormHelp:
+      "Policy for passwordless WebAuthn authentication. This one will be used by 'Webauthn Register Passwordless' required action and 'WebAuthn Passwordless Authenticator' authenticator. Typical usage is, when WebAuthn will be used as first-factor authentication. Having both 'WebAuthn Policy' and 'WebAuthn Passwordless Policy' allows to use WebAuthn as both first factor and second factor authenticator in the same realm.",
     webAuthnPolicySignatureAlgorithms:
       "What signature algorithms should be used for Authentication Assertion.",
     webAuthnPolicyRpId:

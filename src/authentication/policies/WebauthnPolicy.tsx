@@ -71,6 +71,7 @@ const USER_VERIFY = [
 
 type WeauthnSelectProps = {
   name: string;
+  label: string;
   options: readonly string[];
   labelPrefix?: string;
   isMultiSelect?: boolean;
@@ -78,6 +79,7 @@ type WeauthnSelectProps = {
 
 const WebauthnSelect = ({
   name,
+  label,
   options,
   labelPrefix,
   isMultiSelect = false,
@@ -88,11 +90,11 @@ const WebauthnSelect = ({
   const [open, toggle] = useToggle();
   return (
     <FormGroup
-      label={t(name)}
+      label={t(label)}
       labelIcon={
         <HelpItem
-          helpText={`authentication-help:${name}`}
-          fieldLabelId={`authentication:${name}`}
+          helpText={`authentication-help:${label}`}
+          fieldLabelId={`authentication:${label}`}
         />
       }
       fieldId={name}
@@ -143,14 +145,21 @@ const WebauthnSelect = ({
   );
 };
 
+const MULTILINE_INPUTS = [
+  "webAuthnPolicyAcceptableAaguids",
+  "webAuthnPolicyPasswordlessAcceptableAaguids",
+];
+
 type WebauthnPolicyProps = {
   realm: RealmRepresentation;
   realmUpdated: (realm: RealmRepresentation) => void;
+  isPasswordLess?: boolean;
 };
 
 export const WebauthnPolicy = ({
   realm,
   realmUpdated,
+  isPasswordLess = false,
 }: WebauthnPolicyProps) => {
   const { t } = useTranslation("authentication");
   const adminClient = useAdminClient();
@@ -167,15 +176,17 @@ export const WebauthnPolicy = ({
     formState: { isDirty },
   } = form;
 
+  const namePrefix = isPasswordLess
+    ? "webAuthnPolicyPasswordless"
+    : "webAuthnPolicy";
+
   const setupForm = (realm: RealmRepresentation) =>
-    convertToFormValues(realm, setValue, ["webAuthnPolicyAcceptableAaguids"]);
+    convertToFormValues(realm, setValue, MULTILINE_INPUTS);
 
   useEffect(() => setupForm(realm), []);
 
   const save = async (realm: RealmRepresentation) => {
-    const submittedRealm = convertFormValuesToObject(realm, [
-      "webAuthnPolicyAcceptableAaguids",
-    ]);
+    const submittedRealm = convertFormValuesToObject(realm, MULTILINE_INPUTS);
     try {
       await adminClient.realms.update({ realm: realmName }, submittedRealm);
       realmUpdated(submittedRealm);
@@ -189,7 +200,7 @@ export const WebauthnPolicy = ({
   return (
     <PageSection variant="light">
       {enabled && (
-        <Popover bodyContent={t("authentication-help:webauthnFormHelp")}>
+        <Popover bodyContent={t(`authentication-help:${namePrefix}FormHelp`)}>
           <TextContent className="keycloak__webauthn_policies__intro">
             <Text>
               <QuestionCircleIcon /> {t("authentication-help:webauthnIntro")}
@@ -219,7 +230,7 @@ export const WebauthnPolicy = ({
         >
           <TextInput
             ref={register({ required: true })}
-            name="webAuthnPolicyRpEntityName"
+            name={`${namePrefix}RpEntityName`}
             id="webAuthnPolicyRpEntityName"
             data-testid="webAuthnPolicyRpEntityName"
             validated={errors.webAuthnPolicyRpEntityName ? "error" : "default"}
@@ -227,7 +238,8 @@ export const WebauthnPolicy = ({
         </FormGroup>
         <FormProvider {...form}>
           <WebauthnSelect
-            name="webAuthnPolicySignatureAlgorithms"
+            name={`${namePrefix}SignatureAlgorithms`}
+            label="webAuthnPolicySignatureAlgorithms"
             options={SIGNATURE_ALGORITHMS}
             isMultiSelect
           />
@@ -243,29 +255,33 @@ export const WebauthnPolicy = ({
           >
             <TextInput
               id="webAuthnPolicyRpId"
-              name="webAuthnPolicyRpId"
+              name={`${namePrefix}RpId`}
               ref={register()}
               data-testid="webAuthnPolicyRpId
             "
             />
           </FormGroup>
           <WebauthnSelect
-            name="webAuthnPolicyAttestationConveyancePreference"
+            name={`${namePrefix}AttestationConveyancePreference`}
+            label="webAuthnPolicyAttestationConveyancePreference"
             options={ATTESTATION_PREFERENCE}
             labelPrefix="attestationPreference"
           />
           <WebauthnSelect
-            name="webAuthnPolicyAuthenticatorAttachment"
+            name={`${namePrefix}AuthenticatorAttachment`}
+            label="webAuthnPolicyAuthenticatorAttachment"
             options={AUTHENTICATOR_ATTACHMENT}
             labelPrefix="authenticatorAttachment"
           />
           <WebauthnSelect
-            name="webAuthnPolicyRequireResidentKey"
+            name={`${namePrefix}RequireResidentKey`}
+            label="webAuthnPolicyRequireResidentKey"
             options={RESIDENT_KEY_OPTIONS}
             labelPrefix="residentKey"
           />
           <WebauthnSelect
-            name="webAuthnPolicyUserVerificationRequirement"
+            name={`${namePrefix}UserVerificationRequirement`}
+            label="webAuthnPolicyUserVerificationRequirement"
             options={USER_VERIFY}
             labelPrefix="userVerify"
           />
@@ -282,7 +298,7 @@ export const WebauthnPolicy = ({
             }
           >
             <Controller
-              name="webAuthnPolicyCreateTimeout"
+              name={`${namePrefix}CreateTimeout`}
               defaultValue={0}
               control={control}
               rules={{ min: 0, max: 31536 }}
@@ -311,7 +327,7 @@ export const WebauthnPolicy = ({
             }
           >
             <Controller
-              name="webAuthnPolicyAvoidSameAuthenticatorRegister"
+              name={`${namePrefix}AvoidSameAuthenticatorRegister`}
               defaultValue={false}
               control={control}
               render={({ onChange, value }) => (
@@ -336,7 +352,7 @@ export const WebauthnPolicy = ({
             }
           >
             <MultiLineInput
-              name="webAuthnPolicyAcceptableAaguids"
+              name={`${namePrefix}AcceptableAaguids`}
               aria-label={t("webAuthnPolicyAcceptableAaguids")}
               addButtonLabel="authentication:addAaguids"
             />

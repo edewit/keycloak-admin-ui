@@ -66,7 +66,9 @@ export const Policies = () => {
         id="webauthnPasswordlessPolicy"
         eventKey={4}
         title={<TabTitleText>{t("webauthnPasswordlessPolicy")}</TabTitleText>}
-      ></Tab>
+      >
+        <WebauthnPolicy realm={realm} realmUpdated={setRealm} isPasswordLess />
+      </Tab>
     </Tabs>
   );
 };
