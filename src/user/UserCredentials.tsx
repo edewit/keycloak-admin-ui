@@ -332,7 +332,11 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
             </Button>,
           ]}
         >
-          <Form id="userCredentials-form" isHorizontal>
+          <Form
+            id="userCredentials-form"
+            isHorizontal
+            className="keycloak__user-credentials__reset-form"
+          >
             <FormGroup
               name="password"
               label={t("password")}
@@ -345,13 +349,11 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
               }
               isRequired
             >
-              <div className="kc-password">
-                <PasswordInput
-                  name="password"
-                  aria-label="password"
-                  ref={register({ required: true })}
-                />
-              </div>
+              <PasswordInput
+                name="password"
+                aria-label="password"
+                ref={register({ required: true })}
+              />
             </FormGroup>
             <FormGroup
               name="passwordConfirmation"
@@ -369,13 +371,11 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
               }
               isRequired
             >
-              <div className="kc-passwordConfirmation">
-                <PasswordInput
-                  name="passwordConfirmation"
-                  aria-label="passwordConfirm"
-                  ref={register({ required: true })}
-                />
-              </div>
+              <PasswordInput
+                name="passwordConfirmation"
+                aria-label="passwordConfirm"
+                ref={register({ required: true })}
+              />
             </FormGroup>
             <FormGroup
               label={t("common:temporaryPassword")}
@@ -387,7 +387,6 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
               }
               fieldId="kc-temporaryPassword"
             >
-              {" "}
               <Controller
                 name="temporaryPassword"
                 defaultValue={true}
@@ -401,7 +400,7 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
                     labelOff={t("common:off")}
                   />
                 )}
-              ></Controller>
+              />
             </FormGroup>
           </Form>
         </Modal>
