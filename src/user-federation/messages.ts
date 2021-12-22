@@ -96,6 +96,8 @@ export default {
 
     learnMore: "Learn more",
     addNewProvider: "Add new provider",
+    addCustomProvider: "Add custom provider",
+    providerDetails: "Provider details",
     userFedDeletedSuccess: "The user federation provider has been deleted.",
     userFedDeleteError:
       "Could not delete user federation provider: '{{error}}'",

@@ -13,12 +13,14 @@ export type ProviderRouteParams = {
 export const CustomProviderRoute: RouteDef = {
   path: "/:realm/user-federation/:providerId/new",
   component: lazy(() => import("../custom/CustomProviderSettings")),
+  breadcrumb: (t) => t("user-federation:addCustomProvider"),
   access: "view-realm",
 };
 
 export const CustomEditProviderRoute: RouteDef = {
   path: "/:realm/user-federation/:providerId/:id",
   component: lazy(() => import("../custom/CustomProviderSettings")),
+  breadcrumb: (t) => t("user-federation:providerDetails"),
   access: "view-realm",
 };
 
