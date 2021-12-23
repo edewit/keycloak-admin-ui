@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Controller,
   FormProvider,
@@ -31,7 +31,6 @@ import { useRealm } from "../../context/realm-context/RealmContext";
 import { FormAccess } from "../../components/form-access/FormAccess";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { useHelp } from "../../components/help-enabler/HelpHeader";
-import useToggle from "../../utils/useToggle";
 import { useAlerts } from "../../components/alert/Alerts";
 import { TimeSelector } from "../../components/time-selector/TimeSelector";
 import { MultiLineInput } from "../../components/multi-line-input/MultiLineInput";
@@ -87,7 +86,7 @@ const WebauthnSelect = ({
   const { t } = useTranslation("authentication");
   const { control } = useFormContext();
 
-  const [open, toggle] = useToggle();
+  const [open, toggle] = useState(false);
   return (
     <FormGroup
       label={t(label)}
@@ -117,7 +116,7 @@ const WebauthnSelect = ({
                 onChange(changedValue);
               } else {
                 onChange(selectedValue.toString());
-                toggle();
+                toggle(false);
               }
             }}
             selections={labelPrefix ? t(`${labelPrefix}.${value}`) : value}
