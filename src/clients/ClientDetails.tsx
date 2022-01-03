@@ -58,6 +58,7 @@ import { toMapper } from "./routes/Mapper";
 import { AuthorizationSettings } from "./authorization/Settings";
 import { AuthorizationResources } from "./authorization/Resources";
 import { AuthorizationScopes } from "./authorization/Scopes";
+import { AuthorizationPermissions } from "./authorization/Permissions";
 
 type ClientDetailHeaderProps = {
   onChange: (value: boolean) => void;
@@ -491,6 +492,13 @@ export default function ClientDetails() {
                     title={<TabTitleText>{t("scopes")}</TabTitleText>}
                   >
                     <AuthorizationScopes clientId={clientId} />
+                  </Tab>
+                  <Tab
+                    id="permissions"
+                    eventKey={43}
+                    title={<TabTitleText>{t("permissions")}</TabTitleText>}
+                  >
+                    <AuthorizationPermissions clientId={clientId} />
                   </Tab>
                 </Tabs>
               </Tab>
