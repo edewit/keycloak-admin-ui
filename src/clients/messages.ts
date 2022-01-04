@@ -93,6 +93,8 @@ export default {
       "The permissions below will be removed when they are no longer used by other resources:",
     resourceDeletedSuccess: "The resource successfully deleted",
     resourceDeletedError: "Could not remove the resource {{error}}",
+    permissions: "Permissions",
+    searchForPermission: "Search for permission",
     deleteScope: "Permanently delete authorization scope?",
     deleteScopeConfirm:
       "If you delete this authorization scope, some permissions will be affected.",
