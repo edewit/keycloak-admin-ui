@@ -1,0 +1,5 @@
+.pf-c-button.disabled {
+  color: var(--pf-c-button--disabled--Color);
+  background-color: var(--pf-c-button--disabled--BackgroundColor);
+  --pf-c-button--after--BorderWidth: 0;
+}

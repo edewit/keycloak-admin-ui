@@ -67,7 +67,15 @@ export default {
     importResourceSuccess: "The resource was successfully imported",
     importResourceError: "Could not import the resource due to {{error}}",
     createResource: "Create resource",
+    emptyPermissions: "No permissions",
+    emptyPermissionInstructions:
+      "If you want to create a permission, please click the button below to create a resource-based or scope-based permission.",
+    noScopeCreateHint:
+      "There is no authorization scope you can't create scope-based permission",
+    noResourceCreateHint:
+      "There are no resources you can't create resource-based permission",
     createResourceBasedPermission: "Create resource-based permission",
+    createScopeBasedPermission: "Create scope-based permission",
     displayName: "Display name",
     type: "Type",
     addUri: "Add URI",
