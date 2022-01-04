@@ -103,8 +103,13 @@ export default {
     resourceScopeSuccess: "The authorization scope successfully deleted",
     resourceScopeError:
       "Could not remove the authorization scope due to {{error}}",
+    associatedPolicy: "Associated policy",
+    deletePermission: "Permanently delete permission?",
+    deletePermissionConfirm:
+      "Are you sure you want to delete the permission {{permission}}",
+    permissionDeletedSuccess: "Successfully deleted permission",
+    permissionDeletedError: "Could not delete permission due to {{error}}",
     createAuthorizationScope: "Create authorization scope",
-    permissions: "Permissions",
     emptyAuthorizationScopes: "No authorization scopes",
     emptyAuthorizationInstructions:
       "If you want to create authorization scopes, please click the button below to create the authorization scope",

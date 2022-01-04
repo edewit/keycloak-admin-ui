@@ -1,23 +1,33 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Controller, useForm } from "react-hook-form";
 import {
   Dropdown,
   DropdownToggle,
   Form,
   FormGroup,
+  Select,
+  SelectOption,
+  SelectVariant,
   TextInput,
 } from "@patternfly/react-core";
 
+import type PolicyProviderRepresentation from "@keycloak/keycloak-admin-client/lib/defs/policyProviderRepresentation";
 import useToggle from "../../utils/useToggle";
 
 import "./search-dropdown.css";
-import { useForm } from "react-hook-form";
 
-export const SearchDropdown = () => {
+type SearchDropdownProps = {
+  types?: PolicyProviderRepresentation[];
+};
+
+export const SearchDropdown = ({ types }: SearchDropdownProps) => {
   const { t } = useTranslation("clients");
-  const { register } = useForm();
+  const { register, control } = useForm();
 
   const [open, toggle] = useToggle();
+  const [typeOpen, toggleType] = useToggle();
+
   return (
     <Dropdown
       data-testid="searchdropdown_dorpdown"
@@ -46,35 +56,36 @@ export const SearchDropdown = () => {
           />
         </FormGroup>
         <FormGroup label={t("common:type")} fieldId="type">
-          {/* <Controller
-            name="otpPolicyAlgorithm"
-            defaultValue={`Hmac${OTP_HASH_ALGORITHMS[0]}`}
+          <Controller
+            name="type"
+            defaultValue=""
             control={control}
             render={({ onChange, value }) => (
               <Select
-                toggleId="otpHashAlgorithm"
-                onToggle={toggle}
-                onSelect={(_, value) => {
-                  onChange(value.toString());
-                  toggle();
+                toggleId="type"
+                onToggle={toggleType}
+                onSelect={(event, value) => {
+                  event.stopPropagation();
+                  onChange(value);
+                  toggleType();
                 }}
-                selections={value}
+                selections={value.name}
                 variant={SelectVariant.single}
-                aria-label={t("otpHashAlgorithm")}
-                isOpen={open}
+                aria-label={t("common:type")}
+                isOpen={typeOpen}
               >
-                {OTP_HASH_ALGORITHMS.map((type) => (
+                {types?.map((type) => (
                   <SelectOption
-                    selected={`Hmac${type}` === value}
-                    key={type}
-                    value={`Hmac${type}`}
+                    selected={type.type === value.type}
+                    key={type.type}
+                    value={type}
                   >
-                    {type}
+                    {type.name}
                   </SelectOption>
                 ))}
               </Select>
             )}
-          /> */}
+          />
         </FormGroup>
       </Form>
     </Dropdown>
