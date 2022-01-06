@@ -94,6 +94,7 @@ export default {
     scopes: "Scopes",
     policies: "Policies",
     createPermission: "Create permission",
+    permissionDetails: "Permission details",
     deleteResource: "Permanently delete resource?",
     deleteResourceConfirm:
       "If you delete this resource, some permissions will be affected.",
@@ -117,6 +118,8 @@ export default {
       "Are you sure you want to delete the permission {{permission}}",
     permissionDeletedSuccess: "Successfully deleted permission",
     permissionDeletedError: "Could not delete permission due to {{error}}",
+    applyToResourceTypeFlag: "Apply to resource type",
+    resourceType: "Resource type",
     createAuthorizationScope: "Create authorization scope",
     emptyAuthorizationScopes: "No authorization scopes",
     emptyAuthorizationInstructions:

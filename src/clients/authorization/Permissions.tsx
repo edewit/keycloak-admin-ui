@@ -3,18 +3,13 @@ import { Link, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   AlertVariant,
-  Button,
+  ButtonVariant,
   DescriptionList,
   Dropdown,
   DropdownItem,
   DropdownToggle,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
   PageSection,
-  Title,
   ToolbarItem,
-  Tooltip,
 } from "@patternfly/react-core";
 import {
   ExpandableRowContent,
@@ -25,24 +20,24 @@ import {
   Thead,
   Tr,
 } from "@patternfly/react-table";
-import { PlusCircleIcon } from "@patternfly/react-icons";
 
 import type PolicyRepresentation from "@keycloak/keycloak-admin-client/lib/defs/policyRepresentation";
 import type PolicyProviderRepresentation from "@keycloak/keycloak-admin-client/lib/defs/policyProviderRepresentation";
 import { KeycloakSpinner } from "../../components/keycloak-spinner/KeycloakSpinner";
 import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
 import { PaginatingTableToolbar } from "../../components/table-toolbar/PaginatingTableToolbar";
-import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { useAlerts } from "../../components/alert/Alerts";
-import { toCreateResource } from "../routes/NewResource";
+import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
+import useToggle from "../../utils/useToggle";
 import { useRealm } from "../../context/realm-context/RealmContext";
-import { toResourceDetails } from "../routes/Resource";
 import { SearchDropdown } from "./SearchDropdown";
 import { MoreLabel } from "./MoreLabel";
 import { DetailDescription } from "./DetailDescription";
-import useToggle from "../../utils/useToggle";
+import { EmptyPermissionsState } from "./EmptyPermissionsState";
 
 import "./permissions.css";
+import { toNewPermission } from "../routes/NewPermission";
+import { toPermissionDetails } from "../routes/PermissionDetails";
 
 type PermissionsProps = {
   clientId: string;
@@ -150,6 +145,7 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
     messageKey: t("deletePermissionConfirm", {
       permission: selectedPermission?.name,
     }),
+    continueButtonVariant: ButtonVariant.danger,
     continueButtonLabel: "clients:confirm",
     onConfirm: async () => {
       try {
@@ -169,33 +165,6 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
   if (!permissions) {
     return <KeycloakSpinner />;
   }
-
-  const style = "pf-u-m-sm";
-  const EmptyResourceButton = () => (
-    <Button
-      className={disabledCreate?.resources ? "disabled " : "" + style}
-      variant="secondary"
-      onClick={() =>
-        !disabledCreate?.resources &&
-        history.push(toCreateResource({ realm, id: clientId }))
-      }
-    >
-      {t("createResourceBasedPermission")}
-    </Button>
-  );
-
-  const EmptyScopeButton = () => (
-    <Button
-      className={disabledCreate?.scopes ? "disabled " : "" + style}
-      variant="secondary"
-      onClick={() =>
-        !disabledCreate?.scopes &&
-        history.push(toCreateResource({ realm, id: clientId }))
-      }
-    >
-      {t("createScopeBasedPermission")}
-    </Button>
-  );
 
   return (
     <PageSection variant="light" className="pf-u-p-0">
@@ -230,7 +199,13 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
                       isDisabled={disabledCreate?.resources}
                       component="button"
                       onClick={() =>
-                        history.push(toCreateResource({ realm, id: clientId }))
+                        history.push(
+                          toNewPermission({
+                            realm,
+                            id: clientId,
+                            permissionType: "resource",
+                          })
+                        )
                       }
                     >
                       {t("createResourceBasedPermission")}
@@ -240,7 +215,13 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
                       isDisabled={disabledCreate?.scopes}
                       component="button"
                       onClick={() =>
-                        history.push(toCreateResource({ realm, id: clientId }))
+                        history.push(
+                          toNewPermission({
+                            realm,
+                            id: clientId,
+                            permissionType: "scope",
+                          })
+                        )
                       }
                     >
                       {t("createScopeBasedPermission")}
@@ -281,10 +262,11 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
                   />
                   <Td data-testid={`name-column-${permission.name}`}>
                     <Link
-                      to={toResourceDetails({
+                      to={toPermissionDetails({
                         realm,
                         id: clientId,
-                        resourceId: permission.id!,
+                        permissionType: permission.type!,
+                        permissionId: permission.id!,
                       })}
                     >
                       {permission.name}
@@ -341,28 +323,11 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
         </PaginatingTableToolbar>
       )}
       {permissions.length === 0 && (
-        <EmptyState data-testid="empty-state" variant="large">
-          <EmptyStateIcon icon={PlusCircleIcon} />
-          <Title headingLevel="h1" size="lg">
-            {t("emptyPermissions")}
-          </Title>
-          <EmptyStateBody>{t("emptyPermissionInstructions")}</EmptyStateBody>
-          {disabledCreate?.resources ? (
-            <Tooltip content={t("noResourceCreateHint")}>
-              <EmptyResourceButton />
-            </Tooltip>
-          ) : (
-            <EmptyResourceButton />
-          )}
-          <br />
-          {disabledCreate?.scopes ? (
-            <Tooltip content={t("noScopeCreateHint")}>
-              <EmptyScopeButton />
-            </Tooltip>
-          ) : (
-            <EmptyScopeButton />
-          )}
-        </EmptyState>
+        <EmptyPermissionsState
+          clientId={clientId}
+          isResourceEnabled={disabledCreate?.resources}
+          isScopeEnabled={disabledCreate?.scopes}
+        />
       )}
     </PageSection>
   );
