@@ -188,13 +188,18 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
               <ToolbarItem>
                 <Dropdown
                   toggle={
-                    <DropdownToggle onToggle={toggleCreate} isPrimary>
+                    <DropdownToggle
+                      onToggle={toggleCreate}
+                      isPrimary
+                      data-testid="permissionCreateDropdown"
+                    >
                       {t("createPermission")}
                     </DropdownToggle>
                   }
                   isOpen={createOpen}
                   dropdownItems={[
                     <DropdownItem
+                      data-testid="create-resource"
                       key="createResourceBasedPermission"
                       isDisabled={disabledCreate?.resources}
                       component="button"
@@ -211,6 +216,7 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
                       {t("createResourceBasedPermission")}
                     </DropdownItem>,
                     <DropdownItem
+                      data-testid="create-scope"
                       key="createScopeBasedPermission"
                       isDisabled={disabledCreate?.scopes}
                       component="button"

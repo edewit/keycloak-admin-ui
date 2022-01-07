@@ -31,6 +31,7 @@ const EmptyButton = ({
   const history = useHistory();
   return (
     <Button
+      data-testid={`create-${permissionType}`}
       className={disabled ? "disabled " : "" + "pf-u-m-sm"}
       variant="secondary"
       onClick={() =>

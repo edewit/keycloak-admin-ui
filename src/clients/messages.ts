@@ -121,7 +121,7 @@ export default {
     permissionDeletedError: "Could not delete permission due to {{error}}",
     applyToResourceTypeFlag: "Apply to resource type",
     resourceType: "Resource type",
-    createPermissionSuccess: "Scucessfully created the permission",
+    createPermissionSuccess: "Successfully created the permission",
     updatePermissionSuccess: "Successfully updated the permission",
     permissionSaveError: "Could not update the permission due to {{error}}",
     createAuthorizationScope: "Create authorization scope",
