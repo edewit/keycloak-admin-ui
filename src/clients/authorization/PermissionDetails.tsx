@@ -52,23 +52,42 @@ export default function PermissionDetails() {
   useFetch(
     async () => {
       if (permissionId) {
-        const permission = await adminClient.clients.findOnePermission({
-          id,
-          type: permissionType,
-          permissionId,
-        });
-        if (!permission) {
+        const r = await Promise.all([
+          adminClient.clients.findOnePermission({
+            id,
+            type: permissionType,
+            permissionId,
+          }),
+          adminClient.clients.getAssociatedResources({
+            id,
+            permissionId,
+          }),
+          adminClient.clients.getAssociatedPolicies({
+            id,
+            permissionId,
+          }),
+        ]);
+
+        if (!r[0]) {
           throw new Error(t("common:notFound"));
         }
-        return permission;
+
+        return {
+          permission: r[0],
+          resources: r[1].map((p) => p._id),
+          policies: r[2].map((p) => p.id!),
+        };
       }
+      return {};
     },
-    (permission) => {
-      reset({ ...permission });
-      setApplyToResourceTypeFlag(
-        (permission && "permissionType" in permission) || false
-      );
-      setPermission(permission);
+    ({ permission, resources, policies }) => {
+      reset({ ...permission, resources, policies });
+      if (permission && "resourceType" in permission) {
+        setApplyToResourceTypeFlag(
+          !!(permission as { resourceType: string }).resourceType
+        );
+      }
+      setPermission({ ...permission, resources, policies });
     },
     []
   );
