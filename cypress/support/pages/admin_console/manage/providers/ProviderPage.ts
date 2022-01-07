@@ -100,15 +100,15 @@ export default class ProviderPage {
   }
 
   deleteCardFromCard(card: string) {
-    cy.get(`[data-testid=${card}-dropdown]`).click();
-    cy.get('[data-testid="card-delete"]').click();
+    cy.findByTestId(`${card}-dropdown`).click();
+    cy.findByTestId("card-delete").click();
     return this;
   }
 
   deleteCardFromMenu(card: string) {
     this.clickExistingCard(card);
-    cy.get('[data-testid="action-dropdown"]').click();
-    cy.get(`[data-testid="delete-cmd"]`).click();
+    cy.findByTestId("action-dropdown").click();
+    cy.findByTestId("delete-cmd").click();
     return this;
   }
 
@@ -204,7 +204,7 @@ export default class ProviderPage {
   }
 
   goToMappers() {
-    cy.get(`[data-testid="ldap-mappers-tab"]`).click();
+    cy.findByTestId("ldap-mappers-tab").click();
   }
 
   createRole(roleName: string) {
@@ -229,7 +229,7 @@ export default class ProviderPage {
     cy.get("#kc-providerId").click();
     cy.get("button").contains(mapperType).click();
 
-    cy.get(`[data-testid="ldap-mapper-name"]`).type(`${mapperType}-test`);
+    cy.findByTestId("ldap-mapper-name").type(`${mapperType}-test`);
 
     switch (mapperType) {
       case this.msadUserAcctMapper:
@@ -317,7 +317,7 @@ export default class ProviderPage {
   }
 
   clickExistingCard(cardName: string) {
-    cy.get('[data-testid="keycloak-card-title"]').contains(cardName).click();
+    cy.findByTestId("keycloak-card-title").contains(cardName).click();
     cy.wait(1000);
     return this;
   }
@@ -329,28 +329,28 @@ export default class ProviderPage {
   }
 
   clickNewCard(providerType: string) {
-    cy.get(`[data-testid=${providerType}-card]`).click();
+    cy.findByTestId(`${providerType}-card`).click();
     cy.wait(1000);
     return this;
   }
 
   disableEnabledSwitch(providerType: string) {
-    cy.get(`#${providerType}-switch`).uncheck({ force: true });
+    cy.get(`#${providerType.toUpperCase()}-switch`).uncheck({ force: true });
     return this;
   }
 
   enableEnabledSwitch(providerType: string) {
-    cy.get(`#${providerType}-switch`).check({ force: true });
+    cy.get(`#${providerType.toUpperCase()}-switch`).check({ force: true });
     return this;
   }
 
   save(providerType: string) {
-    cy.get(`[data-testid=${providerType}-save]`).click();
+    cy.findByTestId(`${providerType}-save`).click();
     return this;
   }
 
   cancel(providerType: string) {
-    cy.get(`[data-testid=${providerType}-cancel]`).click();
+    cy.findByTestId(`${providerType}-cancel`).click();
     return this;
   }
 }

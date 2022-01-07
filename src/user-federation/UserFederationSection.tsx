@@ -67,6 +67,7 @@ export default function UserFederationSection() {
     () =>
       providers.map((p) => (
         <DropdownItem
+          data-testid={`${p.id}-dropdown`}
           key={p.id}
           onClick={() =>
             history.push(toProvider({ realm, providerId: p.id!, id: "new" }))

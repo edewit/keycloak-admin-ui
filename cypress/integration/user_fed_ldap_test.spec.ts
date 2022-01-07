@@ -3,7 +3,10 @@ import SidebarPage from "../support/pages/admin_console/SidebarPage";
 import ProviderPage from "../support/pages/admin_console/manage/providers/ProviderPage";
 import Masthead from "../support/pages/admin_console/Masthead";
 import ModalUtils from "../support/util/ModalUtils";
-import { keycloakBefore } from "../support/util/keycloak_hooks";
+import {
+  keycloakBefore,
+  keycloakBeforeEach,
+} from "../support/util/keycloak_hooks";
 
 const loginPage = new LoginPage();
 const masthead = new Masthead();
@@ -12,7 +15,7 @@ const providersPage = new ProviderPage();
 const modalUtils = new ModalUtils();
 
 const provider = "ldap";
-const allCapProvider = provider.toUpperCase();
+const allCapProvider = "Ldap";
 
 const firstLdapName = "my-ldap";
 const firstLdapVendor = "Active Directory";
@@ -58,9 +61,13 @@ const deleteModalTitle = "Delete user federation provider?";
 const disableModalTitle = "Disable user federation provider?";
 
 describe("User Fed LDAP tests", () => {
-  beforeEach(() => {
+  before(() => {
     keycloakBefore();
     loginPage.logIn();
+  });
+
+  beforeEach(() => {
+    keycloakBeforeEach();
     sidebarPage.goToUserFederation();
   });
 
