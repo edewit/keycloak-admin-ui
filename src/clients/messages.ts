@@ -60,6 +60,7 @@ export default {
     decisionStrategies: {
       UNANIMOUS: "Unanimous",
       AFFIRMATIVE: "Affirmative",
+      CONSENSUS: "Consensus",
     },
     importResources: "The following settings and data will be imported:",
     importWarning:
@@ -120,6 +121,9 @@ export default {
     permissionDeletedError: "Could not delete permission due to {{error}}",
     applyToResourceTypeFlag: "Apply to resource type",
     resourceType: "Resource type",
+    createPermissionSuccess: "Scucessfully created the permission",
+    updatePermissionSuccess: "Successfully updated the permission",
+    permissionSaveError: "Could not update the permission due to {{error}}",
     createAuthorizationScope: "Create authorization scope",
     emptyAuthorizationScopes: "No authorization scopes",
     emptyAuthorizationInstructions:

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import {
   ActionGroup,
   AlertVariant,
@@ -10,6 +10,7 @@ import {
   DropdownItem,
   FormGroup,
   PageSection,
+  Radio,
   Switch,
   TextArea,
   TextInput,
@@ -30,6 +31,8 @@ import { toClient } from "../routes/Client";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { ResourcesPolicySelect } from "./ResourcesPolicySelect";
 
+const DECISION_STRATEGIES = ["UNANIMOUS", "AFFIRMATIVE", "CONSENSUS"] as const;
+
 export default function PermissionDetails() {
   const { t } = useTranslation("clients");
 
@@ -37,7 +40,7 @@ export default function PermissionDetails() {
     shouldUnregister: false,
     mode: "onChange",
   });
-  const { register, reset, errors, handleSubmit } = form;
+  const { register, control, reset, errors, handleSubmit } = form;
 
   const history = useHistory();
   const { id, realm, permissionType, permissionId } = useParams<
@@ -274,6 +277,40 @@ export default function PermissionDetails() {
                 name="policies"
                 searchFunction="listPolicies"
                 clientId={id}
+              />
+            </FormGroup>
+            <FormGroup
+              label={t("decisionStrategy")}
+              labelIcon={
+                <HelpItem
+                  helpText="clients-help:permissionDecisionStrategy"
+                  fieldLabelId="clients:decisionStrategy"
+                />
+              }
+              fieldId="policyEnforcementMode"
+              hasNoPaddingTop
+            >
+              <Controller
+                name="decisionStrategy"
+                data-testid="decisionStrategy"
+                defaultValue={DECISION_STRATEGIES[0]}
+                control={control}
+                render={({ onChange, value }) => (
+                  <>
+                    {DECISION_STRATEGIES.map((strategy) => (
+                      <Radio
+                        id={strategy}
+                        key={strategy}
+                        data-testid={strategy}
+                        isChecked={value === strategy}
+                        name="decisionStrategies"
+                        onChange={() => onChange(strategy)}
+                        label={t(`decisionStrategies.${strategy}`)}
+                        className="pf-u-mb-md"
+                      />
+                    ))}
+                  </>
+                )}
               />
             </FormGroup>
             <ActionGroup>
