@@ -34,10 +34,10 @@ import { SearchDropdown } from "./SearchDropdown";
 import { MoreLabel } from "./MoreLabel";
 import { DetailDescription } from "./DetailDescription";
 import { EmptyPermissionsState } from "./EmptyPermissionsState";
-
-import "./permissions.css";
 import { toNewPermission } from "../routes/NewPermission";
 import { toPermissionDetails } from "../routes/PermissionDetails";
+
+import "./permissions.css";
 
 type PermissionsProps = {
   clientId: string;
@@ -306,7 +306,8 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
                   key={`child-${permission.id}`}
                   isExpanded={permission.isExpanded}
                 >
-                  <Td colSpan={6}>
+                  <Td />
+                  <Td colSpan={5}>
                     <ExpandableRowContent>
                       {permission.isExpanded && (
                         <DescriptionList
