@@ -730,6 +730,7 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
                     fieldLabelId="users:userCredentialsHelpTextLabel"
                   />
                 </Th>
+                <Th />
                 <Th>{t("type")}</Th>
                 <Th>{t("userLabel")}</Th>
                 <Th>{t("data")}</Th>
@@ -740,6 +741,11 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
             {groupedUserCredentials.map((groupedCredential, rowIndex) => (
               <Fragment key={`table-${groupedCredential.key}`}>
                 <Tr>
+                  <Td
+                    draggableRow={{
+                      id: `draggable-row-${groupedCredential.key}`,
+                    }}
+                  />
                   {groupedCredential.value.length > 1 ? (
                     <Td
                       className="kc-expandRow-btn"
@@ -920,6 +926,7 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
                 {groupedCredential.isExpanded &&
                   groupedCredential.value.map((credential) => (
                     <Tr key={`child-key-${credential.id}`}>
+                      <Td />
                       <Td />
                       <Td
                         key={`child-item-${credential.id}`}
