@@ -7,7 +7,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import type { AxiosError } from "axios";
+import axios from "axios";
 
 import { RecentUsed } from "../components/realm-selector/recent-used";
 import useRequiredContext from "../utils/useRequiredContext";
