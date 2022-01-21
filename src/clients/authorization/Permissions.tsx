@@ -37,7 +37,6 @@ import { EmptyPermissionsState } from "./EmptyPermissionsState";
 import { toNewPermission } from "../routes/NewPermission";
 import { toPermissionDetails } from "../routes/PermissionDetails";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
-import { isEqual } from "lodash";
 
 import "./permissions.css";
 
@@ -171,7 +170,7 @@ export const AuthorizationPermissions = ({ clientId }: PermissionsProps) => {
   }
 
   const noData = permissions.length === 0;
-  const searching = !isEqual(search, {});
+  const searching = Object.keys(search).length !== 0;
   return (
     <PageSection variant="light" className="pf-u-p-0">
       <DeleteConfirm />
