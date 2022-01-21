@@ -39,12 +39,15 @@ export const RealmsProvider: FunctionComponent = ({ children }) => {
       try {
         return await adminClient.realms.find({ briefRepresentation: true });
       } catch (error) {
-        const e = error as Error | AxiosError;
-        if ("response" in e && e.response && e.response.status < 500) {
+        if (
+          axios.isAxiosError(error) &&
+          error.response &&
+          error.response.status < 500
+        ) {
           return [];
-        } else {
-          throw error;
         }
+
+        throw error;
       }
     },
     (realms) => updateRealms(realms),
