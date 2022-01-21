@@ -198,7 +198,7 @@ export default class RealmSettingsPage {
 
   private listingPage = new ListingPage();
   private addCondition = "addCondition";
-  private addConditionDrpDwn = ".pf-c-select__toggle";edewit:removed-waits
+  private addConditionDrpDwn = ".pf-c-select__toggle";
   private addConditionDrpDwnOption = "conditionType-select";
   private addConditionCancelBtn = "addCondition-cancelBtn";
   private addConditionSaveBtn = "addCondition-saveBtn";
