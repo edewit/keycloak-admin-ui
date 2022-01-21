@@ -48,6 +48,21 @@ export const SearchDropdown = ({ types, onSearch }: SearchDropdownProps) => {
     onSearch(form);
   };
 
+  const typeOptions = (value: string) => [
+    <SelectOption key="empty" value="">
+      {t("allTypes")}
+    </SelectOption>,
+    ...(types || []).map((type) => (
+      <SelectOption
+        selected={type.type === value}
+        key={type.type}
+        value={type.type}
+      >
+        {type.name}
+      </SelectOption>
+    )),
+  ];
+
   return (
     <Dropdown
       data-testid="searchdropdown_dorpdown"
@@ -113,20 +128,7 @@ export const SearchDropdown = ({ types, onSearch }: SearchDropdownProps) => {
                 aria-label={t("common:type")}
                 isOpen={typeOpen}
               >
-                {[
-                  <SelectOption key="empty" value="">
-                    {t("allTypes")}
-                  </SelectOption>,
-                  ...(types?.map((type) => (
-                    <SelectOption
-                      selected={type.type === value}
-                      key={type.type}
-                      value={type.type}
-                    >
-                      {type.name}
-                    </SelectOption>
-                  )) || []),
-                ]}
+                {typeOptions(value)}
               </Select>
             )}
           />
