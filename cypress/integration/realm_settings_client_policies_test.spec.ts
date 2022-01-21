@@ -110,9 +110,8 @@ describe("Realm settings client policies tab tests", () => {
     cy.findByTestId("rs-clientPolicies-tab").click();
     cy.findByTestId("rs-policies-clientPolicies-tab").click();
     realmSettingsPage.shouldCompleteAndCreateNewClientPolicy();
-    cy.intercept(url).as("load");
+    cy.wait("@save");
     realmSettingsPage.shouldNotCreateDuplicateClientPolicy();
-    cy.wait("@load");
     sidebarPage.goToRealmSettings();
     cy.findByTestId("rs-clientPolicies-tab").click();
     cy.findByTestId("rs-policies-clientPolicies-tab").click();

@@ -332,17 +332,6 @@ export default class RealmSettingsPage {
     return this;
   }
 
-  deleteProvider(providerName: string) {
-    cy.findAllByTestId("provider-name-link")
-      .contains(providerName)
-      .parent()
-      .siblings(".pf-c-data-list__item-action")
-      .click()
-      .findByTestId(this.deleteAction)
-      .click();
-    cy.wait(500).findByTestId(this.modalConfirm).click();
-  }
-
   enterConsoleDisplayName(name: string) {
     cy.findByTestId(this.displayName).clear().type(name);
   }
