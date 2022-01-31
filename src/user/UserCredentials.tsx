@@ -1,4 +1,10 @@
-import React, { Fragment, FunctionComponent, useMemo, useState } from "react";
+import React, {
+  Fragment,
+  FunctionComponent,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   AlertVariant,
   Button,
@@ -49,6 +55,7 @@ import type CredentialRepresentation from "@keycloak/keycloak-admin-client/lib/d
 import { FormAccess } from "../components/form-access/FormAccess";
 import { RequiredActionAlias } from "@keycloak/keycloak-admin-client/lib/defs/requiredActionProviderRepresentation";
 import { TimeSelector } from "../components/time-selector/TimeSelector";
+import styles from "@patternfly/react-styles/css/components/Table/table";
 
 type UserCredentialsProps = {
   user: UserRepresentation;
@@ -260,6 +267,13 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
     rowKey: string;
   }>();
 
+  const [draggedItemId, setDraggedItemId] = useState(null);
+  const [draggingToItemIndex, setDraggingToItemIndex] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [itemOrder, setItemOrder] = useState([0, 1, 2, 3, 4, 5, 6]);
+  const [tempItemOrder, setTempItemOrder] = useState([]);
+  const bodyRef = useRef();
+
   useFetch(
     () => adminClient.users.getCredentials({ id: user.id! }),
     (credentials) => {
@@ -460,6 +474,129 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
       status: false,
       rowKey: credentialToEdit.id!,
     });
+  };
+
+  const onDragStart = (evt: {
+    dataTransfer: {
+      effectAllowed: string;
+      setData: (arg0: string, arg1: any) => void;
+    };
+    currentTarget: {
+      id: any;
+      classList: { add: (arg0: any) => void };
+      setAttribute: (arg0: string, arg1: string) => void;
+    };
+  }) => {
+    evt.dataTransfer.effectAllowed = "move";
+    evt.dataTransfer.setData("text/plain", evt.currentTarget.id);
+    const draggedItemId = evt.currentTarget.id;
+
+    evt.currentTarget.classList.add(styles.modifiers.ghostRow);
+    evt.currentTarget.setAttribute("aria-pressed", "true");
+
+    setDraggedItemId(draggedItemId);
+    setIsDragging(true);
+  };
+
+  const moveItem = (arr: any[], i1: null, toIndex: number) => {
+    const fromIndex = arr.indexOf(i1);
+    if (fromIndex === toIndex) {
+      return arr;
+    }
+    const temp = arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, temp[0]);
+
+    return arr;
+  };
+
+  const move = (itemOrder: any[]) => {
+    const ulNode = bodyRef.current;
+    const nodes = Array.from(ulNode.children);
+    if (nodes.map((node) => node.id).every((id, i) => id === itemOrder[i])) {
+      return;
+    }
+    while (ulNode.firstChild) {
+      ulNode.removeChild(ulNode.lastChild);
+    }
+
+    itemOrder.forEach((id: any) => {
+      ulNode.appendChild(nodes.find((n) => n.id === id));
+    });
+  };
+
+  const onDragCancel = () => {
+    Array.from(bodyRef.current.children).forEach((el) => {
+      el.classList.remove(styles.modifiers.ghostRow);
+      el.setAttribute("aria-pressed", "false");
+    });
+    setDraggedItemId(null);
+    setDraggingToItemIndex(null);
+    setIsDragging(false);
+  };
+
+  const onDragLeave = (evt: any) => {
+    if (!isValidDrop(evt)) {
+      move(itemOrder);
+      setDraggingToItemIndex(null);
+    }
+  };
+
+  const isValidDrop = (evt: { clientX: number; clientY: number }) => {
+    const ulRect = bodyRef.current.getBoundingClientRect();
+    return (
+      evt.clientX > ulRect.x &&
+      evt.clientX < ulRect.x + ulRect.width &&
+      evt.clientY > ulRect.y &&
+      evt.clientY < ulRect.y + ulRect.height
+    );
+  };
+
+  const onDrop = (evt: any) => {
+    if (isValidDrop(evt)) {
+      setItemOrder(tempItemOrder);
+    } else {
+      onDragCancel();
+    }
+  };
+
+  const onDragOver = (evt: {
+    preventDefault: () => void;
+    target: { closest: (arg0: string) => any };
+  }) => {
+    evt.preventDefault();
+
+    const curListItem = evt.target.closest("tr");
+    if (
+      !curListItem ||
+      !bodyRef.current.contains(curListItem) ||
+      curListItem.id === draggedItemId
+    ) {
+      return null;
+    } else {
+      const dragId = curListItem.id;
+      const newDraggingToItemIndex = Array.from(
+        bodyRef.current.children
+      ).findIndex((item) => item.id === dragId);
+      if (newDraggingToItemIndex !== draggingToItemIndex) {
+        const tempItemOrder = moveItem(
+          [...itemOrder],
+          draggedItemId,
+          newDraggingToItemIndex
+        );
+        move(tempItemOrder);
+        setDraggingToItemIndex(newDraggingToItemIndex);
+        setTempItemOrder(tempItemOrder);
+      }
+    }
+  };
+
+  const onDragEnd = (evt: { target: any }) => {
+    const target = evt.target;
+    target.classList.remove(styles.modifiers.ghostRow);
+    target.setAttribute("aria-pressed", "false");
+    setDraggedItemId(null);
+    setDraggingToItemIndex(null);
+    setIsDragging(false);
   };
 
   return (
@@ -740,7 +877,17 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
             </Thead>
             {groupedUserCredentials.map((groupedCredential, rowIndex) => (
               <Fragment key={`table-${groupedCredential.key}`}>
-                <Tr>
+                <Tr
+                  id={groupedCredential.value
+                    .map((credential) => {
+                      return credential.id;
+                    })
+                    .toString()}
+                  draggable
+                  onDrop={onDrop}
+                  onDragEnd={onDragEnd}
+                  onDragStart={onDragStart}
+                >
                   <Td
                     draggableRow={{
                       id: `draggable-row-${groupedCredential.key}`,
