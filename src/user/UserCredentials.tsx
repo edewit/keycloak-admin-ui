@@ -890,7 +890,11 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
                 >
                   <Td
                     draggableRow={{
-                      id: `draggable-row-${groupedCredential.key}`,
+                      id: `draggable-row-${groupedCredential.value.map(
+                        (credential) => {
+                          return credential.id;
+                        }
+                      )}`,
                     }}
                   />
                   {groupedCredential.value.length > 1 ? (
@@ -1081,7 +1085,12 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
                       onDragStart={onDragStart}
                     >
                       <Td />
-                      <Td />
+                      <Td
+                        className="kc-draggable-dropdown-type-icon"
+                        draggableRow={{
+                          id: `draggable-row-${credential.id}`,
+                        }}
+                      />
                       <Td
                         key={`child-item-${credential.id}`}
                         dataLabel={`child-columns-${credential.id}`}
