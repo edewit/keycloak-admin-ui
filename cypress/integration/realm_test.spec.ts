@@ -3,25 +3,34 @@ import SidebarPage from "../support/pages/admin_console/SidebarPage";
 import CreateRealmPage from "../support/pages/admin_console/CreateRealmPage";
 import Masthead from "../support/pages/admin_console/Masthead";
 import AdminClient from "../support/util/AdminClient";
-import { keycloakBefore } from "../support/util/keycloak_hooks";
+import RealmSelector from "../support/pages/admin_console/RealmSelector";
+import {
+  keycloakBefore,
+  keycloakBeforeEach,
+} from "../support/util/keycloak_hooks";
 
 const masthead = new Masthead();
 const loginPage = new LoginPage();
 const sidebarPage = new SidebarPage();
 const createRealmPage = new CreateRealmPage();
+const realmSelector = new RealmSelector();
+const adminClient = new AdminClient();
 
 describe("Realms test", () => {
   const testRealmName = "Test realm";
   describe("Realm creation", () => {
-    beforeEach(() => {
+    before(() => {
       keycloakBefore();
       loginPage.logIn();
     });
 
-    after(async () => {
-      const client = new AdminClient();
-      [testRealmName, "one", "two"].map(
-        async (realm) => await client.deleteRealm(realm)
+    beforeEach(() => {
+      keycloakBeforeEach();
+    });
+
+    after(() => {
+      [testRealmName, "one", "two"].map((realm) =>
+        adminClient.deleteRealm(realm)
       );
     });
 
@@ -45,7 +54,7 @@ describe("Realms test", () => {
       sidebarPage.goToCreateRealm();
       createRealmPage.fillRealmName("one").createRealm();
 
-      const fetchUrl = "/auth/admin/realms";
+      const fetchUrl = "/auth/admin/realms?briefRepresentation=true";
       cy.intercept(fetchUrl).as("fetch");
 
       masthead.checkNotificationMessage("Realm created");
@@ -61,12 +70,31 @@ describe("Realms test", () => {
     });
 
     it("should change to Test realm", () => {
-      sidebarPage.getCurrentRealm().should("eq", "Master");
+      sidebarPage.getCurrentRealm().should("eq", "Two");
 
       sidebarPage
         .goToRealm(testRealmName)
         .getCurrentRealm()
         .should("eq", testRealmName);
+    });
+  });
+
+  describe("More then 5 realms", () => {
+    const realmNames = ["One", "Two", "Three", "Four", "Five"];
+    before(() => {
+      keycloakBefore();
+      loginPage.logIn();
+      realmNames.map((realm) => adminClient.createRealm(realm));
+    });
+
+    after(() => {
+      for (const realmName of realmNames) {
+        adminClient.deleteRealm(realmName);
+      }
+    });
+
+    it("switch to searchable realm selector", () => {
+      realmSelector.openRealmContextSelector().shouldContainAll(realmNames);
     });
   });
 });

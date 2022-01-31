@@ -44,8 +44,23 @@ export default {
       "Default URL to use when the auth server needs to redirect or link back to the client.",
     adminURL:
       "URL to the admin interface of the client. Set this if the client supports the adapter REST API. This REST API allows the auth server to push revocation policies and other administrative tasks. Usually this is set to the base URL of the client.",
+    client:
+      "Select the client making this authorization request. If not provided, authorization requests would be done based on the client you are in.",
     clientId:
       "Specifies ID referenced in URI and tokens. For example 'my-client'. For SAML this is also the expected issuer value from authn requests",
+    selectUser:
+      "Select a user whose identity is going to be used to query permissions from the server.",
+    roles: "Select the roles you want to associate with the selected user.",
+    contextualAttributes:
+      "Any attribute provided by a running environment or execution context.",
+    resourceType:
+      "Specifies that this permission must be applied to all resource instances of a given type.",
+    applyToResourceType:
+      "Specifies if this permission should be applied to all resources with a given type. In this case, this permission will be evaluated for all instances of a given resource type.",
+    resources:
+      "Specifies that this permission must be applied to a specific resource instance.",
+    scopesSelect:
+      "Specifies that this permission must be applied to one or more scopes.",
     clientName:
       "Specifies display name of the client. For example 'My Client'. Supports keys for localized values as well. For example: ${my_client}",
     description:
@@ -180,7 +195,31 @@ export default {
       "A unique name for this scope. The name can be used to uniquely identify a scope, useful when querying for a specific scope.",
     scopeDisplayName:
       "A unique name for this scope. The name can be used to uniquely identify a scope, useful when querying for a specific scope.",
-
+    "policy-name": "The name of this policy.",
+    "policy-description": "A description for this policy.",
+    policyDecisionStagey:
+      "The decision strategy dictates how the policies associated with a given permission are evaluated and how a final decision is obtained. 'Affirmative' means that at least one policy must evaluate to a positive decision in order for the final decision to be also positive. 'Unanimous' means that all policies must evaluate to a positive decision in order for the final decision to be also positive. 'Consensus' means that the number of positive decisions must be greater than the number of negative decisions. If the number of positive and negative is the same, the final decision will be negative.",
+    applyPolicy:
+      "Specifies all the policies that must be applied to the scopes defined by this policy or permission.",
+    policyClient: "Specifies which client(s) are allowed by this policy.",
+    policyGroups: "Specifies which user(s) are allowed by this policy.",
+    targetClaim: "Specifies the target claim which the policy will fetch.",
+    regexPattern: "Specifies the regex pattern.",
+    policyRoles: "Specifies the client roles allowed by this policy.",
+    startTime:
+      "Defines the time before which the policy MUST NOT be granted. Only granted if current date/time is after or equal to this value.",
+    expireTime:
+      "Defines the time after which the policy MUST NOT be granted. Only granted if current date/time is before or equal to this value.",
+    month:
+      "Defines the month which the policy MUST be granted. You can also provide a range by filling the second field. In this case, permission is granted only if current month is between or equal to the two values you provided.",
+    dayMonth:
+      "Defines the day of month when the policy MUST be granted. You can also provide a range by filling the second field. In this case, permission is granted only if current day of month is between or equal to the two values you provided.",
+    hour: "Defines the hour when the policy MUST be granted. You can also provide a range by filling the second field. In this case, permission is granted only if current hour is between or equal to the two values you provided.",
+    minute:
+      "Defines the minute when the policy MUST be granted. You can also provide a range by filling the second field. In this case, permission is granted only if current minute is between or equal to the two values you provided.",
+    policyCode: "The JavaScript code providing the conditions for this policy.",
+    logic:
+      "The logic dictates how the policy decision should be made. If 'Positive', the resulting effect (permit or deny) obtained during the evaluation of this policy will be used to perform a decision. If 'Negative', the resulting effect will be negated, in other words, a permit becomes a deny and vice-versa.",
     permissionName: "The name of this permission.",
     permissionDescription: "A description for this permission.",
     applyToResourceTypeFlag:

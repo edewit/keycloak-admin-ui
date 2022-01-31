@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import {
   ActionGroup,
   AlertVariant,
@@ -176,7 +176,7 @@ export default function ClientProfileForm() {
             globalProfiles,
           });
           addAlert(t("deleteClientSuccess"), AlertVariant.success);
-          history.push(toClientPolicies({ realm }));
+          history.push(toClientPolicies({ realm, tab: "profiles" }));
         } catch (error) {
           addError(t("deleteClientError"), error);
         }
@@ -370,7 +370,7 @@ export default function ClientProfileForm() {
                                   (type) => type.id === executor.executor
                                 )
                                 .map((type) => (
-                                  <>
+                                  <Fragment key={type.id}>
                                     <HelpItem
                                       key={type.id}
                                       helpText={type.helpText}
@@ -394,7 +394,7 @@ export default function ClientProfileForm() {
                                         });
                                       }}
                                     ></Button>
-                                  </>
+                                  </Fragment>
                                 ))}
                             </DataListCell>,
                           ]}

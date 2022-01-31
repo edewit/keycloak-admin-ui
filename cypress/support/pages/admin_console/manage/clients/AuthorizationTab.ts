@@ -5,33 +5,41 @@ import type ScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/s
 type PermissionType = "resource" | "scope";
 
 export default class AuthorizationTab {
-  private tabName = "#pf-tab-authorization-authorization";
-  private resourcesTabName = "#pf-tab-41-resources";
-  private scopeTabName = "#pf-tab-42-scopes";
-  private permissionsTabName = "#pf-tab-43-permissions";
+  private tabName = "authorizationTab";
+  private resourcesTabName = "authorizationResources";
+  private scopeTabName = "authorizationScopes";
+  private policyTabName = "authorizationPolicies";
+  private permissionsTabName = "authorizationPermissions";
   private nameColumnPrefix = "name-column-";
+  private emptyPolicyCreateButton = "no-policies-empty-action";
+  private createPolicyButton = "createPolicy";
   private createResourceButton = "createResource";
   private createScopeButton = "no-authorization-scopes-empty-action";
   private createPermissionDropdown = "permissionCreateDropdown";
   private permissionResourceDropdown = "#resources";
 
   goToAuthenticationTab() {
-    cy.get(this.tabName).click();
+    cy.findByTestId(this.tabName).click();
     return this;
   }
 
   goToResourceSubTab() {
-    cy.get(this.resourcesTabName).click();
+    cy.findByTestId(this.resourcesTabName).click();
     return this;
   }
 
   goToScopeSubTab() {
-    cy.get(this.scopeTabName).click();
+    cy.findByTestId(this.scopeTabName).click();
+    return this;
+  }
+
+  goToPolicySubTab() {
+    cy.findByTestId(this.policyTabName).click();
     return this;
   }
 
   goToPermissionsSubTab() {
-    cy.get(this.permissionsTabName).click();
+    cy.findByTestId(this.permissionsTabName).click();
     return this;
   }
 
@@ -45,9 +53,32 @@ export default class AuthorizationTab {
     return this;
   }
 
+  goToCreatePolicy(type: string, first: boolean | undefined = false) {
+    if (first) {
+      cy.findByTestId(this.emptyPolicyCreateButton).click();
+    } else {
+      cy.findByTestId(this.createPolicyButton).click();
+    }
+    cy.findByTestId(type).click();
+    return this;
+  }
+
   goToCreatePermission(type: PermissionType) {
     cy.findByTestId(this.createPermissionDropdown).click();
     cy.findByTestId(`create-${type}`).click();
+    return this;
+  }
+
+  fillBasePolicyForm(policy: { [key: string]: string }) {
+    Object.entries(policy).map(([key, value]) =>
+      cy.findByTestId(key).type(value)
+    );
+    return this;
+  }
+
+  inputClient(clientName: string) {
+    cy.get("#clients").click();
+    cy.get("ul li").contains(clientName).click();
     return this;
   }
 
@@ -95,6 +126,11 @@ export default class AuthorizationTab {
 
   save() {
     cy.findByTestId("save").click();
+    return this;
+  }
+
+  cancel() {
+    cy.findByTestId("cancel").click();
     return this;
   }
 

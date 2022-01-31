@@ -3,14 +3,17 @@ import { lazy } from "react";
 import { generatePath } from "react-router-dom";
 import type { RouteDef } from "../../route-config";
 
+export type ClientPoliciesTab = "profiles" | "policies";
+
 export type ClientPoliciesParams = {
   realm: string;
+  tab: ClientPoliciesTab;
 };
 
 export const ClientPoliciesRoute: RouteDef = {
-  path: "/:realm/realm-settings/clientPolicies",
-  component: lazy(() => import("../ProfilesTab")),
-  breadcrumb: (t) => t("realm-settings:allClientPolicies"),
+  path: "/:realm/realm-settings/clientPolicies/:tab",
+  component: lazy(() => import("../RealmSettingsSection")),
+  breadcrumb: (t) => t("realm-settings:clientPolicies"),
   access: "view-realm",
 };
 

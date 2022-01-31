@@ -4,6 +4,7 @@ import { generatePath } from "react-router-dom";
 import type { RouteDef } from "../../route-config";
 
 export type RealmSettingsTab =
+  | "general"
   | "login"
   | "email"
   | "themes"

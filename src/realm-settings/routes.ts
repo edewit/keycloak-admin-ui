@@ -15,9 +15,12 @@ import { AddClientPolicyRoute } from "./routes/AddClientPolicy";
 import { EditClientPolicyRoute } from "./routes/EditClientPolicy";
 import { NewClientPolicyConditionRoute } from "./routes/AddCondition";
 import { EditClientPolicyConditionRoute } from "./routes/EditCondition";
+import { UserProfileRoute } from "./routes/UserProfile";
+import { KeysRoute } from "./routes/KeysTab";
 
 const routes: RouteDef[] = [
   RealmSettingsRoute,
+  KeysRoute,
   AesGeneratedSettingsRoute,
   EcdsaGeneratedSettingsRoute,
   HmacGeneratedSettingsRoute,
@@ -33,6 +36,7 @@ const routes: RouteDef[] = [
   EditClientPolicyRoute,
   NewClientPolicyConditionRoute,
   EditClientPolicyConditionRoute,
+  UserProfileRoute,
 ];
 
 export default routes;
