@@ -1072,7 +1072,14 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
                 </Tr>
                 {groupedCredential.isExpanded &&
                   groupedCredential.value.map((credential) => (
-                    <Tr key={`child-key-${credential.id}`}>
+                    <Tr
+                      key={`child-key-${credential.id}`}
+                      id={credential.id}
+                      draggable
+                      onDrop={onDrop}
+                      onDragEnd={onDragEnd}
+                      onDragStart={onDragStart}
+                    >
                       <Td />
                       <Td />
                       <Td
