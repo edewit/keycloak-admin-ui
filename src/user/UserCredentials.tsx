@@ -33,6 +33,7 @@ import {
   TableComposable,
   TableHeader,
   TableVariant,
+  Tbody,
   Td,
   Th,
   Thead,
@@ -267,12 +268,20 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
     rowKey: string;
   }>();
 
-  const [draggedItemId, setDraggedItemId] = useState(null);
-  const [draggingToItemIndex, setDraggingToItemIndex] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [itemOrder, setItemOrder] = useState([0, 1, 2, 3, 4, 5, 6]);
-  const [tempItemOrder, setTempItemOrder] = useState([]);
-  const bodyRef = useRef();
+//   const [draggedItemId, setDraggedItemId] = useState(null);
+//   const [draggingToItemIndex, setDraggingToItemIndex] = useState(null);
+//   const [isDragging, setIsDragging] = useState(false);
+//   const [itemOrder, setItemOrder] = useState([0, 1, 2, 3, 4, 5, 6]);
+//   const [tempItemOrder, setTempItemOrder] = useState([]);
+//   const bodyRef = useRef();
+  const bodyRef = useRef<HTMLTableSectionElement>(null);
+
+  const [state, setState] = useState({
+    draggedItemId: "",
+    draggingToItemIndex: -1,
+    dragging: false,
+    tempItemOrder: [""],
+  });
 
   useFetch(
     () => adminClient.users.getCredentials({ id: user.id! }),
@@ -476,29 +485,22 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
     });
   };
 
-  const onDragStart = (evt: {
-    dataTransfer: {
-      effectAllowed: string;
-      setData: (arg0: string, arg1: any) => void;
-    };
-    currentTarget: {
-      id: any;
-      classList: { add: (arg0: any) => void };
-      setAttribute: (arg0: string, arg1: string) => void;
-    };
-  }) => {
+  const itemOrder: string[] = useMemo(
+    () => data.map((d) => get(d, keyField)),
+    [data]
+  );
+
+  const onDragStart = (evt: React.DragEvent) => {
     evt.dataTransfer.effectAllowed = "move";
     evt.dataTransfer.setData("text/plain", evt.currentTarget.id);
     const draggedItemId = evt.currentTarget.id;
 
     evt.currentTarget.classList.add(styles.modifiers.ghostRow);
     evt.currentTarget.setAttribute("aria-pressed", "true");
-
-    setDraggedItemId(draggedItemId);
-    setIsDragging(true);
+    setState({ ...state, draggedItemId, dragging: true });
   };
 
-  const moveItem = (arr: any[], i1: null, toIndex: number) => {
+  const moveItem = (arr: string[], i1: string, toIndex: number) => {
     const fromIndex = arr.indexOf(i1);
     if (fromIndex === toIndex) {
       return arr;
@@ -509,40 +511,44 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
     return arr;
   };
 
-  const move = (itemOrder: any[]) => {
+  const move = (itemOrder: string[]) => {
+    if (!bodyRef.current) return;
     const ulNode = bodyRef.current;
     const nodes = Array.from(ulNode.children);
     if (nodes.map((node) => node.id).every((id, i) => id === itemOrder[i])) {
       return;
     }
     while (ulNode.firstChild) {
-      ulNode.removeChild(ulNode.lastChild);
+      ulNode.removeChild(ulNode.lastChild!);
     }
 
-    itemOrder.forEach((id: any) => {
-      ulNode.appendChild(nodes.find((n) => n.id === id));
+    itemOrder.forEach((id) => {
+      ulNode.appendChild(nodes.find((n) => n.id === id)!);
     });
   };
 
   const onDragCancel = () => {
-    Array.from(bodyRef.current.children).forEach((el) => {
+    Array.from(bodyRef.current?.children || []).forEach((el) => {
       el.classList.remove(styles.modifiers.ghostRow);
       el.setAttribute("aria-pressed", "false");
     });
-    setDraggedItemId(null);
-    setDraggingToItemIndex(null);
-    setIsDragging(false);
+    setState({
+      ...state,
+      draggedItemId: "",
+      draggingToItemIndex: -1,
+      dragging: false,
+    });
   };
 
-  const onDragLeave = (evt: any) => {
+  const onDragLeave = (evt: React.DragEvent) => {
     if (!isValidDrop(evt)) {
       move(itemOrder);
-      setDraggingToItemIndex(null);
+      setState({ ...state, draggingToItemIndex: -1 });
     }
   };
 
-  const isValidDrop = (evt: { clientX: number; clientY: number }) => {
-    const ulRect = bodyRef.current.getBoundingClientRect();
+  const isValidDrop = (evt: React.DragEvent) => {
+    const ulRect = bodyRef.current!.getBoundingClientRect();
     return (
       evt.clientX > ulRect.x &&
       evt.clientX < ulRect.x + ulRect.width &&
@@ -551,52 +557,57 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
     );
   };
 
-  const onDrop = (evt: any) => {
+  const onDrop = (evt: React.DragEvent) => {
     if (isValidDrop(evt)) {
-      setItemOrder(tempItemOrder);
+      onDragFinish(state.draggedItemId, state.tempItemOrder);
     } else {
       onDragCancel();
     }
   };
 
-  const onDragOver = (evt: {
-    preventDefault: () => void;
-    target: { closest: (arg0: string) => any };
-  }) => {
+  const onDragOver = (evt: React.DragEvent) => {
     evt.preventDefault();
 
-    const curListItem = evt.target.closest("tr");
+    const td = evt.target as HTMLTableCellElement;
+    const curListItem = td.closest("tr");
     if (
       !curListItem ||
-      !bodyRef.current.contains(curListItem) ||
-      curListItem.id === draggedItemId
+      (bodyRef.current && !bodyRef.current.contains(curListItem)) ||
+      curListItem.id === state.draggedItemId
     ) {
       return null;
     } else {
       const dragId = curListItem.id;
-      const newDraggingToItemIndex = Array.from(
-        bodyRef.current.children
+      const draggingToItemIndex = Array.from(
+        bodyRef.current?.children || []
       ).findIndex((item) => item.id === dragId);
-      if (newDraggingToItemIndex !== draggingToItemIndex) {
+      if (draggingToItemIndex !== state.draggingToItemIndex) {
         const tempItemOrder = moveItem(
-          [...itemOrder],
-          draggedItemId,
-          newDraggingToItemIndex
+          itemOrder,
+          state.draggedItemId,
+          draggingToItemIndex
         );
         move(tempItemOrder);
-        setDraggingToItemIndex(newDraggingToItemIndex);
-        setTempItemOrder(tempItemOrder);
+
+        setState({
+          ...state,
+          draggingToItemIndex,
+          tempItemOrder,
+        });
       }
     }
   };
 
-  const onDragEnd = (evt: { target: any }) => {
-    const target = evt.target;
-    target.classList.remove(styles.modifiers.ghostRow);
-    target.setAttribute("aria-pressed", "false");
-    setDraggedItemId(null);
-    setDraggingToItemIndex(null);
-    setIsDragging(false);
+  const onDragEnd = (evt: React.DragEvent) => {
+    const tr = evt.target as HTMLTableRowElement;
+    tr.classList.remove(styles.modifiers.ghostRow);
+    tr.setAttribute("aria-pressed", "false");
+    setState({
+      ...state,
+      draggedItemId: "",
+      draggingToItemIndex: -1,
+      dragging: false,
+    });
   };
 
   return (
@@ -877,60 +888,235 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
             </Thead>
             {groupedUserCredentials.map((groupedCredential, rowIndex) => (
               <Fragment key={`table-${groupedCredential.key}`}>
-                <Tr
-                  id={groupedCredential.value
-                    .map((credential) => {
-                      return credential.id;
-                    })
-                    .toString()}
-                  draggable
-                  onDrop={onDrop}
-                  onDragEnd={onDragEnd}
-                  onDragStart={onDragStart}
+                <Tbody
+                  key={groupedCredential.key}
+                  ref={bodyRef}
+                  onDragOver={onDragOver}
+                  onDrop={onDragOver}
+                  onDragLeave={onDragLeave}
                 >
-                  <Td
-                    draggableRow={{
-                      id: `draggable-row-${groupedCredential.value.map(
-                        (credential) => {
-                          return credential.id;
-                        }
-                      )}`,
-                    }}
-                  />
-                  {groupedCredential.value.length > 1 ? (
+                  <Tr
+                    id={groupedCredential.value
+                      .map((credential) => {
+                        return credential.id;
+                      })
+                      .toString()}
+                    draggable
+                    onDrop={onDrop}
+                    onDragEnd={onDragEnd}
+                    onDragStart={onDragStart}
+                  >
                     <Td
-                      className="kc-expandRow-btn"
-                      expand={{
-                        rowIndex,
-                        isExpanded: groupedCredential.isExpanded,
-                        onToggle: (_, rowIndex) => {
-                          const rows = groupedUserCredentials.map(
-                            (credential, index) =>
-                              index === rowIndex
-                                ? {
-                                    ...credential,
-                                    isExpanded: !credential.isExpanded,
-                                  }
-                                : credential
-                          );
-                          setGroupedUserCredentials(rows);
-                        },
+                      draggableRow={{
+                        id: `draggable-row-${groupedCredential.value.map(
+                          (credential) => {
+                            return credential.id;
+                          }
+                        )}`,
                       }}
                     />
-                  ) : (
-                    <Td />
-                  )}
-                  <Td
-                    key={`table-item-${groupedCredential.key}`}
-                    dataLabel={`columns-${groupedCredential.key}`}
-                    className="kc-notExpandableRow-credentialType"
-                  >
-                    {groupedCredential.key.charAt(0).toUpperCase()! +
-                      groupedCredential.key.slice(1)}
-                  </Td>
-                  {groupedCredential.value.length <= 1 &&
+                    {groupedCredential.value.length > 1 ? (
+                      <Td
+                        className="kc-expandRow-btn"
+                        expand={{
+                          rowIndex,
+                          isExpanded: groupedCredential.isExpanded,
+                          onToggle: (_, rowIndex) => {
+                            const rows = groupedUserCredentials.map(
+                              (credential, index) =>
+                                index === rowIndex
+                                  ? {
+                                      ...credential,
+                                      isExpanded: !credential.isExpanded,
+                                    }
+                                  : credential
+                            );
+                            setGroupedUserCredentials(rows);
+                          },
+                        }}
+                      />
+                    ) : (
+                      <Td />
+                    )}
+                    <Td
+                      key={`table-item-${groupedCredential.key}`}
+                      dataLabel={`columns-${groupedCredential.key}`}
+                      className="kc-notExpandableRow-credentialType"
+                    >
+                      {groupedCredential.key.charAt(0).toUpperCase()! +
+                        groupedCredential.key.slice(1)}
+                    </Td>
+                    {groupedCredential.value.length <= 1 &&
+                      groupedCredential.value.map((credential) => (
+                        <>
+                          <Td>
+                            <FormAccess
+                              isHorizontal
+                              role="view-users"
+                              className="kc-form-userLabel"
+                            >
+                              <FormGroup
+                                fieldId="kc-userLabel"
+                                className="kc-userLabel-row"
+                              >
+                                <div className="kc-form-group-userLabel">
+                                  {isUserLabelEdit?.status &&
+                                  isUserLabelEdit.rowKey === credential.id ? (
+                                    <>
+                                      <TextInput
+                                        name="userLabel"
+                                        ref={register1()}
+                                        type="text"
+                                        className="kc-userLabel"
+                                        aria-label={t("userLabel")}
+                                        data-testid="user-label-fld"
+                                      />
+                                      <div className="kc-userLabel-actionBtns">
+                                        <Button
+                                          key={`editUserLabel-accept-${credential.id}`}
+                                          variant="link"
+                                          className="kc-editUserLabel-acceptBtn"
+                                          onClick={() => {
+                                            handleSubmit1(saveUserLabel)();
+                                            setIsUserLabelEdit({
+                                              status: false,
+                                              rowKey: credential.id!,
+                                            });
+                                          }}
+                                          data-testid="editUserLabel-acceptBtn"
+                                          icon={<CheckIcon />}
+                                        />
+                                        <Button
+                                          key={`editUserLabel-cancel-${credential.id}`}
+                                          variant="link"
+                                          className="kc-editUserLabel-cancelBtn"
+                                          onClick={() =>
+                                            setIsUserLabelEdit({
+                                              status: false,
+                                              rowKey: credential.id!,
+                                            })
+                                          }
+                                          data-testid="editUserLabel-cancelBtn"
+                                          icon={<TimesIcon />}
+                                        />
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      {credential.userLabel ?? ""}
+                                      <Button
+                                        key={`editUserLabel-${credential.id}`}
+                                        variant="link"
+                                        className="kc-editUserLabel-btn"
+                                        onClick={() => {
+                                          setEditedUserCredential(credential);
+                                          setIsUserLabelEdit({
+                                            status: true,
+                                            rowKey: credential.id!,
+                                          });
+                                        }}
+                                        data-testid="editUserLabelBtn"
+                                        icon={<PencilAltIcon />}
+                                      />
+                                    </>
+                                  )}
+                                </div>
+                              </FormGroup>
+                            </FormAccess>
+                          </Td>
+                          <Td>
+                            <Button
+                              className="kc-showData-btn"
+                              variant="link"
+                              data-testid="showDataBtn"
+                              onClick={() => {
+                                setShowData(true);
+                                setSelectedCredential(credential);
+                              }}
+                            >
+                              {t("showDataBtn")}
+                            </Button>
+                          </Td>
+                          {credential.type === "password" ? (
+                            <Td>
+                              <Button
+                                variant="secondary"
+                                data-testid="resetPasswordBtn"
+                                onClick={resetPassword}
+                              >
+                                {t("resetPasswordBtn")}
+                              </Button>
+                            </Td>
+                          ) : (
+                            <Td />
+                          )}
+                          <Td>
+                            <Dropdown
+                              isPlain
+                              position={DropdownPosition.right}
+                              toggle={
+                                <KebabToggle
+                                  onToggle={(status) =>
+                                    setKebabOpen({
+                                      status,
+                                      rowKey: credential.id!,
+                                    })
+                                  }
+                                />
+                              }
+                              isOpen={
+                                kebabOpen.status &&
+                                kebabOpen.rowKey === credential.id
+                              }
+                              onSelect={() => {
+                                setSelectedCredential(credential);
+                              }}
+                              dropdownItems={[
+                                <DropdownItem
+                                  key={`delete-dropdown-item-${credential.id}`}
+                                  data-testid="deleteDropdownItem"
+                                  component="button"
+                                  onClick={() => {
+                                    toggleDeleteDialog();
+                                    setKebabOpen({
+                                      status: false,
+                                      rowKey: credential.id!,
+                                    });
+                                  }}
+                                >
+                                  {t("deleteBtn")}
+                                </DropdownItem>,
+                              ]}
+                            />
+                          </Td>
+                        </>
+                      ))}
+                  </Tr>
+                  {groupedCredential.isExpanded &&
                     groupedCredential.value.map((credential) => (
-                      <>
+                      <Tr
+                        key={`child-key-${credential.id}`}
+                        id={credential.id}
+                        draggable
+                        onDrop={onDrop}
+                        onDragEnd={onDragEnd}
+                        onDragStart={onDragStart}
+                      >
+                        <Td />
+                        <Td
+                          className="kc-draggable-dropdown-type-icon"
+                          draggableRow={{
+                            id: `draggable-row-${credential.id}`,
+                          }}
+                        />
+                        <Td
+                          key={`child-item-${credential.id}`}
+                          dataLabel={`child-columns-${credential.id}`}
+                          className="kc-expandableRow-credentialType"
+                        >
+                          {credential.type!.charAt(0).toUpperCase()! +
+                            credential.type!.slice(1)}
+                        </Td>
                         <Td>
                           <FormAccess
                             isHorizontal
@@ -1019,19 +1205,7 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
                             {t("showDataBtn")}
                           </Button>
                         </Td>
-                        {credential.type === "password" ? (
-                          <Td>
-                            <Button
-                              variant="secondary"
-                              data-testid="resetPasswordBtn"
-                              onClick={resetPassword}
-                            >
-                              {t("resetPasswordBtn")}
-                            </Button>
-                          </Td>
-                        ) : (
-                          <Td />
-                        )}
+                        <Td />
                         <Td>
                           <Dropdown
                             isPlain
@@ -1071,164 +1245,9 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
                             ]}
                           />
                         </Td>
-                      </>
+                      </Tr>
                     ))}
-                </Tr>
-                {groupedCredential.isExpanded &&
-                  groupedCredential.value.map((credential) => (
-                    <Tr
-                      key={`child-key-${credential.id}`}
-                      id={credential.id}
-                      draggable
-                      onDrop={onDrop}
-                      onDragEnd={onDragEnd}
-                      onDragStart={onDragStart}
-                    >
-                      <Td />
-                      <Td
-                        className="kc-draggable-dropdown-type-icon"
-                        draggableRow={{
-                          id: `draggable-row-${credential.id}`,
-                        }}
-                      />
-                      <Td
-                        key={`child-item-${credential.id}`}
-                        dataLabel={`child-columns-${credential.id}`}
-                        className="kc-expandableRow-credentialType"
-                      >
-                        {credential.type!.charAt(0).toUpperCase()! +
-                          credential.type!.slice(1)}
-                      </Td>
-                      <Td>
-                        <FormAccess
-                          isHorizontal
-                          role="view-users"
-                          className="kc-form-userLabel"
-                        >
-                          <FormGroup
-                            fieldId="kc-userLabel"
-                            className="kc-userLabel-row"
-                          >
-                            <div className="kc-form-group-userLabel">
-                              {isUserLabelEdit?.status &&
-                              isUserLabelEdit.rowKey === credential.id ? (
-                                <>
-                                  <TextInput
-                                    name="userLabel"
-                                    ref={register1()}
-                                    type="text"
-                                    className="kc-userLabel"
-                                    aria-label={t("userLabel")}
-                                    data-testid="user-label-fld"
-                                  />
-                                  <div className="kc-userLabel-actionBtns">
-                                    <Button
-                                      key={`editUserLabel-accept-${credential.id}`}
-                                      variant="link"
-                                      className="kc-editUserLabel-acceptBtn"
-                                      onClick={() => {
-                                        handleSubmit1(saveUserLabel)();
-                                        setIsUserLabelEdit({
-                                          status: false,
-                                          rowKey: credential.id!,
-                                        });
-                                      }}
-                                      data-testid="editUserLabel-acceptBtn"
-                                      icon={<CheckIcon />}
-                                    />
-                                    <Button
-                                      key={`editUserLabel-cancel-${credential.id}`}
-                                      variant="link"
-                                      className="kc-editUserLabel-cancelBtn"
-                                      onClick={() =>
-                                        setIsUserLabelEdit({
-                                          status: false,
-                                          rowKey: credential.id!,
-                                        })
-                                      }
-                                      data-testid="editUserLabel-cancelBtn"
-                                      icon={<TimesIcon />}
-                                    />
-                                  </div>
-                                </>
-                              ) : (
-                                <>
-                                  {credential.userLabel ?? ""}
-                                  <Button
-                                    key={`editUserLabel-${credential.id}`}
-                                    variant="link"
-                                    className="kc-editUserLabel-btn"
-                                    onClick={() => {
-                                      setEditedUserCredential(credential);
-                                      setIsUserLabelEdit({
-                                        status: true,
-                                        rowKey: credential.id!,
-                                      });
-                                    }}
-                                    data-testid="editUserLabelBtn"
-                                    icon={<PencilAltIcon />}
-                                  />
-                                </>
-                              )}
-                            </div>
-                          </FormGroup>
-                        </FormAccess>
-                      </Td>
-                      <Td>
-                        <Button
-                          className="kc-showData-btn"
-                          variant="link"
-                          data-testid="showDataBtn"
-                          onClick={() => {
-                            setShowData(true);
-                            setSelectedCredential(credential);
-                          }}
-                        >
-                          {t("showDataBtn")}
-                        </Button>
-                      </Td>
-                      <Td />
-                      <Td>
-                        <Dropdown
-                          isPlain
-                          position={DropdownPosition.right}
-                          toggle={
-                            <KebabToggle
-                              onToggle={(status) =>
-                                setKebabOpen({
-                                  status,
-                                  rowKey: credential.id!,
-                                })
-                              }
-                            />
-                          }
-                          isOpen={
-                            kebabOpen.status &&
-                            kebabOpen.rowKey === credential.id
-                          }
-                          onSelect={() => {
-                            setSelectedCredential(credential);
-                          }}
-                          dropdownItems={[
-                            <DropdownItem
-                              key={`delete-dropdown-item-${credential.id}`}
-                              data-testid="deleteDropdownItem"
-                              component="button"
-                              onClick={() => {
-                                toggleDeleteDialog();
-                                setKebabOpen({
-                                  status: false,
-                                  rowKey: credential.id!,
-                                });
-                              }}
-                            >
-                              {t("deleteBtn")}
-                            </DropdownItem>,
-                          ]}
-                        />
-                      </Td>
-                    </Tr>
-                  ))}
+                </Tbody>
               </Fragment>
             ))}
           </TableComposable>
