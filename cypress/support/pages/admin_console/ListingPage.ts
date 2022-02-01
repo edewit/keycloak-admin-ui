@@ -26,7 +26,7 @@ export enum FilterSession {
 }
 
 export default class ListingPage {
-  private searchInput = '.pf-c-toolbar__item [type="search"]:visible';
+  private searchInput = '.pf-c-toolbar__item [type="search"]';
   private tableToolbar = ".pf-c-toolbar";
   private itemsRows = "table:visible";
   private itemRowDrpDwn = ".pf-c-dropdown__toggle";
@@ -51,6 +51,7 @@ export default class ListingPage {
   private filterDropdownButton = "[class*='searchtype'] button";
   private dropdownItem = ".pf-c-dropdown__menu-item";
   private changeTypeToButton = ".pf-c-select__toggle";
+  private toolbarChangeType = "#change-type-dropdown";
 
   showPreviousPageTableItems() {
     cy.get(this.previousPageBtn).first().click();
@@ -241,8 +242,10 @@ export default class ListingPage {
   }
 
   changeTypeToOfSelectedItems(assignedType: FilterAssignedType) {
-    cy.get(this.tableToolbar).find(this.changeTypeToButton).first().click();
+    cy.intercept("/auth/admin/realms/master/client-scopes").as("load");
+    cy.get(this.toolbarChangeType).click();
     cy.get(this.itemRowSelectItem).contains(assignedType).click();
+    cy.wait("@load");
     return this;
   }
 

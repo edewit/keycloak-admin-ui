@@ -68,7 +68,10 @@ export const ClientScopes = ({
   const [selectedRows, setSelectedRows] = useState<Row[]>([]);
 
   const [key, setKey] = useState(0);
-  const refresh = () => setKey(new Date().getTime());
+  const refresh = () => {
+    setSelectedRows([]);
+    setKey(key + 1);
+  };
 
   const loader = async (first?: number, max?: number, search?: string) => {
     const defaultClientScopes =

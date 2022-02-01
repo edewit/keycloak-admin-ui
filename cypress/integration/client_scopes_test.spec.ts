@@ -7,7 +7,10 @@ import ListingPage, {
 } from "../support/pages/admin_console/ListingPage";
 import SidebarPage from "../support/pages/admin_console/SidebarPage";
 import CreateClientScopePage from "../support/pages/admin_console/manage/client_scopes/CreateClientScopePage";
-import { keycloakBefore } from "../support/util/keycloak_hooks";
+import {
+  keycloakBefore,
+  keycloakBeforeEach,
+} from "../support/util/keycloak_hooks";
 import RoleMappingTab from "../support/pages/admin_console/manage/RoleMappingTab";
 import ModalUtils from "../support/util/ModalUtils";
 import AdminClient from "../support/util/AdminClient";
@@ -47,12 +50,6 @@ describe("Client Scopes test", () => {
     }
   });
 
-  beforeEach(() => {
-    keycloakBefore();
-    loginPage.logIn();
-    sidebarPage.goToClientScopes();
-  });
-
   after(async () => {
     const client = new AdminClient();
     for (let i = 0; i < 5; i++) {
@@ -63,6 +60,16 @@ describe("Client Scopes test", () => {
   });
 
   describe("Client Scope filter list items", () => {
+    before(() => {
+      keycloakBefore();
+      loginPage.logIn();
+    });
+
+    beforeEach(() => {
+      keycloakBeforeEach();
+      sidebarPage.goToClientScopes();
+    });
+
     it("should filter item by name", () => {
       const itemName = clientScopeName + 0;
       listingPage
@@ -135,13 +142,20 @@ describe("Client Scopes test", () => {
 
   describe("Client Scope modify list items", () => {
     const itemName = clientScopeName + 0;
+    before(() => {
+      keycloakBefore();
+      loginPage.logIn();
+    });
+
+    beforeEach(() => {
+      keycloakBeforeEach();
+      sidebarPage.goToClientScopes();
+    });
 
     it("should modify selected item type to Default from search bar", () => {
       listingPage
         .clickItemCheckbox(itemName)
         .changeTypeToOfSelectedItems(FilterAssignedType.Default);
-      // sidebarPage.waitForPageLoad(); //not working
-      cy.wait(2000);
       listingPage.itemContainValue(itemName, 2, FilterAssignedType.Default);
     });
 
@@ -149,8 +163,6 @@ describe("Client Scopes test", () => {
       listingPage
         .clickItemCheckbox(itemName)
         .changeTypeToOfSelectedItems(FilterAssignedType.Optional);
-      // sidebarPage.waitForPageLoad(); //not working
-      cy.wait(2000);
       listingPage.itemContainValue(itemName, 2, FilterAssignedType.Optional);
     });
 
@@ -195,6 +207,16 @@ describe("Client Scopes test", () => {
   });
 
   describe("Client Scope delete list items ", () => {
+    before(() => {
+      keycloakBefore();
+      loginPage.logIn();
+    });
+
+    beforeEach(() => {
+      keycloakBeforeEach();
+      sidebarPage.goToClientScopes();
+    });
+
     //TODO: Partially blocked by https://github.com/keycloak/keycloak-admin-ui/issues/1854
     it("should delete item from item bar", () => {
       listingPage
@@ -246,13 +268,18 @@ describe("Client Scopes test", () => {
   });
 
   describe("Client Scope creation", () => {
-    beforeEach(() => {
+    before(() => {
       keycloakBefore();
       loginPage.logIn();
+    });
+
+    beforeEach(() => {
+      keycloakBeforeEach();
       sidebarPage.goToClientScopes();
     });
 
     it("should fail creating client scope", () => {
+      sidebarPage.waitForPageLoad();
       listingPage.goToCreateItem();
 
       createClientScopePage.save().checkClientNameRequiredMessage();
@@ -300,12 +327,6 @@ describe("Client Scopes test", () => {
   describe("Scope test", () => {
     const scopeTab = new RoleMappingTab();
     const scopeName = "address";
-
-    beforeEach(() => {
-      keycloakBefore();
-      loginPage.logIn();
-      sidebarPage.goToClientScopes();
-    });
 
     it("Assign role", () => {
       const role = "offline_access";
