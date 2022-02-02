@@ -56,6 +56,7 @@ import type CredentialRepresentation from "@keycloak/keycloak-admin-client/lib/d
 import { FormAccess } from "../components/form-access/FormAccess";
 import { RequiredActionAlias } from "@keycloak/keycloak-admin-client/lib/defs/requiredActionProviderRepresentation";
 import { TimeSelector } from "../components/time-selector/TimeSelector";
+import { get } from "lodash";
 import styles from "@patternfly/react-styles/css/components/Table/table";
 
 type UserCredentialsProps = {
@@ -101,6 +102,12 @@ type ExpandableCredentialRepresentation = {
   key: string;
   value: CredentialRepresentation[];
   isExpanded: boolean;
+};
+
+type DraggableTableProps<T> = {
+  keyField: string;
+  data: T[];
+  onDragFinish: (dragged: string, newOrder: string[]) => void;
 };
 
 const DisplayDialog: FunctionComponent<DisplayDialogProps> = ({
@@ -217,7 +224,10 @@ const LifespanField = ({
   );
 };
 
-export const UserCredentials = ({ user }: UserCredentialsProps) => {
+export const UserCredentials = (
+  { user }: UserCredentialsProps,
+  { keyField, data, onDragFinish }: DraggableTableProps<T>
+) => {
   const { t } = useTranslation("users");
   const { whoAmI } = useWhoAmI();
   const { addAlert, addError } = useAlerts();
@@ -268,12 +278,6 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
     rowKey: string;
   }>();
 
-//   const [draggedItemId, setDraggedItemId] = useState(null);
-//   const [draggingToItemIndex, setDraggingToItemIndex] = useState(null);
-//   const [isDragging, setIsDragging] = useState(false);
-//   const [itemOrder, setItemOrder] = useState([0, 1, 2, 3, 4, 5, 6]);
-//   const [tempItemOrder, setTempItemOrder] = useState([]);
-//   const bodyRef = useRef();
   const bodyRef = useRef<HTMLTableSectionElement>(null);
 
   const [state, setState] = useState({
