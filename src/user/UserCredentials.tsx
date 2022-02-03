@@ -646,7 +646,7 @@ export const UserCredentials = (
               {t("save")}
             </Button>,
             <Button
-              data-testid="cancelBtn"
+              data-testid="cancel"
               key={`cancelBtn-${user.id}`}
               variant="link"
               form="userCredentials-form"
@@ -758,7 +758,7 @@ export const UserCredentials = (
               {isResetPassword ? t("resetPassword") : t("savePassword")}
             </Button>,
             <Button
-              data-testid="cancelSetPasswordBtn"
+              data-testid="cancel"
               key={`cancelConfirmBtn-${user.id}`}
               variant="link"
               form="userCredentials-form"
@@ -805,7 +805,7 @@ export const UserCredentials = (
               {t("credentialResetConfirm")}
             </Button>,
             <Button
-              data-testid="cancelBtn"
+              data-testid="cancel"
               key={`cancelBtn-${user.id}`}
               variant="link"
               form="userCredentialsReset-form"
