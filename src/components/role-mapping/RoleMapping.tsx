@@ -13,6 +13,8 @@ import type ClientRepresentation from "@keycloak/keycloak-admin-client/lib/defs/
 import type RoleRepresentation from "@keycloak/keycloak-admin-client/lib/defs/roleRepresentation";
 import type { ClientScopes } from "@keycloak/keycloak-admin-client/lib/resources/clientScopes";
 import type { Groups } from "@keycloak/keycloak-admin-client/lib/resources/groups";
+import type { Roles } from "@keycloak/keycloak-admin-client/lib/resources/roles";
+import type { Clients } from "@keycloak/keycloak-admin-client/lib/resources/clients";
 import type KeycloakAdminClient from "@keycloak/keycloak-admin-client";
 import { AddRoleMappingModal } from "./AddRoleMappingModal";
 import { KeycloakDataTable } from "../table-toolbar/KeycloakDataTable";
@@ -101,7 +103,9 @@ type ListFunction =
   | keyof Pick<
       ClientScopes,
       "listAvailableClientScopeMappings" | "listAvailableRealmScopeMappings"
-    >;
+    >
+  | keyof Pick<Roles, "find">
+  | keyof Pick<Clients, "listRoles">;
 
 type FunctionMapping = { delete: DeleteFunctions[]; list: ListFunction[] };
 
@@ -136,6 +140,13 @@ export const mapping: ResourceMapping[] = [
   {
     resource: "clients",
     functions: clientFunctions,
+  },
+  {
+    resource: "roles",
+    functions: {
+      delete: [],
+      list: ["listRoles", "find"],
+    },
   },
 ];
 
@@ -198,7 +209,6 @@ export const RoleMapping = ({
         addAlert(t("clientScopeRemoveSuccess"), AlertVariant.success);
         refresh();
       } catch (error) {
-        console.log(error);
         addError("clients:clientScopeRemoveError", error);
       }
     },

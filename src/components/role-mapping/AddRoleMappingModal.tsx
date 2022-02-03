@@ -78,10 +78,11 @@ export const AddRoleMappingModal = ({
           clients.map(async (client) => {
             let roles: RoleRepresentation[] = [];
 
-            roles = (await castAdminClient(adminClient, mapType.resource)[
-              mapType.functions.list[0]
-            ]({
-              id,
+            roles = (await castAdminClient(
+              adminClient,
+              mapType.resource === "roles" ? "clients" : mapType.resource
+            )[mapType.functions.list[0]]({
+              id: mapType.resource === "roles" ? client.id : id,
               clientUniqueId: client.id,
               client: client.id,
             })) as RoleRepresentation[];
@@ -145,10 +146,11 @@ export const AddRoleMappingModal = ({
       await Promise.all(
         allClients.map(async (client) => {
           const clientAvailableRoles: RoleRepresentation[] =
-            await castAdminClient(adminClient, mapType.resource)[
-              mapType.functions.list[0]
-            ]({
-              id,
+            await castAdminClient(
+              adminClient,
+              mapType.resource === "roles" ? "clients" : mapType.resource
+            )[mapType.functions.list[0]]({
+              id: mapType.resource === "roles" ? client.id : id,
               client: client.id,
               clientUniqueId: client.id,
             });
