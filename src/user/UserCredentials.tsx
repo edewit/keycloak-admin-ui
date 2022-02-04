@@ -56,7 +56,6 @@ import type CredentialRepresentation from "@keycloak/keycloak-admin-client/lib/d
 import { FormAccess } from "../components/form-access/FormAccess";
 import { RequiredActionAlias } from "@keycloak/keycloak-admin-client/lib/defs/requiredActionProviderRepresentation";
 import { TimeSelector } from "../components/time-selector/TimeSelector";
-import { get } from "lodash";
 import styles from "@patternfly/react-styles/css/components/Table/table";
 
 type UserCredentialsProps = {
@@ -102,12 +101,6 @@ type ExpandableCredentialRepresentation = {
   key: string;
   value: CredentialRepresentation[];
   isExpanded: boolean;
-};
-
-type DraggableTableProps<T> = {
-  keyField: string;
-  data: T[];
-  onDragFinish: (dragged: string, newOrder: string[]) => void;
 };
 
 const DisplayDialog: FunctionComponent<DisplayDialogProps> = ({
@@ -224,10 +217,7 @@ const LifespanField = ({
   );
 };
 
-export const UserCredentials = (
-  { user }: UserCredentialsProps,
-  { keyField, data, onDragFinish }: DraggableTableProps<T>
-) => {
+export const UserCredentials = ({ user }: UserCredentialsProps) => {
   const { t } = useTranslation("users");
   const { whoAmI } = useWhoAmI();
   const { addAlert, addError } = useAlerts();
@@ -489,10 +479,17 @@ export const UserCredentials = (
     });
   };
 
-  const itemOrder: string[] = useMemo(
-    () => data.map((d) => get(d, keyField)),
-    [data]
-  );
+  const itemOrder: string[] = useMemo(() => {
+    const test = groupedUserCredentials.map((d) =>
+      d.value
+        .map((credential) => {
+          return credential.id;
+        })
+        .toString()
+    );
+    console.log(test);
+    return test;
+  }, [groupedUserCredentials]);
 
   const onDragStart = (evt: React.DragEvent) => {
     evt.dataTransfer.effectAllowed = "move";
@@ -612,6 +609,10 @@ export const UserCredentials = (
       draggingToItemIndex: -1,
       dragging: false,
     });
+  };
+
+  const onDragFinish = (dragged: string, newOrder: string[]) => {
+    console.log(dragged, newOrder);
   };
 
   return (
@@ -890,15 +891,14 @@ export const UserCredentials = (
                 <Th />
               </Tr>
             </Thead>
-            {groupedUserCredentials.map((groupedCredential, rowIndex) => (
-              <Fragment key={`table-${groupedCredential.key}`}>
-                <Tbody
-                  key={groupedCredential.key}
-                  ref={bodyRef}
-                  onDragOver={onDragOver}
-                  onDrop={onDragOver}
-                  onDragLeave={onDragLeave}
-                >
+            <Tbody
+              ref={bodyRef}
+              onDragOver={onDragOver}
+              onDrop={onDragOver}
+              onDragLeave={onDragLeave}
+            >
+              {groupedUserCredentials.map((groupedCredential, rowIndex) => (
+                <Fragment key={`table-${groupedCredential.key}`}>
                   <Tr
                     id={groupedCredential.value
                       .map((credential) => {
@@ -1251,9 +1251,9 @@ export const UserCredentials = (
                         </Td>
                       </Tr>
                     ))}
-                </Tbody>
-              </Fragment>
-            ))}
+                </Fragment>
+              ))}
+            </Tbody>
           </TableComposable>
         </>
       ) : (
