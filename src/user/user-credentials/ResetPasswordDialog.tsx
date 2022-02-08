@@ -24,6 +24,7 @@ import useToggle from "../../utils/useToggle";
 type ResetPasswordDialogProps = {
   user: UserRepresentation;
   isResetPassword: boolean;
+  refresh: () => void;
   onClose: () => void;
 };
 
@@ -42,6 +43,7 @@ const credFormDefaultValues: CredentialsForm = {
 export const ResetPasswordDialog = ({
   user,
   isResetPassword,
+  refresh,
   onClose,
 }: ResetPasswordDialogProps) => {
   const { t } = useTranslation("users");
@@ -97,6 +99,7 @@ export const ResetPasswordDialog = ({
           : t("savePasswordSuccess"),
         AlertVariant.success
       );
+      refresh();
     } catch (error) {
       addError(
         isResetPassword

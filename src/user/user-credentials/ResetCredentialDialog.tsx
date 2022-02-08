@@ -78,9 +78,12 @@ export const ResetCredentialDialog = ({
         handleSubmit(sendCredentialsResetEmail)();
       }}
       confirmButtonDisabled={!resetIsNotDisabled}
-      data-testid="credential-reset-modal"
     >
-      <Form id="userCredentialsReset-form" isHorizontal>
+      <Form
+        id="userCredentialsReset-form"
+        isHorizontal
+        data-testid="credential-reset-modal"
+      >
         <FormProvider {...form}>
           <CredentialsResetActionMultiSelect />
           <LifespanField />
