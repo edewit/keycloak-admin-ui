@@ -213,7 +213,7 @@ export const DefaultsGroupsTab = () => {
             message={t("noDefaultGroups")}
             instructions={
               <Trans i18nKey="realm-settings:noDefaultGroupsInstructions">
-                Default groups allow you...
+                {" "}
                 <Link to={toUserFederation({ realm })} />
                 Add groups...
               </Trans>
