@@ -98,7 +98,7 @@ export const CredentialRow = ({
           }}
           dropdownItems={[
             <DropdownItem
-              key={`delete-dropdown-item-${credential.id}`}
+              key={credential.id}
               data-testid="deleteDropdownItem"
               component="button"
               onClick={() => {
