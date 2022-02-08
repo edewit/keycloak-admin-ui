@@ -9,7 +9,7 @@ import { ConfirmDialogModal } from "../../components/confirm-dialog/ConfirmDialo
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { useAlerts } from "../../components/alert/Alerts";
 import { LifespanField } from "./LifespanField";
-import { isEmpty } from "lodash";
+import { isEmpty } from "lodash-es";
 
 type ResetCredentialDialogProps = {
   userId: string;
