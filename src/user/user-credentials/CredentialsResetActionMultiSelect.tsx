@@ -41,7 +41,7 @@ export const CredentialsResetActionMultiSelect = () => {
             menuAppendTo="parent"
             onToggle={(open) => setOpen(open)}
             isOpen={open}
-            selections={value.map((o: string) => o)}
+            selections={value}
             onSelect={(_, selectedValue) =>
               onChange(
                 value.find((o: string) => o === selectedValue)
