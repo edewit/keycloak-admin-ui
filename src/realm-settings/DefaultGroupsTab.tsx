@@ -58,12 +58,14 @@ export const DefaultsGroupsTab = () => {
 
   const removeGroup = async () => {
     try {
-      for (const group of selectedRows) {
-        await adminClient.realms.removeDefaultGroup({
-          realm,
-          id: group.id!,
-        });
-      }
+      await Promise.all(
+        selectedRows.map((group) =>
+          adminClient.realms.removeDefaultGroup({
+            realm,
+            id: group.id!,
+          })
+        )
+      );
       addAlert(
         t("groupRemove", { count: selectedRows.length }),
         AlertVariant.success
@@ -77,12 +79,14 @@ export const DefaultsGroupsTab = () => {
 
   const addGroups = async (groups: GroupRepresentation[]) => {
     try {
-      for (const group of groups) {
-        await adminClient.realms.addDefaultGroup({
-          realm,
-          id: group.id!,
-        });
-      }
+      await Promise.all(
+        groups.map((group) =>
+          adminClient.realms.addDefaultGroup({
+            realm,
+            id: group.id!,
+          })
+        )
+      );
       addAlert(
         t("defaultGroupAdded", { count: groups.length }),
         AlertVariant.success
@@ -190,10 +194,10 @@ export const DefaultsGroupsTab = () => {
         actions={[
           {
             title: t("common:remove"),
-            onRowClick: async (group: GroupRepresentation) => {
+            onRowClick: (group: GroupRepresentation) => {
               setSelectedRows([group]);
               toggleRemoveDialog();
-              return false;
+              return Promise.resolve(false);
             },
           },
         ]}
