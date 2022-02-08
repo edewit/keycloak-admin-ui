@@ -26,7 +26,7 @@ export const CredentialDataDialog = ({
       onClose={onClose}
     >
       <Table
-        aria-label="password-data"
+        aria-label={t("passwordDataTitle")}
         data-testid="password-data-dialog"
         variant={TableVariant.compact}
         cells={[t("showPasswordDataName"), t("showPasswordDataValue")]}
