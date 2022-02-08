@@ -93,9 +93,6 @@ export const CredentialRow = ({
           position={DropdownPosition.right}
           toggle={<KebabToggle onToggle={toggleKebab} />}
           isOpen={kebabOpen}
-          onSelect={() => {
-            //setSelectedCredential(credential);
-          }}
           dropdownItems={[
             <DropdownItem
               key={credential.id}
