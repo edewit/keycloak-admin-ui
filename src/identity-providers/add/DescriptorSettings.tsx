@@ -138,6 +138,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
               }}
               selections={value}
               variant={SelectVariant.single}
+              isDisabled={readOnly}
             >
               <SelectOption
                 data-testid="persistent-option"
@@ -218,6 +219,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
               }}
               selections={value}
               variant={SelectVariant.single}
+              isDisabled={readOnly}
             >
               <SelectOption
                 data-testid="subjectNameId-option"
@@ -322,6 +324,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
                   }}
                   selections={value}
                   variant={SelectVariant.single}
+                  isDisabled={readOnly}
                 >
                   <SelectOption value="RSA_SHA1" />
                   <SelectOption value="RSA_SHA256" isPlaceholder />
@@ -360,6 +363,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
                   }}
                   selections={value}
                   variant={SelectVariant.single}
+                  isDisabled={readOnly}
                 >
                   <SelectOption value="NONE" />
                   <SelectOption value={t("keyID")} isPlaceholder />
