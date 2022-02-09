@@ -104,7 +104,7 @@ export const convertToFormValues = (
 export function convertFormValuesToObject<T>(
   obj: T,
   multiline: string[] | undefined = []
-): Omit<T, typeof multiline[number] | "attributes" | "config"> {
+): T {
   const result: any = {};
   Object.entries(obj).map(([key, value]) => {
     if (isAttributeArray(value)) {
