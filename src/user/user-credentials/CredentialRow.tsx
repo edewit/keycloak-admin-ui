@@ -38,7 +38,7 @@ export const CredentialRow = ({
       return [];
     }
 
-    const credentialData = JSON.parse(credential.credentialData);
+    const credentialData: Record<string, unknown> = JSON.parse(credential.credentialData);
     const locale = whoAmI.getLocale();
 
     return Object.entries(credentialData)
