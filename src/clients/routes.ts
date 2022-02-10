@@ -24,6 +24,7 @@ const routes: RouteDef[] = [
   CreateInitialAccessTokenRoute,
   ClientRoute,
   MapperRoute,
+  DedicatedScopeDetailsRoute,
   ClientScopesRoute,
   AuthorizationRoute,
   NewResourceRoute,
@@ -34,7 +35,6 @@ const routes: RouteDef[] = [
   PolicyDetailsRoute,
   NewPermissionRoute,
   PermissionDetailsRoute,
-  DedicatedScopeDetailsRoute,
 ];
 
 export default routes;

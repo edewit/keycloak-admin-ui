@@ -155,7 +155,9 @@ export const castAdminClient = (
   resource: ResourcesKey
 ) =>
   adminClient[resource] as unknown as {
-    [index in DeleteFunctions | ListFunction]: Function;
+    [index in DeleteFunctions | ListFunction]: (
+      ...params: any
+    ) => Promise<RoleRepresentation[]>;
   };
 
 export const RoleMapping = ({

@@ -17,7 +17,6 @@ import {
 } from "@patternfly/react-core";
 
 import type ClientRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientRepresentation";
-import type RoleRepresentation from "@keycloak/keycloak-admin-client/lib/defs/roleRepresentation";
 import { KeycloakDataTable } from "../table-toolbar/KeycloakDataTable";
 import { useFetch, useAdminClient } from "../../context/auth/AdminClient";
 import { FilterIcon } from "@patternfly/react-icons";
@@ -76,16 +75,14 @@ export const AddRoleMappingModal = ({
       return (
         await Promise.all(
           clients.map(async (client) => {
-            let roles: RoleRepresentation[] = [];
-
-            roles = (await castAdminClient(
+            const roles = await castAdminClient(
               adminClient,
               mapType.resource === "roles" ? "clients" : mapType.resource
             )[mapType.functions.list[0]]({
               id: mapType.resource === "roles" ? client.id : id,
               clientUniqueId: client.id,
               client: client.id,
-            })) as RoleRepresentation[];
+            });
 
             return {
               roles,
@@ -122,10 +119,9 @@ export const AddRoleMappingModal = ({
       );
     }
 
-    const availableRoles: RoleRepresentation[] = await castAdminClient(
-      adminClient,
-      mapType.resource
-    )[mapType.functions.list[1]]({
+    const availableRoles = await castAdminClient(adminClient, mapType.resource)[
+      mapType.functions.list[1]
+    ]({
       id,
     });
 
@@ -145,15 +141,14 @@ export const AddRoleMappingModal = ({
     const roles = (
       await Promise.all(
         allClients.map(async (client) => {
-          const clientAvailableRoles: RoleRepresentation[] =
-            await castAdminClient(
-              adminClient,
-              mapType.resource === "roles" ? "clients" : mapType.resource
-            )[mapType.functions.list[0]]({
-              id: mapType.resource === "roles" ? client.id : id,
-              client: client.id,
-              clientUniqueId: client.id,
-            });
+          const clientAvailableRoles = await castAdminClient(
+            adminClient,
+            mapType.resource === "roles" ? "clients" : mapType.resource
+          )[mapType.functions.list[0]]({
+            id: mapType.resource === "roles" ? client.id : id,
+            client: client.id,
+            clientUniqueId: client.id,
+          });
 
           return clientAvailableRoles.map((role) => {
             return {

@@ -19,6 +19,7 @@ import {
   Row,
 } from "../../components/role-mapping/RoleMapping";
 import type { RoleMappingPayload } from "@keycloak/keycloak-admin-client/lib/defs/roleRepresentation";
+import useToggle from "../../utils/useToggle";
 
 type DedicatedScopeProps = {
   client: ClientRepresentation;
@@ -32,10 +33,11 @@ export const DedicatedScope = ({
   const { addAlert, addError } = useAlerts();
 
   const [client, setClient] = useState<ClientRepresentation>(initialClient);
-  const [hide, setHide] = useState(false);
+  const [hide, toggle] = useToggle();
 
   const loader = async () => {
-    const [assignedRoles, effectiveRoles] = await Promise.all([
+    const [clients, assignedRoles, effectiveRoles] = await Promise.all([
+      adminClient.clients.find(),
       adminClient.clients
         .listRealmScopeMappings({ id: client.id! })
         .then((roles) => roles.map((role) => ({ role }))),
@@ -44,7 +46,6 @@ export const DedicatedScope = ({
         .then((roles) => roles.map((role) => ({ role }))),
     ]);
 
-    const clients = await adminClient.clients.find();
     const clientRoles = (
       await Promise.all(
         clients.map(async ({ id }) => {
@@ -78,14 +79,14 @@ export const DedicatedScope = ({
         .filter((row) => row.client === undefined)
         .map((row) => row.role as RoleMappingPayload)
         .flat();
-      await adminClient.clients.addRealmScopeMappings(
-        {
-          id: client.id!,
-        },
-        realmRoles
-      );
-      await Promise.all(
-        rows
+      await Promise.all([
+        adminClient.clients.addRealmScopeMappings(
+          {
+            id: client.id!,
+          },
+          realmRoles
+        ),
+        ...rows
           .filter((row) => row.client !== undefined)
           .map((row) =>
             adminClient.clients.addClientScopeMappings(
@@ -95,8 +96,8 @@ export const DedicatedScope = ({
               },
               [row.role as RoleMappingPayload]
             )
-          )
-      );
+          ),
+      ]);
 
       addAlert(t("clientScopeSuccess"), AlertVariant.success);
     } catch (error) {
@@ -147,7 +148,7 @@ export const DedicatedScope = ({
             type="clients"
             loader={loader}
             save={assignRoles}
-            onHideRolesToggle={() => setHide(!hide)}
+            onHideRolesToggle={toggle}
           />
         </>
       )}

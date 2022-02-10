@@ -74,7 +74,7 @@ export const ClientScopes = ({
   const [selectedRows, setSelectedRows] = useState<Row[]>([]);
 
   const [key, setKey] = useState(0);
-  const refresh = () => setKey(new Date().getTime());
+  const refresh = () => setKey(key + 1);
 
   const isDedicatedRow = (value: Row) => value.id === DEDICATED_ROW;
 
@@ -119,9 +119,7 @@ export const ClientScopes = ({
     const filter =
       searchType === "name" ? nameFilter(search) : typeFilter(searchTypeType);
     const firstNum = Number(first);
-    const page = rows
-      .filter(filter)
-      .slice(firstNum, Number(first) + Number(max));
+    const page = rows.filter(filter).slice(firstNum, firstNum + Number(max));
     if (firstNum === 0) {
       return [
         {
