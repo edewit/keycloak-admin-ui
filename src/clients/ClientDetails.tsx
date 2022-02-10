@@ -280,16 +280,18 @@ export default function ClientDetails() {
         toggleChangeAuthenticatorOpen();
         return;
       }
-      const submittedClient = convertFormValuesToObject<
-        Omit<ClientForm, "redirectUris" | "webOrigins">
-      >(form.getValues(), ["redirectUris", "webOrigins"]);
 
-      if (submittedClient.requestUris) {
-        submittedClient.attributes!["request.uris"] = toStringValue(
-          submittedClient.requestUris
-        );
-        delete (submittedClient as ClientForm).requestUris;
+      const values = form.getValues();
+
+      if (values.requestUris) {
+        values.attributes!["request.uris"] = toStringValue(values.requestUris);
+        delete values.requestUris;
       }
+
+      const submittedClient = convertFormValuesToObject<
+        ClientForm,
+        ClientRepresentation
+      >(values, ["redirectUris", "webOrigins"]);
 
       try {
         const newClient: ClientRepresentation = {

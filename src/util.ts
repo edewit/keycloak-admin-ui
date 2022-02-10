@@ -101,10 +101,10 @@ export const convertToFormValues = (
   });
 };
 
-export function convertFormValuesToObject<T>(
+export function convertFormValuesToObject<T, G = T>(
   obj: T,
   multiline: string[] | undefined = []
-): T {
+): G {
   const result: any = {};
   Object.entries(obj).map(([key, value]) => {
     if (isAttributeArray(value)) {
