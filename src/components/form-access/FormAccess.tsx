@@ -44,7 +44,6 @@ export type FormAccessProps = FormProps & {
 
   /**
    * Overwrite the fineGrainedAccess and make form regardless of access rights.
-   * @type {boolean}
    */
   isReadOnly?: boolean;
 };
