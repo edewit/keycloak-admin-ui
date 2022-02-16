@@ -58,14 +58,16 @@ async function decompressKeycloak() {
 }
 
 const run = () => {
-  const addProc = spawn(
-    path.join(serverPath, "bin", `add-user-keycloak${extension}`),
-    ["--user", "admin", "--password", "admin"]
-  );
+  const addProc = spawn(path.join(serverPath, "bin", `kc${extension}`), [
+    "import",
+    "--file",
+    path.join(folder, "../realm.json"),
+  ]);
 
   addProc.on("exit", () => {
-    const proc = spawn(path.join(serverPath, "bin", `standalone${extension}`), [
-      "-Djboss.socket.binding.port-offset=100",
+    const proc = spawn(path.join(serverPath, "bin", `kc${extension}`), [
+      "start-dev",
+      "--http-port=8180",
       "-Dkeycloak.profile.feature.admin2=enabled",
       "-Dkeycloak.profile.feature.declarative_user_profile=enabled",
       ...args,
@@ -110,7 +112,7 @@ if (!fs.existsSync(fileName)) {
   });
 
   request(
-    `https://github.com/keycloak/keycloak/releases/download/${version}/keycloak-legacy-${version}.tar.gz`,
+    `https://github.com/keycloak/keycloak/releases/download/${version}/keycloak-${version}.tar.gz`,
     file,
     progressBar
   );

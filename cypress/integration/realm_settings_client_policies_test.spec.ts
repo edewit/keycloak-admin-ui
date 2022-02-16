@@ -135,7 +135,7 @@ describe("Realm settings client policies tab tests", () => {
   });
 
   it("Should not create duplicate client profile", () => {
-    const url = `/auth/admin/realms/${realmName}/client-policies/policies`;
+    const url = `/admin/realms/${realmName}/client-policies/policies`;
     cy.intercept("PUT", url).as("save");
 
     realmSettingsPage.createNewClientPolicyFromEmptyState(
