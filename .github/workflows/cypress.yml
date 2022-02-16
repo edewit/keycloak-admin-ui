@@ -47,13 +47,13 @@ jobs:
         working-directory: ${{ env.KEYCLOAK_SERVER_PATH }}
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          tar -xvf keycloak-server/quarkus/dist/target/keycloak-$VERSION.tar.gz -C keycloak-server/quarkus/dist/target/
+          tar -xvf quarkus/dist/target/keycloak-$VERSION.tar.gz -C quarkus/dist/target/
           echo "KEYCLOAK_SERVER_BIN=keycloak-server/quarkus/dist/target/keycloak-$VERSION/bin" >> $GITHUB_ENV
 
       - name: Start Keycloak Server
         working-directory: ${{ env.KEYCLOAK_SERVER_BIN }}
         run: |
-          ./kc.sh import --file ${{ env.ADMIN_UI_PATH }}/realm.json
+          ./kc.sh import --file ../../../../../../${{ env.ADMIN_UI_PATH }}/realm.json
           ./kc.sh start-dev -Dkeycloak.profile.feature.admin2=enabled -Dkeycloak.profile.feature.declarative_user_profile=enabled &
 
       - name: Configure Keycloak Server
