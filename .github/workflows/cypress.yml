@@ -47,7 +47,8 @@ jobs:
         working-directory: ${{ env.KEYCLOAK_SERVER_PATH }}
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "KEYCLOAK_SERVER_BIN=keycloak-server/distribution/server-x-dist/target/keycloak.x-17.0.0-SNAPSHOT/bin" >> $GITHUB_ENV
+          tar -xvf keycloak-server/quarkus/dist/target/keycloak-$VERSION.tar.gz -C keycloak-server/quarkus/dist/target/
+          echo "KEYCLOAK_SERVER_BIN=keycloak-server/quarkus/dist/target/keycloak-$VERSION/bin" >> $GITHUB_ENV
 
       - name: Start Keycloak Server
         working-directory: ${{ env.KEYCLOAK_SERVER_BIN }}
