@@ -56,12 +56,6 @@ jobs:
           ./kc.sh import --file ../../../../../../${{ env.ADMIN_UI_PATH }}/realm.json
           ./kc.sh start-dev -Dkeycloak.profile.feature.admin2=enabled -Dkeycloak.profile.feature.declarative_user_profile=enabled &
 
-      - name: Configure Keycloak Server
-        working-directory: ${{ env.KEYCLOAK_SERVER_BIN }}
-        run: |
-          ./kcadm.sh config credentials --server http://localhost:8080/ --realm master --user admin --password admin
-          ./kcadm.sh update realms/master -s "adminTheme=keycloak.v2"
-
       - name: Set up Node
         uses: actions/setup-node@v2
         with:
