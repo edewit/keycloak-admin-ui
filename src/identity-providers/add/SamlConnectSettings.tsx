@@ -82,7 +82,7 @@ export const SamlConnectSettings = () => {
           id="kc-service-provider-entity-id"
           ref={register({ required: true })}
           validated={errors.config?.entityId ? "error" : "default"}
-          placeholder={`${environment.authServerUrl}/auth/realms/${realm}`}
+          defaultValue={`${environment.authServerUrl}/realms/${realm}`}
         />
       </FormGroup>
 
