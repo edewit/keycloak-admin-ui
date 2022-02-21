@@ -22,7 +22,9 @@ export default class CreateRealmRolePage {
       cy.get(this.realmRoleNameInput).type(name);
     }
 
-    this.updateDescription(description);
+    if (description !== "") {
+      this.updateDescription(description);
+    }
     return this;
   }
 
@@ -52,7 +54,7 @@ export default class CreateRealmRolePage {
     return this;
   }
 
-  updateDescription(description: string | undefined = "") {
+  updateDescription(description: string) {
     cy.get(this.realmRoleDescriptionInput).clear().type(description);
     return this;
   }

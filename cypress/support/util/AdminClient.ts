@@ -159,4 +159,9 @@ export default class AdminClient {
 
     return await this.client.roles.create(payload);
   }
+
+  async deleteRealmRole(name: string) {
+    await this.login();
+    return await this.client.roles.delByName({ name });
+  }
 }

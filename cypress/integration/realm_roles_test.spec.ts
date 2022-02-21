@@ -57,6 +57,7 @@ describe("Realm roles test", () => {
     listingPage.itemExist(itemId, false).goToCreateItem();
     createRealmRolePage.fillRealmRoleData(itemId).save();
     masthead.checkNotificationMessage("Role created", true);
+    sidebarPage.goToRealmRoles();
 
     const fetchUrl = "/auth/admin/realms/master/roles?first=0&max=11";
     cy.intercept(fetchUrl).as("fetch");
@@ -99,26 +100,35 @@ describe("Realm roles test", () => {
 
     // Add associated realm role
     associatedRolesPage.addAssociatedRealmRole();
+    masthead.checkNotificationMessage("Associated roles have been added", true);
 
     // Add associated client role
     associatedRolesPage.addAssociatedClientRole();
+    masthead.checkNotificationMessage("Associated roles have been added", true);
   });
 
-  it("should edit realm role details", () => {
-    itemId += "_" + (Math.random() + 1).toString(36).substring(7);
+  describe("edit role details", () => {
+    const editRoleName = "going to edit";
     const description = "some description";
-    cy.wrap(null).then(() =>
-      new AdminClient().createRealmRole({
-        name: itemId,
+    const adminClient = new AdminClient();
+    before(() => {
+      adminClient.createRealmRole({
+        name: editRoleName,
         description,
-      })
-    );
+      });
+    });
 
-    listingPage.itemExist(itemId).goToItemDetails(itemId);
-    createRealmRolePage.checkNameDisabled().checkDescription(description);
-    const updateDescription = "updated description";
-    createRealmRolePage.updateDescription(updateDescription).save();
-    masthead.checkNotificationMessage("The role has been saved", true);
-    createRealmRolePage.checkDescription(updateDescription);
+    after(() => {
+      adminClient.deleteRealmRole(editRoleName);
+    });
+
+    it("should edit realm role details", () => {
+      listingPage.itemExist(editRoleName).goToItemDetails(editRoleName);
+      createRealmRolePage.checkNameDisabled().checkDescription(description);
+      const updateDescription = "updated description";
+      createRealmRolePage.updateDescription(updateDescription).save();
+      masthead.checkNotificationMessage("The role has been saved", true);
+      createRealmRolePage.checkDescription(updateDescription);
+    });
   });
 });
