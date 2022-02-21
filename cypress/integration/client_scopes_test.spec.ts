@@ -28,6 +28,15 @@ describe("Client Scopes test", () => {
     "Are you sure you want to delete this client scope";
   const notificationMessageDeletionConfirmation =
     "The client scope has been deleted";
+  before(() => {
+    keycloakBefore();
+    loginPage.logIn();
+  });
+  beforeEach(() => {
+    keycloakBeforeEach();
+    sidebarPage.goToClientScopes();
+  });
+
   const clientScopeName = "client-scope-test";
   const openIDConnectItemText = "OpenID Connect";
   const clientScope = {
@@ -209,7 +218,6 @@ describe("Client Scopes test", () => {
       loginPage.logIn();
     });
 
-    beforeEach(() => {
       keycloakBeforeEach();
       sidebarPage.goToClientScopes();
     });
@@ -266,15 +274,10 @@ describe("Client Scopes test", () => {
 
   describe("Client Scope creation", () => {
     before(() => {
-      keycloakBefore();
-      loginPage.logIn();
     });
 
     beforeEach(() => {
       keycloakBeforeEach();
-      sidebarPage.goToClientScopes();
-    });
-
     it("should fail creating client scope", () => {
       sidebarPage.waitForPageLoad();
       listingPage.goToCreateItem();
@@ -324,9 +327,8 @@ describe("Client Scopes test", () => {
   describe("Scope test", () => {
     const scopeTab = new RoleMappingTab();
     const scopeName = "address";
-
     it("Assign role", () => {
-      const role = "offline_access";
+      const role = "admin";
       listingPage.searchItem(scopeName, false).goToItemDetails(scopeName);
       scopeTab.goToScopeTab().assignRole().selectRow(role).assign();
       masthead.checkNotificationMessage("Role mapping updated");
