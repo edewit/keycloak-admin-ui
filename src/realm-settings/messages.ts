@@ -379,7 +379,13 @@ export default {
     deleteAttributeConfirm:
       "Are you sure you want to permanently delete the attribute {{attributeName}}?",
     deleteAttributeSuccess: "Attribute deleted",
-    deleteAttributeError: "",
+    deleteAttributeError: "Attribute not deleted",
+    generalSettings: "General settings",
+    permission: "Permission",
+    validations: "Validations",
+    annotations: "Annotations",
+    validateName:
+      "Attribute configuration already exists with {{attributeName}}",
     eventType: "Event saved type",
     searchEventType: "Search saved event type",
     addSavedTypes: "Add saved types",
