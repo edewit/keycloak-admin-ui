@@ -152,5 +152,7 @@ export default {
     attributeDisplayNameHelp:
       "Display name for the attribute. Supports keys for localized values as well. For example: ${profile.attribute.phoneNumber}.",
     attributeGroupHelp: "user.profile.attribute.group.tooltip",
+    requiredHelp:
+      "Set the attribute as required. If enabled, the attribute must be set by users and administrators. Otherwise, the attribute is optional.",
   },
 };

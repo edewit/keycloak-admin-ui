@@ -1,8 +1,11 @@
 import {
+  Divider,
   FormGroup,
+  Radio,
   Select,
   SelectOption,
   SelectVariant,
+  Switch,
   TextInput,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
@@ -10,10 +13,9 @@ import React, { useState } from "react";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
 import { UseFormMethods, Controller } from "react-hook-form";
 import { FormAccess } from "../../../components/form-access/FormAccess";
-import { useRealm } from "../../../context/realm-context/RealmContext";
-
 import { WizardSectionHeader } from "../../../components/wizard-section-header/WizardSectionHeader";
-import { useAdminClient } from "../../../context/auth/AdminClient";
+import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
+import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 
 export type AttributesGeneralSettingsProps = {
   form: UseFormMethods;
@@ -21,6 +23,8 @@ export type AttributesGeneralSettingsProps = {
   showSectionDescription?: boolean;
   attributeGroupEdit?: boolean;
 };
+
+const ENABLED_WHEN = ["Always", "Scopes are requested"] as const;
 
 export const AttributesGeneralSettings = ({
   form,
@@ -30,12 +34,23 @@ export const AttributesGeneralSettings = ({
 }: AttributesGeneralSettingsProps) => {
   const { t } = useTranslation("realm-settings");
   const { t: helpText } = useTranslation("realm-settings-help");
-
   const adminClient = useAdminClient();
-  const { realm } = useRealm();
+  const [selectOpen, setSelectOpen] = useState(false);
+  const [clientScopes, setClientScopes] =
+    useState<ClientScopeRepresentation[]>();
 
   const [isAttributeGroupDropdownOpen, setIsAttributeGroupDropdownOpen] =
     useState(false);
+
+  useFetch(
+    () => adminClient.clientScopes.find(),
+    (clientScopes) => {
+      setClientScopes(clientScopes);
+    },
+    []
+  );
+
+  console.log(">>>>> clientScopes ", clientScopes);
 
   return (
     <>
@@ -129,6 +144,104 @@ export const AttributesGeneralSettings = ({
                 </SelectOption>
                 <SelectOption key={1} value=""></SelectOption>
               </Select>
+            )}
+          ></Controller>
+        </FormGroup>
+        <Divider />
+        <FormGroup
+          label={t("enabledWhen")}
+          fieldId="enabledWhen"
+          hasNoPaddingTop
+        >
+          <Controller
+            name="enabledWhen"
+            data-testid="enabledWhen"
+            defaultValue={ENABLED_WHEN[0]}
+            control={form.control}
+            render={({ onChange, value }) => (
+              <>
+                {ENABLED_WHEN.map((option) => (
+                  <Radio
+                    id={option}
+                    key={option}
+                    data-testid={option}
+                    isChecked={value === option}
+                    name="enabledWhen"
+                    onChange={() => onChange(option)}
+                    label={option}
+                    className="pf-u-mb-md"
+                  />
+                ))}
+              </>
+            )}
+          />
+        </FormGroup>
+        <FormGroup fieldId="kc-scope">
+          <Controller
+            name="scope"
+            control={form.control}
+            render={({
+              onChange,
+              value,
+            }: {
+              onChange: (newValue: ClientScopeRepresentation[]) => void;
+              value: ClientScopeRepresentation[];
+            }) => (
+              <Select
+                name="scope"
+                data-testid="scopeFld"
+                variant={SelectVariant.typeaheadMulti}
+                typeAheadAriaLabel="Select"
+                onToggle={(isOpen) => setSelectOpen(isOpen)}
+                selections={value}
+                onSelect={(_, selectedValue) => {
+                  const option =
+                    selectedValue.toString() as ClientScopeRepresentation;
+                  const changedValue = value.includes(option)
+                    ? value.filter((item) => item !== option)
+                    : [...value, option];
+
+                  onChange(changedValue);
+                }}
+                onClear={(clientScope) => {
+                  clientScope.stopPropagation();
+                  onChange([]);
+                }}
+                isOpen={selectOpen}
+                aria-labelledby={"scope"}
+              >
+                {clientScopes?.map((option) => (
+                  <SelectOption key={option.name} value={option.name} />
+                ))}
+              </Select>
+            )}
+          />
+        </FormGroup>
+        <Divider />
+        <FormGroup
+          label={t("required")}
+          labelIcon={
+            <HelpItem
+              helpText="realm-settings-help:requiredHelp"
+              fieldLabelId="realm-settings:required"
+            />
+          }
+          fieldId="kc-required"
+          hasNoPaddingTop
+        >
+          <Controller
+            name="required"
+            defaultValue={["false"]}
+            control={form.control}
+            render={({ onChange, value }) => (
+              <Switch
+                id={"kc-required"}
+                isDisabled={false}
+                onChange={(value) => onChange([`${value}`])}
+                isChecked={value[0] === "true"}
+                label={t("common:on")}
+                labelOff={t("common:off")}
+              />
             )}
           ></Controller>
         </FormGroup>

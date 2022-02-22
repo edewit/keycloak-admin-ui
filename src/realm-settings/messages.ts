@@ -371,6 +371,8 @@ export default {
     attributeName: "Name",
     attributeDisplayName: "Display name",
     attributeGroup: "Attribute group",
+    enabledWhen: "Enabled when",
+    required: "Required",
     updatedUserProfileSuccess: "User Profile configuration has been saved",
     updatedUserProfileError: "User Profile configuration hasn't been saved",
     createAttribute: "Create attribute",

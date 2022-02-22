@@ -40,9 +40,9 @@ const CreateAttributeFormContent = ({
             isDisabled={!form.formState.isDirty}
             variant="primary"
             type="submit"
-            data-testid="attribute-save"
+            data-testid="attribute-create"
           >
-            {t("common:save")}
+            {t("common:create")}
           </Button>
           <Button
             variant="link"
