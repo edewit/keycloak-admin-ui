@@ -27,7 +27,7 @@ const Truncate = ({
   const needsTruncation = definedText.length > MAX_TEXT_LENGTH;
   const truncatedText = definedText.substring(0, MAX_TEXT_LENGTH);
   return needsTruncation ? (
-    <Tooltip content={text}>{children(truncatedText + "...")}</Tooltip>
+    <Tooltip content={text}>{children(truncatedText + "…")}</Tooltip>
   ) : (
     children(definedText)
   );
