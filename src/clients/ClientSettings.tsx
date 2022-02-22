@@ -301,6 +301,7 @@ export const ClientSettings = ({
               validate: (uri) =>
                 ((uri.startsWith("https://") || uri.startsWith("http://")) &&
                   uri.indexOf("*") === -1) ||
+                uri === "" ||
                 t("backchannelUrlInvalid").toString(),
             })}
             validated={
