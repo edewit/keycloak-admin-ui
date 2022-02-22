@@ -28,14 +28,6 @@ describe("Client Scopes test", () => {
     "Are you sure you want to delete this client scope";
   const notificationMessageDeletionConfirmation =
     "The client scope has been deleted";
-  before(() => {
-    keycloakBefore();
-    loginPage.logIn();
-  });
-  beforeEach(() => {
-    keycloakBeforeEach();
-    sidebarPage.goToClientScopes();
-  });
 
   const clientScopeName = "client-scope-test";
   const openIDConnectItemText = "OpenID Connect";
@@ -218,6 +210,7 @@ describe("Client Scopes test", () => {
       loginPage.logIn();
     });
 
+    beforeEach(() => {
       keycloakBeforeEach();
       sidebarPage.goToClientScopes();
     });
@@ -274,10 +267,15 @@ describe("Client Scopes test", () => {
 
   describe("Client Scope creation", () => {
     before(() => {
+      keycloakBefore();
+      loginPage.logIn();
     });
 
     beforeEach(() => {
       keycloakBeforeEach();
+      sidebarPage.goToClientScopes();
+    });
+
     it("should fail creating client scope", () => {
       sidebarPage.waitForPageLoad();
       listingPage.goToCreateItem();
