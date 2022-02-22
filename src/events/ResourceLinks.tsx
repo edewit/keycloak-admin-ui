@@ -29,7 +29,7 @@ const Truncate = ({
   return (
     <>
       {needsTruncation && (
-        <Tooltip content={text}>{children(truncatedText + "...")}</Tooltip>
+        <Tooltip content={text}>{children(truncatedText)}&hellip;</Tooltip>
       )}
       {!needsTruncation && <>{children(definedText)}</>}
     </>
