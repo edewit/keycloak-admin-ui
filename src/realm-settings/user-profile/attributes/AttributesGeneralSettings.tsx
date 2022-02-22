@@ -16,6 +16,7 @@ import { FormAccess } from "../../../components/form-access/FormAccess";
 import { WizardSectionHeader } from "../../../components/wizard-section-header/WizardSectionHeader";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
+import "../../realm-settings-section.css";
 
 export type AttributesGeneralSettingsProps = {
   form: UseFormMethods;
@@ -24,7 +25,12 @@ export type AttributesGeneralSettingsProps = {
   attributeGroupEdit?: boolean;
 };
 
-const ENABLED_WHEN = ["Always", "Scopes are requested"] as const;
+const ENABLED_REQUIRED_WHEN = ["Always", "Scopes are requested"] as const;
+const REQUIRED_FOR = [
+  "Both users and admins",
+  "Only users",
+  "Only admins",
+] as const;
 
 export const AttributesGeneralSettings = ({
   form,
@@ -49,8 +55,6 @@ export const AttributesGeneralSettings = ({
     },
     []
   );
-
-  console.log(">>>>> clientScopes ", clientScopes);
 
   return (
     <>
@@ -156,11 +160,11 @@ export const AttributesGeneralSettings = ({
           <Controller
             name="enabledWhen"
             data-testid="enabledWhen"
-            defaultValue={ENABLED_WHEN[0]}
+            defaultValue={ENABLED_REQUIRED_WHEN[0]}
             control={form.control}
             render={({ onChange, value }) => (
               <>
-                {ENABLED_WHEN.map((option) => (
+                {ENABLED_REQUIRED_WHEN.map((option) => (
                   <Radio
                     id={option}
                     key={option}
@@ -244,6 +248,103 @@ export const AttributesGeneralSettings = ({
               />
             )}
           ></Controller>
+        </FormGroup>
+        <FormGroup
+          label={t("requiredFor")}
+          fieldId="requiredFor"
+          hasNoPaddingTop
+        >
+          <Controller
+            name="requiredFor"
+            data-testid="requiredFor"
+            defaultValue={REQUIRED_FOR[0]}
+            control={form.control}
+            render={({ onChange, value }) => (
+              <div className="kc-requiredFor">
+                {REQUIRED_FOR.map((option) => (
+                  <Radio
+                    id={option}
+                    key={option}
+                    data-testid={option}
+                    isChecked={value === option}
+                    name="requiredFor"
+                    onChange={() => onChange(option)}
+                    label={option}
+                    className="kc-requiredFor-option"
+                  />
+                ))}
+              </div>
+            )}
+          />
+        </FormGroup>
+        <FormGroup
+          label={t("requiredWhen")}
+          fieldId="requiredWhen"
+          hasNoPaddingTop
+        >
+          <Controller
+            name="requiredWhen"
+            data-testid="requiredWhen"
+            defaultValue={ENABLED_REQUIRED_WHEN[0]}
+            control={form.control}
+            render={({ onChange, value }) => (
+              <>
+                {ENABLED_REQUIRED_WHEN.map((option) => (
+                  <Radio
+                    id={option}
+                    key={option}
+                    data-testid={option}
+                    isChecked={value === option}
+                    name="requiredWhen"
+                    onChange={() => onChange(option)}
+                    label={option}
+                    className="pf-u-mb-md"
+                  />
+                ))}
+              </>
+            )}
+          />
+        </FormGroup>
+        <FormGroup fieldId="kc-scope">
+          <Controller
+            name="scope"
+            control={form.control}
+            render={({
+              onChange,
+              value,
+            }: {
+              onChange: (newValue: ClientScopeRepresentation[]) => void;
+              value: ClientScopeRepresentation[];
+            }) => (
+              <Select
+                name="scope"
+                data-testid="scopeFld"
+                variant={SelectVariant.typeaheadMulti}
+                typeAheadAriaLabel="Select"
+                onToggle={(isOpen) => setSelectOpen(isOpen)}
+                selections={value}
+                onSelect={(_, selectedValue) => {
+                  const option =
+                    selectedValue.toString() as ClientScopeRepresentation;
+                  const changedValue = value.includes(option)
+                    ? value.filter((item) => item !== option)
+                    : [...value, option];
+
+                  onChange(changedValue);
+                }}
+                onClear={(clientScope) => {
+                  clientScope.stopPropagation();
+                  onChange([]);
+                }}
+                isOpen={selectOpen}
+                aria-labelledby={"scope"}
+              >
+                {clientScopes?.map((option) => (
+                  <SelectOption key={option.name} value={option.name} />
+                ))}
+              </Select>
+            )}
+          />
         </FormGroup>
       </FormAccess>
     </>

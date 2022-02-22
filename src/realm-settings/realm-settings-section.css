@@ -269,3 +269,11 @@ input#kc-scopes {
 .kc-join-group-modal-check {
   margin-right: var(--pf-global--spacer--sm);
 }
+
+.kc-requiredFor {
+  display: flex;
+}
+
+.kc-requiredFor-option {
+  margin-right: 20px;
+}

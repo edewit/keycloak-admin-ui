@@ -7,8 +7,8 @@ import { ScrollForm } from "../components/scroll-form/ScrollForm";
 import { useRealm } from "../context/realm-context/RealmContext";
 import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import { AttributesGeneralSettings } from "./user-profile/attributes/AttributesGeneralSettings";
-import "./realm-settings-section.css";
 import { toUserProfile } from "./routes/UserProfile";
+import "./realm-settings-section.css";
 
 const CreateAttributeFormContent = ({
   save,

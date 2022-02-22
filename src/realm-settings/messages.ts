@@ -373,6 +373,7 @@ export default {
     attributeGroup: "Attribute group",
     enabledWhen: "Enabled when",
     required: "Required",
+    requiredFor: "Required for",
     updatedUserProfileSuccess: "User Profile configuration has been saved",
     updatedUserProfileError: "User Profile configuration hasn't been saved",
     createAttribute: "Create attribute",
