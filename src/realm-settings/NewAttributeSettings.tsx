@@ -6,7 +6,8 @@ import { useHistory, useParams } from "react-router-dom";
 import { ScrollForm } from "../components/scroll-form/ScrollForm";
 import { useRealm } from "../context/realm-context/RealmContext";
 import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
-import { AttributesGeneralSettings } from "./user-profile/attributes/AttributesGeneralSettings";
+import { AttributeGeneralSettings } from "./user-profile/attribute/AttributeGeneralSettings";
+import { AttributePermission } from "./user-profile/attribute/AttributePermission";
 import { toUserProfile } from "./routes/UserProfile";
 import "./realm-settings-section.css";
 
@@ -32,7 +33,8 @@ const CreateAttributeFormContent = ({
           t("annotations"),
         ]}
       >
-        <AttributesGeneralSettings form={form} attributeGroupEdit={!!id} />
+        <AttributeGeneralSettings form={form} attributeGroupEdit={!!id} />
+        <AttributePermission form={form} />
       </ScrollForm>
       <Form onSubmit={form.handleSubmit(save)}>
         <ActionGroup className="keycloak__form_actions">

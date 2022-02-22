@@ -154,5 +154,11 @@ export default {
     attributeGroupHelp: "user.profile.attribute.group.tooltip",
     requiredHelp:
       "Set the attribute as required. If enabled, the attribute must be set by users and administrators. Otherwise, the attribute is optional.",
+    attributePermissionDescription:
+      "This section contains permissions for who can edit and who can view the attribute.",
+    whoCanEditHelp:
+      "If enabled, users or administrators can view and edit the attribute. Otherwise, users or administrators don't have access to write to the attribute.",
+    whoCanViewHelp:
+      "If enabled, users or administrators can view the attribute. Otherwise, users or administrators don't have access to the attribute.",
   },
 };

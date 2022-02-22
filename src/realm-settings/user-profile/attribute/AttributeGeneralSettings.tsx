@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Divider,
   FormGroup,
@@ -9,7 +10,6 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
-import React, { useState } from "react";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
 import { UseFormMethods, Controller } from "react-hook-form";
 import { FormAccess } from "../../../components/form-access/FormAccess";
@@ -18,7 +18,7 @@ import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 import "../../realm-settings-section.css";
 
-export type AttributesGeneralSettingsProps = {
+export type AttributeGeneralSettingsProps = {
   form: UseFormMethods;
   showSectionHeading?: boolean;
   showSectionDescription?: boolean;
@@ -32,12 +32,12 @@ const REQUIRED_FOR = [
   "Only admins",
 ] as const;
 
-export const AttributesGeneralSettings = ({
+export const AttributeGeneralSettings = ({
   form,
   showSectionHeading = false,
   showSectionDescription = false,
   attributeGroupEdit = false,
-}: AttributesGeneralSettingsProps) => {
+}: AttributeGeneralSettingsProps) => {
   const { t } = useTranslation("realm-settings");
   const { t: helpText } = useTranslation("realm-settings-help");
   const adminClient = useAdminClient();
