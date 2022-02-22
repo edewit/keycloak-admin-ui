@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { Link } from "react-router-dom";
 import { Tooltip } from "@patternfly/react-core";
 
@@ -21,18 +21,15 @@ const Truncate = ({
   children,
 }: {
   text?: string;
-  children: (text: string) => any;
+  children: (text: string) => ReactElement;
 }) => {
   const definedText = text || "";
   const needsTruncation = definedText.length > MAX_TEXT_LENGTH;
   const truncatedText = definedText.substring(0, MAX_TEXT_LENGTH);
-  return (
-    <>
-      {needsTruncation && (
-        <Tooltip content={text}>{children(truncatedText)}&hellip;</Tooltip>
-      )}
-      {!needsTruncation && <>{children(definedText)}</>}
-    </>
+  return needsTruncation ? (
+    <Tooltip content={text}>{children(truncatedText + "...")}</Tooltip>
+  ) : (
+    children(definedText)
   );
 };
 
@@ -105,14 +102,13 @@ export const ResourceLink = ({ event }: ResourceLinkProps) => {
   const { realm } = useRealm();
   return (
     <Truncate text={event.resourcePath}>
-      {(text) => (
-        <>
-          {isLinkable(event) && (
-            <Link to={createLink(realm, event)}>{text}</Link>
-          )}
-          {!isLinkable(event) && <span>{text}</span>}
-        </>
-      )}
+      {(text) =>
+        isLinkable(event) ? (
+          <Link to={createLink(realm, event)}>{text}</Link>
+        ) : (
+          <span>{text}</span>
+        )
+      }
     </Truncate>
   );
 };
