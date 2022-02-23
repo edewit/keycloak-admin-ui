@@ -160,5 +160,7 @@ export default {
       "If enabled, users or administrators can view and edit the attribute. Otherwise, users or administrators don't have access to write to the attribute.",
     whoCanViewHelp:
       "If enabled, users or administrators can view the attribute. Otherwise, users or administrators don't have access to the attribute.",
+    editUsername:
+      "If enabled, the username field is editable, readonly otherwise.",
   },
 };
