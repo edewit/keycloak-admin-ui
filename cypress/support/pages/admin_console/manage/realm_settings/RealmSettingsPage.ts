@@ -750,7 +750,7 @@ export default class RealmSettingsPage {
 
   openProfileDetails(name: string) {
     cy.intercept(
-      `/auth/admin/realms/${this.realmName}/client-policies/profiles*`
+      `/admin/realms/${this.realmName}/client-policies/profiles*`
     ).as("profilesFetch");
     cy.get(
       'a[href*="realm-settings/clientPolicies/' + name + '/edit-profile"]'
