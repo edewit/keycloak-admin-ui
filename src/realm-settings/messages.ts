@@ -378,6 +378,11 @@ export default {
     whoCanView: "Who can view?",
     user: "User",
     admin: "Admin",
+    addValidator: "Add validator",
+    validatorColumnNames: {
+      colName: "Role name",
+      colDescription: "Description",
+    },
     updatedUserProfileSuccess: "User Profile configuration has been saved",
     updatedUserProfileError: "User Profile configuration hasn't been saved",
     createAttribute: "Create attribute",

@@ -19,6 +19,7 @@ import { UserProfileRoute } from "./routes/UserProfile";
 import { AddAttributeRoute } from "./routes/AddAttribute";
 import { KeysRoute } from "./routes/KeysTab";
 import { RsaEncGeneratedSettingsRoute } from "./routes/RsaEncGeneratedSettings";
+import { AttributeRoute } from "./routes/Attribute";
 
 const routes: RouteDef[] = [
   RealmSettingsRoute,
@@ -41,6 +42,7 @@ const routes: RouteDef[] = [
   EditClientPolicyConditionRoute,
   UserProfileRoute,
   AddAttributeRoute,
+  AttributeRoute,
 ];
 
 export default routes;

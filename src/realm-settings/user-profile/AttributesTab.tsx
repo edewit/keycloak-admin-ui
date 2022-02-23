@@ -11,12 +11,13 @@ import {
 } from "@patternfly/react-core";
 import { KeycloakSpinner } from "../../components/keycloak-spinner/KeycloakSpinner";
 import { DraggableTable } from "../../authentication/components/DraggableTable";
-import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { toAddAttribute } from "../routes/AddAttribute";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { useUserProfile } from "./UserProfileContext";
 import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
+import { toAttribute } from "../routes/Attribute";
+import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 
 type movedAttributeType = UserProfileAttribute;
 
@@ -81,6 +82,18 @@ export const AttributesTab = () => {
     },
   });
 
+  const cellFormatter = (row: UserProfileAttribute) => (
+    <Link
+      to={toAttribute({
+        realm: realmName,
+        attributeName: row.name!,
+      })}
+      key={row.name}
+    >
+      {row.name}
+    </Link>
+  );
+
   if (!config) {
     return <KeycloakSpinner />;
   }
@@ -115,6 +128,7 @@ export const AttributesTab = () => {
           {
             name: "name",
             displayKey: t("attributeName"),
+            cellRenderer: cellFormatter,
           },
           {
             name: "displayName",

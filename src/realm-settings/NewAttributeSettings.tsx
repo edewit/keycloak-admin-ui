@@ -8,13 +8,16 @@ import { useRealm } from "../context/realm-context/RealmContext";
 import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import { AttributeGeneralSettings } from "./user-profile/attribute/AttributeGeneralSettings";
 import { AttributePermission } from "./user-profile/attribute/AttributePermission";
+import { AttributeValidations } from "./user-profile/attribute/AttributeValidations";
 import { toUserProfile } from "./routes/UserProfile";
 import "./realm-settings-section.css";
+import { ViewHeader } from "../components/view-header/ViewHeader";
+import { UserProfileProvider } from "./user-profile/UserProfileContext";
 
 const CreateAttributeFormContent = ({
   save,
 }: {
-  save: (component: UserProfileConfig) => void;
+  save: (profileConfig: UserProfileConfig) => void;
 }) => {
   const { t } = useTranslation("realm-settings");
   const form = useFormContext();
@@ -24,7 +27,12 @@ const CreateAttributeFormContent = ({
   const { realm } = useRealm();
 
   return (
-    <>
+    <UserProfileProvider>
+      <ViewHeader
+        titleKey={t("createAttribute")}
+        subKey={t("createAttribute")}
+        className="kc-createAttributeTitle"
+      />
       <ScrollForm
         sections={[
           t("generalSettings"),
@@ -35,6 +43,7 @@ const CreateAttributeFormContent = ({
       >
         <AttributeGeneralSettings form={form} attributeGroupEdit={!!id} />
         <AttributePermission form={form} />
+        <AttributeValidations />
       </ScrollForm>
       <Form onSubmit={form.handleSubmit(save)}>
         <ActionGroup className="keycloak__form_actions">
@@ -57,15 +66,15 @@ const CreateAttributeFormContent = ({
           </Button>
         </ActionGroup>
       </Form>
-    </>
+    </UserProfileProvider>
   );
 };
 
 export default function NewAttributeSettings() {
   const form = useForm<UserProfileConfig>({ mode: "onChange" });
 
-  const save = async (component: UserProfileConfig) => {
-    console.log(">>>> TODO");
+  const save = async (profileConfig: UserProfileConfig) => {
+    console.log(">>>> TODO ", profileConfig);
   };
 
   return (
