@@ -4,21 +4,20 @@ import { generatePath } from "react-router-dom";
 import type { RouteDef } from "../../route-config";
 
 export type KeyProviderParams = {
-  realm: string;
   id: string;
+  providerType: string;
+  realm: string;
 };
 
-export const AesGeneratedSettingsRoute: RouteDef = {
-  path: "/:realm/realm-settings/keys/providers/:id/aes-generated/settings",
-  component: lazy(
-    () => import("../key-providers/aes-generated/AESGeneratedForm")
-  ),
+export const KeyProviderFormRoute: RouteDef = {
+  path: "/:realm/realm-settings/keys/providers/:id/:providerType/settings",
+  component: lazy(() => import("../keys/key-providers/KeyProviderForm")),
   breadcrumb: (t) => t("realm-settings:editProvider"),
   access: "view-realm",
 };
 
-export const toAesGeneratedSettings = (
+export const toKeyProvider = (
   params: KeyProviderParams
 ): LocationDescriptorObject => ({
-  pathname: generatePath(AesGeneratedSettingsRoute.path, params),
+  pathname: generatePath(KeyProviderFormRoute.path, params),
 });

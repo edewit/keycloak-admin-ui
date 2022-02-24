@@ -1,0 +1,27 @@
+import React from "react";
+import { Modal, ModalVariant } from "@patternfly/react-core";
+import { useTranslation } from "react-i18next";
+import { KeyProviderForm } from "./KeyProviderForm";
+
+type KeyProviderModalProps = {
+  providerType: string;
+  onClose: () => void;
+};
+
+export const KeyProviderModal = ({
+  providerType,
+  onClose,
+}: KeyProviderModalProps) => {
+  const { t } = useTranslation("realm-settings");
+  return (
+    <Modal
+      className="add-provider-modal"
+      variant={ModalVariant.medium}
+      title={t("addProvider")}
+      isOpen
+      onClose={onClose}
+    >
+      <KeyProviderForm providerType={providerType} onClose={onClose} />
+    </Modal>
+  );
+};
