@@ -281,3 +281,8 @@ input#kc-scopes {
 .kc-requiredFor-option {
   margin-right: 20px;
 }
+
+.kc-emptyValidators {
+  color: #8d9195;
+  margin-left: 25px;
+}

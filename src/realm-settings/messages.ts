@@ -394,6 +394,10 @@ export default {
     deleteValidatorConfirmTitle: "Delete validator?",
     deleteValidatorConfirmMsg:
       "Are you sure you want to permanently delete the validator {{validatorName}}?",
+    validatorDeletedSuccess:
+      "Success! User Profile configuration has been saved.",
+    validatorDeletedError: "Error saving User Profile: {{error}}",
+    emptyValidators: "No validators.",
     updatedUserProfileSuccess: "User Profile configuration has been saved",
     updatedUserProfileError: "User Profile configuration hasn't been saved",
     createAttribute: "Create attribute",
