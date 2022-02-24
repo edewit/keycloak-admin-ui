@@ -97,8 +97,8 @@ export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
       <TableComposable aria-label="validators-table">
         <Thead>
           <Tr>
-            <Th>{t("validatorColumnNames.colName")}</Th>
-            <Th>{t("validatorColumnNames.colDescription")}</Th>
+            <Th>{t("validatorDialogColNames.colName")}</Th>
+            <Th>{t("validatorDialogColNames.colDescription")}</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -111,10 +111,10 @@ export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
               isHoverable
               isRowSelected={isValidatorSelected(validator)}
             >
-              <Td dataLabel={t("validatorColumnNames.colName")}>
+              <Td dataLabel={t("validatorDialogColNames.colName")}>
                 {validator.name}
               </Td>
-              <Td dataLabel={t("validatorColumnNames.colDescription")}>
+              <Td dataLabel={t("validatorDialogColNames.colDescription")}>
                 {validator.description}
               </Td>
             </Tr>

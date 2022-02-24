@@ -383,10 +383,17 @@ export default {
     user: "User",
     admin: "Admin",
     addValidator: "Add validator",
-    validatorColumnNames: {
+    validatorDialogColNames: {
       colName: "Role name",
       colDescription: "Description",
     },
+    validatorColNames: {
+      colName: "Validator name",
+      colConfig: "Config",
+    },
+    deleteValidatorConfirmTitle: "Delete validator?",
+    deleteValidatorConfirmMsg:
+      "Are you sure you want to permanently delete the validator {{validatorName}}?",
     updatedUserProfileSuccess: "User Profile configuration has been saved",
     updatedUserProfileError: "User Profile configuration hasn't been saved",
     createAttribute: "Create attribute",

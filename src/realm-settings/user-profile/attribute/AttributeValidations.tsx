@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import {
   Button,
-  DataList,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
+  ButtonVariant,
+  Divider,
   Flex,
   FlexItem,
 } from "@patternfly/react-core";
@@ -17,6 +14,15 @@ import { AddValidatorDialog } from "../attribute/AddValidatorDialog";
 import { useUserProfile } from "../UserProfileContext";
 import { useParams } from "react-router-dom";
 import type { AttributeParams } from "../../routes/Attribute";
+import {
+  TableComposable,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@patternfly/react-table";
+import { useConfirmDialog } from "../../../components/confirm-dialog/ConfirmDialog";
 
 export type AttributeValidationsProps = {
   showSectionHeading?: boolean;
@@ -32,6 +38,8 @@ export const AttributeValidations = ({
   const { t } = useTranslation("realm-settings");
   const { t: helpText } = useTranslation("realm-settings-help");
   const [addValidatorModalOpen, setAddValidatorModalOpen] = useState(false);
+  const [validatorToDelete, setValidatorToDelete] =
+    useState<{ name: string }>();
 
   const toggleModal = () => {
     setAddValidatorModalOpen(!addValidatorModalOpen);
@@ -41,15 +49,29 @@ export const AttributeValidations = ({
     return attribute;
   });
 
-  const validationForAttrName = [];
+  const validatorForAttrName: { name: string; config: string }[] = [];
   if (attributes) {
     const selectedAttribute = attributes.find((val) => {
       return val.name === attributeName;
     });
-    validationForAttrName.push(
-      Object.keys(selectedAttribute?.validations as [])
+
+    Object.entries(selectedAttribute?.validations as {}).forEach(
+      ([key, value]) =>
+        validatorForAttrName.push({ name: key, config: value as string })
     );
   }
+
+  const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
+    titleKey: t("deleteValidatorConfirmTitle"),
+    messageKey: t("deleteValidatorConfirmMsg", {
+      validatorName: validatorToDelete?.name!,
+    }),
+    continueButtonLabel: "common:delete",
+    continueButtonVariant: ButtonVariant.danger,
+    onConfirm: async () => {
+      //TODO
+    },
+  });
 
   return (
     <>
@@ -62,11 +84,12 @@ export const AttributeValidations = ({
       )}
       {addValidatorModalOpen && (
         <AddValidatorDialog
-          onConfirm={() => console.log("TODO AddValidatorDialog onConfirm")}
+          onConfirm={() => console.log("TODO")}
           open={addValidatorModalOpen}
           toggleDialog={toggleModal}
         />
       )}
+      <DeleteConfirm />
       <Flex>
         <FlexItem align={{ default: "alignRight" }}>
           <Button
@@ -81,33 +104,43 @@ export const AttributeValidations = ({
           </Button>
         </FlexItem>
       </Flex>
-      <DataList aria-label={t("validations")} isCompact>
-        <DataListItem aria-labelledby={"validations-list-item"}>
-          <DataListItemRow data-testid="validations-list-row">
-            <DataListItemCells
-              dataListCells={[
-                <DataListCell key="validation" data-testid="validation">
-                  {validationForAttrName!.map((validation) => (
-                    <>
-                      <span>{validation}</span>
-                      <Button
-                        key="validation"
-                        variant="link"
-                        data-testid="deleteValidation"
-                        onClick={() =>
-                          console.log("TODO delete validator from attribute")
-                        }
-                      >
-                        {t("common:delete")}
-                      </Button>
-                    </>
-                  ))}
-                </DataListCell>,
-              ]}
-            />
-          </DataListItemRow>
-        </DataListItem>
-      </DataList>
+      <Divider />
+      <TableComposable aria-label="validators-table">
+        <Thead>
+          <Tr>
+            <Th>{t("validatorColNames.colName")}</Th>
+            <Th>{t("validatorColNames.colConfig")}</Th>
+            <Th />
+          </Tr>
+        </Thead>
+        <Tbody>
+          {validatorForAttrName!.map((validator) => (
+            <Tr key={validator.name}>
+              <Td dataLabel={t("validatorColNames.colName")}>
+                {validator.name}
+              </Td>
+              <Td dataLabel={t("validatorColNames.colConfig")}>
+                {JSON.stringify(validator.config)}
+              </Td>
+              <Td>
+                <Button
+                  key="validator"
+                  variant="link"
+                  data-testid="deleteValidator"
+                  onClick={() => {
+                    toggleDeleteDialog();
+                    setValidatorToDelete({
+                      name: validator.name,
+                    });
+                  }}
+                >
+                  {t("common:delete")}
+                </Button>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </TableComposable>
     </>
   );
 };
