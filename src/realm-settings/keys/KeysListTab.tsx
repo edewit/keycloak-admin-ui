@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -20,6 +20,7 @@ import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog"
 import { emptyFormatter } from "../../util";
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { useRealm } from "../../context/realm-context/RealmContext";
+import { toKeysTab } from "../routes/KeysTab";
 
 import "../realm-settings-section.css";
 
@@ -36,7 +37,6 @@ type KeysListTabProps = {
 export const KeysListTab = ({ realmComponents }: KeysListTabProps) => {
   const { t } = useTranslation("realm-settings");
   const history = useHistory();
-  const { url } = useRouteMatch();
 
   const [key, setKey] = useState(0);
   const [publicKey, setPublicKey] = useState("");
@@ -45,7 +45,7 @@ export const KeysListTab = ({ realmComponents }: KeysListTabProps) => {
   const [filterType, setFilterType] = useState<string>(FILTER_OPTIONS[0]);
 
   const refresh = () => {
-    setKey(new Date().getTime());
+    setKey(key + 1);
   };
 
   const adminClient = useAdminClient();
@@ -85,8 +85,6 @@ export const KeysListTab = ({ realmComponents }: KeysListTabProps) => {
     continueButtonVariant: ButtonVariant.primary,
     onConfirm: () => Promise.resolve(),
   });
-
-  const goToCreate = () => history.push(`${url}/add-role`);
 
   const ProviderRenderer = ({ provider }: KeyData) => provider;
 
@@ -204,14 +202,16 @@ export const KeysListTab = ({ realmComponents }: KeysListTabProps) => {
             transforms: [cellWidth(20)],
           },
         ]}
-        isSearching={!!filterType}
+        isSearching={filterType !== FILTER_OPTIONS[0]}
         emptyState={
           <ListEmptyState
             hasIcon
             message={t("noKeys")}
             instructions={t("noKeysDescription")}
             primaryActionText={t("addProvider")}
-            onPrimaryAction={goToCreate}
+            onPrimaryAction={() =>
+              history.push(toKeysTab({ realm: realmName, tab: "providers" }))
+            }
           />
         }
       />
