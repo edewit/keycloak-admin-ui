@@ -10,7 +10,7 @@ export default {
       "If you delete this realm, all associated data will be removed.",
     deleteProviderTitle: "Delete key provider?",
     deleteProviderConfirm:
-      "Are you sure you want to permanently delete the key provider {{provider}} ?",
+      "Are you sure you want to permanently delete the key provider {{provider}}?",
     deleteProviderSuccess: "Success. The provider has been deleted.",
     deleteProviderError: "Error deleting the provider",
     deletedSuccess: "The realm has been deleted",
