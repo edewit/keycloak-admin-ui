@@ -42,7 +42,7 @@ export const KeysListTab = ({ realmComponents }: KeysListTabProps) => {
   const [publicKey, setPublicKey] = useState("");
   const [certificate, setCertificate] = useState("");
   const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
-  const [filterType, setFilterType] = useState<string>(FILTER_OPTIONS[0]);
+  const [filterType, setFilterType] = useState(FILTER_OPTIONS[0]);
 
   const refresh = () => {
     setKey(key + 1);
