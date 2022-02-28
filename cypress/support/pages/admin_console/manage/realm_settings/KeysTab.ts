@@ -3,12 +3,6 @@ export default class KeysTab {
   private providersTab = "rs-providers-tab";
   private addProviderDropdown = "addProviderDropdown";
 
-  private realmName?: string;
-
-  constructor(realmName?: string) {
-    this.realmName = realmName;
-  }
-
   goToKeysTab() {
     cy.findByTestId(this.keysTab).click();
 
