@@ -1,7 +1,7 @@
 export default class KeysTab {
-  private keysTab = "rs-keys-tab";
-  private providersTab = "rs-providers-tab";
-  private addProviderDropdown = "addProviderDropdown";
+  private readonly keysTab = "rs-keys-tab";
+  private readonly providersTab = "rs-providers-tab";
+  private readonly addProviderDropdown = "addProviderDropdown";
 
   goToKeysTab() {
     cy.findByTestId(this.keysTab).click();
