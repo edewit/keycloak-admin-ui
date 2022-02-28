@@ -17,7 +17,7 @@ export default function RealmSettingsSection() {
   };
 
   useFetch(
-    async () => adminClient.realms.findOne({ realm: realmName }),
+    () => adminClient.realms.findOne({ realm: realmName }),
     setRealm,
     [key]
   );
