@@ -59,7 +59,7 @@ export const KeysListTab = ({ realmComponents }: KeysListTabProps) => {
     const keys = keysMetaData.keys;
     const filtered =
       filterType !== FILTER_OPTIONS[0]
-        ? keys?.filter((i) => i.status === filterType)
+        ? keys?.filter(({ status }) => status === filterType)
         : keys;
 
     return filtered?.map((key) => {
