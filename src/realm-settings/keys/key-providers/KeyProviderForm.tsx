@@ -14,7 +14,7 @@ import {
 } from "@patternfly/react-core";
 
 import type ComponentRepresentation from "@keycloak/keycloak-admin-client/lib/defs/componentRepresentation";
-import type { KeyProviderParams } from "../../routes/KeyProvider";
+import type { KeyProviderParams, ProviderType } from "../../routes/KeyProvider";
 import { useAlerts } from "../../../components/alert/Alerts";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 import { FormAccess } from "../../../components/form-access/FormAccess";
@@ -30,11 +30,11 @@ import RsaGeneratedView from "./rsa-generated/View";
 
 type KeyProviderFormProps = {
   id?: string;
-  providerType: string;
+  providerType: ProviderType;
   onClose?: () => void;
 };
 
-const SubView = ({ providerType }: { providerType: string }) => {
+const SubView = ({ providerType }: { providerType: ProviderType }) => {
   switch (providerType) {
     case "aes-generated":
       return <AesView />;

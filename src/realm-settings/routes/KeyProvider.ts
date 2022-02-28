@@ -3,9 +3,18 @@ import { lazy } from "react";
 import { generatePath } from "react-router-dom";
 import type { RouteDef } from "../../route-config";
 
+export type ProviderType =
+  | "aes-generated"
+  | "ecdsa-generated"
+  | "hmac-generated"
+  | "java-keystore"
+  | "rsa"
+  | "rsa-enc-generated"
+  | "rsa-generated";
+
 export type KeyProviderParams = {
   id: string;
-  providerType: string;
+  providerType: ProviderType;
   realm: string;
 };
 
