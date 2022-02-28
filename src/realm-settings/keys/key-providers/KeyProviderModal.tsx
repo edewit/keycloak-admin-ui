@@ -2,9 +2,10 @@ import React from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { KeyProviderForm } from "./KeyProviderForm";
+import type { ProviderType } from "../../routes/KeyProvider";
 
 type KeyProviderModalProps = {
-  providerType: string;
+  providerType: ProviderType;
   onClose: () => void;
 };
 

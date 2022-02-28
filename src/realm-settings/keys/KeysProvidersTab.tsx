@@ -20,6 +20,7 @@ import type { KeyMetadataRepresentation } from "@keycloak/keycloak-admin-client/
 import type ComponentRepresentation from "@keycloak/keycloak-admin-client/lib/defs/componentRepresentation";
 import type ComponentTypeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/componentTypeRepresentation";
 
+import type { ProviderType } from "../routes/KeyProvider";
 import { useServerInfo } from "../../context/server-info/ServerInfoProvider";
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { useAlerts } from "../../components/alert/Alerts";
@@ -70,7 +71,7 @@ export const KeysProvidersTab = ({
 
   const [providerDropdownOpen, setProviderDropdownOpen] = useState(false);
   const [defaultConsoleDisplayName, setDefaultConsoleDisplayName] =
-    useState("");
+    useState<ProviderType>();
 
   const [selectedComponent, setSelectedComponent] =
     useState<ComponentRepresentation>();
@@ -141,7 +142,7 @@ export const KeysProvidersTab = ({
 
   return (
     <>
-      {isCreateModalOpen && (
+      {isCreateModalOpen && defaultConsoleDisplayName && (
         <KeyProviderModal
           providerType={defaultConsoleDisplayName}
           onClose={() => {
@@ -194,7 +195,7 @@ export const KeysProvidersTab = ({
                         handleModalToggle();
 
                         setProviderDropdownOpen(false);
-                        setDefaultConsoleDisplayName(item);
+                        setDefaultConsoleDisplayName(item as ProviderType);
                       }}
                       data-testid={`option-${item}`}
                       key={item}
