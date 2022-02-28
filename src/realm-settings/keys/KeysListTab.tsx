@@ -42,7 +42,9 @@ export const KeysListTab = ({ realmComponents }: KeysListTabProps) => {
   const [publicKey, setPublicKey] = useState("");
   const [certificate, setCertificate] = useState("");
   const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
-  const [filterType, setFilterType] = useState(FILTER_OPTIONS[0]);
+  const [filterType, setFilterType] = useState<typeof FILTER_OPTIONS[number]>(
+    FILTER_OPTIONS[0]
+  );
 
   const refresh = () => {
     setKey(key + 1);
@@ -150,7 +152,10 @@ export const KeysListTab = ({ realmComponents }: KeysListTabProps) => {
             onToggle={() => setFilterDropdownOpen(!filterDropdownOpen)}
             toggleIcon={<FilterIcon />}
             onSelect={(_, value) => {
-              setFilterType(value.toString());
+              setFilterType(
+                FILTER_OPTIONS.find((o) => o === value.toString()) ||
+                  FILTER_OPTIONS[0]
+              );
               refresh();
               setFilterDropdownOpen(false);
             }}
