@@ -16,11 +16,9 @@ export default function RealmSettingsSection() {
     setKey(key + 1);
   };
 
-  useFetch(
-    () => adminClient.realms.findOne({ realm: realmName }),
-    setRealm,
-    [key]
-  );
+  useFetch(() => adminClient.realms.findOne({ realm: realmName }), setRealm, [
+    key,
+  ]);
 
   if (!realm) {
     return <KeycloakSpinner />;
