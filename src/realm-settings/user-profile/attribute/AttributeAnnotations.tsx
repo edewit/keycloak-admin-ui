@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../realm-settings-section.css";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormMethods } from "react-hook-form";
 import {
   AnnotationForm,
   AnnotationsForm,
@@ -9,14 +9,16 @@ import { arrayToAnnotations } from "../../../components/annotation-form/annotati
 
 type AttributeAnnotationsProps = {
   annotations: Record<string, unknown>;
+  form: UseFormMethods;
 };
 
 export const AttributeAnnotations = ({
   annotations: defaultAnnotations,
+  form,
 }: AttributeAnnotationsProps) => {
   const [annotations, setAnnotations] =
     useState<Record<string, unknown>>(defaultAnnotations);
-  const form = useForm<AnnotationForm>({ mode: "onChange" });
+  form = useForm<AnnotationForm>({ mode: "onChange" });
 
   const save = async (annotationForm: AnnotationForm) => {
     const annotations = arrayToAnnotations(annotationForm.annotations!);

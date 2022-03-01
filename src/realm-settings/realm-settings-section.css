@@ -286,3 +286,8 @@ input#kc-scopes {
   color: #8d9195;
   margin-left: 25px;
 }
+
+.kc-attributes-validations {
+  max-width: 1024px;
+  margin-bottom: 52px;
+}

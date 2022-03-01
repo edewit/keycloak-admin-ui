@@ -83,63 +83,65 @@ export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
         />
       )}
       <DeleteConfirm />
-      <Flex>
-        <FlexItem align={{ default: "alignRight" }}>
-          <Button
-            id="addValidator"
-            onClick={() => toggleModal()}
-            variant="link"
-            className="kc-addValidator"
-            data-testid="addValidator"
-            icon={<PlusCircleIcon />}
-          >
-            {t("realm-settings:addValidator")}
-          </Button>
-        </FlexItem>
-      </Flex>
-      <Divider />
-      <TableComposable aria-label="validators-table">
-        <Thead>
-          <Tr>
-            <Th>{t("validatorColNames.colName")}</Th>
-            <Th>{t("validatorColNames.colConfig")}</Th>
-            <Th />
-          </Tr>
-        </Thead>
-        <Tbody>
-          {validatorForAttrName.length > 0 ? (
-            validatorForAttrName!.map((validator) => (
-              <Tr key={validator.name}>
-                <Td dataLabel={t("validatorColNames.colName")}>
-                  {validator.name}
-                </Td>
-                <Td dataLabel={t("validatorColNames.colConfig")}>
-                  {JSON.stringify(validator.config)}
-                </Td>
-                <Td>
-                  <Button
-                    key="validator"
-                    variant="link"
-                    data-testid="deleteValidator"
-                    onClick={() => {
-                      toggleDeleteDialog();
-                      setValidatorToDelete({
-                        name: validator.name,
-                      });
-                    }}
-                  >
-                    {t("common:delete")}
-                  </Button>
-                </Td>
-              </Tr>
-            ))
-          ) : (
-            <Text className="kc-emptyValidators" component={TextVariants.h6}>
-              {t("realm-settings:emptyValidators")}
-            </Text>
-          )}
-        </Tbody>
-      </TableComposable>
+      <div className="kc-attributes-validations">
+        <Flex>
+          <FlexItem align={{ default: "alignRight" }}>
+            <Button
+              id="addValidator"
+              onClick={() => toggleModal()}
+              variant="link"
+              className="kc-addValidator"
+              data-testid="addValidator"
+              icon={<PlusCircleIcon />}
+            >
+              {t("realm-settings:addValidator")}
+            </Button>
+          </FlexItem>
+        </Flex>
+        <Divider />
+        <TableComposable aria-label="validators-table">
+          <Thead>
+            <Tr>
+              <Th>{t("validatorColNames.colName")}</Th>
+              <Th>{t("validatorColNames.colConfig")}</Th>
+              <Th />
+            </Tr>
+          </Thead>
+          <Tbody>
+            {validatorForAttrName.length > 0 ? (
+              validatorForAttrName!.map((validator) => (
+                <Tr key={validator.name}>
+                  <Td dataLabel={t("validatorColNames.colName")}>
+                    {validator.name}
+                  </Td>
+                  <Td dataLabel={t("validatorColNames.colConfig")}>
+                    {JSON.stringify(validator.config)}
+                  </Td>
+                  <Td>
+                    <Button
+                      key="validator"
+                      variant="link"
+                      data-testid="deleteValidator"
+                      onClick={() => {
+                        toggleDeleteDialog();
+                        setValidatorToDelete({
+                          name: validator.name,
+                        });
+                      }}
+                    >
+                      {t("common:delete")}
+                    </Button>
+                  </Td>
+                </Tr>
+              ))
+            ) : (
+              <Text className="kc-emptyValidators" component={TextVariants.h6}>
+                {t("realm-settings:emptyValidators")}
+              </Text>
+            )}
+          </Tbody>
+        </TableComposable>
+      </div>
     </>
   );
 };
