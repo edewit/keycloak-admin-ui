@@ -381,6 +381,7 @@ export default {
     enabledWhen: "Enabled when",
     required: "Required",
     requiredFor: "Required for",
+    requiredWhen: "Required when",
     whoCanEdit: "Who can edit?",
     whoCanView: "Who can view?",
     user: "User",
