@@ -8,6 +8,7 @@ import {
   AnnotationType,
 } from "../annotation-input/AnnotationInput";
 import { FormGroup, Grid, GridItem } from "@patternfly/react-core";
+import "./annotation-form.css";
 
 export type AnnotationForm = {
   annotations?: KeyValueType[];
@@ -39,7 +40,7 @@ export const AnnotationsForm = ({
         fieldId="kc-annotations"
         className="kc-annotations-label"
       >
-        <Grid>
+        <Grid className="kc-annotations">
           <GridItem>
             <FormProvider {...form}>
               <AnnotationInput

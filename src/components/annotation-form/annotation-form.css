@@ -34,6 +34,10 @@
   width: 350px;
 }
 
+.kc-annotations {
+  width: 120%;
+}
+
 .kc-annotations-label {
   align-items: center;
 }
