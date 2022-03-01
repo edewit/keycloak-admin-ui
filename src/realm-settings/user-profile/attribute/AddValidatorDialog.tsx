@@ -92,7 +92,7 @@ export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
       title={t("addValidator")}
       isOpen
       onClose={props.toggleDialog}
-      width={"30%"}
+      width={"40%"}
     >
       <TableComposable aria-label="validators-table">
         <Thead>

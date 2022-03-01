@@ -13,6 +13,7 @@ import { toUserProfile } from "./routes/UserProfile";
 import "./realm-settings-section.css";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { UserProfileProvider } from "./user-profile/UserProfileContext";
+import { AttributeAnnotations } from "./user-profile/attribute/AttributeAnnotations";
 
 const CreateAttributeFormContent = ({
   save,
@@ -28,11 +29,6 @@ const CreateAttributeFormContent = ({
 
   return (
     <UserProfileProvider>
-      <ViewHeader
-        titleKey={t("createAttribute")}
-        subKey={t("createAttribute")}
-        className="kc-createAttributeTitle"
-      />
       <ScrollForm
         sections={[
           t("generalSettings"),
@@ -43,7 +39,8 @@ const CreateAttributeFormContent = ({
       >
         <AttributeGeneralSettings form={form} attributeGroupEdit={!!id} />
         <AttributePermission form={form} />
-        <AttributeValidations />
+        <AttributeValidations form={form} />
+        <AttributeAnnotations form={form} />
       </ScrollForm>
       <Form onSubmit={form.handleSubmit(save)}>
         <ActionGroup className="keycloak__form_actions">
@@ -71,6 +68,7 @@ const CreateAttributeFormContent = ({
 };
 
 export default function NewAttributeSettings() {
+  const { t } = useTranslation("realm-settings");
   const form = useForm<UserProfileConfig>({ mode: "onChange" });
 
   const save = async (profileConfig: UserProfileConfig) => {
@@ -79,10 +77,12 @@ export default function NewAttributeSettings() {
 
   return (
     <FormProvider {...form}>
-      <PageSection variant="light" className="pf-u-p-0">
-        <PageSection variant="light">
-          <CreateAttributeFormContent save={() => form.handleSubmit(save)()} />
-        </PageSection>
+      <ViewHeader
+        titleKey={t("createAttribute")}
+        subKey={t("createAttributeSubTitle")}
+      />
+      <PageSection variant="light">
+        <CreateAttributeFormContent save={() => form.handleSubmit(save)()} />
       </PageSection>
     </FormProvider>
   );

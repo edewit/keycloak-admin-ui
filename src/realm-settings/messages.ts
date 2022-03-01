@@ -401,6 +401,7 @@ export default {
     updatedUserProfileSuccess: "User Profile configuration has been saved",
     updatedUserProfileError: "User Profile configuration hasn't been saved",
     createAttribute: "Create attribute",
+    createAttributeSubTitle: "Create a new attribute",
     attributesDropdown: "Attributes dropdown",
     deleteAttributeConfirmTitle: "Delete attribute?",
     deleteAttributeConfirm:
@@ -411,6 +412,7 @@ export default {
     permission: "Permission",
     validations: "Validations",
     annotations: "Annotations",
+    addAnnotationText: "Add annotation",
     validateName:
       "Attribute configuration already exists with {{attributeName}}",
     eventType: "Event saved type",

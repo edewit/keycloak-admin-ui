@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  AlertVariant,
   Button,
   ButtonVariant,
   Divider,
@@ -10,13 +9,11 @@ import {
   TextVariants,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
-import { WizardSectionHeader } from "../../../components/wizard-section-header/WizardSectionHeader";
 import "../../realm-settings-section.css";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { AddValidatorDialog } from "../attribute/AddValidatorDialog";
 import { useUserProfile } from "../UserProfileContext";
-import { useHistory, useParams } from "react-router-dom";
-import { AttributeParams, toAttribute } from "../../routes/Attribute";
+import { useParams } from "react-router-dom";
 import {
   TableComposable,
   Tbody,
@@ -26,26 +23,18 @@ import {
   Tr,
 } from "@patternfly/react-table";
 import { useConfirmDialog } from "../../../components/confirm-dialog/ConfirmDialog";
-import { useAlerts } from "../../../components/alert/Alerts";
-import { useRealm } from "../../../context/realm-context/RealmContext";
+import type { AttributeParams } from "../../routes/Attribute";
 import "../../realm-settings-section.css";
+import type { UseFormMethods } from "react-hook-form";
 
 export type AttributeValidationsProps = {
-  showSectionHeading?: boolean;
-  showSectionDescription?: boolean;
+  form: UseFormMethods;
 };
 
-export const AttributeValidations = ({
-  showSectionHeading = false,
-  showSectionDescription = false,
-}: AttributeValidationsProps) => {
+export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
   const { config } = useUserProfile();
-  const { realm } = useRealm();
   const { attributeName } = useParams<AttributeParams>();
-  const { addAlert, addError } = useAlerts();
-  const history = useHistory();
   const { t } = useTranslation("realm-settings");
-  const { t: helpText } = useTranslation("realm-settings-help");
   const [addValidatorModalOpen, setAddValidatorModalOpen] = useState(false);
   const [validatorToDelete, setValidatorToDelete] =
     useState<{ name: string }>();
@@ -80,30 +69,12 @@ export const AttributeValidations = ({
     continueButtonLabel: "common:delete",
     continueButtonVariant: ButtonVariant.danger,
     onConfirm: async () => {
-      try {
-        // TODO
-        addAlert(t("validatorDeletedSuccess"), AlertVariant.success);
-        history.push(
-          toAttribute({
-            realm,
-            attributeName,
-          })
-        );
-      } catch (error) {
-        addError("realm-settings:validatorDeletedError", error);
-      }
+      console.log("TODO");
     },
   });
 
   return (
     <>
-      {showSectionHeading && (
-        <WizardSectionHeader
-          title={t("permission")}
-          description={helpText("attributePermissionDescription")}
-          showDescription={showSectionDescription}
-        />
-      )}
       {addValidatorModalOpen && (
         <AddValidatorDialog
           onConfirm={() => console.log("TODO")}
