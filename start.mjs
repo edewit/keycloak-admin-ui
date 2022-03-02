@@ -58,23 +58,24 @@ async function decompressKeycloak() {
 }
 
 const run = () => {
-  const addProc = spawn(path.join(serverPath, "bin", `kc${extension}`), [
-    "import",
-    "--file",
-    path.join(folder, "../realm.json"),
-  ]);
-
-  addProc.on("exit", () => {
-    const proc = spawn(path.join(serverPath, "bin", `kc${extension}`), [
+  const proc = spawn(
+    path.join(serverPath, "bin", `kc${extension}`),
+    [
       "start-dev",
       "--http-port=8180",
       "-Dkeycloak.profile.feature.admin2=enabled",
       "-Dkeycloak.profile.feature.declarative_user_profile=enabled",
       ...args,
-    ]);
-    proc.stdout.on("data", (data) => {
-      console.log(data.toString());
-    });
+    ],
+    {
+      env: {
+        KEYCLOAK_ADMIN: "admin",
+        KEYCLOAK_ADMIN_PASSWORD: "admin",
+      },
+    }
+  );
+  proc.stdout.on("data", (data) => {
+    console.log(data.toString());
   });
 };
 

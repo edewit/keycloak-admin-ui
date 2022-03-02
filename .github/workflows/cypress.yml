@@ -53,8 +53,7 @@ jobs:
       - name: Start Keycloak Server
         working-directory: ${{ env.KEYCLOAK_SERVER_BIN }}
         run: |
-          ./kc.sh import --file ../../../../../../${{ env.ADMIN_UI_PATH }}/realm.json
-          ./kc.sh start-dev -Dkeycloak.profile.feature.admin2=enabled -Dkeycloak.profile.feature.declarative_user_profile=enabled &
+          KEYCLOAK_ADMIN=admin KEYCLOAK_ADMIN_PASSWORD=admin ./kc.sh start-dev -Dkeycloak.profile.feature.admin2=enabled -Dkeycloak.profile.feature.declarative_user_profile=enabled &
 
       - name: Set up Node
         uses: actions/setup-node@v2
