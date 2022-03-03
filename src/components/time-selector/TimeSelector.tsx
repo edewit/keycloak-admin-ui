@@ -30,16 +30,14 @@ export type TimeSelectorProps = TextInputProps &
     className?: string;
   };
 
-export const getTimeUnit = (value: number) => {
-  const x = allTimes.reduce(
+export const getTimeUnit = (value: number) =>
+  allTimes.reduce(
     (v, time) =>
       value % time.multiplier === 0 && v.multiplier < time.multiplier
         ? time
         : v,
     allTimes[0]
   );
-  return x;
-};
 
 export const toHumanFormat = (value: number, locale: string) => {
   const timeUnit = getTimeUnit(value);
