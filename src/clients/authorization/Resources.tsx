@@ -173,6 +173,7 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
               <Th>{t("owner")}</Th>
               <Th>{t("uris")}</Th>
               <Th />
+              <Th />
             </Tr>
           </Thead>
           {resources.map((resource, rowIndex) => (
@@ -208,6 +209,22 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
                 <Td>
                   <UriRenderer row={resource} />
                 </Td>
+                <Td width={10}>
+                  <Button
+                    variant="link"
+                    onClick={() =>
+                      history.push(
+                        toNewPermission({
+                          realm,
+                          id: clientId,
+                          permissionType: "resource",
+                        })
+                      )
+                    }
+                  >
+                    {t("createPermission")}
+                  </Button>
+                </Td>
                 <Td
                   actions={{
                     items: [
@@ -218,19 +235,6 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
                           setPermission(await fetchPermissions(resource._id!));
                           toggleDeleteDialog();
                         },
-                      },
-                      {
-                        title: t("createPermission"),
-                        className: "pf-m-link",
-                        isOutsideDropdown: true,
-                        onClick: () =>
-                          history.push(
-                            toNewPermission({
-                              realm,
-                              id: clientId,
-                              permissionType: "resource",
-                            })
-                          ),
                       },
                     ],
                   }}
