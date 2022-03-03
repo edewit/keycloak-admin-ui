@@ -201,15 +201,16 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
                   <Td width={10}>
                     <Button
                       variant="link"
-                      onClick={() =>
-                        history.push(
-                          toNewPermission({
+                      component={(props) => (
+                        <Link
+                          {...props}
+                          to={toNewPermission({
                             realm,
                             id: clientId,
                             permissionType: "scope",
-                          })
-                        )
-                      }
+                          })}
+                        />
+                      )}
                     >
                       {t("createPermission")}
                     </Button>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -42,7 +42,6 @@ type ExpandableResourceRepresentation = ResourceRepresentation & {
 
 export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
   const { t } = useTranslation("clients");
-  const history = useHistory();
   const adminClient = useAdminClient();
   const { addAlert, addError } = useAlerts();
   const { realm } = useRealm();
@@ -212,15 +211,16 @@ export const AuthorizationResources = ({ clientId }: ResourcesProps) => {
                 <Td width={10}>
                   <Button
                     variant="link"
-                    onClick={() =>
-                      history.push(
-                        toNewPermission({
+                    component={(props) => (
+                      <Link
+                        {...props}
+                        to={toNewPermission({
                           realm,
                           id: clientId,
                           permissionType: "resource",
-                        })
-                      )
-                    }
+                        })}
+                      />
+                    )}
                   >
                     {t("createPermission")}
                   </Button>
