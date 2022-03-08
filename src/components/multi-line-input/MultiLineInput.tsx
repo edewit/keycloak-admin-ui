@@ -27,8 +27,8 @@ export const MultiLineInput = ({
   const { t } = useTranslation();
   const { register, watch, setValue } = useFormContext();
 
-  const value = watch(name, defaultValue || [""]);
-  const fields = value.length !== 0 ? value : [""];
+  const value = watch(name, defaultValue);
+  const fields = Array.isArray(value) && value.length !== 0 ? value : [""];
 
   const remove = (index: number) => {
     setValue(name, [...fields.slice(0, index), ...fields.slice(index + 1)]);

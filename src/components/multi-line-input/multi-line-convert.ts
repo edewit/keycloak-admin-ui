@@ -1,5 +1,5 @@
 export function stringToMultiline(value?: string): string[] {
-  return (value || "##").split("##");
+  return (value || "").split("##");
 }
 
 export function toStringValue(formValue: string[]): string {

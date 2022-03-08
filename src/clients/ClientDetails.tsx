@@ -254,7 +254,7 @@ export default function ClientDetails() {
       const values = form.getValues();
 
       if (values.attributes?.request.uris) {
-        values.attributes!["request.uris"] = toStringValue(
+        values.attributes["request.uris"] = toStringValue(
           values.attributes.request.uris
         );
       }
