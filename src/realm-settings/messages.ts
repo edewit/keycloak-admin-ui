@@ -406,6 +406,10 @@ export default {
     updatedUserProfileError: "User Profile configuration hasn't been saved",
     createAttribute: "Create attribute",
     createAttributeSubTitle: "Create a new attribute",
+    createAttributeSuccess:
+      "Success! User Profile configuration has been saved.",
+    createAttributeError:
+      "Error! User Profile configuration has not been saved.",
     attributesDropdown: "Attributes dropdown",
     deleteAttributeConfirmTitle: "Delete attribute?",
     deleteAttributeConfirm:

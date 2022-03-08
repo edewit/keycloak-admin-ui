@@ -19,7 +19,6 @@ import "../../realm-settings-section.css";
 
 export type AttributeGeneralSettingsProps = {
   form: UseFormMethods;
-  attributeGroupEdit?: boolean;
 };
 
 const ENABLED_REQUIRED_WHEN = ["Always", "Scopes are requested"] as const;
@@ -31,7 +30,6 @@ const REQUIRED_FOR = [
 
 export const AttributeGeneralSettings = ({
   form,
-  attributeGroupEdit = false,
 }: AttributeGeneralSettingsProps) => {
   const { t } = useTranslation("realm-settings");
   const adminClient = useAdminClient();
@@ -92,11 +90,11 @@ export const AttributeGeneralSettings = ({
         fieldId="kc-attribute-display-name"
       >
         <TextInput
-          isRequired
           type="text"
           id="kc-attribute-display-name"
           name="displayName"
           defaultValue=""
+          ref={form.register}
           data-testid="attribute-display-name"
         />
       </FormGroup>
@@ -116,7 +114,6 @@ export const AttributeGeneralSettings = ({
           control={form.control}
           render={({ onChange, value }) => (
             <Select
-              isDisabled={!!attributeGroupEdit}
               toggleId="kc-attributeGroup"
               onToggle={() =>
                 setIsAttributeGroupDropdownOpen(!isAttributeGroupDropdownOpen)
