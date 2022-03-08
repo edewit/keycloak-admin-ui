@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable prettier/prettier */
 import React, { useState } from "react";
 import {
@@ -50,6 +51,11 @@ export const AttributeGeneralSettings = ({
     },
     []
   );
+
+  const scopeNames = clientScopes?.map(clientScope => clientScope.name);
+  const formValues = form.getValues();
+  formValues.scopeEnabled = enabledWhenSelection === "Always" ? scopeNames : formValues.scopeEnabled;
+  formValues.scopeRequired = requiredWhenSelection === "Always" ? scopeNames : formValues.scopeRequired;
 
   return (
     <FormAccess role="manage-realm" isHorizontal>
@@ -167,7 +173,7 @@ export const AttributeGeneralSettings = ({
       </FormGroup>
       <FormGroup fieldId="kc-scope-enabled-when">
         <Controller
-          name="scope-enabled"
+          name="scopeEnabled"
           control={form.control}
           render={({
             onChange,
@@ -177,7 +183,7 @@ export const AttributeGeneralSettings = ({
             value: string[];
           }) => (
             <Select
-              name="scope-enabled"
+              name="scopeEnabled"
               data-testid="enabled-when-scope-field"
               variant={SelectVariant.typeaheadMulti}
               typeAheadAriaLabel="Select"
@@ -198,6 +204,7 @@ export const AttributeGeneralSettings = ({
                 } else {
                   changedValue = [option];
 				}
+				
                 onChange(changedValue);
               }}
               onClear={(selectedValues) => {
@@ -300,7 +307,7 @@ export const AttributeGeneralSettings = ({
       </FormGroup>
       <FormGroup fieldId="kc-scope-required-when">
         <Controller
-          name="scope-required"
+          name="scopeRequired"
           control={form.control}
           render={({
             onChange,
@@ -310,7 +317,7 @@ export const AttributeGeneralSettings = ({
             value: string[];
           }) => (
 			<Select
-			  name="scope-required"
+			  name="scopeRequired"
               data-testid="required-when-scope-field"
               variant={SelectVariant.typeaheadMulti}
               typeAheadAriaLabel="Select"

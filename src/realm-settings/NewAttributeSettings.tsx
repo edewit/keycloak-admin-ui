@@ -8,7 +8,7 @@ import {
 } from "@patternfly/react-core";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { ScrollForm } from "../components/scroll-form/ScrollForm";
 import { useRealm } from "../context/realm-context/RealmContext";
 import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
@@ -30,7 +30,6 @@ const CreateAttributeFormContent = ({
 }) => {
   const { t } = useTranslation("realm-settings");
   const form = useFormContext();
-  const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const { realm } = useRealm();
 
@@ -44,7 +43,7 @@ const CreateAttributeFormContent = ({
           t("annotations"),
         ]}
       >
-        <AttributeGeneralSettings form={form} attributeGroupEdit={!!id} />
+        <AttributeGeneralSettings form={form} />
         <AttributePermission form={form} />
         <AttributeValidations form={form} />
         <AttributeAnnotations form={form} />
