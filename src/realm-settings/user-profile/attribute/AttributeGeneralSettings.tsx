@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState } from "react";
 import {
   Divider,
@@ -33,14 +34,14 @@ export const AttributeGeneralSettings = ({
 }: AttributeGeneralSettingsProps) => {
   const { t } = useTranslation("realm-settings");
   const adminClient = useAdminClient();
-  const [selectOpen, setSelectOpen] = useState(false);
   const [clientScopes, setClientScopes] =
     useState<ClientScopeRepresentation[]>();
-  const [enabledWhenSelection, setEnabledWhenSelection] = useState("Always");
-  const [requiredWhenSelection, setRequiredWhenSelection] = useState("Always");
-
+  const [selectEnabledWhenOpen, setSelectEnabledWhenOpen] = useState(false);
+  const [selectRequiredForOpen, setSelectRequiredForOpen] = useState(false);
   const [isAttributeGroupDropdownOpen, setIsAttributeGroupDropdownOpen] =
     useState(false);
+  const [enabledWhenSelection, setEnabledWhenSelection] = useState("Always");
+  const [requiredWhenSelection, setRequiredWhenSelection] = useState("Always");
 
   useFetch(
     () => adminClient.clientScopes.find(),
@@ -164,38 +165,46 @@ export const AttributeGeneralSettings = ({
           )}
         />
       </FormGroup>
-      <FormGroup fieldId="kc-scope">
+      <FormGroup fieldId="kc-scope-enabled-when">
         <Controller
-          name="scope"
+          name="scope-enabled"
           control={form.control}
           render={({
             onChange,
             value,
           }: {
-            onChange: (newValue: ClientScopeRepresentation[]) => void;
-            value: ClientScopeRepresentation[];
+            onChange: (newValue: string[]) => void;
+            value: string[];
           }) => (
             <Select
-              name="scope"
-              data-testid="scopeFld"
+              name="scope-enabled"
+              data-testid="enabled-when-scope-field"
               variant={SelectVariant.typeaheadMulti}
               typeAheadAriaLabel="Select"
-              onToggle={(isOpen) => setSelectOpen(isOpen)}
+              chipGroupProps={{
+                numChips: 3,
+                expandedText: t("common:hide"),
+                collapsedText: t("common:showRemaining"),
+              }}
+              onToggle={(isOpen) => setSelectEnabledWhenOpen(isOpen)}
               selections={value}
               onSelect={(_, selectedValue) => {
-                const option =
-                  selectedValue.toString() as ClientScopeRepresentation;
-                const changedValue = value.includes(option)
-                  ? value.filter((item) => item !== option)
-                  : [...value, option];
-
+                const option = selectedValue.toString();
+                let changedValue = [""];
+				if (value) {
+                  changedValue = value.includes(option)
+                    ? value.filter((item) => item !== option)
+                    : [...value, option];
+                } else {
+                  changedValue = [option];
+				}
                 onChange(changedValue);
               }}
-              onClear={(clientScope) => {
-                clientScope.stopPropagation();
+              onClear={(selectedValues) => {
+                selectedValues.stopPropagation();
                 onChange([]);
               }}
-              isOpen={selectOpen}
+              isOpen={selectEnabledWhenOpen}
               isDisabled={enabledWhenSelection === "Always"}
               aria-labelledby={"scope"}
             >
@@ -289,45 +298,53 @@ export const AttributeGeneralSettings = ({
           )}
         />
       </FormGroup>
-      <FormGroup fieldId="kc-scope">
+      <FormGroup fieldId="kc-scope-required-when">
         <Controller
-          name="scope"
+          name="scope-required"
           control={form.control}
           render={({
             onChange,
             value,
           }: {
-            onChange: (newValue: ClientScopeRepresentation[]) => void;
-            value: ClientScopeRepresentation[];
+            onChange: (newValue: string[]) => void;
+            value: string[];
           }) => (
-            <Select
-              name="scope"
-              data-testid="scopeFld"
+			<Select
+			  name="scope-required"
+              data-testid="required-when-scope-field"
               variant={SelectVariant.typeaheadMulti}
               typeAheadAriaLabel="Select"
-              onToggle={(isOpen) => setSelectOpen(isOpen)}
+              chipGroupProps={{
+                numChips: 3,
+                expandedText: t("common:hide"),
+                collapsedText: t("common:showRemaining"),
+              }}
+              onToggle={(isOpen) => setSelectRequiredForOpen(isOpen)}
               selections={value}
               onSelect={(_, selectedValue) => {
-                const option =
-                  selectedValue.toString() as ClientScopeRepresentation;
-                const changedValue = value.includes(option)
-                  ? value.filter((item) => item !== option)
-                  : [...value, option];
-
-                onChange(changedValue);
-              }}
-              onClear={(clientScope) => {
-                clientScope.stopPropagation();
-                onChange([]);
-              }}
-              isOpen={selectOpen}
-              isDisabled={requiredWhenSelection === "Always"}
-              aria-labelledby={"scope"}
-            >
-              {clientScopes?.map((option) => (
-                <SelectOption key={option.name} value={option.name} />
-              ))}
-            </Select>
+                const option = selectedValue.toString();
+                let changedValue = [""];
+                if (value) {
+	              changedValue = value.includes(option)
+	              ? value.filter((item) => item !== option)
+	              : [...value, option];
+                } else {
+	            changedValue = [option];
+              }
+              onChange(changedValue);
+            }}
+            onClear={(selectedValues) => {
+              selectedValues.stopPropagation();
+              onChange([]);
+            }}
+            isOpen={selectRequiredForOpen}
+            isDisabled={requiredWhenSelection === "Always"}
+            aria-labelledby={"scope"}
+          > 
+            {clientScopes?.map((option) => (
+              <SelectOption key={option.name} value={option.name} />
+            ))}
+          </Select>
           )}
         />
       </FormGroup>
