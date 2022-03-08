@@ -36,6 +36,8 @@ export const AttributeGeneralSettings = ({
   const [selectOpen, setSelectOpen] = useState(false);
   const [clientScopes, setClientScopes] =
     useState<ClientScopeRepresentation[]>();
+  const [enabledWhenSelection, setEnabledWhenSelection] = useState("Always");
+  const [requiredWhenSelection, setRequiredWhenSelection] = useState("Always");
 
   const [isAttributeGroupDropdownOpen, setIsAttributeGroupDropdownOpen] =
     useState(false);
@@ -150,7 +152,10 @@ export const AttributeGeneralSettings = ({
                   data-testid={option}
                   isChecked={value === option}
                   name="enabledWhen"
-                  onChange={() => onChange(option)}
+                  onChange={() => {
+                    onChange(option);
+                    setEnabledWhenSelection(option);
+                  }}
                   label={option}
                   className="pf-u-mb-md"
                 />
@@ -191,6 +196,7 @@ export const AttributeGeneralSettings = ({
                 onChange([]);
               }}
               isOpen={selectOpen}
+              isDisabled={enabledWhenSelection === "Always"}
               aria-labelledby={"scope"}
             >
               {clientScopes?.map((option) => (
@@ -271,7 +277,10 @@ export const AttributeGeneralSettings = ({
                   data-testid={option}
                   isChecked={value === option}
                   name="requiredWhen"
-                  onChange={() => onChange(option)}
+                  onChange={() => {
+                    onChange(option);
+                    setRequiredWhenSelection(option);
+                  }}
                   label={option}
                   className="pf-u-mb-md"
                 />
@@ -312,6 +321,7 @@ export const AttributeGeneralSettings = ({
                 onChange([]);
               }}
               isOpen={selectOpen}
+              isDisabled={requiredWhenSelection === "Always"}
               aria-labelledby={"scope"}
             >
               {clientScopes?.map((option) => (
