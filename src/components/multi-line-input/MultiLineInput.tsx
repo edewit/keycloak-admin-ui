@@ -27,11 +27,11 @@ export const MultiLineInput = ({
   const { t } = useTranslation();
   const { register, watch, setValue } = useFormContext();
 
-  const fields = watch(name, defaultValue || []);
+  const value = watch(name, defaultValue || [""]);
+  const fields = value.length !== 0 ? value : [""];
 
-  const remove = (id: number) => {
-    fields.splice(id, 1);
-    setValue(name, [...fields]);
+  const remove = (index: number) => {
+    setValue(name, [...fields.slice(0, index), ...fields.slice(index + 1)]);
   };
 
   const append = () => {
@@ -48,8 +48,11 @@ export const MultiLineInput = ({
             <TextInput
               id={name + index}
               onChange={(value) => {
-                fields[index] = value;
-                setValue(name, [...fields]);
+                setValue(name, [
+                  ...fields.slice(0, index),
+                  value,
+                  ...fields.slice(index + 1),
+                ]);
               }}
               name={`${name}[${index}]`}
               value={value}
