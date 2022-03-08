@@ -18,10 +18,16 @@ export default {
       "This enables standard OpenID Connect redirect based authentication with authorization code. In terms of OpenID Connect or OAuth2 specifications, this enables support of 'Authorization Code Flow' for this client.",
     implicitFlow:
       "This enables support for OpenID Connect redirect based authentication without authorization code. In terms of OpenID Connect or OAuth2 specifications, this enables support of 'Implicit Flow' for this client.",
+    oauthDeviceAuthorizationGrant:
+      "This enables support for OAuth 2.0 Device Authorization Grant, which means that client is an application on device that has limited input capabilities or lack a suitable browser.",
+    oidcCibaGrant:
+      "This enables support for OIDC CIBA Grant, which means that the user is authenticated via some external authentication device instead of the user's browser.",
     rootURL: "Root URL appended to relative URLs",
     validRedirectURIs:
       "Valid URI pattern a browser can redirect to after a successful login or logout. Simple wildcards are allowed such as 'http://example.com/*'. Relative path can be specified too such as /my/relative/path/*. Relative paths are relative to the client root URL, or if none is specified the auth server root URL is used. For SAML, you must set valid URI patterns if you are relying on the consumer service URL embedded with the login request.",
     nameIdFormat: "The name ID format to use for the subject.",
+    alwaysDisplayInConsole:
+      "Always list this client in the Account Console, even if the user does not have an active session.",
     forceNameIdFormat:
       "Ignore requested NameID subject format and use admin console configured one.",
     forcePostBinding: "Always use POST binding for responses.",
@@ -112,6 +118,11 @@ export default {
       "This section is used to configure advanced settings of this client related to OpenID Connect protocol.",
     fineGrainSamlEndpointConfig:
       "This section to configure exact URLs for Assertion Consumer and Single Logout Service.",
+    logoUrl: "URL that references a logo for the Client application",
+    policyUrl:
+      "URL that the Relying Party Client provides to the End-User to read about the how the profile data will be used",
+    termsOfServiceUrl:
+      "URL that the Relying Party Client provides to the End-User to read about the Relying Party's terms of service",
     accessTokenSignatureAlgorithm:
       "JWA algorithm used for signing access tokens.",
     idTokenSignatureAlgorithm: "JWA algorithm used for signing ID tokens.",
@@ -131,6 +142,12 @@ export default {
       "JWE algorithm, which client needs to use when encrypting the content of the OIDC request object specified by 'request' or 'request_uri' parameters. If set to 'any', any algorithm is allowed.",
     validRequestURIs:
       "List of valid URIs, which can be used as values of 'request_uri' parameter during OpenID Connect authentication request. There is support for the same capabilities like for Valid Redirect URIs. For example wildcards or relative paths.",
+    idpInitiatedSsoUrlName:
+      "URL fragment name to reference client when you want to do IDP Initiated SSO. Leaving this empty will disable IDP Initiated SSO. The URL you will reference from your browser will be: {server-root}/realms/{realm}/protocol/saml/clients/{client-url-name}",
+    idpInitiatedSsoRelayState:
+      "Relay state you want to send with SAML request when you want to do IDP Initiated SSO.",
+    masterSamlProcessingUrl:
+      "If configured, this URL will be used for every binding to both the SP's Assertion Consumer and Single Logout Services. This can be individually overridden for each binding and service in the Fine Grain SAML Endpoint Configuration.",
     authorizationSignedResponseAlg:
       "JWA algorithm used for signing authorization response tokens when the response mode is jwt.",
     authorizationEncryptedResponseAlg:
@@ -169,6 +186,10 @@ export default {
       "SAML ARTIFACT Binding URL for the client's single logout service. You can leave this blank if you are using a different binding.",
     artifactBindingUrl:
       "URL to send the HTTP ARTIFACT messages to. You can leave this blank if you are using a different binding. This value should be set when forcing ARTIFACT binding together with IdP initiated login.",
+    frontchannelLogout:
+      "When true, logout requires a browser redirect to client. When false, server performs a background invocation for logout.",
+    frontchannelLogoutUrl:
+      "URL that will cause the client to log itself out when a logout request is sent to this realm (via end_session_endpoint). If not provided, it defaults to the base url.",
     backchannelLogoutUrl:
       "URL that will cause the client to log itself out when a logout request is sent to this realm (via end_session_endpoint). If omitted, no logout request will be sent to the client is this case.",
     backchannelLogoutSessionRequired:
@@ -234,6 +255,8 @@ export default {
     applyPolicy:
       "Specifies all the policies that must be applied to the scopes defined by this policy or permission.",
     policyClient: "Specifies which client(s) are allowed by this policy.",
+    groupsClaim:
+      "If defined, the policy will fetch user's groups from the given claim within an access token or ID token representing the identity asking permissions. If not defined, user's groups are obtained from your realm configuration.",
     policyGroups: "Specifies which user(s) are allowed by this policy.",
     targetClaim: "Specifies the target claim which the policy will fetch.",
     regexPattern: "Specifies the regex pattern.",

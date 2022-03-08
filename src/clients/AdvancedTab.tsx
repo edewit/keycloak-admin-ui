@@ -50,6 +50,7 @@ export const AdvancedTab = ({
   save,
   client: {
     id,
+    publicClient,
     registeredNodes,
     attributes,
     protocol,
@@ -175,200 +176,210 @@ export const AdvancedTab = ({
   if (protocol === openIdConnect) {
     sections.splice(3, 0, t("openIdConnectCompatibilityModes"));
   }
+  if (!publicClient) {
+    sections.splice(1, 1);
+  }
+  if (protocol !== openIdConnect) {
+    sections.splice(0, 1);
+  }
 
   return (
     <PageSection variant="light" className="pf-u-py-0">
       <ScrollForm sections={sections} borders>
-        <>
-          <Text className="pf-u-pb-lg">
-            <Trans i18nKey="clients-help:notBeforeIntro">
-              In order to successfully push setup url on
-              <Link to={toClient({ realm, clientId: id!, tab: "settings" })}>
-                {t("settings")}
-              </Link>
-              tab
-            </Trans>
-          </Text>
-          <FormAccess role="manage-clients" isHorizontal>
-            <FormGroup
-              label={t("notBefore")}
-              fieldId="kc-not-before"
-              labelIcon={
-                <HelpItem
-                  helpText="clients-help:notBefore"
-                  fieldLabelId="clients:notBefore"
-                />
-              }
-            >
-              <InputGroup>
-                <TextInput
-                  type="text"
-                  id="kc-not-before"
-                  name="notBefore"
-                  isReadOnly
-                  value={formatDate()}
-                />
-                <Button
-                  id="setToNow"
-                  variant="control"
-                  onClick={() => {
-                    setNotBefore(moment.now() / 1000, "notBeforeSetToNow");
-                  }}
-                >
-                  {t("setToNow")}
-                </Button>
-                <Button
-                  id="clear"
-                  variant="control"
-                  onClick={() => {
-                    setNotBefore(0, "notBeforeNowClear");
-                  }}
-                >
-                  {t("clear")}
-                </Button>
-              </InputGroup>
-            </FormGroup>
-            <ActionGroup>
-              {!adminUrl && (
-                <Tooltip
-                  reference={pushRevocationButtonRef}
-                  content={t("clients-help:notBeforeTooltip")}
-                />
-              )}
-              <Button
-                id="push"
-                variant="secondary"
-                onClick={push}
-                isAriaDisabled={!adminUrl}
-                ref={pushRevocationButtonRef}
-              >
-                {t("push")}
-              </Button>
-            </ActionGroup>
-          </FormAccess>
-        </>
-        <>
-          <FormAccess role="manage-clients" isHorizontal>
-            <FormGroup
-              label={t("nodeReRegistrationTimeout")}
-              fieldId="kc-node-reregistration-timeout"
-              labelIcon={
-                <HelpItem
-                  helpText="clients-help:nodeReRegistrationTimeout"
-                  fieldLabelId="clients:nodeReRegistrationTimeout"
-                />
-              }
-            >
-              <Split hasGutter>
-                <SplitItem>
-                  <Controller
-                    name="nodeReRegistrationTimeout"
-                    defaultValue=""
-                    control={control}
-                    render={({ onChange, value }) => (
-                      <TimeSelector value={value} onChange={onChange} />
-                    )}
-                  />
-                </SplitItem>
-                <SplitItem>
-                  <Button
-                    variant={ButtonVariant.secondary}
-                    onClick={() => save()}
-                  >
-                    {t("common:save")}
-                  </Button>
-                </SplitItem>
-              </Split>
-            </FormGroup>
-          </FormAccess>
+        {protocol === openIdConnect && (
           <>
-            <DeleteNodeConfirm />
-            <AddHostDialog
-              clientId={id!}
-              isOpen={addNodeOpen}
-              onAdded={(node) => {
-                nodes[node] = moment.now() / 1000;
-                refresh();
-              }}
-              onClose={() => setAddNodeOpen(false)}
-            />
-            <ExpandableSection
-              toggleText={t("registeredClusterNodes")}
-              onToggle={setExpanded}
-              isExpanded={expanded}
-            >
-              <KeycloakDataTable
-                key={key}
-                ariaLabelKey="registeredClusterNodes"
-                loader={() =>
-                  Promise.resolve(
-                    Object.entries(nodes || {}).map((entry) => {
-                      return { host: entry[0], registration: entry[1] };
-                    })
-                  )
-                }
-                toolbarItem={
-                  <>
-                    <ToolbarItem>
-                      <Button
-                        id="testClusterAvailability"
-                        onClick={testCluster}
-                        variant={ButtonVariant.secondary}
-                        isDisabled={Object.keys(nodes).length === 0}
-                      >
-                        {t("testClusterAvailability")}
-                      </Button>
-                    </ToolbarItem>
-                    <ToolbarItem>
-                      <Button
-                        id="registerNodeManually"
-                        onClick={() => setAddNodeOpen(true)}
-                        variant={ButtonVariant.tertiary}
-                      >
-                        {t("registerNodeManually")}
-                      </Button>
-                    </ToolbarItem>
-                  </>
-                }
-                actions={[
-                  {
-                    title: t("common:delete"),
-                    onRowClick: (node) => {
-                      setSelectedNode(node.host);
-                      toggleDeleteNodeConfirm();
-                    },
-                  },
-                ]}
-                columns={[
-                  {
-                    name: "host",
-                    displayKey: "clients:nodeHost",
-                  },
-                  {
-                    name: "registration",
-                    displayKey: "clients:lastRegistration",
-                    cellFormatters: [
-                      (value) =>
-                        value
-                          ? moment(parseInt(value.toString()) * 1000).format(
-                              "LLL"
-                            )
-                          : "",
-                    ],
-                  },
-                ]}
-                emptyState={
-                  <ListEmptyState
-                    message={t("noNodes")}
-                    instructions={t("noNodesInstructions")}
-                    primaryActionText={t("registerNodeManually")}
-                    onPrimaryAction={() => setAddNodeOpen(true)}
+            <Text className="pf-u-pb-lg">
+              <Trans i18nKey="clients-help:notBeforeIntro">
+                In order to successfully push setup url on
+                <Link to={toClient({ realm, clientId: id!, tab: "settings" })}>
+                  {t("settings")}
+                </Link>
+                tab
+              </Trans>
+            </Text>
+            <FormAccess role="manage-clients" isHorizontal>
+              <FormGroup
+                label={t("notBefore")}
+                fieldId="kc-not-before"
+                labelIcon={
+                  <HelpItem
+                    helpText="clients-help:notBefore"
+                    fieldLabelId="clients:notBefore"
                   />
                 }
-              />
-            </ExpandableSection>
+              >
+                <InputGroup>
+                  <TextInput
+                    type="text"
+                    id="kc-not-before"
+                    name="notBefore"
+                    isReadOnly
+                    value={formatDate()}
+                  />
+                  <Button
+                    id="setToNow"
+                    variant="control"
+                    onClick={() => {
+                      setNotBefore(moment.now() / 1000, "notBeforeSetToNow");
+                    }}
+                  >
+                    {t("setToNow")}
+                  </Button>
+                  <Button
+                    id="clear"
+                    variant="control"
+                    onClick={() => {
+                      setNotBefore(0, "notBeforeNowClear");
+                    }}
+                  >
+                    {t("clear")}
+                  </Button>
+                </InputGroup>
+              </FormGroup>
+              <ActionGroup>
+                {!adminUrl && (
+                  <Tooltip
+                    reference={pushRevocationButtonRef}
+                    content={t("clients-help:notBeforeTooltip")}
+                  />
+                )}
+                <Button
+                  id="push"
+                  variant="secondary"
+                  onClick={push}
+                  isAriaDisabled={!adminUrl}
+                  ref={pushRevocationButtonRef}
+                >
+                  {t("push")}
+                </Button>
+              </ActionGroup>
+            </FormAccess>
           </>
-        </>
+        )}
+        {publicClient && (
+          <>
+            <FormAccess role="manage-clients" isHorizontal>
+              <FormGroup
+                label={t("nodeReRegistrationTimeout")}
+                fieldId="kc-node-reregistration-timeout"
+                labelIcon={
+                  <HelpItem
+                    helpText="clients-help:nodeReRegistrationTimeout"
+                    fieldLabelId="clients:nodeReRegistrationTimeout"
+                  />
+                }
+              >
+                <Split hasGutter>
+                  <SplitItem>
+                    <Controller
+                      name="nodeReRegistrationTimeout"
+                      defaultValue=""
+                      control={control}
+                      render={({ onChange, value }) => (
+                        <TimeSelector value={value} onChange={onChange} />
+                      )}
+                    />
+                  </SplitItem>
+                  <SplitItem>
+                    <Button
+                      variant={ButtonVariant.secondary}
+                      onClick={() => save()}
+                    >
+                      {t("common:save")}
+                    </Button>
+                  </SplitItem>
+                </Split>
+              </FormGroup>
+            </FormAccess>
+            <>
+              <DeleteNodeConfirm />
+              <AddHostDialog
+                clientId={id!}
+                isOpen={addNodeOpen}
+                onAdded={(node) => {
+                  nodes[node] = moment.now() / 1000;
+                  refresh();
+                }}
+                onClose={() => setAddNodeOpen(false)}
+              />
+              <ExpandableSection
+                toggleText={t("registeredClusterNodes")}
+                onToggle={setExpanded}
+                isExpanded={expanded}
+              >
+                <KeycloakDataTable
+                  key={key}
+                  ariaLabelKey="registeredClusterNodes"
+                  loader={() =>
+                    Promise.resolve(
+                      Object.entries(nodes || {}).map((entry) => {
+                        return { host: entry[0], registration: entry[1] };
+                      })
+                    )
+                  }
+                  toolbarItem={
+                    <>
+                      <ToolbarItem>
+                        <Button
+                          id="testClusterAvailability"
+                          onClick={testCluster}
+                          variant={ButtonVariant.secondary}
+                          isDisabled={Object.keys(nodes).length === 0}
+                        >
+                          {t("testClusterAvailability")}
+                        </Button>
+                      </ToolbarItem>
+                      <ToolbarItem>
+                        <Button
+                          id="registerNodeManually"
+                          onClick={() => setAddNodeOpen(true)}
+                          variant={ButtonVariant.tertiary}
+                        >
+                          {t("registerNodeManually")}
+                        </Button>
+                      </ToolbarItem>
+                    </>
+                  }
+                  actions={[
+                    {
+                      title: t("common:delete"),
+                      onRowClick: (node) => {
+                        setSelectedNode(node.host);
+                        toggleDeleteNodeConfirm();
+                      },
+                    },
+                  ]}
+                  columns={[
+                    {
+                      name: "host",
+                      displayKey: "clients:nodeHost",
+                    },
+                    {
+                      name: "registration",
+                      displayKey: "clients:lastRegistration",
+                      cellFormatters: [
+                        (value) =>
+                          value
+                            ? moment(parseInt(value.toString()) * 1000).format(
+                                "LLL"
+                              )
+                            : "",
+                      ],
+                    },
+                  ]}
+                  emptyState={
+                    <ListEmptyState
+                      message={t("noNodes")}
+                      instructions={t("noNodesInstructions")}
+                      primaryActionText={t("registerNodeManually")}
+                      onPrimaryAction={() => setAddNodeOpen(true)}
+                    />
+                  }
+                />
+              </ExpandableSection>
+            </>
+          </>
+        )}
         <>
           {protocol === openIdConnect && (
             <>
@@ -376,7 +387,6 @@ export const AdvancedTab = ({
                 {t("clients-help:fineGrainOpenIdConnectConfiguration")}
               </Text>
               <FineGrainOpenIdConnect
-                control={control}
                 save={() => save()}
                 reset={() =>
                   convertToFormValues(attributes, (key, value) =>

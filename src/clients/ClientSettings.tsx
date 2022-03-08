@@ -25,6 +25,8 @@ import { SaveReset } from "./advanced/SaveReset";
 import { SamlConfig } from "./add/SamlConfig";
 import { SamlSignature } from "./add/SamlSignature";
 import type { ClientForm } from "./ClientDetails";
+import environment from "../environment";
+import { useRealm } from "../context/realm-context/RealmContext";
 
 type ClientSettingsProps = {
   client: ClientRepresentation;
@@ -39,6 +41,7 @@ export const ClientSettings = ({
 }: ClientSettingsProps) => {
   const { register, control, watch, errors } = useFormContext<ClientForm>();
   const { t } = useTranslation("clients");
+  const { realm } = useRealm();
 
   const [loginThemeOpen, setLoginThemeOpen] = useState(false);
   const loginThemes = useServerInfo().themes!["login"];
@@ -47,6 +50,10 @@ export const ClientSettings = ({
     "attributes.display.on.consent.screen"
   );
   const protocol = watch("protocol");
+  const frontchannelLogout = watch("frontchannelLogout");
+  const idpInitiatedSsoUrlName: string = watch(
+    "attributes.saml_idp_initiated_sso_url_name"
+  );
 
   const sections = useMemo(() => {
     let result = ["generalSettings"];
@@ -68,7 +75,7 @@ export const ClientSettings = ({
       sections={sections.map((section) => t(section))}
     >
       <Form isHorizontal>
-        <ClientDescription />
+        <ClientDescription protocol={client.protocol} />
       </Form>
       {protocol === "saml" ? (
         <SamlConfig />
@@ -97,22 +104,6 @@ export const ClientSettings = ({
               />
             </FormGroup>
             <FormGroup
-              label={t("validRedirectUri")}
-              fieldId="kc-redirect"
-              labelIcon={
-                <HelpItem
-                  helpText="clients-help:validRedirectURIs"
-                  fieldLabelId="clients:validRedirectUri"
-                />
-              }
-            >
-              <MultiLineInput
-                name="redirectUris"
-                aria-label={t("validRedirectUri")}
-                addButtonLabel="clients:addRedirectUri"
-              />
-            </FormGroup>
-            <FormGroup
               label={t("homeURL")}
               fieldId="kc-home-url"
               labelIcon={
@@ -130,40 +121,121 @@ export const ClientSettings = ({
               />
             </FormGroup>
             <FormGroup
-              label={t("webOrigins")}
-              fieldId="kc-web-origins"
+              label={t("validRedirectUri")}
+              fieldId="kc-redirect"
               labelIcon={
                 <HelpItem
-                  helpText="clients-help:webOrigins"
-                  fieldLabelId="clients:webOrigins"
+                  helpText="clients-help:validRedirectURIs"
+                  fieldLabelId="clients:validRedirectUri"
                 />
               }
             >
               <MultiLineInput
-                name="webOrigins"
-                aria-label={t("webOrigins")}
-                addButtonLabel="clients:addWebOrigins"
+                name="redirectUris"
+                aria-label={t("validRedirectUri")}
+                addButtonLabel="clients:addRedirectUri"
               />
             </FormGroup>
+            {protocol === "saml" && (
+              <>
+                <FormGroup
+                  label={t("idpInitiatedSsoUrlName")}
+                  fieldId="idpInitiatedSsoUrlName"
+                  labelIcon={
+                    <HelpItem
+                      helpText="clients-help:idpInitiatedSsoUrlName"
+                      fieldLabelId="clients:idpInitiatedSsoUrlName"
+                    />
+                  }
+                  helperText={
+                    idpInitiatedSsoUrlName !== "" &&
+                    t("idpInitiatedSsoUrlNameHelp", {
+                      url: `${environment.authServerUrl}/realms/${realm}/protocol/saml/clients/${idpInitiatedSsoUrlName}`,
+                    })
+                  }
+                >
+                  <TextInput
+                    type="text"
+                    id="idpInitiatedSsoUrlName"
+                    name="attributes.saml_idp_initiated_sso_url_name"
+                    ref={register}
+                  />
+                </FormGroup>
+                <FormGroup
+                  label={t("idpInitiatedSsoRelayState")}
+                  fieldId="idpInitiatedSsoRelayState"
+                  labelIcon={
+                    <HelpItem
+                      helpText="clients-help:idpInitiatedSsoRelayState"
+                      fieldLabelId="clients:idpInitiatedSsoRelayState"
+                    />
+                  }
+                >
+                  <TextInput
+                    type="text"
+                    id="idpInitiatedSsoRelayState"
+                    name="attributes.saml_idp_initiated_sso_relay_state"
+                    ref={register}
+                  />
+                </FormGroup>
+                <FormGroup
+                  label={t("masterSamlProcessingUrl")}
+                  fieldId="masterSamlProcessingUrl"
+                  labelIcon={
+                    <HelpItem
+                      helpText="clients-help:masterSamlProcessingUrl"
+                      fieldLabelId="clients:masterSamlProcessingUrl"
+                    />
+                  }
+                >
+                  <TextInput
+                    type="text"
+                    id="masterSamlProcessingUrl"
+                    name="adminUrl"
+                    ref={register}
+                  />
+                </FormGroup>
+              </>
+            )}
+            {protocol !== "saml" && (
+              <FormGroup
+                label={t("webOrigins")}
+                fieldId="kc-web-origins"
+                labelIcon={
+                  <HelpItem
+                    helpText="clients-help:webOrigins"
+                    fieldLabelId="clients:webOrigins"
+                  />
+                }
+              >
+                <MultiLineInput
+                  name="webOrigins"
+                  aria-label={t("webOrigins")}
+                  addButtonLabel="clients:addWebOrigins"
+                />
+              </FormGroup>
+            )}
           </>
         )}
-        <FormGroup
-          label={t("adminURL")}
-          fieldId="kc-admin-url"
-          labelIcon={
-            <HelpItem
-              helpText="clients-help:adminURL"
-              fieldLabelId="clients:adminURL"
+        {protocol !== "saml" && (
+          <FormGroup
+            label={t("adminURL")}
+            fieldId="kc-admin-url"
+            labelIcon={
+              <HelpItem
+                helpText="clients-help:adminURL"
+                fieldLabelId="clients:adminURL"
+              />
+            }
+          >
+            <TextInput
+              type="text"
+              id="kc-admin-url"
+              name="adminUrl"
+              ref={register}
             />
-          }
-        >
-          <TextInput
-            type="text"
-            id="kc-admin-url"
-            name="adminUrl"
-            ref={register}
-          />
-        </FormGroup>
+          </FormGroup>
+        )}
         {client.bearerOnly && (
           <SaveReset
             className="keycloak__form_actions"
@@ -289,6 +361,75 @@ export const ClientSettings = ({
         </FormGroup>
       </FormAccess>
       <FormAccess isHorizontal role="manage-clients">
+        {protocol === "openid-connect" && (
+          <>
+            <FormGroup
+              label={t("frontchannelLogout")}
+              labelIcon={
+                <HelpItem
+                  helpText="clients-help:frontchannelLogout"
+                  fieldLabelId="clients:frontchannelLogout"
+                />
+              }
+              fieldId="frontchannelLogout"
+              hasNoPaddingTop
+            >
+              <Controller
+                name="frontchannelLogout"
+                defaultValue={true}
+                control={control}
+                render={({ onChange, value }) => (
+                  <Switch
+                    id="frontchannelLogout"
+                    label={t("common:on")}
+                    labelOff={t("common:off")}
+                    isChecked={value.toString() === "true"}
+                    onChange={(value) => onChange(value.toString())}
+                  />
+                )}
+              />
+            </FormGroup>
+            {frontchannelLogout?.toString() === "true" && (
+              <FormGroup
+                label={t("frontchannelLogoutUrl")}
+                fieldId="frontchannelLogoutUrl"
+                labelIcon={
+                  <HelpItem
+                    helpText="clients-help:frontchannelLogoutUrl"
+                    fieldLabelId="clients:frontchannelLogoutUrl"
+                  />
+                }
+                helperTextInvalid={
+                  errors.attributes?.frontchannel?.logout?.url?.message
+                }
+                validated={
+                  errors.attributes?.frontchannel?.logout?.url?.message
+                    ? ValidatedOptions.error
+                    : ValidatedOptions.default
+                }
+              >
+                <TextInput
+                  type="text"
+                  id="frontchannelLogoutUrl"
+                  name="attributes.frontchannel.logout.url"
+                  ref={register({
+                    validate: (uri) =>
+                      ((uri.startsWith("https://") ||
+                        uri.startsWith("http://")) &&
+                        !uri.includes("*")) ||
+                      uri === "" ||
+                      t("frontchannelUrlInvalid").toString(),
+                  })}
+                  validated={
+                    errors.attributes?.frontchannel?.logout?.url?.message
+                      ? ValidatedOptions.error
+                      : ValidatedOptions.default
+                  }
+                />
+              </FormGroup>
+            )}
+          </>
+        )}
         <FormGroup
           label={t("backchannelLogoutUrl")}
           fieldId="backchannelLogoutUrl"
@@ -314,7 +455,7 @@ export const ClientSettings = ({
             ref={register({
               validate: (uri) =>
                 ((uri.startsWith("https://") || uri.startsWith("http://")) &&
-                  uri.indexOf("*") === -1) ||
+                  !uri.includes("*")) ||
                 uri === "" ||
                 t("backchannelUrlInvalid").toString(),
             })}

@@ -70,7 +70,7 @@ describe("Clients test", () => {
       keycloakBefore();
       loginPage.logIn();
       sidebarPage.goToClients();
-      cy.intercept("/auth/admin/realms/master/clients/*").as("fetchClient");
+      cy.intercept("/admin/realms/master/clients/*").as("fetchClient");
       listingPage.searchItem(clientId).goToItemDetails(clientId);
       cy.wait("@fetchClient");
       clientScopesTab.goToClientScopesTab();
@@ -212,6 +212,32 @@ describe("Clients test", () => {
       sidebarPage.goToClients();
     });
 
+    it("Should cancel creating client", () => {
+      listingPage.goToCreateItem();
+
+      createClientPage.continue().checkClientIdRequiredMessage();
+
+      createClientPage
+        .fillClientData("")
+        .selectClientType("openid-connect")
+        .cancel();
+
+      cy.url().should("not.include", "/add-client");
+    });
+
+    it("Should navigate to previous using 'back' button", () => {
+      listingPage.goToCreateItem();
+
+      createClientPage.continue().checkClientIdRequiredMessage();
+
+      createClientPage
+        .fillClientData("test_client")
+        .selectClientType("openid-connect")
+        .continue()
+        .back()
+        .checkGeneralSettingsStepActive();
+    });
+
     it("Should fail creating client", () => {
       listingPage.goToCreateItem();
 
@@ -223,7 +249,7 @@ describe("Clients test", () => {
         .continue()
         .checkClientIdRequiredMessage();
 
-      createClientPage.fillClientData("account").continue().continue();
+      createClientPage.fillClientData("account").continue().save();
 
       // The error should inform about duplicated name/id
       masthead.checkNotificationMessage(
@@ -241,7 +267,14 @@ describe("Clients test", () => {
         .selectClientType("openid-connect")
         .fillClientData(itemId)
         .continue()
-        .continue();
+        .switchClientAuthentication()
+        .clickDirectAccess()
+        .clickImplicitFlow()
+        .clickOAuthDeviceAuthorizationGrant()
+        .clickOidcCibaGrant()
+        .clickServiceAccountRoles()
+        .clickStandardFlow()
+        .save();
 
       masthead.checkNotificationMessage("Client created successfully");
 
@@ -261,7 +294,7 @@ describe("Clients test", () => {
       listingPage.itemExist(itemId, false);
     });
 
-    it("Initial access token", () => {
+    it.skip("Initial access token", () => {
       const initialAccessTokenTab = new InitialAccessTokenTab();
       initialAccessTokenTab
         .goToInitialAccessTokenTab()
@@ -338,7 +371,7 @@ describe("Clients test", () => {
         .selectClientType("openid-connect")
         .fillClientData(client)
         .continue()
-        .continue();
+        .save();
 
       advancedTab.goToAdvancedTab();
     });
@@ -536,7 +569,7 @@ describe("Clients test", () => {
         bearerOnly: true,
       });
       sidebarPage.goToClients();
-      cy.intercept("/auth/admin/realms/master/clients/*").as("fetchClient");
+      cy.intercept("/admin/realms/master/clients/*").as("fetchClient");
       listingPage.searchItem(clientId).goToItemDetails(clientId);
       cy.wait("@fetchClient");
     });
