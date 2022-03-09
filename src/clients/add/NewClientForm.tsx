@@ -74,7 +74,7 @@ export default function NewClientForm() {
   };
 
   const isFinalStep = () =>
-    !showCapabilityConfig && protocol !== "openid-connect";
+    showCapabilityConfig || protocol !== "openid-connect";
 
   const back = () => {
     setClient({ ...client, ...convertFormValuesToObject(methods.getValues()) });
@@ -82,6 +82,7 @@ export default function NewClientForm() {
       ...client,
       ...convertFormValuesToObject(methods.getValues()),
     });
+    setShowCapabilityConfig(false);
   };
 
   const onGoToStep = (newStep: { id?: string | number }) => {
