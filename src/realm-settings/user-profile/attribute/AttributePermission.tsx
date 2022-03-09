@@ -12,8 +12,8 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
   const { t } = useTranslation("realm-settings");
   const [isCheckedUserEdit, setIsCheckedUserEdit] = useState(true);
   const [isCheckedAdminEdit, setIsCheckedAdminEdit] = useState(true);
-  const [isCheckedUserView, setIsCheckedUserView] = useState(true);
-  const [isCheckedAdminView, setIsCheckedAdminView] = useState(true);
+  const [isCheckedUserView, setIsCheckedUserView] = useState(false);
+  const [isCheckedAdminView, setIsCheckedAdminView] = useState(false);
 
   return (
     <FormAccess role="manage-realm" isHorizontal>
@@ -89,10 +89,11 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
                   label={t("user")}
                   data-testid="userView"
                   ref={form.register}
-                  isChecked={isCheckedUserView}
+                  isChecked={isCheckedUserEdit ? true : isCheckedUserView}
                   onChange={(value) => {
                     onChange(setIsCheckedUserView(value));
                   }}
+                  isDisabled={isCheckedUserEdit}
                 />
               )}
             />
@@ -107,10 +108,11 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
                   label={t("admin")}
                   data-testid="adminView"
                   ref={form.register}
-                  isChecked={isCheckedAdminView}
+                  isChecked={isCheckedAdminEdit ? true : isCheckedAdminView}
                   onChange={(value) => {
                     onChange(setIsCheckedAdminView(value));
                   }}
+                  isDisabled={isCheckedAdminEdit}
                 />
               )}
             />
