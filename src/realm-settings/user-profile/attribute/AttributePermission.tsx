@@ -1,23 +1,19 @@
-import React from "react";
-import {
-  Checkbox,
-  FormGroup,
-  Grid,
-  GridItem,
-  InputGroup,
-} from "@patternfly/react-core";
+import React, { useState } from "react";
+import { Checkbox, FormGroup, Grid, GridItem } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
 import { UseFormMethods, Controller } from "react-hook-form";
 import { FormAccess } from "../../../components/form-access/FormAccess";
 import "../../realm-settings-section.css";
-
 export type AttributePermissionProps = {
   form: UseFormMethods;
 };
-
 export const AttributePermission = ({ form }: AttributePermissionProps) => {
   const { t } = useTranslation("realm-settings");
+  const [isCheckedUserEdit, setIsCheckedUserEdit] = useState(true);
+  const [isCheckedAdminEdit, setIsCheckedAdminEdit] = useState(true);
+  const [isCheckedUserView, setIsCheckedUserView] = useState(true);
+  const [isCheckedAdminView, setIsCheckedAdminView] = useState(true);
 
   return (
     <FormAccess role="manage-realm" isHorizontal>
@@ -30,44 +26,42 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
             fieldLabelId="realm-settings:whoCanEdit"
           />
         }
-        fieldId="kc-edit"
+        fieldId="kc-who-can-edit"
       >
         <Grid>
           <GridItem lg={4} sm={6}>
             <Controller
-              name="edit"
-              defaultValue={true}
+              name="whoCanEdit"
               control={form.control}
-              render={({ onChange, value }) => (
-                <InputGroup>
-                  <Checkbox
-                    data-testid="editUser"
-                    label={t("user")}
-                    id="kc-edit-user"
-                    name="edit"
-                    isChecked={value}
-                    onChange={onChange}
-                  />
-                </InputGroup>
+              render={({ onChange }) => (
+                <Checkbox
+                  id="user-edit"
+                  label={t("user")}
+                  data-testid="userEdit"
+                  ref={form.register}
+                  isChecked={isCheckedUserEdit}
+                  onChange={(value) => {
+                    onChange(setIsCheckedUserEdit(value));
+                  }}
+                />
               )}
             />
           </GridItem>
           <GridItem lg={8} sm={6}>
             <Controller
-              name="edit"
-              defaultValue={true}
+              name="whoCanEdit"
               control={form.control}
-              render={({ onChange, value }) => (
-                <InputGroup>
-                  <Checkbox
-                    data-testid="editAdmin"
-                    label={t("admin")}
-                    id="kc-edit-admin"
-                    name="edit"
-                    isChecked={value}
-                    onChange={onChange}
-                  />
-                </InputGroup>
+              render={({ onChange }) => (
+                <Checkbox
+                  id="admin-edit"
+                  label={t("admin")}
+                  data-testid="adminEdit"
+                  ref={form.register}
+                  isChecked={isCheckedAdminEdit}
+                  onChange={(value) => {
+                    onChange(setIsCheckedAdminEdit(value));
+                  }}
+                />
               )}
             />
           </GridItem>
@@ -82,44 +76,42 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
             fieldLabelId="realm-settings:whoCanView"
           />
         }
-        fieldId="kc-view"
+        fieldId="kc-who-can-view"
       >
         <Grid>
           <GridItem lg={4} sm={6}>
             <Controller
-              name="view"
-              defaultValue={true}
+              name="whoCanView"
               control={form.control}
-              render={({ onChange, value }) => (
-                <InputGroup>
-                  <Checkbox
-                    data-testid="viewUser"
-                    label={t("user")}
-                    id="kc-view-user"
-                    name="view"
-                    isChecked={value}
-                    onChange={onChange}
-                  />
-                </InputGroup>
+              render={({ onChange }) => (
+                <Checkbox
+                  id="user-view"
+                  label={t("user")}
+                  data-testid="userView"
+                  ref={form.register}
+                  isChecked={isCheckedUserView}
+                  onChange={(value) => {
+                    onChange(setIsCheckedUserView(value));
+                  }}
+                />
               )}
             />
           </GridItem>
           <GridItem lg={8} sm={6}>
             <Controller
-              name="view"
-              defaultValue={true}
+              name="whoCanView"
               control={form.control}
-              render={({ onChange, value }) => (
-                <InputGroup>
-                  <Checkbox
-                    data-testid="viewAdmin"
-                    label={t("admin")}
-                    id="kc-view-admin"
-                    name="view"
-                    isChecked={value}
-                    onChange={onChange}
-                  />
-                </InputGroup>
+              render={({ onChange }) => (
+                <Checkbox
+                  id="admin-view"
+                  label={t("admin")}
+                  data-testid="adminView"
+                  ref={form.register}
+                  isChecked={isCheckedAdminView}
+                  onChange={(value) => {
+                    onChange(setIsCheckedAdminView(value));
+                  }}
+                />
               )}
             />
           </GridItem>
