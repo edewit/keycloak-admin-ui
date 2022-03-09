@@ -71,20 +71,20 @@ const validators = [
 
 export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
   const { t } = useTranslation("realm-settings");
-  const [selectedValidatorNames, setSelectedValidatorNames] = useState<
-    string[]
-  >([]);
+  const [selectedValidatorName, setSelectedValidatorName] = useState<string[]>(
+    []
+  );
   const setValidatorSelected = (validator: Validator, isSelecting = true) =>
-    setSelectedValidatorNames((prevSelected) => {
-      const otherSelectedValidatorsNames = prevSelected.filter(
+    setSelectedValidatorName((prevSelected) => {
+      const otherSelectedValidatorName = prevSelected.filter(
         (r) => r === validator.name
       );
       return isSelecting
-        ? [...otherSelectedValidatorsNames, validator.name]
-        : otherSelectedValidatorsNames;
+        ? [...otherSelectedValidatorName, validator.name]
+        : otherSelectedValidatorName;
     });
-  const isValidatorSelected = (validator: Validator) =>
-    selectedValidatorNames.includes(validator.name);
+
+  console.log("selectedValidatorName >>>> ", selectedValidatorName);
 
   return (
     <Modal
@@ -105,11 +105,8 @@ export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
           {validators.map((validator) => (
             <Tr
               key={validator.name}
-              onRowClick={() =>
-                setValidatorSelected(validator, !isValidatorSelected(validator))
-              }
+              onRowClick={() => setValidatorSelected(validator)}
               isHoverable
-              isRowSelected={isValidatorSelected(validator)}
             >
               <Td dataLabel={t("validatorDialogColNames.colName")}>
                 {validator.name}
