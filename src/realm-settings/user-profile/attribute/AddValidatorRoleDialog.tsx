@@ -21,14 +21,14 @@ export type Validator = {
   ];
 };
 
-export type AddRoleValidatorDialogProps = {
+export type AddValidatorRoleDialogProps = {
   open: boolean;
   toggleDialog: () => void;
   onConfirm: (newValidator: UserProfileAttribute[]) => void;
   selected: Validator;
 };
 
-export const AddRoleValidatorDialog = (props: AddRoleValidatorDialogProps) => {
+export const AddValidatorRoleDialog = (props: AddValidatorRoleDialogProps) => {
   const { t } = useTranslation("realm-settings");
   const form = useForm();
   const { handleSubmit } = form;
