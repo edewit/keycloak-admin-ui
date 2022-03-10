@@ -10,6 +10,7 @@ import {
   Thead,
   Tr,
 } from "@patternfly/react-table";
+import { AddRoleValidatorDialog } from "./AddRoleValidatorDialog";
 
 export type Validator = {
   name: string;
@@ -71,53 +72,59 @@ const validators = [
 
 export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
   const { t } = useTranslation("realm-settings");
-  const [selectedValidatorName, setSelectedValidatorName] = useState<string[]>(
-    []
-  );
-  const setValidatorSelected = (validator: Validator, isSelecting = true) =>
-    setSelectedValidatorName((prevSelected) => {
-      const otherSelectedValidatorName = prevSelected.filter(
-        (r) => r === validator.name
-      );
-      return isSelecting
-        ? [...otherSelectedValidatorName, validator.name]
-        : otherSelectedValidatorName;
-    });
-
-  console.log("selectedValidatorName >>>> ", selectedValidatorName);
+  const [selectedValidatorName, setSelectedValidatorName] =
+    useState<Validator>();
+  const [addRoleValidatorModalOpen, setAddRoleValidatorModalOpen] =
+    useState(false);
+  const toggleModal = () => {
+    setAddRoleValidatorModalOpen(!addRoleValidatorModalOpen);
+  };
 
   return (
-    <Modal
-      variant={ModalVariant.small}
-      title={t("addValidator")}
-      isOpen
-      onClose={props.toggleDialog}
-      width={"40%"}
-    >
-      <TableComposable aria-label="validators-table">
-        <Thead>
-          <Tr>
-            <Th>{t("validatorDialogColNames.colName")}</Th>
-            <Th>{t("validatorDialogColNames.colDescription")}</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {validators.map((validator) => (
-            <Tr
-              key={validator.name}
-              onRowClick={() => setValidatorSelected(validator)}
-              isHoverable
-            >
-              <Td dataLabel={t("validatorDialogColNames.colName")}>
-                {validator.name}
-              </Td>
-              <Td dataLabel={t("validatorDialogColNames.colDescription")}>
-                {validator.description}
-              </Td>
+    <>
+      {addRoleValidatorModalOpen && (
+        <AddRoleValidatorDialog
+          onConfirm={() => console.log("TODO")}
+          open={addRoleValidatorModalOpen}
+          toggleDialog={toggleModal}
+          selected={selectedValidatorName!}
+        />
+      )}
+      <Modal
+        variant={ModalVariant.small}
+        title={t("addValidator")}
+        isOpen
+        onClose={props.toggleDialog}
+        width={"40%"}
+      >
+        <TableComposable aria-label="validators-table">
+          <Thead>
+            <Tr>
+              <Th>{t("validatorDialogColNames.colName")}</Th>
+              <Th>{t("validatorDialogColNames.colDescription")}</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </TableComposable>
-    </Modal>
+          </Thead>
+          <Tbody>
+            {validators.map((validator) => (
+              <Tr
+                key={validator.name}
+                onRowClick={() => {
+                  setSelectedValidatorName(validator);
+                  toggleModal();
+                }}
+                isHoverable
+              >
+                <Td dataLabel={t("validatorDialogColNames.colName")}>
+                  {validator.name}
+                </Td>
+                <Td dataLabel={t("validatorDialogColNames.colDescription")}>
+                  {validator.description}
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </TableComposable>
+      </Modal>
+    </>
   );
 };
