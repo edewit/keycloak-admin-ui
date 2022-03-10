@@ -54,13 +54,7 @@ export const AddRoleValidatorDialog = (props: AddRoleValidatorDialogProps) => {
         >
           {t("common:save")}
         </Button>,
-        <Button
-          key="cancel"
-          variant="link"
-          //   onClick={() => {
-          //     toggleDialog();
-          //   }}
-        >
+        <Button key="cancel" variant="link" onClick={props.toggleDialog}>
           {t("common:cancel")}
         </Button>,
       ]}
