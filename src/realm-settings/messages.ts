@@ -384,6 +384,7 @@ export default {
     user: "User",
     admin: "Admin",
     addValidator: "Add validator",
+    addValidatorRole: "Add {{validatorName}} validator",
     validatorDialogColNames: {
       colName: "Role name",
       colDescription: "Description",

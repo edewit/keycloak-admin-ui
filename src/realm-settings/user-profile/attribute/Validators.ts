@@ -3,7 +3,7 @@ export const validators = [
     name: "double",
     description:
       "Check if the value is a double and within a lower and/or upper range. If no range is defined, the validator only checks whether the value is a valid number.",
-    configuration: [
+    properties: [
       {
         type: "String",
         defaultValue: "",
@@ -23,12 +23,13 @@ export const validators = [
   {
     name: "email",
     description: "Check if the value has a valid e-mail format.",
+    properties: [],
   },
   {
     name: "integer",
     description:
       "Check if the value is an integer and within a lower and/or upper range. If no range is defined, the validator only checks whether the value is a valid number.",
-    configuration: [
+    properties: [
       {
         type: "String",
         defaultValue: "",
@@ -49,7 +50,7 @@ export const validators = [
     name: "length",
     description:
       "Check the length of a string value based on a minimum and maximum length.",
-    configuration: [
+    properties: [
       {
         type: "String",
         defaultValue: "The minimum length",
@@ -78,12 +79,13 @@ export const validators = [
     name: "local-date",
     description:
       "Check if the value has a valid format based on the realm and/or user locale.",
+    properties: [],
   },
   {
     name: "options",
     description:
       "Check if the value is from the defined set of allowed values. Useful to validate values entered through select and multiselect fields.",
-    configuration: [
+    properties: [
       {
         type: "MultivaluedString",
         defaultValue: "",
@@ -96,7 +98,7 @@ export const validators = [
   {
     name: "pattern",
     description: "Check if the value matches a specific RegEx pattern.",
-    configuration: [
+    properties: [
       {
         type: "String",
         defaultValue: "",
@@ -119,7 +121,7 @@ export const validators = [
     name: "person-name-prohibited-characters",
     description:
       "Check if the value is a valid person name as an additional barrier for attacks such as script injection. The validation is based on a default RegEx pattern that blocks characters not common in person names.",
-    configuration: [
+    properties: [
       {
         type: "String",
         defaultValue: "",
@@ -130,12 +132,16 @@ export const validators = [
       },
     ],
   },
-  { name: "uri", description: "Check if the value is a valid URI." },
+  {
+    name: "uri",
+    description: "Check if the value is a valid URI.",
+    properties: [],
+  },
   {
     name: "username-prohibited-characters",
     description:
       "Check if the value is a valid username as an additional barrier for attacks such as script injection. The validation is based on a default RegEx pattern that blocks characters not common in usernames.",
-    configuration: [
+    properties: [
       {
         type: "String",
         defaultValue: "",

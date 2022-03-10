@@ -16,6 +16,17 @@ import { validators } from "./Validators";
 export type Validator = {
   name: string;
   description: string;
+  properties: [
+    {
+      name?: string;
+      label?: string;
+      helpText?: string;
+      type?: string;
+      defaultValue?: any;
+      options?: string[];
+      secret?: boolean;
+    }
+  ];
 };
 
 export type AddValidatorDialogProps = {
@@ -33,6 +44,8 @@ export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
   const toggleModal = () => {
     setAddRoleValidatorModalOpen(!addRoleValidatorModalOpen);
   };
+
+  console.log("selectedValidatorName >>>>> ", selectedValidatorName);
 
   return (
     <>
@@ -63,7 +76,7 @@ export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
               <Tr
                 key={validator.name}
                 onRowClick={() => {
-                  setSelectedValidatorName(validator);
+                  setSelectedValidatorName(validator as Validator);
                   toggleModal();
                 }}
                 isHoverable
