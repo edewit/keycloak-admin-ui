@@ -16,7 +16,7 @@ import { validators } from "./Validators";
 export type Validator = {
   name: string;
   description: string;
-  properties: [
+  config: [
     {
       name?: string;
       label?: string;

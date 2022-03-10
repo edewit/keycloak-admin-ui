@@ -47,7 +47,7 @@ export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
     return attribute;
   });
 
-  const validatorForAttrName: { name: string; config: string }[] = [];
+  const validators: { name: string; config: string }[] = [];
   if (attributes) {
     const selectedAttribute = attributes.find((val) => {
       return val.name === attributeName;
@@ -56,7 +56,7 @@ export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
     if (selectedAttribute?.validations) {
       Object.entries(selectedAttribute.validations! as {}).forEach(
         ([key, value]) =>
-          validatorForAttrName.push({ name: key, config: value as string })
+          validators.push({ name: key, config: value as string })
       );
     }
   }
@@ -108,8 +108,8 @@ export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
             </Tr>
           </Thead>
           <Tbody>
-            {validatorForAttrName.length > 0 ? (
-              validatorForAttrName!.map((validator) => (
+            {validators.length > 0 ? (
+              validators!.map((validator) => (
                 <Tr key={validator.name}>
                   <Td dataLabel={t("validatorColNames.colName")}>
                     {validator.name}

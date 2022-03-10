@@ -8,7 +8,7 @@ import { DynamicComponents } from "../../../components/dynamic/DynamicComponents
 export type Validator = {
   name: string;
   description: string;
-  properties: [
+  config: [
     {
       name?: string;
       label?: string;
@@ -31,7 +31,13 @@ export type AddRoleValidatorDialogProps = {
 export const AddRoleValidatorDialog = (props: AddRoleValidatorDialogProps) => {
   const { t } = useTranslation("realm-settings");
   const form = useForm();
+  const { handleSubmit } = form;
   const selectedRoleValidator = props.selected;
+
+  const save = () => {
+    const formValues = form.getValues();
+    console.log(">>>>> formValues ", formValues);
+  };
 
   return (
     <Modal
@@ -48,9 +54,7 @@ export const AddRoleValidatorDialog = (props: AddRoleValidatorDialogProps) => {
           key="save"
           data-testid="save-validator-role-button"
           variant="primary"
-          //   onClick={() => {
-          //     onConfirm(selectedRoleValidator);
-          //   }}
+          onClick={() => handleSubmit(save)()}
         >
           {t("common:save")}
         </Button>,
@@ -60,7 +64,7 @@ export const AddRoleValidatorDialog = (props: AddRoleValidatorDialogProps) => {
       ]}
     >
       <FormProvider {...form}>
-        <DynamicComponents properties={selectedRoleValidator.properties} />
+        <DynamicComponents properties={selectedRoleValidator.config} />
       </FormProvider>
     </Modal>
   );
