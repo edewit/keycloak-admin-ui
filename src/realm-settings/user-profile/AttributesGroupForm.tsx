@@ -197,6 +197,9 @@ export default function AttributesGroupForm() {
               name="name"
               isDisabled={!!matchingGroup}
             />
+            {!!matchingGroup && (
+              <input type="hidden" ref={form.register()} name="name" />
+            )}
           </FormGroup>
           <FormGroup
             label={t("attributes-group:displayHeaderField")}
