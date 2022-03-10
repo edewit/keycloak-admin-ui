@@ -118,7 +118,7 @@ export const AttributesTab = () => {
                 <SelectOption
                   key="allGroups"
                   data-testid="all-groups"
-                  value={"allGroups"}
+                  value="allGroups"
                 >
                   {t("allGroups")}
                 </SelectOption>,
