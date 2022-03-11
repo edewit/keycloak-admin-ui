@@ -138,7 +138,9 @@ export const AttributesTab = () => {
             <Button
               data-testid="createAttributeBtn"
               variant="primary"
-              onClick={goToCreate}
+              component={(props) => (
+                <Link {...props} to={toAddAttribute({ realm: realmName })} />
+              )}
             >
               {t("createAttribute")}
             </Button>
