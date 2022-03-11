@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Modal, ModalVariant } from "@patternfly/react-core";
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
@@ -7,8 +7,8 @@ import { DynamicComponents } from "../../../components/dynamic/DynamicComponents
 
 export type Validator = {
   name: string;
-  description: string;
-  config: [
+  description?: string;
+  config?: [
     {
       name?: string;
       label?: string;
@@ -28,16 +28,32 @@ export type AddValidatorRoleDialogProps = {
   selected: Validator;
 };
 
-export const AddValidatorRoleDialog = (props: AddValidatorRoleDialogProps) => {
+export const AddValidatorRoleDialog = ({
+  open,
+  toggleDialog,
+  onConfirm,
+  selected,
+}: AddValidatorRoleDialogProps) => {
   const { t } = useTranslation("realm-settings");
   const form = useForm();
   const { handleSubmit } = form;
-  const selectedRoleValidator = props.selected;
+  const selectedRoleValidator = selected;
+  const [addedValidators, setAddedValidators] = useState<Validator[]>([]);
 
   const save = () => {
     const formValues = form.getValues();
-    console.log(">>>>> formValues ", formValues);
+    formValues.name = selectedRoleValidator.name;
+
+    const newValidator = {
+      name: formValues.name,
+      config: formValues.config ?? [],
+    };
+
+    setAddedValidators([newValidator]);
+    toggleDialog();
   };
+
+  console.log(">>>> addedValidators: ", addedValidators);
 
   return (
     <Modal
@@ -46,8 +62,8 @@ export const AddValidatorRoleDialog = (props: AddValidatorRoleDialogProps) => {
         validatorName: selectedRoleValidator.name,
       })}
       description={selectedRoleValidator.description}
-      isOpen
-      onClose={props.toggleDialog}
+      isOpen={open}
+      onClose={toggleDialog}
       width={"40%"}
       actions={[
         <Button
@@ -58,13 +74,13 @@ export const AddValidatorRoleDialog = (props: AddValidatorRoleDialogProps) => {
         >
           {t("common:save")}
         </Button>,
-        <Button key="cancel" variant="link" onClick={props.toggleDialog}>
+        <Button key="cancel" variant="link" onClick={toggleDialog}>
           {t("common:cancel")}
         </Button>,
       ]}
     >
       <FormProvider {...form}>
-        <DynamicComponents properties={selectedRoleValidator.config} />
+        <DynamicComponents properties={selectedRoleValidator.config!} />
       </FormProvider>
     </Modal>
   );

@@ -53,8 +53,8 @@ export const validators = [
     config: [
       {
         type: "String",
-        defaultValue: "The minimum length",
-        helpText: "",
+        defaultValue: "",
+        helpText: "The minimum length",
         label: "Minimum length",
         name: "min",
       },

@@ -15,8 +15,8 @@ import { validators } from "./Validators";
 
 export type Validator = {
   name: string;
-  description: string;
-  config: [
+  description?: string;
+  config?: [
     {
       name?: string;
       label?: string;
@@ -30,12 +30,14 @@ export type Validator = {
 };
 
 export type AddValidatorDialogProps = {
-  open: boolean;
   toggleDialog: () => void;
   onConfirm: (newValidator: UserProfileAttribute[]) => void;
 };
 
-export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
+export const AddValidatorDialog = ({
+  toggleDialog,
+  onConfirm,
+}: AddValidatorDialogProps) => {
   const { t } = useTranslation("realm-settings");
   const [selectedValidatorName, setSelectedValidatorName] =
     useState<Validator>();
@@ -44,8 +46,6 @@ export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
   const toggleModal = () => {
     setAddValidatorRoleModalOpen(!addValidatorRoleModalOpen);
   };
-
-  console.log("selectedValidatorName >>>>> ", selectedValidatorName);
 
   return (
     <>
@@ -61,7 +61,7 @@ export const AddValidatorDialog = (props: AddValidatorDialogProps) => {
         variant={ModalVariant.small}
         title={t("addValidator")}
         isOpen
-        onClose={props.toggleDialog}
+        onClose={toggleDialog}
         width={"40%"}
       >
         <TableComposable aria-label="validators-table">
