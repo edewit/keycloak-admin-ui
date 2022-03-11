@@ -1,29 +1,47 @@
-import React, { useState } from "react";
+import React from "react";
+import { FormGroup, Grid, GridItem } from "@patternfly/react-core";
+import { useTranslation } from "react-i18next";
+import { FormAccess } from "../../../components/form-access/FormAccess";
 import "../../realm-settings-section.css";
-import { useForm, UseFormMethods } from "react-hook-form";
+import { FormProvider, UseFormMethods } from "react-hook-form";
 import {
-  AnnotationForm,
-  AnnotationsForm,
-} from "../../../components/annotation-form/AnnotationForm";
-import { arrayToAnnotations } from "../../../components/annotation-form/annotation-convert";
+  AnnotationInput,
+  AnnotationType,
+} from "../../../components/annotation-input/AnnotationInput";
 
-type AttributeAnnotationsProps = {
-  annotations: Record<string, unknown>;
+export type AttributeAnnotationsProps = {
   form: UseFormMethods;
+  isKeySelectable?: boolean;
+  selectableValues?: AnnotationType[];
+  save?: () => void;
 };
-
 export const AttributeAnnotations = ({
-  annotations: defaultAnnotations,
   form,
+  isKeySelectable,
+  selectableValues,
 }: AttributeAnnotationsProps) => {
-  const [annotations, setAnnotations] =
-    useState<Record<string, unknown>>(defaultAnnotations);
-  form = useForm<AnnotationForm>({ mode: "onChange" });
+  const { t } = useTranslation("realm-settings");
 
-  const save = async (annotationForm: AnnotationForm) => {
-    const annotations = arrayToAnnotations(annotationForm.annotations!);
-    setAnnotations({ ...annotations, annotations });
-  };
-
-  return <AnnotationsForm form={form} save={save} />;
+  return (
+    <FormAccess role="manage-realm" isHorizontal>
+      <FormGroup
+        hasNoPaddingTop
+        label={t("annotations")}
+        fieldId="kc-annotations"
+        className="kc-annotations-label"
+      >
+        <Grid className="kc-annotations">
+          <GridItem>
+            <FormProvider {...form}>
+              <AnnotationInput
+                isKeySelectable={isKeySelectable}
+                selectableValues={selectableValues}
+                name="annotations"
+              />
+            </FormProvider>
+          </GridItem>
+        </Grid>
+      </FormGroup>
+    </FormAccess>
+  );
 };

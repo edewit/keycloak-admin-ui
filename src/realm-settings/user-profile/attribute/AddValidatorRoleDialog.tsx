@@ -35,7 +35,7 @@ export const AddValidatorRoleDialog = ({
     };
 
     setAddedValidators([newValidator]);
-    // toggleDialog();
+    toggleDialog();
   };
 
   console.log(">>>> addedValidators: ", addedValidators);
