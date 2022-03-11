@@ -1,4 +1,20 @@
-export const validators = [
+export type Validator = {
+  name: string;
+  description?: string;
+  config?: ValidatorConfig[];
+};
+
+export type ValidatorConfig = {
+  name?: string;
+  label?: string;
+  helpText?: string;
+  type?: string;
+  defaultValue?: any;
+  options?: string[];
+  secret?: boolean;
+};
+
+export const validators: Validator[] = [
   {
     name: "double",
     description:

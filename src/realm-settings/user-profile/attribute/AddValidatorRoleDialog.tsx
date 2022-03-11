@@ -4,22 +4,7 @@ import { Button, Modal, ModalVariant } from "@patternfly/react-core";
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import { FormProvider, useForm } from "react-hook-form";
 import { DynamicComponents } from "../../../components/dynamic/DynamicComponents";
-
-export type Validator = {
-  name: string;
-  description?: string;
-  config?: [
-    {
-      name?: string;
-      label?: string;
-      helpText?: string;
-      type?: string;
-      defaultValue?: any;
-      options?: string[];
-      secret?: boolean;
-    }
-  ];
-};
+import type { Validator } from "./Validators";
 
 export type AddValidatorRoleDialogProps = {
   open: boolean;
@@ -50,7 +35,7 @@ export const AddValidatorRoleDialog = ({
     };
 
     setAddedValidators([newValidator]);
-    toggleDialog();
+    // toggleDialog();
   };
 
   console.log(">>>> addedValidators: ", addedValidators);

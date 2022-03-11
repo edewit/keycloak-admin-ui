@@ -11,23 +11,7 @@ import {
   Tr,
 } from "@patternfly/react-table";
 import { AddValidatorRoleDialog } from "./AddValidatorRoleDialog";
-import { validators } from "./Validators";
-
-export type Validator = {
-  name: string;
-  description?: string;
-  config?: [
-    {
-      name?: string;
-      label?: string;
-      helpText?: string;
-      type?: string;
-      defaultValue?: any;
-      options?: string[];
-      secret?: boolean;
-    }
-  ];
-};
+import { Validator, validators } from "./Validators";
 
 export type AddValidatorDialogProps = {
   toggleDialog: () => void;
@@ -39,8 +23,7 @@ export const AddValidatorDialog = ({
   onConfirm,
 }: AddValidatorDialogProps) => {
   const { t } = useTranslation("realm-settings");
-  const [selectedValidatorName, setSelectedValidatorName] =
-    useState<Validator>();
+  const [selectedValidator, setSelectedValidator] = useState<Validator>();
   const [addValidatorRoleModalOpen, setAddValidatorRoleModalOpen] =
     useState(false);
   const toggleModal = () => {
@@ -54,7 +37,7 @@ export const AddValidatorDialog = ({
           onConfirm={() => console.log("TODO")}
           open={addValidatorRoleModalOpen}
           toggleDialog={toggleModal}
-          selected={selectedValidatorName!}
+          selected={selectedValidator!}
         />
       )}
       <Modal
@@ -76,7 +59,7 @@ export const AddValidatorDialog = ({
               <Tr
                 key={validator.name}
                 onRowClick={() => {
-                  setSelectedValidatorName(validator as Validator);
+                  setSelectedValidator(validator);
                   toggleModal();
                 }}
                 isHoverable
