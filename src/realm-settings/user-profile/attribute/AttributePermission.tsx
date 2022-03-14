@@ -31,7 +31,7 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
         <Grid>
           <GridItem lg={4} sm={6}>
             <Controller
-              name="whoCanEdit"
+              name="edit"
               control={form.control}
               render={({ onChange }) => (
                 <Checkbox
@@ -49,7 +49,7 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
           </GridItem>
           <GridItem lg={8} sm={6}>
             <Controller
-              name="whoCanEdit"
+              name="edit"
               control={form.control}
               render={({ onChange }) => (
                 <Checkbox
@@ -81,7 +81,7 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
         <Grid>
           <GridItem lg={4} sm={6}>
             <Controller
-              name="whoCanView"
+              name="view"
               control={form.control}
               render={({ onChange }) => (
                 <Checkbox
@@ -100,7 +100,7 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
           </GridItem>
           <GridItem lg={8} sm={6}>
             <Controller
-              name="whoCanView"
+              name="view"
               control={form.control}
               render={({ onChange }) => (
                 <Checkbox

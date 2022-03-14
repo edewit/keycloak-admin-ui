@@ -34,7 +34,9 @@ export const AddValidatorDialog = ({
     <>
       {addValidatorRoleModalOpen && (
         <AddValidatorRoleDialog
-          onConfirm={() => console.log("TODO")}
+          onConfirm={(value) =>
+            console.log("TODO add to the array to initial page", value)
+          }
           open={addValidatorRoleModalOpen}
           toggleDialog={toggleModal}
           selected={selectedValidator!}

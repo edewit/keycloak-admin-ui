@@ -23,7 +23,6 @@ export const AddValidatorRoleDialog = ({
   const form = useForm();
   const { handleSubmit } = form;
   const selectedRoleValidator = selected;
-  const [addedValidators, setAddedValidators] = useState<Validator[]>([]);
 
   const save = () => {
     const formValues = form.getValues();
@@ -34,11 +33,9 @@ export const AddValidatorRoleDialog = ({
       config: formValues.config ?? [],
     };
 
-    setAddedValidators([newValidator]);
+    onConfirm([newValidator]);
     toggleDialog();
   };
-
-  console.log(">>>> addedValidators: ", addedValidators);
 
   return (
     <Modal

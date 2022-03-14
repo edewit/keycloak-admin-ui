@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ActionGroup,
   AlertVariant,
@@ -18,10 +18,22 @@ import { AttributeValidations } from "./user-profile/attribute/AttributeValidati
 import { toUserProfile } from "./routes/UserProfile";
 import "./realm-settings-section.css";
 import { ViewHeader } from "../components/view-header/ViewHeader";
-import { UserProfileProvider } from "./user-profile/UserProfileContext";
 import { AttributeAnnotations } from "./user-profile/attribute/AttributeAnnotations";
-import { useAdminClient } from "../context/auth/AdminClient";
+import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import { useAlerts } from "../components/alert/Alerts";
+import { UserProfileProvider } from "./user-profile/UserProfileContext";
+import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
+import type { KeyValueType } from "../components/attribute-form/attribute-convert";
+import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
+
+type UserProfileAttributeType = UserProfileAttribute & AttributeRequired;
+
+type AttributeRequired = {
+  roles: string[];
+  scopeRequired: string[];
+  enabledWhen: boolean;
+  requiredWhen: boolean;
+};
 
 const CreateAttributeFormContent = ({
   save,
@@ -51,7 +63,6 @@ const CreateAttributeFormContent = ({
       <Form onSubmit={form.handleSubmit(save)}>
         <ActionGroup className="keycloak__form_actions">
           <Button
-            // isDisabled={!form.formState.isDirty}
             variant="primary"
             type="submit"
             data-testid="attribute-create"
@@ -74,18 +85,81 @@ const CreateAttributeFormContent = ({
 };
 
 export default function NewAttributeSettings() {
-  const { t } = useTranslation("realm-settings");
-  const form = useForm<UserProfileConfig>({ mode: "onChange" });
+  const { realm: realmName } = useRealm();
   const adminClient = useAdminClient();
+  const form = useForm<UserProfileConfig>();
+  const { t } = useTranslation("realm-settings");
+  const history = useHistory();
   const { addAlert, addError } = useAlerts();
+  const [config, setConfig] = useState<UserProfileConfig | null>(null);
+  const [clientScopes, setClientScopes] =
+    useState<ClientScopeRepresentation[]>();
 
-  const save = async (profileConfig: UserProfileConfig) => {
-    console.log(">>>> new attribute", profileConfig);
+  useFetch(
+    () => adminClient.users.getProfile({ realm: realmName }),
+    (config) => setConfig(config),
+    []
+  );
+
+  useFetch(
+    () => adminClient.clientScopes.find(),
+    (clientScopes) => {
+      setClientScopes(clientScopes);
+    },
+    []
+  );
+
+  const save = async (profileConfig: UserProfileAttributeType) => {
+    const scopeNames = clientScopes?.map((clientScope) => clientScope.name);
+
+    const selector = {
+      scopes: profileConfig.enabledWhen
+        ? scopeNames
+        : profileConfig.selector?.scopes,
+    };
+
+    const required = {
+      roles: profileConfig.roles,
+      scopes: profileConfig.requiredWhen
+        ? scopeNames
+        : profileConfig.scopeRequired,
+    };
+
+    const validations = {};
+
+    const permissions = {
+      view: profileConfig.permissions?.view,
+      edit: profileConfig.permissions?.edit,
+    };
+
+    const annotations = (profileConfig.annotations! as KeyValueType[]).reduce(
+      (obj, item) => Object.assign(obj, { [item.key]: item.value }),
+      {}
+    );
+
+    const newAttribute = [
+      {
+        name: profileConfig.name,
+        displayName: profileConfig.displayName,
+        required: required,
+        selector: selector,
+        permissions: permissions,
+        annotations: annotations,
+      },
+    ];
+
+    console.log(">>>> newAttribute ", newAttribute);
+    const newAttributesList = config?.attributes!.concat(
+      newAttribute as UserProfileAttribute
+    );
 
     try {
-      await adminClient.users.create({
-        attributes: profileConfig,
+      await adminClient.users.updateProfile({
+        attributes: newAttributesList,
+        realm: realmName,
       });
+
+      history.push(toUserProfile({ realm: realmName, tab: "attributes" }));
 
       addAlert(
         t("realm-settings:createAttributeSuccess"),

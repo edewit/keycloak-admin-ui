@@ -25,10 +25,8 @@ export type AttributeGeneralSettingsProps = {
 
 const ENABLED_REQUIRED_WHEN = ["Always", "Scopes are requested"] as const;
 const REQUIRED_FOR = [
-  "Both users and admins",
-  "Only users",
-  "Only admins",
-] as const;
+	{ label: "Both users and admins", value: ["admin", "user"]}, { label: "Only users", value: "user" },{ label: "Only admins", value: "admin" }
+  ] as const;
 
 export const AttributeGeneralSettings = ({
   form,
@@ -51,11 +49,6 @@ export const AttributeGeneralSettings = ({
     },
     []
   );
-
-  const scopeNames = clientScopes?.map(clientScope => clientScope.name);
-  const formValues = form.getValues();
-  formValues.scopeEnabled = enabledWhenSelection === "Always" ? scopeNames : formValues.scopeEnabled;
-  formValues.scopeRequired = requiredWhenSelection === "Always" ? scopeNames : formValues.scopeRequired;
 
   return (
     <FormAccess role="manage-realm" isHorizontal>
@@ -173,7 +166,7 @@ export const AttributeGeneralSettings = ({
       </FormGroup>
       <FormGroup fieldId="kc-scope-enabled-when">
         <Controller
-          name="scopeEnabled"
+          name="scopes"
           control={form.control}
           render={({
             onChange,
@@ -183,7 +176,7 @@ export const AttributeGeneralSettings = ({
             value: string[];
           }) => (
             <Select
-              name="scopeEnabled"
+              name="scopes"
               data-testid="enabled-when-scope-field"
               variant={SelectVariant.typeaheadMulti}
               typeAheadAriaLabel="Select"
@@ -252,7 +245,7 @@ export const AttributeGeneralSettings = ({
       </FormGroup>
       <FormGroup label={t("requiredFor")} fieldId="requiredFor" hasNoPaddingTop>
         <Controller
-          name="requiredFor"
+          name="roles"
           data-testid="requiredFor"
           defaultValue={REQUIRED_FOR[0]}
           control={form.control}
@@ -260,13 +253,13 @@ export const AttributeGeneralSettings = ({
             <div className="kc-requiredFor">
               {REQUIRED_FOR.map((option) => (
                 <Radio
-                  id={option}
-                  key={option}
+                  id={option.label}
+                  key={option.label}
                   data-testid={option}
-                  isChecked={value === option}
-                  name="requiredFor"
-                  onChange={() => onChange(option)}
-                  label={option}
+                  isChecked={value === option.value}
+                  name="roles"
+                  onChange={() => onChange(Array.isArray(option.value) ? option.value : [option.value])}
+                  label={option.label}
                   className="kc-requiredFor-option"
                 />
               ))}

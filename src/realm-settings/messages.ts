@@ -408,7 +408,7 @@ export default {
     createAttributeSuccess:
       "Success! User Profile configuration has been saved.",
     createAttributeError:
-      "Error! User Profile configuration has not been saved.",
+      "Error! User Profile configuration has not been saved {{error}}.",
     attributesDropdown: "Attributes dropdown",
     deleteAttributeConfirmTitle: "Delete attribute?",
     deleteAttributeConfirm:

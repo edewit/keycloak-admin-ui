@@ -5,16 +5,16 @@ import { FormAccess } from "../../../components/form-access/FormAccess";
 import "../../realm-settings-section.css";
 import { FormProvider, UseFormMethods } from "react-hook-form";
 import {
-  AnnotationInput,
-  AnnotationType,
-} from "../../../components/annotation-input/AnnotationInput";
+  AttributeInput,
+  AttributeType,
+} from "../../../components/attribute-input/AttributeInput";
 
 export type AttributeAnnotationsProps = {
   form: UseFormMethods;
   isKeySelectable?: boolean;
-  selectableValues?: AnnotationType[];
-  save?: () => void;
+  selectableValues?: AttributeType[];
 };
+
 export const AttributeAnnotations = ({
   form,
   isKeySelectable,
@@ -33,7 +33,7 @@ export const AttributeAnnotations = ({
         <Grid className="kc-annotations">
           <GridItem>
             <FormProvider {...form}>
-              <AnnotationInput
+              <AttributeInput
                 isKeySelectable={isKeySelectable}
                 selectableValues={selectableValues}
                 name="annotations"
