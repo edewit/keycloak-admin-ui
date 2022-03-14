@@ -12,8 +12,6 @@ import { useTranslation } from "react-i18next";
 import "../../realm-settings-section.css";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { AddValidatorDialog } from "../attribute/AddValidatorDialog";
-import { useUserProfile } from "../UserProfileContext";
-import { useParams } from "react-router-dom";
 import {
   TableComposable,
   Tbody,
@@ -23,43 +21,32 @@ import {
   Tr,
 } from "@patternfly/react-table";
 import { useConfirmDialog } from "../../../components/confirm-dialog/ConfirmDialog";
-import type { AttributeParams } from "../../routes/Attribute";
 import "../../realm-settings-section.css";
 import type { UseFormMethods } from "react-hook-form";
+import type { Validator } from "./Validators";
 
 export type AttributeValidationsProps = {
   form: UseFormMethods;
 };
 
 export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
-  const { config } = useUserProfile();
-  const { attributeName } = useParams<AttributeParams>();
   const { t } = useTranslation("realm-settings");
   const [addValidatorModalOpen, setAddValidatorModalOpen] = useState(false);
   const [validatorToDelete, setValidatorToDelete] =
     useState<{ name: string }>();
+  const [newValidator, setNewValidator] = useState(null);
+  const [validators, setValidators] = useState([]);
 
   const toggleModal = () => {
     setAddValidatorModalOpen(!addValidatorModalOpen);
   };
 
-  const attributes = config?.attributes!.map((attribute) => {
-    return attribute;
-  });
-
-  const validators: { name: string; config: string }[] = [];
-  if (attributes) {
-    const selectedAttribute = attributes.find((val) => {
-      return val.name === attributeName;
-    });
-
-    if (selectedAttribute?.validations) {
-      Object.entries(selectedAttribute.validations! as {}).forEach(
-        ([key, value]) =>
-          validators.push({ name: key, config: value as string })
-      );
-    }
+  if (newValidator) {
+    setValidators(validators.concat([newValidator]));
+    setNewValidator(null);
   }
+
+  console.log("validators, ", validators);
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: t("deleteValidatorConfirmTitle"),
@@ -77,8 +64,9 @@ export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
     <>
       {addValidatorModalOpen && (
         <AddValidatorDialog
-          onConfirm={() => console.log("TODO")}
-          open={addValidatorModalOpen}
+          onConfirm={(newValidator) => {
+            setNewValidator(newValidator as any);
+          }}
           toggleDialog={toggleModal}
         />
       )}
@@ -109,7 +97,7 @@ export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
           </Thead>
           <Tbody>
             {validators.length > 0 ? (
-              validators!.map((validator) => (
+              validators!.map((validator: Validator) => (
                 <Tr key={validator.name}>
                   <Td dataLabel={t("validatorColNames.colName")}>
                     {validator.name}
@@ -122,6 +110,7 @@ export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
                       key="validator"
                       variant="link"
                       data-testid="deleteValidator"
+                      isDisabled={true}
                       onClick={() => {
                         toggleDeleteDialog();
                         setValidatorToDelete({

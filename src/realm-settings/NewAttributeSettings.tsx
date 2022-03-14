@@ -125,7 +125,9 @@ export default function NewAttributeSettings() {
         : profileConfig.scopeRequired,
     };
 
-    const validations = {};
+    console.log(">>>> profileConfig ", profileConfig);
+
+    const validations = profileConfig.validations;
 
     const permissions = {
       view: profileConfig.permissions?.view,
@@ -142,6 +144,7 @@ export default function NewAttributeSettings() {
         name: profileConfig.name,
         displayName: profileConfig.displayName,
         required: required,
+        validations: validations,
         selector: selector,
         permissions: permissions,
         annotations: annotations,

@@ -15,6 +15,8 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
   const [isCheckedUserView, setIsCheckedUserView] = useState(false);
   const [isCheckedAdminView, setIsCheckedAdminView] = useState(false);
 
+  console.log(isCheckedUserEdit);
+
   return (
     <FormAccess role="manage-realm" isHorizontal>
       <FormGroup

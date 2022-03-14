@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, ModalVariant } from "@patternfly/react-core";
-import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import {
   TableComposable,
   Tbody,
@@ -15,7 +14,7 @@ import { Validator, validators } from "./Validators";
 
 export type AddValidatorDialogProps = {
   toggleDialog: () => void;
-  onConfirm: (newValidator: UserProfileAttribute[]) => void;
+  onConfirm: (newValidator: Validator) => void;
 };
 
 export const AddValidatorDialog = ({
@@ -34,9 +33,7 @@ export const AddValidatorDialog = ({
     <>
       {addValidatorRoleModalOpen && (
         <AddValidatorRoleDialog
-          onConfirm={(value) =>
-            console.log("TODO add to the array to initial page", value)
-          }
+          onConfirm={(newValidator) => onConfirm(newValidator)}
           open={addValidatorRoleModalOpen}
           toggleDialog={toggleModal}
           selected={selectedValidator!}

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Modal, ModalVariant } from "@patternfly/react-core";
-import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import { FormProvider, useForm } from "react-hook-form";
 import { DynamicComponents } from "../../../components/dynamic/DynamicComponents";
 import type { Validator } from "./Validators";
@@ -9,7 +8,7 @@ import type { Validator } from "./Validators";
 export type AddValidatorRoleDialogProps = {
   open: boolean;
   toggleDialog: () => void;
-  onConfirm: (newValidator: UserProfileAttribute[]) => void;
+  onConfirm: (newValidator: Validator) => void;
   selected: Validator;
 };
 
@@ -33,7 +32,7 @@ export const AddValidatorRoleDialog = ({
       config: formValues.config ?? [],
     };
 
-    onConfirm([newValidator]);
+    onConfirm(newValidator);
     toggleDialog();
   };
 
