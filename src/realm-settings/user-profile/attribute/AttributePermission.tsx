@@ -28,6 +28,7 @@ export const AttributePermission = () => {
             <Controller
               name="userEdit"
               control={form.control}
+              defaultValue={"user"}
               render={({ onChange, value }) => (
                 <Checkbox
                   id="user-edit"
@@ -47,6 +48,7 @@ export const AttributePermission = () => {
             <Controller
               name="adminEdit"
               control={form.control}
+              defaultValue={"admin"}
               render={({ onChange, value }) => (
                 <Checkbox
                   id="admin-edit"
@@ -80,6 +82,7 @@ export const AttributePermission = () => {
             <Controller
               name="userView"
               control={form.control}
+              defaultValue={""}
               render={({ onChange, value }) => (
                 <Checkbox
                   id="user-view"
@@ -99,6 +102,7 @@ export const AttributePermission = () => {
             <Controller
               name="adminView"
               control={form.control}
+              defaultValue={""}
               render={({ onChange, value }) => (
                 <Checkbox
                   id="admin-view"

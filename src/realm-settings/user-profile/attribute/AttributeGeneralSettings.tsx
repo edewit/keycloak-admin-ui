@@ -136,8 +136,8 @@ export const AttributeGeneralSettings = () => {
         <Controller
           name="enabledWhen"
           data-testid="enabledWhen"
-          defaultValue={ENABLED_REQUIRED_WHEN[0]}
           control={form.control}
+		  defaultValue={ENABLED_REQUIRED_WHEN[0]}
           render={({ onChange, value }) => (
             <>
               {ENABLED_REQUIRED_WHEN.map((option) => (
@@ -163,6 +163,7 @@ export const AttributeGeneralSettings = () => {
         <Controller
           name="scopes"
           control={form.control}
+		  defaultValue={[]}
           render={({
             onChange,
             value,
@@ -297,6 +298,7 @@ export const AttributeGeneralSettings = () => {
         <Controller
           name="scopeRequired"
           control={form.control}
+		  defaultValue={[]}
           render={({
             onChange,
             value,
