@@ -420,8 +420,7 @@ export default {
     validations: "Validations",
     annotations: "Annotations",
     addAnnotationText: "Add annotation",
-    validateName:
-      "Attribute configuration already exists with {{attributeName}}",
+    validateName: "Attribute configuration without name is not allowed.",
     eventType: "Event saved type",
     searchEventType: "Search saved event type",
     addSavedTypes: "Add saved types",

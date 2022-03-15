@@ -26,7 +26,9 @@ import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/d
 import type { KeyValueType } from "../components/attribute-form/attribute-convert";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 
-type UserProfileAttributeType = UserProfileAttribute & AttributeRequired;
+type UserProfileAttributeType = UserProfileAttribute &
+  AttributeRequired &
+  Permission;
 
 type AttributeRequired = {
   roles: string[];
@@ -34,6 +36,25 @@ type AttributeRequired = {
   enabledWhen: boolean;
   requiredWhen: boolean;
 };
+
+type Permission = {
+  view: PermissionView[];
+  edit: PermissionEdit[];
+};
+
+type PermissionView = [
+  {
+    adminView: boolean;
+    userView: boolean;
+  }
+];
+
+type PermissionEdit = [
+  {
+    adminEdit: boolean;
+    userEdit: boolean;
+  }
+];
 
 const CreateAttributeFormContent = ({
   save,
@@ -57,7 +78,7 @@ const CreateAttributeFormContent = ({
       >
         <AttributeGeneralSettings form={form} />
         <AttributePermission form={form} />
-        <AttributeValidations form={form} />
+        <AttributeValidations />
         <AttributeAnnotations form={form} />
       </ScrollForm>
       <Form onSubmit={form.handleSubmit(save)}>
@@ -125,13 +146,11 @@ export default function NewAttributeSettings() {
         : profileConfig.scopeRequired,
     };
 
-    console.log(">>>> profileConfig ", profileConfig);
-
     const validations = profileConfig.validations;
 
     const permissions = {
-      view: profileConfig.permissions?.view,
-      edit: profileConfig.permissions?.edit,
+      view: profileConfig.view,
+      edit: profileConfig.edit,
     };
 
     const annotations = (profileConfig.annotations! as KeyValueType[]).reduce(
@@ -151,7 +170,6 @@ export default function NewAttributeSettings() {
       },
     ];
 
-    console.log(">>>> newAttribute ", newAttribute);
     const newAttributesList = config?.attributes!.concat(
       newAttribute as UserProfileAttribute
     );

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import React, { useState } from "react";
 import {
   Button,
@@ -22,14 +23,9 @@ import {
 } from "@patternfly/react-table";
 import { useConfirmDialog } from "../../../components/confirm-dialog/ConfirmDialog";
 import "../../realm-settings-section.css";
-import type { UseFormMethods } from "react-hook-form";
 import type { Validator } from "./Validators";
 
-export type AttributeValidationsProps = {
-  form: UseFormMethods;
-};
-
-export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
+export const AttributeValidations = () => {
   const { t } = useTranslation("realm-settings");
   const [addValidatorModalOpen, setAddValidatorModalOpen] = useState(false);
   const [validatorToDelete, setValidatorToDelete] =
@@ -45,8 +41,6 @@ export const AttributeValidations = ({ form }: AttributeValidationsProps) => {
     setValidators(validators.concat([newValidator]));
     setNewValidator(null);
   }
-
-  console.log("validators, ", validators);
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: t("deleteValidatorConfirmTitle"),

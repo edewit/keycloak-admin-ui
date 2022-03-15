@@ -1,21 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { Checkbox, FormGroup, Grid, GridItem } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
 import { UseFormMethods, Controller } from "react-hook-form";
 import { FormAccess } from "../../../components/form-access/FormAccess";
 import "../../realm-settings-section.css";
+
 export type AttributePermissionProps = {
   form: UseFormMethods;
 };
+
 export const AttributePermission = ({ form }: AttributePermissionProps) => {
   const { t } = useTranslation("realm-settings");
-  const [isCheckedUserEdit, setIsCheckedUserEdit] = useState(true);
-  const [isCheckedAdminEdit, setIsCheckedAdminEdit] = useState(true);
-  const [isCheckedUserView, setIsCheckedUserView] = useState(false);
-  const [isCheckedAdminView, setIsCheckedAdminView] = useState(false);
-
-  console.log(isCheckedUserEdit);
 
   return (
     <FormAccess role="manage-realm" isHorizontal>
@@ -33,17 +29,18 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
         <Grid>
           <GridItem lg={4} sm={6}>
             <Controller
-              name="edit"
+              name="userEdit"
               control={form.control}
-              render={({ onChange }) => (
+              render={({ onChange, value }) => (
                 <Checkbox
                   id="user-edit"
                   label={t("user")}
+                  value="user"
                   data-testid="userEdit"
                   ref={form.register}
-                  isChecked={isCheckedUserEdit}
+                  isChecked={value}
                   onChange={(value) => {
-                    onChange(setIsCheckedUserEdit(value));
+                    onChange(value);
                   }}
                 />
               )}
@@ -51,17 +48,18 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
           </GridItem>
           <GridItem lg={8} sm={6}>
             <Controller
-              name="edit"
+              name="adminEdit"
               control={form.control}
-              render={({ onChange }) => (
+              render={({ onChange, value }) => (
                 <Checkbox
                   id="admin-edit"
                   label={t("admin")}
+                  value="admin"
                   data-testid="adminEdit"
                   ref={form.register}
-                  isChecked={isCheckedAdminEdit}
+                  isChecked={value}
                   onChange={(value) => {
-                    onChange(setIsCheckedAdminEdit(value));
+                    onChange(value);
                   }}
                 />
               )}
@@ -83,38 +81,38 @@ export const AttributePermission = ({ form }: AttributePermissionProps) => {
         <Grid>
           <GridItem lg={4} sm={6}>
             <Controller
-              name="view"
+              name="userView"
               control={form.control}
-              render={({ onChange }) => (
+              render={({ onChange, value }) => (
                 <Checkbox
                   id="user-view"
                   label={t("user")}
+                  value="user"
                   data-testid="userView"
                   ref={form.register}
-                  isChecked={isCheckedUserEdit ? true : isCheckedUserView}
+                  isChecked={value}
                   onChange={(value) => {
-                    onChange(setIsCheckedUserView(value));
+                    onChange(value);
                   }}
-                  isDisabled={isCheckedUserEdit}
                 />
               )}
             />
           </GridItem>
           <GridItem lg={8} sm={6}>
             <Controller
-              name="view"
+              name="adminView"
               control={form.control}
-              render={({ onChange }) => (
+              render={({ onChange, value }) => (
                 <Checkbox
                   id="admin-view"
                   label={t("admin")}
+                  value="admin"
                   data-testid="adminView"
                   ref={form.register}
-                  isChecked={isCheckedAdminEdit ? true : isCheckedAdminView}
+                  isChecked={value}
                   onChange={(value) => {
-                    onChange(setIsCheckedAdminView(value));
+                    onChange(value);
                   }}
-                  isDisabled={isCheckedAdminEdit}
                 />
               )}
             />

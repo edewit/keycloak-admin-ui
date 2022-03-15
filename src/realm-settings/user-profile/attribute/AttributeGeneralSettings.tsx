@@ -247,7 +247,7 @@ export const AttributeGeneralSettings = ({
         <Controller
           name="roles"
           data-testid="requiredFor"
-          defaultValue={REQUIRED_FOR[0]}
+          defaultValue={REQUIRED_FOR[0].value}
           control={form.control}
           render={({ onChange, value }) => (
             <div className="kc-requiredFor">
