@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -22,25 +22,25 @@ import {
   Tr,
 } from "@patternfly/react-table";
 import { useConfirmDialog } from "../../../components/confirm-dialog/ConfirmDialog";
-import "../../realm-settings-section.css";
 import type { Validator } from "./Validators";
+import useToggle from "../../../utils/useToggle";
+import { useFormContext, useWatch } from "react-hook-form";
+
+import "../../realm-settings-section.css";
 
 export const AttributeValidations = () => {
   const { t } = useTranslation("realm-settings");
-  const [addValidatorModalOpen, setAddValidatorModalOpen] = useState(false);
+  const [addValidatorModalOpen, toggleModal] = useToggle();
   const [validatorToDelete, setValidatorToDelete] =
     useState<{ name: string }>();
-  const [newValidator, setNewValidator] = useState(null);
-  const [validators, setValidators] = useState([]);
+  const { setValue, control, register } = useFormContext();
+  const validators = useWatch<Validator[]>({
+    name: "validations",
+    control,
+    defaultValue: [],
+  });
 
-  const toggleModal = () => {
-    setAddValidatorModalOpen(!addValidatorModalOpen);
-  };
-
-  if (newValidator) {
-    setValidators(validators.concat([newValidator]));
-    setNewValidator(null);
-  }
+  useEffect(() => register("validations"), []);
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: t("deleteValidatorConfirmTitle"),
@@ -59,7 +59,7 @@ export const AttributeValidations = () => {
       {addValidatorModalOpen && (
         <AddValidatorDialog
           onConfirm={(newValidator) => {
-            setNewValidator(newValidator as any);
+            setValue("validations", [...validators, newValidator]);
           }}
           toggleDialog={toggleModal}
         />
@@ -90,8 +90,8 @@ export const AttributeValidations = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {validators.length > 0 ? (
-              validators!.map((validator: Validator) => (
+            {validators.length ? (
+              validators.map((validator: Validator) => (
                 <Tr key={validator.name}>
                   <Td dataLabel={t("validatorColNames.colName")}>
                     {validator.name}
