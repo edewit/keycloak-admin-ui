@@ -45,7 +45,6 @@ export const AddValidatorRoleDialog = ({
       description={selectedRoleValidator.description}
       isOpen={open}
       onClose={toggleDialog}
-      width={"40%"}
       actions={[
         <Button
           key="save"

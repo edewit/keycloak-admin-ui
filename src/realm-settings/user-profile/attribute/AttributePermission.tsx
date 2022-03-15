@@ -2,16 +2,13 @@ import React from "react";
 import { Checkbox, FormGroup, Grid, GridItem } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
-import { UseFormMethods, Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { FormAccess } from "../../../components/form-access/FormAccess";
 import "../../realm-settings-section.css";
 
-export type AttributePermissionProps = {
-  form: UseFormMethods;
-};
-
-export const AttributePermission = ({ form }: AttributePermissionProps) => {
+export const AttributePermission = () => {
   const { t } = useTranslation("realm-settings");
+  const form = useFormContext();
 
   return (
     <FormAccess role="manage-realm" isHorizontal>
