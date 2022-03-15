@@ -35,8 +35,7 @@ export const AttributesTab = () => {
   const [isFilterTypeDropdownOpen, toggleIsFilterTypeDropdownOpen] =
     useToggle();
   const [data, setData] = useState(config?.attributes);
-  const [attributeToDelete, setAttributeToDelete] =
-    useState<{ name: string }>();
+  const [attributeToDelete, setAttributeToDelete] = useState("");
 
   const executeMove = async (
     attribute: UserProfileAttribute,
@@ -63,13 +62,13 @@ export const AttributesTab = () => {
   const goToCreate = () => history.push(toAddAttribute({ realm: realmName }));
 
   const updatedAttributes = config?.attributes!.filter(
-    (attribute) => attribute.name !== attributeToDelete?.name
+    (attribute) => attribute.name !== attributeToDelete
   );
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: t("deleteAttributeConfirmTitle"),
     messageKey: t("deleteAttributeConfirm", {
-      attributeName: attributeToDelete?.name!,
+      attributeName: attributeToDelete,
     }),
     continueButtonLabel: t("common:delete"),
     continueButtonVariant: ButtonVariant.danger,
@@ -81,9 +80,7 @@ export const AttributesTab = () => {
           errorMessageKey: "realm-settings:deleteAttributeError",
         }
       );
-      setAttributeToDelete({
-        name: "",
-      });
+      setAttributeToDelete("");
     },
   });
 
