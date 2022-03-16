@@ -77,7 +77,7 @@ const CreateAttributeFormContent = ({
         ]}
       >
         <AttributeGeneralSettings form={form} />
-        <AttributePermission form={form} />
+        <AttributePermission />
         <AttributeValidations />
         <AttributeAnnotations form={form} />
       </ScrollForm>
@@ -148,11 +148,6 @@ export default function NewAttributeSettings() {
 
     const validations = profileConfig.validations;
 
-    const permissions = {
-      view: profileConfig.view,
-      edit: profileConfig.edit,
-    };
-
     const annotations = (profileConfig.annotations! as KeyValueType[]).reduce(
       (obj, item) => Object.assign(obj, { [item.key]: item.value }),
       {}
@@ -165,7 +160,7 @@ export default function NewAttributeSettings() {
         required: required,
         validations: validations,
         selector: selector,
-        permissions: permissions,
+        permissions: profileConfig.permissions,
         annotations: annotations,
       },
     ];
