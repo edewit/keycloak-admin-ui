@@ -8,7 +8,7 @@ import {
 } from "@patternfly/react-core";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { ScrollForm } from "../components/scroll-form/ScrollForm";
 import { useRealm } from "../context/realm-context/RealmContext";
 import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
@@ -63,7 +63,6 @@ const CreateAttributeFormContent = ({
 }) => {
   const { t } = useTranslation("realm-settings");
   const form = useFormContext();
-  const history = useHistory();
   const { realm } = useRealm();
 
   return (
@@ -76,10 +75,10 @@ const CreateAttributeFormContent = ({
           t("annotations"),
         ]}
       >
-        <AttributeGeneralSettings form={form} />
+        <AttributeGeneralSettings />
         <AttributePermission />
         <AttributeValidations />
-        <AttributeAnnotations form={form} />
+        <AttributeAnnotations />
       </ScrollForm>
       <Form onSubmit={form.handleSubmit(save)}>
         <ActionGroup className="keycloak__form_actions">
@@ -90,15 +89,13 @@ const CreateAttributeFormContent = ({
           >
             {t("common:create")}
           </Button>
-          <Button
-            variant="link"
-            onClick={() =>
-              history.push(toUserProfile({ realm, tab: "attributes" }))
-            }
+          <Link
+            to={toUserProfile({ realm, tab: "attributes" })}
             data-testid="attribute-cancel"
+            className="kc-attributeCancel"
           >
             {t("common:cancel")}
-          </Button>
+          </Link>
         </ActionGroup>
       </Form>
     </UserProfileProvider>
@@ -117,14 +114,13 @@ export default function NewAttributeSettings() {
     useState<ClientScopeRepresentation[]>();
 
   useFetch(
-    () => adminClient.users.getProfile({ realm: realmName }),
-    (config) => setConfig(config),
-    []
-  );
-
-  useFetch(
-    () => adminClient.clientScopes.find(),
-    (clientScopes) => {
+    () =>
+      Promise.all([
+        adminClient.users.getProfile({ realm: realmName }),
+        adminClient.clientScopes.find(),
+      ]),
+    ([config, clientScopes]) => {
+      setConfig(config);
       setClientScopes(clientScopes);
     },
     []
@@ -157,11 +153,11 @@ export default function NewAttributeSettings() {
       {
         name: profileConfig.name,
         displayName: profileConfig.displayName,
-        required: required,
-        validations: validations,
-        selector: selector,
+        required,
+        validations,
+        selector,
         permissions: profileConfig.permissions,
-        annotations: annotations,
+        annotations,
       },
     ];
 

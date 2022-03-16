@@ -13,26 +13,21 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
-import { UseFormMethods, Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { FormAccess } from "../../../components/form-access/FormAccess";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 import "../../realm-settings-section.css";
-
-export type AttributeGeneralSettingsProps = {
-  form: UseFormMethods;
-};
 
 const ENABLED_REQUIRED_WHEN = ["Always", "Scopes are requested"] as const;
 const REQUIRED_FOR = [
 	{ label: "Both users and admins", value: ["admin", "user"]}, { label: "Only users", value: "user" },{ label: "Only admins", value: "admin" }
   ] as const;
 
-export const AttributeGeneralSettings = ({
-  form,
-}: AttributeGeneralSettingsProps) => {
+export const AttributeGeneralSettings = () => {
   const { t } = useTranslation("realm-settings");
   const adminClient = useAdminClient();
+  const form = useFormContext();
   const [clientScopes, setClientScopes] =
     useState<ClientScopeRepresentation[]>();
   const [selectEnabledWhenOpen, setSelectEnabledWhenOpen] = useState(false);
@@ -141,8 +136,8 @@ export const AttributeGeneralSettings = ({
         <Controller
           name="enabledWhen"
           data-testid="enabledWhen"
-          defaultValue={ENABLED_REQUIRED_WHEN[0]}
           control={form.control}
+		  defaultValue={ENABLED_REQUIRED_WHEN[0]}
           render={({ onChange, value }) => (
             <>
               {ENABLED_REQUIRED_WHEN.map((option) => (
@@ -168,6 +163,7 @@ export const AttributeGeneralSettings = ({
         <Controller
           name="scopes"
           control={form.control}
+		  defaultValue={[]}
           render={({
             onChange,
             value,
@@ -302,6 +298,7 @@ export const AttributeGeneralSettings = ({
         <Controller
           name="scopeRequired"
           control={form.control}
+		  defaultValue={[]}
           render={({
             onChange,
             value,

@@ -291,3 +291,7 @@ input#kc-scopes {
   max-width: 1024px;
   margin-bottom: 52px;
 }
+
+.kc-attributeCancel {
+  align-self: center;
+}
