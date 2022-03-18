@@ -229,7 +229,7 @@ export default {
     },
     applyPolicy: "Apply policy",
     addClientScopes: "Add client scopes",
-    emptyAddClientScopes: "No more scopes",
+    emptyAddClientScopes: "No client scopes",
     emptyAddClientScopesInstructions: "There are no client scopes left to add",
     clientScope: "Client scope",
     groupsClaim: "Groups claim",
