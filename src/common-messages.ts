@@ -16,6 +16,7 @@ export default {
     delete: "Delete",
     remove: "Remove",
     search: "Search",
+    reset: "Reset",
     key: "Key",
     value: "Value",
     noSearchResults: "No search results",

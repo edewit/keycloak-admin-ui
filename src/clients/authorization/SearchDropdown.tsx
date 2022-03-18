@@ -192,7 +192,7 @@ export const SearchDropdown = ({
             data-testid="revert-btn"
             onClick={() => onSearch({})}
           >
-            {t("common:clear")}
+            {t("common:reset")}
           </Button>
         </ActionGroup>
       </Form>
