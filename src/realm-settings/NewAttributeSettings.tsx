@@ -10,7 +10,6 @@ import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { ScrollForm } from "../components/scroll-form/ScrollForm";
-import { useRealm } from "../context/realm-context/RealmContext";
 import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import { AttributeGeneralSettings } from "./user-profile/attribute/AttributeGeneralSettings";
 import { AttributePermission } from "./user-profile/attribute/AttributePermission";
@@ -64,7 +63,8 @@ const CreateAttributeFormContent = ({
 }) => {
   const { t } = useTranslation("realm-settings");
   const form = useFormContext();
-  const { realm } = useRealm();
+  const { realm, attributeName } = useParams<AttributeParams>();
+  const editMode = attributeName ? true : false;
 
   return (
     <UserProfileProvider>
@@ -88,7 +88,7 @@ const CreateAttributeFormContent = ({
             type="submit"
             data-testid="attribute-create"
           >
-            {t("common:create")}
+            {editMode ? t("common:save") : t("common:create")}
           </Button>
           <Link
             to={toUserProfile({ realm, tab: "attributes" })}

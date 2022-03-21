@@ -21,8 +21,10 @@ import "../../realm-settings-section.css";
 
 const ENABLED_REQUIRED_WHEN = ["Always", "Scopes are requested"] as const;
 const REQUIRED_FOR = [
-	{ label: "Both users and admins", value: ["admin", "user"]}, { label: "Only users", value: "user" },{ label: "Only admins", value: "admin" }
-  ] as const;
+  { label: "Both users and admins", value: ["admin", "user"] },
+  { label: "Only users", value: "user" },
+  { label: "Only admins", value: "admin" },
+] as const;
 
 export const AttributeGeneralSettings = () => {
   const { t } = useTranslation("realm-settings");
@@ -137,7 +139,7 @@ export const AttributeGeneralSettings = () => {
           name="enabledWhen"
           data-testid="enabledWhen"
           control={form.control}
-		  defaultValue={ENABLED_REQUIRED_WHEN[0]}
+          defaultValue={ENABLED_REQUIRED_WHEN[0]}
           render={({ onChange, value }) => (
             <>
               {ENABLED_REQUIRED_WHEN.map((option) => (
@@ -163,7 +165,7 @@ export const AttributeGeneralSettings = () => {
         <Controller
           name="scopes"
           control={form.control}
-		  defaultValue={[]}
+          defaultValue={[]}
           render={({
             onChange,
             value,
@@ -186,14 +188,14 @@ export const AttributeGeneralSettings = () => {
               onSelect={(_, selectedValue) => {
                 const option = selectedValue.toString();
                 let changedValue = [""];
-				if (value) {
+                if (value) {
                   changedValue = value.includes(option)
                     ? value.filter((item) => item !== option)
                     : [...value, option];
                 } else {
                   changedValue = [option];
-				}
-				
+                }
+
                 onChange(changedValue);
               }}
               onClear={(selectedValues) => {
@@ -254,7 +256,13 @@ export const AttributeGeneralSettings = () => {
                   data-testid={option}
                   isChecked={value === option.value}
                   name="roles"
-                  onChange={() => onChange(Array.isArray(option.value) ? option.value : [option.value])}
+                  onChange={() =>
+                    onChange(
+                      Array.isArray(option.value)
+                        ? option.value
+                        : [option.value]
+                    )
+                  }
                   label={option.label}
                   className="kc-requiredFor-option"
                 />
@@ -298,7 +306,7 @@ export const AttributeGeneralSettings = () => {
         <Controller
           name="scopeRequired"
           control={form.control}
-		  defaultValue={[]}
+          defaultValue={[]}
           render={({
             onChange,
             value,
@@ -306,8 +314,8 @@ export const AttributeGeneralSettings = () => {
             onChange: (newValue: string[]) => void;
             value: string[];
           }) => (
-			<Select
-			  name="scopeRequired"
+            <Select
+              name="scopeRequired"
               data-testid="required-when-scope-field"
               variant={SelectVariant.typeaheadMulti}
               typeAheadAriaLabel="Select"
@@ -322,26 +330,26 @@ export const AttributeGeneralSettings = () => {
                 const option = selectedValue.toString();
                 let changedValue = [""];
                 if (value) {
-	              changedValue = value.includes(option)
-	              ? value.filter((item) => item !== option)
-	              : [...value, option];
+                  changedValue = value.includes(option)
+                    ? value.filter((item) => item !== option)
+                    : [...value, option];
                 } else {
-	            changedValue = [option];
-              }
-              onChange(changedValue);
-            }}
-            onClear={(selectedValues) => {
-              selectedValues.stopPropagation();
-              onChange([]);
-            }}
-            isOpen={selectRequiredForOpen}
-            isDisabled={requiredWhenSelection === "Always"}
-            aria-labelledby={"scope"}
-          > 
-            {clientScopes?.map((option) => (
-              <SelectOption key={option.name} value={option.name} />
-            ))}
-          </Select>
+                  changedValue = [option];
+                }
+                onChange(changedValue);
+              }}
+              onClear={(selectedValues) => {
+                selectedValues.stopPropagation();
+                onChange([]);
+              }}
+              isOpen={selectRequiredForOpen}
+              isDisabled={requiredWhenSelection === "Always"}
+              aria-labelledby={"scope"}
+            >
+              {clientScopes?.map((option) => (
+                <SelectOption key={option.name} value={option.name} />
+              ))}
+            </Select>
           )}
         />
       </FormGroup>
