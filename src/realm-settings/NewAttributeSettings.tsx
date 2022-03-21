@@ -8,7 +8,7 @@ import {
 } from "@patternfly/react-core";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { ScrollForm } from "../components/scroll-form/ScrollForm";
 import { useRealm } from "../context/realm-context/RealmContext";
 import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
@@ -25,6 +25,7 @@ import { UserProfileProvider } from "./user-profile/UserProfileContext";
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import type { KeyValueType } from "../components/attribute-form/attribute-convert";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
+import type { AttributeParams } from "./routes/Attribute";
 
 type UserProfileAttributeType = UserProfileAttribute &
   AttributeRequired &
@@ -103,7 +104,7 @@ const CreateAttributeFormContent = ({
 };
 
 export default function NewAttributeSettings() {
-  const { realm: realmName } = useRealm();
+  const { realm, attributeName } = useParams<AttributeParams>();
   const adminClient = useAdminClient();
   const form = useForm<UserProfileConfig>();
   const { t } = useTranslation("realm-settings");
@@ -112,11 +113,12 @@ export default function NewAttributeSettings() {
   const [config, setConfig] = useState<UserProfileConfig | null>(null);
   const [clientScopes, setClientScopes] =
     useState<ClientScopeRepresentation[]>();
+  const editMode = attributeName ? true : false;
 
   useFetch(
     () =>
       Promise.all([
-        adminClient.users.getProfile({ realm: realmName }),
+        adminClient.users.getProfile({ realm }),
         adminClient.clientScopes.find(),
       ]),
     ([config, clientScopes]) => {
@@ -168,10 +170,10 @@ export default function NewAttributeSettings() {
     try {
       await adminClient.users.updateProfile({
         attributes: newAttributesList,
-        realm: realmName,
+        realm,
       });
 
-      history.push(toUserProfile({ realm: realmName, tab: "attributes" }));
+      history.push(toUserProfile({ realm, tab: "attributes" }));
 
       addAlert(
         t("realm-settings:createAttributeSuccess"),
@@ -185,8 +187,8 @@ export default function NewAttributeSettings() {
   return (
     <FormProvider {...form}>
       <ViewHeader
-        titleKey={t("createAttribute")}
-        subKey={t("createAttributeSubTitle")}
+        titleKey={editMode ? attributeName : t("createAttribute")}
+        subKey={editMode ? "" : t("createAttributeSubTitle")}
       />
       <PageSection variant="light">
         <CreateAttributeFormContent save={() => form.handleSubmit(save)()} />
