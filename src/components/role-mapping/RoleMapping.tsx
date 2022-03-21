@@ -186,7 +186,7 @@ export const RoleMapping = ({
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: "clients:removeMappingTitle",
-    messageKey: t("removeMappingConfirm", { count: selected.length }),
+    messageKey: t("clients:removeMappingConfirm", { count: selected.length }),
     continueButtonLabel: "common:remove",
     continueButtonVariant: ButtonVariant.danger,
     onConfirm: async () => {
@@ -243,7 +243,7 @@ export const RoleMapping = ({
           <>
             <ToolbarItem>
               <Checkbox
-                label={t("hideInheritedRoles")}
+                label={t("common:hideInheritedRoles")}
                 id="hideInheritedRoles"
                 isChecked={hide}
                 onChange={(check) => {
@@ -304,7 +304,7 @@ export const RoleMapping = ({
           <ListEmptyState
             message={t("noRoles")}
             instructions={t("noRolesInstructions")}
-            primaryActionText={t("assignRole")}
+            primaryActionText={t("common:assignRole")}
             onPrimaryAction={() => setShowAssign(true)}
           />
         }

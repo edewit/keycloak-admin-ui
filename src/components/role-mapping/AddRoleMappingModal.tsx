@@ -228,7 +228,7 @@ export const AddRoleMappingModal = ({
               hasInlineFilter
               placeholderText={
                 <>
-                  <FilterIcon /> {t("filterByOrigin")}
+                  <FilterIcon /> {t("clients:filterByOrigin")}
                 </>
               }
               isGrouped
