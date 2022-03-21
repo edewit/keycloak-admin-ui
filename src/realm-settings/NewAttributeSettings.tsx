@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActionGroup,
   AlertVariant,
@@ -26,15 +26,14 @@ import type { KeyValueType } from "../components/attribute-form/attribute-conver
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 import type { AttributeParams } from "./routes/Attribute";
 
-type UserProfileAttributeType = UserProfileAttribute &
-  AttributeRequired &
-  Permission;
+type UserProfileAttributeType = UserProfileAttribute & Attribute & Permission;
 
-type AttributeRequired = {
+type Attribute = {
   roles: string[];
+  scopes: string[];
   scopeRequired: string[];
-  enabledWhen: boolean;
-  requiredWhen: boolean;
+  enabledWhen: string;
+  requiredWhen: string;
 };
 
 type Permission = {
@@ -113,6 +112,7 @@ export default function NewAttributeSettings() {
   const [config, setConfig] = useState<UserProfileConfig | null>(null);
   const [clientScopes, setClientScopes] =
     useState<ClientScopeRepresentation[]>();
+  const attributes = config?.attributes;
   const editMode = attributeName ? true : false;
 
   useFetch(
@@ -128,20 +128,34 @@ export default function NewAttributeSettings() {
     []
   );
 
+  const attribute = attributes?.find(
+    (attribute) => attribute.name === attributeName
+  );
+
+  console.log("attribute >>>>> ", attribute);
+
+  useEffect(() => {
+    form.setValue("name", attribute?.name);
+    form.setValue("displayName", attribute?.displayName);
+    form.setValue("attributeGroup", attribute?.group);
+  }, [attributes]);
+
   const save = async (profileConfig: UserProfileAttributeType) => {
     const scopeNames = clientScopes?.map((clientScope) => clientScope.name);
 
     const selector = {
-      scopes: profileConfig.enabledWhen
-        ? scopeNames
-        : profileConfig.selector?.scopes,
+      scopes:
+        profileConfig.enabledWhen === "Always"
+          ? scopeNames
+          : profileConfig.scopes,
     };
 
     const required = {
       roles: profileConfig.roles,
-      scopes: profileConfig.requiredWhen
-        ? scopeNames
-        : profileConfig.scopeRequired,
+      scopes:
+        profileConfig.requiredWhen === "Always"
+          ? scopeNames
+          : profileConfig.scopeRequired,
     };
 
     const validations = profileConfig.validations?.reduce(
