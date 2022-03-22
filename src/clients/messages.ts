@@ -352,6 +352,7 @@ export default {
     standardFlow: "Standard flow",
     directAccess: "Direct access grants",
     serviceAccount: "Service accounts roles",
+    serviceAccountUser: "Service account user",
     oauthDeviceAuthorizationGrant: "OAuth 2.0 Device Authorization Grant",
     oidcCibaGrant: "OIDC CIBA Grant",
     enableServiceAccount: "Enable service account roles",

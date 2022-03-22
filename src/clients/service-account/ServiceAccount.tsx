@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { AlertVariant } from "@patternfly/react-core";
+import {
+  AlertVariant,
+  Form,
+  FormGroup,
+  PageSection,
+} from "@patternfly/react-core";
 
 import type UserRepresentation from "@keycloak/keycloak-admin-client/lib/defs/userRepresentation";
 import type { RoleMappingPayload } from "@keycloak/keycloak-admin-client/lib/defs/roleRepresentation";
@@ -12,6 +18,10 @@ import {
   RoleMapping,
   Row,
 } from "../../components/role-mapping/RoleMapping";
+import { KeycloakSpinner } from "../../components/keycloak-spinner/KeycloakSpinner";
+import { HelpItem } from "../../components/help-enabler/HelpItem";
+import { toUser } from "../../user/routes/User";
+import { useRealm } from "../../context/realm-context/RealmContext";
 
 type ServiceAccountProps = {
   client: ClientRepresentation;
@@ -21,6 +31,7 @@ export const ServiceAccount = ({ client }: ServiceAccountProps) => {
   const { t } = useTranslation("clients");
   const adminClient = useAdminClient();
   const { addAlert, addError } = useAlerts();
+  const { realm } = useRealm();
 
   const [hide, setHide] = useState(false);
   const [serviceAccount, setServiceAccount] = useState<UserRepresentation>();
@@ -98,13 +109,38 @@ export const ServiceAccount = ({ client }: ServiceAccountProps) => {
     }
   };
   return serviceAccount ? (
-    <RoleMapping
-      name={client.clientId!}
-      id={serviceAccount.id!}
-      type="users"
-      loader={loader}
-      save={assignRoles}
-      onHideRolesToggle={() => setHide(!hide)}
-    />
-  ) : null;
+    <>
+      <PageSection className="pf-u-pb-0">
+        <Form>
+          <FormGroup
+            hasNoPaddingTop
+            label={t("serviceAccountUser")}
+            fieldId="serviceAccountUser"
+            labelIcon={
+              <HelpItem
+                helpText="clients-help:serviceAccountUser"
+                fieldLabelId="clients:serviceAccountUser"
+              />
+            }
+          >
+            <Link
+              to={toUser({ realm, id: serviceAccount.id!, tab: "settings" })}
+            >
+              {serviceAccount.username}
+            </Link>
+          </FormGroup>
+        </Form>
+      </PageSection>
+      <RoleMapping
+        name={client.clientId!}
+        id={serviceAccount.id!}
+        type="users"
+        loader={loader}
+        save={assignRoles}
+        onHideRolesToggle={() => setHide(!hide)}
+      />
+    </>
+  ) : (
+    <KeycloakSpinner />
+  );
 };
