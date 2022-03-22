@@ -135,6 +135,8 @@ export default function NewAttributeSettings() {
     (attribute) => attribute.name === attributeName
   );
 
+  console.log(">>>> attr", attribute);
+
   if (attribute) {
     const scopesComparison = arrayEquals(
       attribute.selector?.scopes,
@@ -147,14 +149,24 @@ export default function NewAttributeSettings() {
 
     const attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
 
+    const attributeRequiredContents = Object.entries(attribute.required!).map(
+      ([key, value]) => ({ key, value })
+    );
+
+    const AttributeRequired =
+      attributeRequiredContents.length !== 0 ? true : false;
+
     form.setValue("name", attribute.name);
     form.setValue("displayName", attribute.displayName);
     form.setValue("attributeGroup", attribute.group);
     form.setValue("enabledWhen", attributeScopesEnabledWhen);
     form.setValue("scopes", attributeScopes);
+    form.setValue("required", AttributeRequired);
   }
 
   const save = async (profileConfig: UserProfileAttributeType) => {
+    console.log(">>>> profileConfig ", profileConfig);
+
     const selector = {
       scopes:
         profileConfig.enabledWhen === "Always"
