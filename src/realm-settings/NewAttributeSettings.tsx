@@ -128,9 +128,16 @@ export default function NewAttributeSettings() {
     []
   );
 
+  const scopeNames = clientScopes?.map((clientScope) => clientScope.name);
+
   const attribute = attributes?.find(
     (attribute) => attribute.name === attributeName
   );
+
+  const attributeScopes =
+    attribute?.selector?.scopes?.length === 9 //scopeNames?.length
+      ? "Always"
+      : "Scopes are requested";
 
   console.log("attribute >>>>> ", attribute);
 
@@ -138,11 +145,10 @@ export default function NewAttributeSettings() {
     form.setValue("name", attribute?.name);
     form.setValue("displayName", attribute?.displayName);
     form.setValue("attributeGroup", attribute?.group);
+    form.setValue("enabledWhen", attributeScopes);
   }, [attributes]);
 
   const save = async (profileConfig: UserProfileAttributeType) => {
-    const scopeNames = clientScopes?.map((clientScope) => clientScope.name);
-
     const selector = {
       scopes:
         profileConfig.enabledWhen === "Always"
