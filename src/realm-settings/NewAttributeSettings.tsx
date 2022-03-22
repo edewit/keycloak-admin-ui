@@ -153,15 +153,37 @@ export default function NewAttributeSettings() {
       ([key, value]) => ({ key, value })
     );
 
-    const AttributeRequired =
+    const attributeRequired =
       attributeRequiredContents.length !== 0 ? true : false;
+
+    const requiredWhenScopesComparison = arrayEquals(
+      attribute.required?.scopes,
+      scopeNames
+    );
+
+    const attributeScopesRequiredWhen = requiredWhenScopesComparison
+      ? "Always"
+      : "Scopes are requested";
+
+    const attributeRequiredWhenScopes = requiredWhenScopesComparison
+      ? []
+      : attribute.required?.scopes;
 
     form.setValue("name", attribute.name);
     form.setValue("displayName", attribute.displayName);
     form.setValue("attributeGroup", attribute.group);
     form.setValue("enabledWhen", attributeScopesEnabledWhen);
     form.setValue("scopes", attributeScopes);
-    form.setValue("required", AttributeRequired);
+    form.setValue("required", attributeRequired);
+
+    if (attribute.required) {
+      const roles = [];
+      roles.push(attribute.required.roles);
+      form.setValue("roles", roles);
+    }
+
+    form.setValue("requiredWhen", attributeScopesRequiredWhen);
+    form.setValue("scopeRequired", attributeRequiredWhenScopes);
   }
 
   const save = async (profileConfig: UserProfileAttributeType) => {
