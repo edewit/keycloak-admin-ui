@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ActionGroup,
   AlertVariant,
@@ -25,6 +25,7 @@ import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/d
 import type { KeyValueType } from "../components/attribute-form/attribute-convert";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 import type { AttributeParams } from "./routes/Attribute";
+import { arrayEquals } from "../util";
 
 type UserProfileAttributeType = UserProfileAttribute & Attribute & Permission;
 
@@ -134,19 +135,24 @@ export default function NewAttributeSettings() {
     (attribute) => attribute.name === attributeName
   );
 
-  const attributeScopes =
-    attribute?.selector?.scopes?.length === 9 //scopeNames?.length
+  if (attribute) {
+    const scopesComparison = arrayEquals(
+      attribute.selector?.scopes,
+      scopeNames
+    );
+
+    const attributeScopesEnabledWhen = scopesComparison
       ? "Always"
       : "Scopes are requested";
 
-  console.log("attribute >>>>> ", attribute);
+    const attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
 
-  useEffect(() => {
-    form.setValue("name", attribute?.name);
-    form.setValue("displayName", attribute?.displayName);
-    form.setValue("attributeGroup", attribute?.group);
-    form.setValue("enabledWhen", attributeScopes);
-  }, [attributes]);
+    form.setValue("name", attribute.name);
+    form.setValue("displayName", attribute.displayName);
+    form.setValue("attributeGroup", attribute.group);
+    form.setValue("enabledWhen", attributeScopesEnabledWhen);
+    form.setValue("scopes", attributeScopes);
+  }
 
   const save = async (profileConfig: UserProfileAttributeType) => {
     const selector = {

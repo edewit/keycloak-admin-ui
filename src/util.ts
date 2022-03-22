@@ -135,3 +135,12 @@ export const emailRegexPattern =
 export const KEY_PROVIDER_TYPE = "org.keycloak.keys.KeyProvider";
 
 export const prettyPrintJSON = (value: any) => JSON.stringify(value, null, 2);
+
+export const arrayEquals = (a: any, b: any) => {
+  return (
+    Array.isArray(a) &&
+    Array.isArray(b) &&
+    a.length === b.length &&
+    a.every((val, index) => val === b[index])
+  );
+};
