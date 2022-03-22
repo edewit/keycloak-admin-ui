@@ -310,7 +310,7 @@ export function KeycloakDataTable<T>({
       setRows(result);
       setLoading(false);
     },
-    [key, first, max, search, loader]
+    [key, first, max, search, typeof loader !== "function" ? loader : undefined]
   );
 
   const convertAction = () =>
