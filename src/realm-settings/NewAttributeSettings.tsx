@@ -175,13 +175,7 @@ export default function NewAttributeSettings() {
     form.setValue("enabledWhen", attributeScopesEnabledWhen);
     form.setValue("scopes", attributeScopes);
     form.setValue("required", attributeRequired);
-
-    if (attribute.required) {
-      const roles = [];
-      roles.push(attribute.required.roles);
-      form.setValue("roles", attribute.required.roles);
-    }
-
+    form.setValue("roles", attribute.required?.roles);
     form.setValue("requiredWhen", attributeScopesRequiredWhen);
     form.setValue("scopeRequired", attributeRequiredWhenScopes);
   }
