@@ -36,13 +36,23 @@ export const AttributeGeneralSettings = () => {
   const [selectRequiredForOpen, setSelectRequiredForOpen] = useState(false);
   const [isAttributeGroupDropdownOpen, setIsAttributeGroupDropdownOpen] =
     useState(false);
-  const [enabledWhenSelection, setEnabledWhenSelection] = useState("Always");
-  const [requiredWhenSelection, setRequiredWhenSelection] = useState("Always");
 
   const requiredToggle = useWatch({
     control: form.control,
     name: "required",
     defaultValue: false,
+  });
+
+  const isRequiredWhenDisabled = useWatch({
+    control: form.control,
+    name: "requiredWhen",
+    defaultValue: "",
+  });
+
+  const isEnabledWhenDisabled = useWatch({
+    control: form.control,
+    name: "enabledWhen",
+    defaultValue: "",
   });
 
   useFetch(
@@ -157,7 +167,7 @@ export const AttributeGeneralSettings = () => {
                   name="enabledWhen"
                   onChange={() => {
                     onChange(option);
-                    setEnabledWhenSelection(option);
+                    form.setValue("enabledWhen", option);
                   }}
                   label={option}
                   className="pf-u-mb-md"
@@ -209,7 +219,7 @@ export const AttributeGeneralSettings = () => {
                 onChange([]);
               }}
               isOpen={selectEnabledWhenOpen}
-              isDisabled={enabledWhenSelection === "Always"}
+              isDisabled={isEnabledWhenDisabled === "Always"}
               aria-labelledby={"scope"}
             >
               {clientScopes?.map((option) => (
@@ -300,7 +310,7 @@ export const AttributeGeneralSettings = () => {
                       name="requiredWhen"
                       onChange={() => {
                         onChange(option);
-                        setRequiredWhenSelection(option);
+                        form.setValue("requiredWhen", option);
                       }}
                       label={option}
                       className="pf-u-mb-md"
@@ -351,7 +361,7 @@ export const AttributeGeneralSettings = () => {
                     onChange([]);
                   }}
                   isOpen={selectRequiredForOpen}
-                  isDisabled={requiredWhenSelection === "Always"}
+                  isDisabled={isRequiredWhenDisabled === "Always"}
                   aria-labelledby={"scope"}
                 >
                   {clientScopes?.map((option) => (
