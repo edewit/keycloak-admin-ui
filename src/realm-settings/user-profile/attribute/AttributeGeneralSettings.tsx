@@ -55,6 +55,14 @@ export const AttributeGeneralSettings = () => {
     defaultValue: "",
   });
 
+  if (isRequiredWhenDisabled === "Always") {
+    form.setValue("scopeRequired", []);
+  }
+
+  if (isEnabledWhenDisabled === "Always") {
+    form.setValue("scopes", []);
+  }
+
   useFetch(
     () => adminClient.clientScopes.find(),
     (clientScopes) => {

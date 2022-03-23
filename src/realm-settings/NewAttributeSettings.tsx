@@ -179,7 +179,7 @@ export default function NewAttributeSettings() {
     if (attribute.required) {
       const roles = [];
       roles.push(attribute.required.roles);
-      form.setValue("roles", roles);
+      form.setValue("roles", attribute.required.roles);
     }
 
     form.setValue("requiredWhen", attributeScopesRequiredWhen);
