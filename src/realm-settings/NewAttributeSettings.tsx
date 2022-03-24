@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActionGroup,
   AlertVariant,
@@ -22,10 +22,10 @@ import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import { useAlerts } from "../components/alert/Alerts";
 import { UserProfileProvider } from "./user-profile/UserProfileContext";
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
-import type { KeyValueType } from "../components/attribute-form/attribute-convert";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 import type { AttributeParams } from "./routes/Attribute";
 import { arrayEquals } from "../util";
+import type { KeyValueType } from "./AddMessageBundleModal";
 
 type UserProfileAttributeType = UserProfileAttribute & Attribute & Permission;
 
@@ -135,7 +135,13 @@ export default function NewAttributeSettings() {
     (attribute) => attribute.name === attributeName
   );
 
-  console.log(">>>> attr", attribute);
+  let attributeScopesEnabledWhen = "";
+  let attributeRequired = false;
+  let attributeScopesRequiredWhen = "";
+  let attributeScopes: any;
+  let attributeRequiredWhenScopes: any;
+  const attributeAnnotationsKeys: any[] = [];
+  const attributeAnnotationsValues: any[] = [];
 
   if (attribute) {
     const scopesComparison = arrayEquals(
@@ -143,42 +149,65 @@ export default function NewAttributeSettings() {
       scopeNames
     );
 
-    const attributeScopesEnabledWhen = scopesComparison
+    attributeScopesEnabledWhen = scopesComparison
       ? "Always"
       : "Scopes are requested";
 
-    const attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
+    attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
 
     const attributeRequiredContents = Object.entries(attribute.required!).map(
       ([key, value]) => ({ key, value })
     );
 
-    const attributeRequired =
-      attributeRequiredContents.length !== 0 ? true : false;
+    attributeRequired = attributeRequiredContents.length !== 0 ? true : false;
 
     const requiredWhenScopesComparison = arrayEquals(
       attribute.required?.scopes,
       scopeNames
     );
 
-    const attributeScopesRequiredWhen = requiredWhenScopesComparison
+    attributeScopesRequiredWhen = requiredWhenScopesComparison
       ? "Always"
       : "Scopes are requested";
 
-    const attributeRequiredWhenScopes = requiredWhenScopesComparison
+    attributeRequiredWhenScopes = requiredWhenScopesComparison
       ? []
       : attribute.required?.scopes;
 
-    form.setValue("name", attribute.name);
-    form.setValue("displayName", attribute.displayName);
-    form.setValue("attributeGroup", attribute.group);
+    const attributeAnnotations = Object.entries(attribute.annotations!).map(
+      ([key, value]) => ({ key, value })
+    );
+
+    attributeAnnotations.forEach((item, index) => {
+      attributeAnnotationsKeys.push({
+        key: `annotations[${index}].key`,
+        value: item.key,
+      });
+
+      attributeAnnotationsValues.push({
+        key: `annotations[${index}].value`,
+        value: item.value,
+      });
+    });
+  }
+
+  useEffect(() => {
+    form.setValue("name", attribute?.name);
+    form.setValue("displayName", attribute?.displayName);
+    form.setValue("attributeGroup", attribute?.group);
     form.setValue("enabledWhen", attributeScopesEnabledWhen);
     form.setValue("scopes", attributeScopes);
     form.setValue("required", attributeRequired);
-    form.setValue("roles", attribute.required?.roles);
+    form.setValue("roles", attribute?.required?.roles);
     form.setValue("requiredWhen", attributeScopesRequiredWhen);
     form.setValue("scopeRequired", attributeRequiredWhenScopes);
-  }
+    attributeAnnotationsKeys.forEach((attribute) =>
+      form.setValue(attribute.key, attribute.value)
+    );
+    attributeAnnotationsValues.forEach((attribute) =>
+      form.setValue(attribute.key, attribute.value)
+    );
+  }, [attribute]);
 
   const save = async (profileConfig: UserProfileAttributeType) => {
     console.log(">>>> profileConfig ", profileConfig);
