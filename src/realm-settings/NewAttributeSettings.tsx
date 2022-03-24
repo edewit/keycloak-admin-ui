@@ -22,10 +22,10 @@ import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import { useAlerts } from "../components/alert/Alerts";
 import { UserProfileProvider } from "./user-profile/UserProfileContext";
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
+import type { KeyValueType } from "../components/attribute-form/attribute-convert";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 import type { AttributeParams } from "./routes/Attribute";
 import { arrayEquals } from "../util";
-import type { KeyValueType } from "./AddMessageBundleModal";
 
 type UserProfileAttributeType = UserProfileAttribute & Attribute & Permission;
 
@@ -130,50 +130,43 @@ export default function NewAttributeSettings() {
   );
 
   const scopeNames = clientScopes?.map((clientScope) => clientScope.name);
-  console.log(">>>>> scopeNames ", scopeNames);
 
   const attribute = attributes?.find(
     (attribute) => attribute.name === attributeName
   );
 
-  let attributeScopesEnabledWhen = "";
-  let attributeRequired = false;
-  let attributeScopesRequiredWhen = "";
-  let attributeScopes: any;
-  let attributeRequiredWhenScopes: any;
   const attributeAnnotationsKeys: any[] = [];
   const attributeAnnotationsValues: any[] = [];
 
   if (attribute) {
-    let scopesComparison = false;
-    if (scopeNames?.length !== 0) {
-      scopesComparison = arrayEquals(attribute.selector?.scopes!, scopeNames);
-    } else {
-      scopesComparison = false;
-    }
+    const scopesComparison = arrayEquals(
+      attribute.selector?.scopes,
+      scopeNames
+    );
 
-    attributeScopesEnabledWhen = scopesComparison
+    const attributeScopesEnabledWhen = scopesComparison
       ? "Always"
       : "Scopes are requested";
 
-    attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
+    const attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
 
     const attributeRequiredContents = Object.entries(attribute.required!).map(
       ([key, value]) => ({ key, value })
     );
 
-    attributeRequired = attributeRequiredContents.length !== 0 ? true : false;
+    const attributeRequired =
+      attributeRequiredContents.length !== 0 ? true : false;
 
     const requiredWhenScopesComparison = arrayEquals(
       attribute.required?.scopes,
       scopeNames
     );
 
-    attributeScopesRequiredWhen = requiredWhenScopesComparison
+    const attributeScopesRequiredWhen = requiredWhenScopesComparison
       ? "Always"
       : "Scopes are requested";
 
-    attributeRequiredWhenScopes = requiredWhenScopesComparison
+    const attributeRequiredWhenScopes = requiredWhenScopesComparison
       ? []
       : attribute.required?.scopes;
 
@@ -192,18 +185,19 @@ export default function NewAttributeSettings() {
         value: item.value,
       });
     });
-  }
 
-  useEffect(() => {
-    form.setValue("name", attribute?.name);
-    form.setValue("displayName", attribute?.displayName);
-    form.setValue("attributeGroup", attribute?.group);
+    form.setValue("name", attribute.name);
+    form.setValue("displayName", attribute.displayName);
+    form.setValue("attributeGroup", attribute.group);
     form.setValue("enabledWhen", attributeScopesEnabledWhen);
     form.setValue("scopes", attributeScopes);
     form.setValue("required", attributeRequired);
-    form.setValue("roles", attribute?.required?.roles);
+    form.setValue("roles", attribute.required?.roles);
     form.setValue("requiredWhen", attributeScopesRequiredWhen);
     form.setValue("scopeRequired", attributeRequiredWhenScopes);
+  }
+
+  useEffect(() => {
     attributeAnnotationsKeys.forEach((attribute) =>
       form.setValue(attribute.key, attribute.value)
     );
