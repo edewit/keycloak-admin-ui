@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import {
-  AlertVariant,
-  Form,
-  FormGroup,
-  PageSection,
-} from "@patternfly/react-core";
+import { Trans, useTranslation } from "react-i18next";
+import { AlertVariant, PageSection } from "@patternfly/react-core";
+import { InfoCircleIcon } from "@patternfly/react-icons";
 
 import type UserRepresentation from "@keycloak/keycloak-admin-client/lib/defs/userRepresentation";
 import type { RoleMappingPayload } from "@keycloak/keycloak-admin-client/lib/defs/roleRepresentation";
@@ -19,9 +15,10 @@ import {
   Row,
 } from "../../components/role-mapping/RoleMapping";
 import { KeycloakSpinner } from "../../components/keycloak-spinner/KeycloakSpinner";
-import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { toUser } from "../../user/routes/User";
 import { useRealm } from "../../context/realm-context/RealmContext";
+
+import "./service-account.css";
 
 type ServiceAccountProps = {
   client: ClientRepresentation;
@@ -111,25 +108,17 @@ export const ServiceAccount = ({ client }: ServiceAccountProps) => {
   return serviceAccount ? (
     <>
       <PageSection className="pf-u-pb-0">
-        <Form>
-          <FormGroup
-            hasNoPaddingTop
-            label={t("serviceAccountUser")}
-            fieldId="serviceAccountUser"
-            labelIcon={
-              <HelpItem
-                helpText="clients-help:serviceAccountUser"
-                fieldLabelId="clients:serviceAccountUser"
-              />
-            }
-          >
+        <InfoCircleIcon className="pf-c-alert__icon keycloak--service-account--info-text" />
+        <span className="pf-u-pl-sm">
+          <Trans i18nKey="clients-help:manageServiceAccountUser">
+            {""}
             <Link
               to={toUser({ realm, id: serviceAccount.id!, tab: "settings" })}
             >
-              {serviceAccount.username}
+              {{ link: serviceAccount.username }}
             </Link>
-          </FormGroup>
-        </Form>
+          </Trans>
+        </span>
       </PageSection>
       <RoleMapping
         name={client.clientId!}
