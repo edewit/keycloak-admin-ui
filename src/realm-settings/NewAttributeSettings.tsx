@@ -130,6 +130,7 @@ export default function NewAttributeSettings() {
   );
 
   const scopeNames = clientScopes?.map((clientScope) => clientScope.name);
+  console.log(">>>>> scopeNames ", scopeNames);
 
   const attribute = attributes?.find(
     (attribute) => attribute.name === attributeName
@@ -144,10 +145,12 @@ export default function NewAttributeSettings() {
   const attributeAnnotationsValues: any[] = [];
 
   if (attribute) {
-    const scopesComparison = arrayEquals(
-      attribute.selector?.scopes,
-      scopeNames
-    );
+    let scopesComparison = false;
+    if (scopeNames?.length !== 0) {
+      scopesComparison = arrayEquals(attribute.selector?.scopes!, scopeNames);
+    } else {
+      scopesComparison = false;
+    }
 
     attributeScopesEnabledWhen = scopesComparison
       ? "Always"
@@ -210,8 +213,6 @@ export default function NewAttributeSettings() {
   }, [attribute]);
 
   const save = async (profileConfig: UserProfileAttributeType) => {
-    console.log(">>>> profileConfig ", profileConfig);
-
     const selector = {
       scopes:
         profileConfig.enabledWhen === "Always"
