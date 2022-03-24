@@ -36,7 +36,7 @@ export const AttributeValidations = () => {
   const [addValidatorModalOpen, toggleModal] = useToggle();
   const [validatorToDelete, setValidatorToDelete] =
     useState<{ name: string }>();
-  const { setValue, control, register } = useFormContext();
+  const { getValues, setValue, control, register } = useFormContext();
   const { attributeName } = useParams<AttributeParams>();
   const { config } = useUserProfile();
   const attributes = config?.attributes;
@@ -52,10 +52,25 @@ export const AttributeValidations = () => {
 
   const attributeValidators = Object.entries(attribute?.validations ?? []).map(
     ([key, value]) => ({
-      key,
-      value,
+      name: key,
+      config: value,
     })
   );
+
+  let updatedEditValidatorsValues: Validator[] = [];
+  const updatedEditValidators = getValues();
+
+  if (updatedEditValidators.validations) {
+    updatedEditValidatorsValues = Object.assign(
+      updatedEditValidatorsValues,
+      updatedEditValidators.validations
+    );
+  } else {
+    updatedEditValidatorsValues = Object.assign(
+      updatedEditValidatorsValues,
+      attributeValidators
+    );
+  }
 
   useEffect(() => register("validations"), []);
 
@@ -70,7 +85,14 @@ export const AttributeValidations = () => {
       const updatedValidators = validators.filter(
         (validator) => validator.name !== validatorToDelete?.name
       );
-      setValue("validations", [...updatedValidators]);
+
+      const updatedEditValidators = updatedEditValidatorsValues.filter(
+        (validator) => validator.name !== validatorToDelete?.name
+      );
+      setValue(
+        "validations",
+        editMode ? [...updatedEditValidators] : [...updatedValidators]
+      );
     },
   });
 
@@ -136,13 +158,13 @@ export const AttributeValidations = () => {
                     </Td>
                   </Tr>
                 ))
-              : attributeValidators.map((validator) => (
-                  <Tr key={validator.key}>
+              : updatedEditValidatorsValues.map((validator) => (
+                  <Tr key={validator.name}>
                     <Td dataLabel={t("validatorColNames.colName")}>
-                      {validator.key}
+                      {validator.name}
                     </Td>
                     <Td dataLabel={t("validatorColNames.colConfig")}>
-                      {JSON.stringify(validator.value)}
+                      {JSON.stringify(validator.config)}
                     </Td>
                     <Td>
                       <Button
@@ -152,7 +174,7 @@ export const AttributeValidations = () => {
                         onClick={() => {
                           toggleDeleteDialog();
                           setValidatorToDelete({
-                            name: validator.key,
+                            name: validator.name,
                           });
                         }}
                       >
@@ -161,11 +183,15 @@ export const AttributeValidations = () => {
                     </Td>
                   </Tr>
                 ))}
-            {validators.length === 0 && attributeValidators.length === 0 && (
-              <Text className="kc-emptyValidators" component={TextVariants.h6}>
-                {t("realm-settings:emptyValidators")}
-              </Text>
-            )}
+            {validators.length === 0 &&
+              updatedEditValidatorsValues.length === 0 && (
+                <Text
+                  className="kc-emptyValidators"
+                  component={TextVariants.h6}
+                >
+                  {t("realm-settings:emptyValidators")}
+                </Text>
+              )}
           </Tbody>
         </TableComposable>
       </div>
