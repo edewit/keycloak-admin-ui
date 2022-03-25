@@ -48,7 +48,11 @@ export default class AuthorizationTab {
   }
 
   goToExportSubTab() {
+    cy.intercept(
+      "/admin/realms/master/clients/*/authz/resource-server/settings"
+    ).as("export-load");
     cy.findByTestId(this.exportTabName).click();
+    cy.wait(["@export-load"]);
     return this;
   }
 
@@ -181,13 +185,5 @@ export default class AuthorizationTab {
   assertResource(name: string) {
     this.getResourceLink(name).should("exist");
     return this;
-  }
-
-  waitForExportLoad(callback: () => void) {
-    cy.intercept(
-      "/admin/realms/master/clients/*/authz/resource-server/settings"
-    ).as("export-load");
-    callback();
-    cy.wait(["@export-load"]);
   }
 }
