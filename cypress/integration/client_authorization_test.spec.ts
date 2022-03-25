@@ -149,10 +149,11 @@ describe("Client authentication subtab", () => {
     authenticationTab.cancel();
   });
 
-  it("Should copy auth details", () => {
-    authenticationTab.goToExportSubTab();
+  it.only("Should copy auth details", () => {
+    authenticationTab.waitForExportLoad(() => {
+      authenticationTab.goToExportSubTab();
+    });
     authenticationTab.copy();
-
     masthead.checkNotificationMessage("Authorization details copied.", true);
   });
 

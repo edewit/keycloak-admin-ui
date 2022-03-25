@@ -182,4 +182,12 @@ export default class AuthorizationTab {
     this.getResourceLink(name).should("exist");
     return this;
   }
+
+  waitForExportLoad(callback: () => void) {
+    cy.intercept(
+      "/admin/realms/master/clients/*/authz/resource-server/settings"
+    ).as("export-load");
+    callback();
+    cy.wait(["@export-load"]);
+  }
 }
