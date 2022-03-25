@@ -19,8 +19,8 @@ export default class AddMapperPage {
   private newMapperSaveButton = "new-mapper-save-button";
   private regexAttributeValuesSwitch = "are.attribute.values.regex";
   private syncmodeSelectToggle = "#syncMode";
-  private attributesKeyInput = 'input[name="config.attributes[0].key"]';
-  private attributesValueInput = 'input[name="config.attributes[0].value"]';
+  private attributesKeyInput = '[data-testid="config.attributes[0].key"]';
+  private attributesValueInput = '[data-testid="config.attributes[0].value"]';
   private template = "template";
   private target = "#target";
 
@@ -391,8 +391,8 @@ export default class AddMapperPage {
 
     cy.findByTestId(this.idpMapperSelect).contains("Claim to Role").click();
 
-    cy.findByTestId("attribute-key-input").clear().type("key");
-    cy.findByTestId("attribute-value-input").clear().type("value");
+    cy.get('[data-testid="config.claims-key-input"]').clear().type("key");
+    cy.get('[data-testid="config.claims-value-input"]').clear().type("value");
 
     this.toggleSwitch("are.claim.values.regex");
 

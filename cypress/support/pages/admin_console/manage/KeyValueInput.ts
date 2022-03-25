@@ -1,4 +1,4 @@
-import type { KeyValueType } from "../../../../../src/components/attribute-form/attribute-convert";
+import type { KeyValueType } from "../../../../../src/components/key-value-form/key-value-convert";
 
 export default class KeyValueInput {
   private name: string;
