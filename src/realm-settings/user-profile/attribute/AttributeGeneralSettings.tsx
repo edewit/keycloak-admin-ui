@@ -18,6 +18,8 @@ import { FormAccess } from "../../../components/form-access/FormAccess";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 import "../../realm-settings-section.css";
+import type { AttributeParams } from "../../routes/Attribute";
+import { useParams } from "react-router-dom";
 
 const ENABLED_REQUIRED_WHEN = ["Always", "Scopes are requested"] as const;
 const REQUIRED_FOR = [
@@ -38,6 +40,8 @@ export const AttributeGeneralSettings = () => {
     useState(false);
   const [enabledWhenSelection, setEnabledWhenSelection] = useState("Always");
   const [requiredWhenSelection, setRequiredWhenSelection] = useState("Always");
+  const { attributeName } = useParams<AttributeParams>();
+  const editMode = attributeName ? true : false;
 
   const requiredToggle = useWatch({
     control: form.control,
@@ -96,6 +100,7 @@ export const AttributeGeneralSettings = () => {
             },
           })}
           data-testid="attribute-name"
+          isDisabled={editMode}
         />
         {form.errors.name && (
           <div className="error">{form.errors.name.message}</div>
@@ -285,10 +290,13 @@ export const AttributeGeneralSettings = () => {
                     <Radio
                       id={option.label}
                       key={option.label}
-                      data-testid={option}
+                      data-testid={option.label}
                       isChecked={value === option.value}
                       name="roles"
-                      onChange={() => onChange(option.value)}
+                      onChange={() => {
+                        onChange(option.value);
+                        form.setValue("roles", option.value);
+                      }}
                       label={option.label}
                       className="kc-requiredFor-option"
                     />

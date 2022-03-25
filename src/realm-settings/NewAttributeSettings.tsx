@@ -207,6 +207,7 @@ export default function NewAttributeSettings() {
   }, [attribute]);
 
   const save = async (profileConfig: UserProfileAttributeType) => {
+    console.log(">>>> profileConfig ", profileConfig);
     const selector = {
       scopes:
         profileConfig.enabledWhen === "Always"
