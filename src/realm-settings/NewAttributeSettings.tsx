@@ -137,6 +137,11 @@ export default function NewAttributeSettings() {
 
   const attributeAnnotationsKeys: any[] = [];
   const attributeAnnotationsValues: any[] = [];
+  let attributeScopes: any;
+  let attributeScopesEnabledWhen = "";
+  let attributeRequired = false;
+  let attributeScopesRequiredWhen = "";
+  let attributeRequiredWhenScopes: any;
 
   if (attribute) {
     const scopesComparison = arrayEquals(
@@ -144,29 +149,28 @@ export default function NewAttributeSettings() {
       scopeNames
     );
 
-    const attributeScopesEnabledWhen = scopesComparison
+    attributeScopesEnabledWhen = scopesComparison
       ? "Always"
       : "Scopes are requested";
 
-    const attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
+    attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
 
     const attributeRequiredContents = Object.entries(attribute.required!).map(
       ([key, value]) => ({ key, value })
     );
 
-    const attributeRequired =
-      attributeRequiredContents.length !== 0 ? true : false;
+    attributeRequired = attributeRequiredContents.length !== 0 ? true : false;
 
     const requiredWhenScopesComparison = arrayEquals(
       attribute.required?.scopes,
       scopeNames
     );
 
-    const attributeScopesRequiredWhen = requiredWhenScopesComparison
+    attributeScopesRequiredWhen = requiredWhenScopesComparison
       ? "Always"
       : "Scopes are requested";
 
-    const attributeRequiredWhenScopes = requiredWhenScopesComparison
+    attributeRequiredWhenScopes = requiredWhenScopesComparison
       ? []
       : attribute.required?.scopes;
 
@@ -185,19 +189,18 @@ export default function NewAttributeSettings() {
         value: item.value,
       });
     });
-
-    form.setValue("name", attribute.name);
-    form.setValue("displayName", attribute.displayName);
-    form.setValue("attributeGroup", attribute.group);
-    form.setValue("enabledWhen", attributeScopesEnabledWhen);
-    form.setValue("scopes", attributeScopes);
-    form.setValue("required", attributeRequired);
-    form.setValue("roles", attribute.required?.roles);
-    form.setValue("requiredWhen", attributeScopesRequiredWhen);
-    form.setValue("scopeRequired", attributeRequiredWhenScopes);
   }
 
   useEffect(() => {
+    form.setValue("name", attribute?.name);
+    form.setValue("displayName", attribute?.displayName);
+    form.setValue("attributeGroup", attribute?.group);
+    form.setValue("enabledWhen", attributeScopesEnabledWhen);
+    form.setValue("scopes", attributeScopes);
+    form.setValue("required", attributeRequired);
+    form.setValue("roles", attribute?.required?.roles);
+    form.setValue("requiredWhen", attributeScopesRequiredWhen);
+    form.setValue("scopeRequired", attributeRequiredWhenScopes);
     attributeAnnotationsKeys.forEach((attribute) =>
       form.setValue(attribute.key, attribute.value)
     );
@@ -207,7 +210,6 @@ export default function NewAttributeSettings() {
   }, [attribute]);
 
   const save = async (profileConfig: UserProfileAttributeType) => {
-    console.log(">>>> profileConfig ", profileConfig);
     const selector = {
       scopes:
         profileConfig.enabledWhen === "Always"
@@ -239,25 +241,42 @@ export default function NewAttributeSettings() {
       {}
     );
 
-    const newAttribute = [
-      {
-        name: profileConfig.name,
-        displayName: profileConfig.displayName,
-        required,
-        validations,
-        selector,
-        permissions: profileConfig.permissions,
-        annotations,
-      },
-    ];
+    const patchAttributes = () =>
+      config?.attributes!.map((attribute) => {
+        if (attribute.name !== attributeName) {
+          return attribute;
+        }
 
-    const newAttributesList = config?.attributes!.concat(
-      newAttribute as UserProfileAttribute
-    );
+        return {
+          ...attribute,
+          name: attributeName,
+          displayName: profileConfig.displayName!,
+          required,
+          validations,
+          selector,
+          permissions: profileConfig.permissions!,
+          annotations,
+        };
+      });
+
+    const addAttribute = () =>
+      config?.attributes!.concat([
+        {
+          name: profileConfig.name,
+          displayName: profileConfig.displayName!,
+          required,
+          validations,
+          selector,
+          permissions: profileConfig.permissions!,
+          annotations,
+        },
+      ] as UserProfileAttribute);
+
+    const updatedAttributes = editMode ? patchAttributes() : addAttribute();
 
     try {
       await adminClient.users.updateProfile({
-        attributes: newAttributesList,
+        attributes: updatedAttributes as UserProfileAttribute[],
         realm,
       });
 

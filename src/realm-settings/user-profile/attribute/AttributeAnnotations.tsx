@@ -11,11 +11,6 @@ export const AttributeAnnotations = () => {
   const { t } = useTranslation("realm-settings");
   const form = useFormContext();
 
-  const element = document.activeElement as HTMLInputElement;
-  if (element.type === "text") {
-    element.blur();
-  }
-
   return (
     <FormAccess role="manage-realm" isHorizontal>
       <FormGroup
