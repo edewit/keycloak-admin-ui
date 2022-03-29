@@ -190,6 +190,7 @@ export const RealmSettingsTabs = ({
     if (r.supportedLocales?.length === 0) {
       setValue("supportedLocales", [DEFAULT_LOCALE]);
     }
+    resetForm(getValues());
   };
 
   useEffect(() => {
