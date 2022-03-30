@@ -66,8 +66,25 @@ export const AttributeGeneralSettings = () => {
   );
 
   console.log("AttributeGeneralSettings attribute >>> ", attribute);
+  // const formValues = form.getValues();
 
   useEffect(() => {
+    // if (formValues.enabledWhen === "") {
+    //   form.setValue("enabledWhen", "Always");
+    // }
+
+    // if (formValues.requiredWhen === "") {
+    //   form.setValue("scopeRequired", "Always");
+    // }
+
+    // if (formValues.enabledWhen === "Always") {
+    //   form.setValue("scopes", []);
+    // }
+
+    // if (formValues.requiredWhen === "Always") {
+    //   form.setValue("scopeRequired", []);
+    // }
+
     if (attribute) {
       form.setValue("name", attribute?.name);
       form.setValue("displayName", attribute?.displayName);
