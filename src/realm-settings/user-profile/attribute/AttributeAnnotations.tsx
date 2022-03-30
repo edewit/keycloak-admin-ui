@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import React, { useEffect, useState } from "react";
 import { FormGroup, Grid, GridItem } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";

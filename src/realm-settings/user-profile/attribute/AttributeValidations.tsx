@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import React, { useEffect, useState } from "react";
 import {
   Button,
