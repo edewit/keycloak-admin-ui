@@ -25,38 +25,18 @@ export const AttributeAnnotations = () => {
     []
   );
 
-  const attributeAnnotationsKeys: any[] = [];
-  const attributeAnnotationsValues: any[] = [];
-
   useEffect(() => {
     if (!attribute) {
       return;
     }
-    const attributeAnnotations = Object.entries(attribute).map(
+    const attributeAnnotations = Object.entries(attribute.annotations).map(
       ([key, value]) => ({
         key,
         value,
       })
     );
 
-    attributeAnnotations.forEach((item, index) => {
-      attributeAnnotationsKeys.push({
-        key: `annotations[${index}].key`,
-        value: item.key,
-      });
-
-      attributeAnnotationsValues.push({
-        key: `annotations[${index}].value`,
-        value: item.value,
-      });
-    });
-
-    attributeAnnotationsKeys.forEach((attribute) =>
-      form.setValue(attribute.key, attribute.value)
-    );
-    attributeAnnotationsValues.forEach((attribute) =>
-      form.setValue(attribute.key, attribute.value)
-    );
+    form.setValue("annotations", attributeAnnotations);
   }, [attribute]);
 
   return (
