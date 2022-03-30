@@ -28,7 +28,6 @@ import { useFormContext, useWatch } from "react-hook-form";
 import "../../realm-settings-section.css";
 import type { AttributeParams } from "../../routes/Attribute";
 import { useParams } from "react-router-dom";
-import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 
 export const AttributeValidations = () => {
@@ -39,11 +38,7 @@ export const AttributeValidations = () => {
   const adminClient = useAdminClient();
   const { getValues, setValue, control, register } = useFormContext();
   const { realm, attributeName } = useParams<AttributeParams>();
-  const [config, setConfig] = useState<UserProfileConfig | null>(null);
-  const attributes = config?.attributes;
-  const attribute = attributes?.find(
-    (attribute) => attribute.name === attributeName
-  );
+  const [attribute, setAttribute] = useState<any>();
 
   const editMode = attributeName ? true : false;
   const validators = useWatch<Validator[]>({
@@ -57,7 +52,10 @@ export const AttributeValidations = () => {
 
   useFetch(
     () => adminClient.users.getProfile({ realm }),
-    (config) => setConfig(config),
+    (config) =>
+      setAttribute(
+        config.attributes!.find((attribute) => attribute.name === attributeName)
+      ),
     []
   );
 

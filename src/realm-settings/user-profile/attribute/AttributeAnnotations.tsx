@@ -5,7 +5,6 @@ import { FormAccess } from "../../../components/form-access/FormAccess";
 import { FormProvider, useFormContext } from "react-hook-form";
 import { AttributeInput } from "../../../components/attribute-input/AttributeInput";
 import "../../realm-settings-section.css";
-import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import type { AttributeParams } from "../../routes/Attribute";
 import { useParams } from "react-router-dom";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
@@ -15,28 +14,31 @@ export const AttributeAnnotations = () => {
   const form = useFormContext();
   const adminClient = useAdminClient();
   const { realm, attributeName } = useParams<AttributeParams>();
-  const [config, setConfig] = useState<UserProfileConfig | null>(null);
-  const attributes = config?.attributes;
-  const attribute = attributes?.find(
-    (attribute) => attribute.name === attributeName
-  );
-
-  console.log(">>>> AttributeAnnotations config ", config);
+  const [attribute, setAttribute] = useState<any>();
 
   useFetch(
     () => adminClient.users.getProfile({ realm }),
-    (config) => setConfig(config),
+    (config) =>
+      setAttribute(
+        config.attributes!.find((attribute) => attribute.name === attributeName)
+      ),
     []
   );
 
   const attributeAnnotationsKeys: any[] = [];
   const attributeAnnotationsValues: any[] = [];
 
-  const attributeAnnotations = Object.entries(attribute?.annotations!).map(
-    ([key, value]) => ({ key, value })
-  );
-
   useEffect(() => {
+    if (!attribute) {
+      return;
+    }
+    const attributeAnnotations = Object.entries(attribute).map(
+      ([key, value]) => ({
+        key,
+        value,
+      })
+    );
+
     attributeAnnotations.forEach((item, index) => {
       attributeAnnotationsKeys.push({
         key: `annotations[${index}].key`,

@@ -110,34 +110,34 @@ export const AttributeGeneralSettings = () => {
       attributeRequiredWhenScopes = requiredWhenScopesComparison
         ? []
         : attribute.required?.scopes;
+
+      if (formValues.enabledWhen === "") {
+        form.setValue("enabledWhen", t("always"));
+      }
+
+      if (formValues.requiredWhen === "") {
+        form.setValue("scopeRequired", t("always"));
+      }
+
+      if (formValues.enabledWhen === "Always") {
+        form.setValue("scopes", []);
+      }
+
+      if (formValues.requiredWhen === "Always") {
+        form.setValue("scopeRequired", []);
+      }
+
+      form.setValue("name", attribute?.name);
+      form.setValue("displayName", attribute?.displayName);
+      form.setValue("attributeGroup", attribute?.group);
+      form.setValue("enabledWhen", attributeScopesEnabledWhen);
+      form.setValue("scopes", attributeScopes);
+      form.setValue("required", attributeRequired);
+      form.setValue("roles", attribute?.required?.roles);
+
+      form.setValue("requiredWhen", attributeScopesRequiredWhen);
+      form.setValue("scopeRequired", attributeRequiredWhenScopes);
     }
-
-    if (formValues.enabledWhen === "") {
-      form.setValue("enabledWhen", t("always"));
-    }
-
-    if (formValues.requiredWhen === "") {
-      form.setValue("scopeRequired", t("always"));
-    }
-
-    if (formValues.enabledWhen === "Always") {
-      form.setValue("scopes", []);
-    }
-
-    if (formValues.requiredWhen === "Always") {
-      form.setValue("scopeRequired", []);
-    }
-
-    form.setValue("name", attribute?.name);
-    form.setValue("displayName", attribute?.displayName);
-    form.setValue("attributeGroup", attribute?.group);
-    form.setValue("enabledWhen", attributeScopesEnabledWhen);
-    form.setValue("scopes", attributeScopes);
-    form.setValue("required", attributeRequired);
-    form.setValue("roles", attribute?.required?.roles);
-
-    form.setValue("requiredWhen", attributeScopesRequiredWhen);
-    form.setValue("scopeRequired", attributeRequiredWhenScopes);
   }, [formValues, attribute]);
 
   return (
