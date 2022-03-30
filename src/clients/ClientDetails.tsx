@@ -68,6 +68,7 @@ import {
 } from "./routes/AuthenticationTab";
 import { toClientScopesTab } from "./routes/ClientScopeTab";
 import { AuthorizationExport } from "./authorization/AuthorizationExport";
+import { arrayToAttributes } from "../components/attribute-form/attribute-convert";
 
 type ClientDetailHeaderProps = {
   onChange: (value: boolean) => void;
@@ -216,11 +217,20 @@ export default function ClientDetails() {
   });
 
   const setupForm = (client: ClientRepresentation) => {
+    form.reset({ ...client });
     convertToFormValues(client, form.setValue);
     form.setValue(
       "attributes.request.uris",
       stringToMultiline(client.attributes?.["request.uris"])
     );
+    if (client.attributes?.["acr.loa.map"]) {
+      form.setValue(
+        "attributes.acr.loa.map",
+        Object.entries(JSON.parse(client.attributes["acr.loa.map"])).flatMap(
+          ([key, value]) => ({ key, value })
+        )
+      );
+    }
   };
 
   useFetch(
@@ -261,6 +271,12 @@ export default function ClientDetails() {
 
       const submittedClient =
         convertFormValuesToObject<ClientRepresentation>(values);
+
+      if (submittedClient.attributes?.["acr.loa.map"]) {
+        submittedClient.attributes["acr.loa.map"] = JSON.stringify(
+          arrayToAttributes(submittedClient.attributes["acr.loa.map"])
+        );
+      }
 
       try {
         const newClient: ClientRepresentation = {
@@ -383,7 +399,11 @@ export default function ClientDetails() {
                 title={<TabTitleText>{t("credentials")}</TabTitleText>}
                 {...route("credentials")}
               >
-                <Credentials clientId={clientId} save={() => save()} />
+                <Credentials
+                  form={form}
+                  clientId={clientId}
+                  save={() => save()}
+                />
               </Tab>
             )}
             <Tab

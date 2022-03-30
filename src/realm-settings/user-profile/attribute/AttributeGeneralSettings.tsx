@@ -152,6 +152,8 @@ export const AttributeGeneralSettings = () => {
         }
         fieldId="kc-attribute-name"
         isRequired
+        validated={form.errors.name ? "error" : "default"}
+        helperTextInvalid={form.errors.name?.message}
       >
         <TextInput
           isRequired
@@ -167,10 +169,8 @@ export const AttributeGeneralSettings = () => {
           })}
           data-testid="attribute-name"
           isDisabled={editMode}
+          validated={form.errors.name ? "error" : "default"}
         />
-        {form.errors.name && (
-          <div className="error">{form.errors.name.message}</div>
-        )}
       </FormGroup>
       <FormGroup
         label={t("attributeDisplayName")}

@@ -6,6 +6,8 @@ export default {
       "'OpenID Connect' allows Clients to verify the identity of the End-User based on the authentication performed by an Authorization Server.'SAML' enables web-based authentication and authorization scenarios including cross-domain single sign-on (SSO) and uses security tokens containing assertions to pass information.",
     serviceAccount:
       "Allows you to authenticate this client to Keycloak and retrieve access token dedicated to this client. In terms of OAuth2 specification, this enables support of 'Client Credentials Grant' for this client.",
+    manageServiceAccountUser:
+      "To manage detail and group mappings, click on the username <1>{{link}}</1>",
     authentication:
       "This defines the type of the OIDC client. When it's ON, the OIDC type is set to confidential access type. When it's OFF, it is set to public access type",
     authorization:
@@ -90,6 +92,8 @@ export default {
       "The registration access token provides access for clients to the client registration service.",
     "signature-algorithm":
       "JWA algorithm, which the client needs to use when signing a JWT for authentication. If left blank, the client is allowed to use any algorithm.",
+    allowRegexComparison:
+      "If OFF, then the Subject DN from given client certificate must exactly match the given DN from the 'Subject DN' property as described in the RFC8705 specification. The Subject DN can be in the RFC2553 or RFC1779 format. If ON, then the Subject DN from given client certificate should match regex specified by 'Subject DN' property.",
     subject:
       'A regular expression for validating Subject DN in the Client Certificate. Use "(.*?)(?:$)" to match all kind of expressions.',
     evaluateExplain:
@@ -174,6 +178,10 @@ export default {
       "This enables support for OAuth 2.0 Mutual TLS Certificate Bound Access Tokens, which means that keycloak bind an access token and a refresh token with a X.509 certificate of a token requesting client exchanged in mutual TLS between keycloak's Token Endpoint and this client. These tokens can be treated as Holder-of-Key tokens instead of bearer tokens.",
     keyForCodeExchange:
       "Choose which code challenge method for PKCE is used. If not specified, keycloak does not applies PKCE to a client unless the client sends an authorization request with appropriate code challenge and code exchange method.",
+    pushedAuthorizationRequestRequired:
+      "Boolean parameter indicating whether the authorization server accepts authorization request data only via the pushed authorization request method.",
+    acrToLoAMapping:
+      "Define which ACR (Authentication Context Class Reference) value is mapped to which LoA (Level of Authentication). The ACR can be any value, whereas the LoA must be numeric.",
     assertionConsumerServicePostBindingURL:
       "SAML POST Binding URL for the client's assertion consumer service (login responses). You can leave this blank if you do not have a URL for this binding.",
     assertionConsumerServiceRedirectBindingURL:

@@ -29,7 +29,7 @@ const modalUtils = new ModalUtils();
 const createRealmRolePage = new CreateRealmRolePage();
 
 describe("Clients test", () => {
-  describe("Client details - Client scopes subtab", () => {
+  describe.skip("Client details - Client scopes subtab", () => {
     const clientScopesTab = new ClientScopesTab();
     const clientId = "client-scopes-subtab-test";
     const clientScopeName = "client-scope-test";
@@ -203,7 +203,7 @@ describe("Clients test", () => {
     });*/
   });
 
-  describe("Client creation", () => {
+  describe.skip("Client creation", () => {
     before(() => {
       keycloakBefore();
       loginPage.logIn();
@@ -224,6 +224,30 @@ describe("Clients test", () => {
         .cancel();
 
       cy.url().should("not.include", "/add-client");
+    });
+
+    it("Should check settings elements", () => {
+      listingPage.goToCreateItem();
+      const clientId = "Test settings";
+
+      createClientPage
+        .fillClientData(clientId)
+        .continue()
+        .checkCapabilityConfigElements()
+        .save();
+
+      masthead.checkNotificationMessage("Client created successfully");
+      sidebarPage.waitForPageLoad();
+
+      createClientPage
+        .checkCapabilityConfigElements()
+        .checkAccessSettingsElements()
+        .checkLoginSettingsElements()
+        .checkLogoutSettingsElements()
+        .deleteClientFromActionDropdown();
+
+      modalUtils.confirmModal();
+      listingPage.itemExist(clientId, false);
     });
 
     it("Should navigate to previous using 'back' button", () => {
@@ -263,6 +287,8 @@ describe("Clients test", () => {
 
       // Create
       listingPage.itemExist(itemId, false).goToCreateItem();
+      createClientPage.cancel();
+      listingPage.itemExist(itemId, false).goToCreateItem();
 
       createClientPage
         .selectClientType("openid-connect")
@@ -295,7 +321,19 @@ describe("Clients test", () => {
       listingPage.itemExist(itemId, false);
     });
 
-    it.skip("Initial access token", () => {
+    it("Initial access token can't be created with 0 days and count", () => {
+      const initialAccessTokenTab = new InitialAccessTokenTab();
+      initialAccessTokenTab
+        .goToInitialAccessTokenTab()
+        .shouldBeEmpty()
+        .goToCreateFromEmptyList()
+        .fillNewTokenData(0, 0)
+        .checkExpirationGreaterThanZeroError()
+        .checkCountValue(1)
+        .checkSaveButtonIsDisabled();
+    });
+
+    it("Initial access token", () => {
       const initialAccessTokenTab = new InitialAccessTokenTab();
       initialAccessTokenTab
         .goToInitialAccessTokenTab()
@@ -463,7 +501,7 @@ describe("Clients test", () => {
       );
 
       // Add associated client role
-      associatedRolesPage.addAssociatedClientRole("create-client");
+      associatedRolesPage.addAssociatedRoleFromSearchBar("create-client", true);
       masthead.checkNotificationMessage(
         "Associated roles have been added",
         true
@@ -472,7 +510,10 @@ describe("Clients test", () => {
       rolesTab.goToAssociatedRolesTab();
 
       // Add associated client role
-      associatedRolesPage.addAssociatedClientRole("manage-consent");
+      associatedRolesPage.addAssociatedRoleFromSearchBar(
+        "manage-consent",
+        true
+      );
       masthead.checkNotificationMessage(
         "Associated roles have been added",
         true
@@ -562,8 +603,11 @@ describe("Clients test", () => {
       createClientPage
         .selectClientType("openid-connect")
         .fillClientData(client)
-        .continue()
-        .save();
+        .continue();
+
+      sidebarPage.waitForPageLoad();
+
+      createClientPage.save();
 
       advancedTab.goToAdvancedTab();
     });

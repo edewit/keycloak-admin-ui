@@ -53,6 +53,7 @@ import { UserProfileTab } from "./user-profile/UserProfileTab";
 import useIsFeatureEnabled, { Feature } from "../utils/useIsFeatureEnabled";
 import { ClientPoliciesTab, toClientPolicies } from "./routes/ClientPolicies";
 import { KeysTab } from "./keys/KeysTab";
+import { DEFAULT_LOCALE } from "../i18n";
 
 type RealmSettingsHeaderProps = {
   onChange: (value: boolean) => void;
@@ -186,6 +187,9 @@ export const RealmSettingsTabs = ({
 
   const setupForm = (r: RealmRepresentation = realm) => {
     convertToFormValues(r, setValue);
+    if (r.supportedLocales?.length === 0) {
+      setValue("supportedLocales", [DEFAULT_LOCALE]);
+    }
     resetForm(getValues());
   };
 
@@ -278,11 +282,7 @@ export const RealmSettingsTabs = ({
               data-testid="rs-login-tab"
               {...route("login")}
             >
-              <RealmSettingsLoginTab
-                refresh={refresh}
-                save={save}
-                realm={realm}
-              />
+              <RealmSettingsLoginTab refresh={refresh} realm={realm} />
             </Tab>
             <Tab
               title={<TabTitleText>{t("email")}</TabTitleText>}
