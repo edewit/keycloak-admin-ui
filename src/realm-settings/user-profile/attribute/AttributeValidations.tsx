@@ -47,9 +47,6 @@ export const AttributeValidations = () => {
     defaultValue: [],
   });
 
-  let updatedEditValidatorsValues: Validator[] = [];
-  const updatedEditValidators = getValues();
-
   useFetch(
     () => adminClient.users.getProfile({ realm }),
     (config) =>
@@ -59,27 +56,35 @@ export const AttributeValidations = () => {
     []
   );
 
+  let updatedEditValidatorsValues: Validator[] = [];
+  const updatedEditValidators = getValues();
+
+  const attributeValidators = Object.entries(attribute?.validations ?? []).map(
+    ([key, value]) => ({
+      name: key,
+      config: value,
+    })
+  );
+
+  if (updatedEditValidators.validations) {
+    updatedEditValidatorsValues = Object.assign(
+      updatedEditValidatorsValues,
+      updatedEditValidators.validations
+    );
+  } else {
+    updatedEditValidatorsValues = Object.assign(
+      updatedEditValidatorsValues,
+      attributeValidators
+    );
+  }
+
   useEffect(() => {
     register("validations");
 
-    const attributeValidators = Object.entries(
-      attribute?.validations ?? []
-    ).map(([key, value]) => ({
-      name: key,
-      config: value,
-    }));
-
-    if (updatedEditValidators.validations) {
-      updatedEditValidatorsValues = Object.assign(
-        updatedEditValidatorsValues,
-        updatedEditValidators.validations
-      );
-    } else {
-      updatedEditValidatorsValues = Object.assign(
-        updatedEditValidatorsValues,
-        attributeValidators
-      );
+    if (!attribute) {
+      return;
     }
+    setValue("validations", attributeValidators);
   }, [attribute]);
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({

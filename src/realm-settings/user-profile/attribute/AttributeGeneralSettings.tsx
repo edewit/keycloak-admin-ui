@@ -20,8 +20,6 @@ import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/
 import "../../realm-settings-section.css";
 import type { AttributeParams } from "../../routes/Attribute";
 import { useParams } from "react-router-dom";
-import { arrayEquals } from "../../../util";
-import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 
 const ENABLED_REQUIRED_WHEN = ["Always", "Scopes are requested"] as const;
 const REQUIRED_FOR = [
@@ -34,16 +32,15 @@ export const AttributeGeneralSettings = () => {
   const { t } = useTranslation("realm-settings");
   const adminClient = useAdminClient();
   const form = useFormContext();
-  const [config, setConfig] = useState<UserProfileConfig | null>(null);
   const [clientScopes, setClientScopes] =
     useState<ClientScopeRepresentation[]>();
+  const [attribute, setAttribute] = useState<any>();
   const [selectEnabledWhenOpen, setSelectEnabledWhenOpen] = useState(false);
   const [selectRequiredForOpen, setSelectRequiredForOpen] = useState(false);
   const [isAttributeGroupDropdownOpen, setIsAttributeGroupDropdownOpen] =
     useState(false);
   const [enabledWhenSelection, setEnabledWhenSelection] = useState("Always");
   const [requiredWhenSelection, setRequiredWhenSelection] = useState("Always");
-  const attributes = config?.attributes;
   const { realm, attributeName } = useParams<AttributeParams>();
   const editMode = attributeName ? true : false;
 
@@ -60,83 +57,27 @@ export const AttributeGeneralSettings = () => {
         adminClient.clientScopes.find(),
       ]),
     ([config, clientScopes]) => {
-      setConfig(config);
-      setClientScopes(clientScopes);
+      setAttribute(
+        config.attributes!.find((attribute) => attribute.name === attributeName)
+      ),
+        setClientScopes(clientScopes);
     },
     []
   );
 
-  const scopeNames = clientScopes?.map((clientScope) => clientScope.name);
-
-  const attribute = attributes?.find(
-    (attribute) => attribute.name === attributeName
-  );
-
-  let attributeScopes: any;
-  let attributeScopesEnabledWhen = "";
-  let attributeRequired = false;
-  let attributeScopesRequiredWhen = "";
-  let attributeRequiredWhenScopes: any;
-  const formValues = form.getValues();
+  console.log("AttributeGeneralSettings attribute >>> ", attribute);
 
   useEffect(() => {
     if (attribute) {
-      const scopesComparison = arrayEquals(
-        attribute.selector?.scopes,
-        scopeNames
-      );
-
-      attributeScopesEnabledWhen = scopesComparison
-        ? t("always")
-        : t("scopesAsRequested");
-
-      attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
-
-      const attributeRequiredContents = Object.entries(attribute.required!).map(
-        ([key, value]) => ({ key, value })
-      );
-
-      attributeRequired = attributeRequiredContents.length !== 0 ? true : false;
-
-      const requiredWhenScopesComparison = arrayEquals(
-        attribute.required?.scopes,
-        scopeNames
-      );
-
-      attributeScopesRequiredWhen = requiredWhenScopesComparison
-        ? t("always")
-        : t("scopesAsRequested");
-
-      attributeRequiredWhenScopes = requiredWhenScopesComparison
-        ? []
-        : attribute.required?.scopes;
-
-      if (formValues.enabledWhen === "") {
-        form.setValue("enabledWhen", t("always"));
-      }
-
-      if (formValues.requiredWhen === "") {
-        form.setValue("scopeRequired", t("always"));
-      }
-
-      if (formValues.enabledWhen === "Always") {
-        form.setValue("scopes", []);
-      }
-
-      if (formValues.requiredWhen === "Always") {
-        form.setValue("scopeRequired", []);
-      }
-
       form.setValue("name", attribute?.name);
       form.setValue("displayName", attribute?.displayName);
       form.setValue("attributeGroup", attribute?.group);
-      form.setValue("enabledWhen", attributeScopesEnabledWhen);
-      form.setValue("scopes", attributeScopes);
-      form.setValue("required", attributeRequired);
+      form.setValue("enabledWhen", ""); //not part of saved attribute object
+      form.setValue("scopes", attribute.selector?.scopes);
+      form.setValue("required", ""); //not part of saved attribute object
       form.setValue("roles", attribute?.required?.roles);
-
-      form.setValue("requiredWhen", attributeScopesRequiredWhen);
-      form.setValue("scopeRequired", attributeRequiredWhenScopes);
+      form.setValue("requiredWhen", ""); //not part of saved attribute object
+      form.setValue("scopeRequired", attribute.required?.scopes);
     }
   }, [attribute]);
 
