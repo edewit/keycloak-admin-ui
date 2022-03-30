@@ -138,7 +138,7 @@ export const AttributeGeneralSettings = () => {
       form.setValue("requiredWhen", attributeScopesRequiredWhen);
       form.setValue("scopeRequired", attributeRequiredWhenScopes);
     }
-  }, [formValues, attribute]);
+  }, [attribute]);
 
   return (
     <FormAccess role="manage-realm" isHorizontal>
