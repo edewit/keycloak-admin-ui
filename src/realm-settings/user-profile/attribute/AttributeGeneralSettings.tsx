@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable prettier/prettier */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Divider,
   FormGroup,
@@ -20,6 +20,8 @@ import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/
 import "../../realm-settings-section.css";
 import type { AttributeParams } from "../../routes/Attribute";
 import { useParams } from "react-router-dom";
+import { arrayEquals } from "../../../util";
+import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 
 const ENABLED_REQUIRED_WHEN = ["Always", "Scopes are requested"] as const;
 const REQUIRED_FOR = [
@@ -32,6 +34,7 @@ export const AttributeGeneralSettings = () => {
   const { t } = useTranslation("realm-settings");
   const adminClient = useAdminClient();
   const form = useFormContext();
+  const [config, setConfig] = useState<UserProfileConfig | null>(null);
   const [clientScopes, setClientScopes] =
     useState<ClientScopeRepresentation[]>();
   const [selectEnabledWhenOpen, setSelectEnabledWhenOpen] = useState(false);
@@ -40,7 +43,8 @@ export const AttributeGeneralSettings = () => {
     useState(false);
   const [enabledWhenSelection, setEnabledWhenSelection] = useState("Always");
   const [requiredWhenSelection, setRequiredWhenSelection] = useState("Always");
-  const { attributeName } = useParams<AttributeParams>();
+  const attributes = config?.attributes;
+  const { realm, attributeName } = useParams<AttributeParams>();
   const editMode = attributeName ? true : false;
 
   const requiredToggle = useWatch({
@@ -49,30 +53,92 @@ export const AttributeGeneralSettings = () => {
     defaultValue: false,
   });
 
-  const formValues = form.getValues();
-  if (formValues.enabledWhen === "") {
-    form.setValue("enabledWhen", "Always");
-  }
-
-  if (formValues.requiredWhen === "") {
-    form.setValue("scopeRequired", "Always");
-  }
-
-  if (formValues.enabledWhen === "Always") {
-    form.setValue("scopes", []);
-  }
-
-  if (formValues.requiredWhen === "Always") {
-    form.setValue("scopeRequired", []);
-  }
-
   useFetch(
-    () => adminClient.clientScopes.find(),
-    (clientScopes) => {
+    () =>
+      Promise.all([
+        adminClient.users.getProfile({ realm }),
+        adminClient.clientScopes.find(),
+      ]),
+    ([config, clientScopes]) => {
+      setConfig(config);
       setClientScopes(clientScopes);
     },
     []
   );
+
+  const scopeNames = clientScopes?.map((clientScope) => clientScope.name);
+
+  const attribute = attributes?.find(
+    (attribute) => attribute.name === attributeName
+  );
+
+  let attributeScopes: any;
+  let attributeScopesEnabledWhen = "";
+  let attributeRequired = false;
+  let attributeScopesRequiredWhen = "";
+  let attributeRequiredWhenScopes: any;
+  const formValues = form.getValues();
+
+  useEffect(() => {
+    if (attribute) {
+      const scopesComparison = arrayEquals(
+        attribute.selector?.scopes,
+        scopeNames
+      );
+
+      attributeScopesEnabledWhen = scopesComparison
+        ? t("always")
+        : t("scopesAsRequested");
+
+      attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
+
+      const attributeRequiredContents = Object.entries(attribute.required!).map(
+        ([key, value]) => ({ key, value })
+      );
+
+      attributeRequired = attributeRequiredContents.length !== 0 ? true : false;
+
+      const requiredWhenScopesComparison = arrayEquals(
+        attribute.required?.scopes,
+        scopeNames
+      );
+
+      attributeScopesRequiredWhen = requiredWhenScopesComparison
+        ? t("always")
+        : t("scopesAsRequested");
+
+      attributeRequiredWhenScopes = requiredWhenScopesComparison
+        ? []
+        : attribute.required?.scopes;
+    }
+
+    if (formValues.enabledWhen === "") {
+      form.setValue("enabledWhen", t("always"));
+    }
+
+    if (formValues.requiredWhen === "") {
+      form.setValue("scopeRequired", t("always"));
+    }
+
+    if (formValues.enabledWhen === "Always") {
+      form.setValue("scopes", []);
+    }
+
+    if (formValues.requiredWhen === "Always") {
+      form.setValue("scopeRequired", []);
+    }
+
+    form.setValue("name", attribute?.name);
+    form.setValue("displayName", attribute?.displayName);
+    form.setValue("attributeGroup", attribute?.group);
+    form.setValue("enabledWhen", attributeScopesEnabledWhen);
+    form.setValue("scopes", attributeScopes);
+    form.setValue("required", attributeRequired);
+    form.setValue("roles", attribute?.required?.roles);
+
+    form.setValue("requiredWhen", attributeScopesRequiredWhen);
+    form.setValue("scopeRequired", attributeRequiredWhenScopes);
+  }, [formValues, attribute]);
 
   return (
     <FormAccess role="manage-realm" isHorizontal>
@@ -180,7 +246,6 @@ export const AttributeGeneralSettings = () => {
                   onChange={() => {
                     onChange(option);
                     setEnabledWhenSelection(option);
-                    form.setValue("enabledWhen", option);
                   }}
                   label={option}
                   className="pf-u-mb-md"
@@ -295,7 +360,6 @@ export const AttributeGeneralSettings = () => {
                       name="roles"
                       onChange={() => {
                         onChange(option.value);
-                        form.setValue("roles", option.value);
                       }}
                       label={option.label}
                       className="kc-requiredFor-option"
@@ -327,7 +391,6 @@ export const AttributeGeneralSettings = () => {
                       onChange={() => {
                         onChange(option);
                         setRequiredWhenSelection(option);
-                        form.setValue("requiredWhen", option);
                       }}
                       label={option}
                       className="pf-u-mb-md"

@@ -416,6 +416,8 @@ export default {
       "Are you sure you want to permanently delete the attribute {{attributeName}}?",
     deleteAttributeSuccess: "Attribute deleted",
     deleteAttributeError: "Attribute not deleted",
+    always: "Always",
+    scopesAsRequested: "Scopes are requested",
     generalSettings: "General settings",
     permission: "Permission",
     validations: "Validations",

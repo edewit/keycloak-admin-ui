@@ -29,20 +29,23 @@ import { useFormContext, useWatch } from "react-hook-form";
 import "../../realm-settings-section.css";
 import type { AttributeParams } from "../../routes/Attribute";
 import { useParams } from "react-router-dom";
-import { useUserProfile } from "../UserProfileContext";
+import type UserProfileConfig from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
+import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 
 export const AttributeValidations = () => {
   const { t } = useTranslation("realm-settings");
   const [addValidatorModalOpen, toggleModal] = useToggle();
   const [validatorToDelete, setValidatorToDelete] =
     useState<{ name: string }>();
+  const adminClient = useAdminClient();
   const { getValues, setValue, control, register } = useFormContext();
-  const { attributeName } = useParams<AttributeParams>();
-  const { config } = useUserProfile();
+  const { realm, attributeName } = useParams<AttributeParams>();
+  const [config, setConfig] = useState<UserProfileConfig | null>(null);
   const attributes = config?.attributes;
   const attribute = attributes?.find(
     (attribute) => attribute.name === attributeName
   );
+
   const editMode = attributeName ? true : false;
   const validators = useWatch<Validator[]>({
     name: "validations",
@@ -50,29 +53,37 @@ export const AttributeValidations = () => {
     defaultValue: [],
   });
 
-  const attributeValidators = Object.entries(attribute?.validations ?? []).map(
-    ([key, value]) => ({
-      name: key,
-      config: value,
-    })
-  );
-
   let updatedEditValidatorsValues: Validator[] = [];
   const updatedEditValidators = getValues();
 
-  if (updatedEditValidators.validations) {
-    updatedEditValidatorsValues = Object.assign(
-      updatedEditValidatorsValues,
-      updatedEditValidators.validations
-    );
-  } else {
-    updatedEditValidatorsValues = Object.assign(
-      updatedEditValidatorsValues,
-      attributeValidators
-    );
-  }
+  useFetch(
+    () => adminClient.users.getProfile({ realm }),
+    (config) => setConfig(config),
+    []
+  );
 
-  useEffect(() => register("validations"), []);
+  useEffect(() => {
+    register("validations");
+
+    const attributeValidators = Object.entries(
+      attribute?.validations ?? []
+    ).map(([key, value]) => ({
+      name: key,
+      config: value,
+    }));
+
+    if (updatedEditValidators.validations) {
+      updatedEditValidatorsValues = Object.assign(
+        updatedEditValidatorsValues,
+        updatedEditValidators.validations
+      );
+    } else {
+      updatedEditValidatorsValues = Object.assign(
+        updatedEditValidatorsValues,
+        attributeValidators
+      );
+    }
+  }, [attribute]);
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: t("deleteValidatorConfirmTitle"),

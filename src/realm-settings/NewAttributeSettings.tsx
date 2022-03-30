@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ActionGroup,
   AlertVariant,
@@ -25,7 +25,6 @@ import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/d
 import type { KeyValueType } from "../components/attribute-form/attribute-convert";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 import type { AttributeParams } from "./routes/Attribute";
-import { arrayEquals } from "../util";
 
 type UserProfileAttributeType = UserProfileAttribute & Attribute & Permission;
 
@@ -113,7 +112,6 @@ export default function NewAttributeSettings() {
   const [config, setConfig] = useState<UserProfileConfig | null>(null);
   const [clientScopes, setClientScopes] =
     useState<ClientScopeRepresentation[]>();
-  const attributes = config?.attributes;
   const editMode = attributeName ? true : false;
 
   useFetch(
@@ -130,84 +128,6 @@ export default function NewAttributeSettings() {
   );
 
   const scopeNames = clientScopes?.map((clientScope) => clientScope.name);
-
-  const attribute = attributes?.find(
-    (attribute) => attribute.name === attributeName
-  );
-
-  const attributeAnnotationsKeys: any[] = [];
-  const attributeAnnotationsValues: any[] = [];
-  let attributeScopes: any;
-  let attributeScopesEnabledWhen = "";
-  let attributeRequired = false;
-  let attributeScopesRequiredWhen = "";
-  let attributeRequiredWhenScopes: any;
-
-  if (attribute) {
-    const scopesComparison = arrayEquals(
-      attribute.selector?.scopes,
-      scopeNames
-    );
-
-    attributeScopesEnabledWhen = scopesComparison
-      ? "Always"
-      : "Scopes are requested";
-
-    attributeScopes = scopesComparison ? [] : attribute.selector?.scopes;
-
-    const attributeRequiredContents = Object.entries(attribute.required!).map(
-      ([key, value]) => ({ key, value })
-    );
-
-    attributeRequired = attributeRequiredContents.length !== 0 ? true : false;
-
-    const requiredWhenScopesComparison = arrayEquals(
-      attribute.required?.scopes,
-      scopeNames
-    );
-
-    attributeScopesRequiredWhen = requiredWhenScopesComparison
-      ? "Always"
-      : "Scopes are requested";
-
-    attributeRequiredWhenScopes = requiredWhenScopesComparison
-      ? []
-      : attribute.required?.scopes;
-
-    const attributeAnnotations = Object.entries(attribute.annotations!).map(
-      ([key, value]) => ({ key, value })
-    );
-
-    attributeAnnotations.forEach((item, index) => {
-      attributeAnnotationsKeys.push({
-        key: `annotations[${index}].key`,
-        value: item.key,
-      });
-
-      attributeAnnotationsValues.push({
-        key: `annotations[${index}].value`,
-        value: item.value,
-      });
-    });
-  }
-
-  useEffect(() => {
-    form.setValue("name", attribute?.name);
-    form.setValue("displayName", attribute?.displayName);
-    form.setValue("attributeGroup", attribute?.group);
-    form.setValue("enabledWhen", attributeScopesEnabledWhen);
-    form.setValue("scopes", attributeScopes);
-    form.setValue("required", attributeRequired);
-    form.setValue("roles", attribute?.required?.roles);
-    form.setValue("requiredWhen", attributeScopesRequiredWhen);
-    form.setValue("scopeRequired", attributeRequiredWhenScopes);
-    attributeAnnotationsKeys.forEach((attribute) =>
-      form.setValue(attribute.key, attribute.value)
-    );
-    attributeAnnotationsValues.forEach((attribute) =>
-      form.setValue(attribute.key, attribute.value)
-    );
-  }, [attribute]);
 
   const save = async (profileConfig: UserProfileAttributeType) => {
     const selector = {
