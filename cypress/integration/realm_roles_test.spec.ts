@@ -3,7 +3,7 @@ import Masthead from "../support/pages/admin_console/Masthead";
 import ModalUtils from "../support/util/ModalUtils";
 import ListingPage from "../support/pages/admin_console/ListingPage";
 import SidebarPage from "../support/pages/admin_console/SidebarPage";
-import CreateRealmRolePage from "../support/pages/admin_console/manage/realm_roles/CreateRealmRolePage";
+import createRealmRolePage from "../support/pages/admin_console/manage/realm_roles/CreateRealmRolePage";
 import AssociatedRolesPage from "../support/pages/admin_console/manage/realm_roles/AssociatedRolesPage";
 import { keycloakBefore } from "../support/util/keycloak_hooks";
 import adminClient from "../support/util/AdminClient";
@@ -15,7 +15,6 @@ const masthead = new Masthead();
 const modalUtils = new ModalUtils();
 const sidebarPage = new SidebarPage();
 const listingPage = new ListingPage();
-const createRealmRolePage = new CreateRealmRolePage();
 const associatedRolesPage = new AssociatedRolesPage();
 const rolesTab = new ClientRolesTab();
 
@@ -221,25 +220,44 @@ describe("Realm roles test", () => {
     );
   });
 
-  describe("edit role details", () => {
+  describe.only("edit role details", () => {
     const editRoleName = "going to edit";
     const description = "some description";
-    before(() =>
-      adminClient.createRealmRole({
+    const updateDescription = "updated description";
+
+    before(async () => {
+      await adminClient.createRealmRole({
         name: editRoleName,
         description,
-      })
-    );
+      });
+    });
 
     after(() => adminClient.deleteRealmRole(editRoleName));
 
     it("should edit realm role details", () => {
       listingPage.itemExist(editRoleName).goToItemDetails(editRoleName);
       createRealmRolePage.checkNameDisabled().checkDescription(description);
-      const updateDescription = "updated description";
       createRealmRolePage.updateDescription(updateDescription).save();
       masthead.checkNotificationMessage("The role has been saved", true);
       createRealmRolePage.checkDescription(updateDescription);
+    });
+
+    it("should revert realm role", () => {
+      listingPage.itemExist(editRoleName).goToItemDetails(editRoleName);
+      createRealmRolePage.checkDescription(updateDescription);
+      createRealmRolePage.updateDescription("going to revert").cancel();
+      createRealmRolePage.checkDescription(updateDescription);
+    });
+
+    it("should add attribute", () => {
+      listingPage.itemExist(editRoleName).goToItemDetails(editRoleName);
+
+      cy.intercept("admin/realms/master/roles-by-id/*").as("load");
+      const attributesTab = new ClientRolesTab();
+      attributesTab.goToAttributesTab();
+      cy.wait(["@load", "@load"]);
+
+      attributesTab.addAttribute();
     });
   });
 });
