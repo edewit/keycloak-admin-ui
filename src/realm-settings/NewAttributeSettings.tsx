@@ -15,16 +15,18 @@ import { AttributeGeneralSettings } from "./user-profile/attribute/AttributeGene
 import { AttributePermission } from "./user-profile/attribute/AttributePermission";
 import { AttributeValidations } from "./user-profile/attribute/AttributeValidations";
 import { toUserProfile } from "./routes/UserProfile";
-import "./realm-settings-section.css";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { AttributeAnnotations } from "./user-profile/attribute/AttributeAnnotations";
 import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import { useAlerts } from "../components/alert/Alerts";
 import { UserProfileProvider } from "./user-profile/UserProfileContext";
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
-import type { KeyValueType } from "../components/attribute-form/attribute-convert";
-import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
 import type { AttributeParams } from "./routes/Attribute";
+import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
+import type { KeyValueType } from "../components/attribute-form/attribute-convert";
+import { convertToFormValues } from "../util";
+
+import "./realm-settings-section.css";
 
 type UserProfileAttributeType = UserProfileAttribute & Attribute & Permission;
 
@@ -114,6 +116,12 @@ export default function NewAttributeSettings() {
     useState<ClientScopeRepresentation[]>();
   const editMode = attributeName ? true : false;
 
+  const convert = (obj: Record<string, unknown>[] | undefined) =>
+    Object.entries(obj || []).map(([key, value]) => ({
+      key,
+      value,
+    }));
+
   useFetch(
     () =>
       Promise.all([
@@ -123,6 +131,12 @@ export default function NewAttributeSettings() {
     ([config, clientScopes]) => {
       setConfig(config);
       setClientScopes(clientScopes);
+      const { annotations, validations, ...values } = config.attributes!.find(
+        (attribute) => attribute.name === attributeName
+      )!;
+      convertToFormValues(values, form.setValue);
+      form.setValue("annotations", convert(annotations));
+      form.setValue("validations", convert(validations));
     },
     []
   );
@@ -147,10 +161,8 @@ export default function NewAttributeSettings() {
 
     const validations = profileConfig.validations?.reduce(
       (prevValidations: any, currentValidations: any) => {
-        prevValidations[currentValidations.name] =
-          currentValidations.config.length === 0
-            ? {}
-            : currentValidations.config;
+        prevValidations[currentValidations.key] =
+          currentValidations.value.length === 0 ? {} : currentValidations.value;
         return prevValidations;
       },
       {}

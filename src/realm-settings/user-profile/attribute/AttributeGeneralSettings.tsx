@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable prettier/prettier */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Divider,
   FormGroup,
@@ -17,9 +17,10 @@ import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { FormAccess } from "../../../components/form-access/FormAccess";
 import { useAdminClient, useFetch } from "../../../context/auth/AdminClient";
 import type ClientScopeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientScopeRepresentation";
-import "../../realm-settings-section.css";
 import type { AttributeParams } from "../../routes/Attribute";
 import { useParams } from "react-router-dom";
+
+import "../../realm-settings-section.css";
 
 const ENABLED_REQUIRED_WHEN = ["Always", "Scopes are requested"] as const;
 const REQUIRED_FOR = [
@@ -34,14 +35,13 @@ export const AttributeGeneralSettings = () => {
   const form = useFormContext();
   const [clientScopes, setClientScopes] =
     useState<ClientScopeRepresentation[]>();
-  const [attribute, setAttribute] = useState<any>();
   const [selectEnabledWhenOpen, setSelectEnabledWhenOpen] = useState(false);
   const [selectRequiredForOpen, setSelectRequiredForOpen] = useState(false);
   const [isAttributeGroupDropdownOpen, setIsAttributeGroupDropdownOpen] =
     useState(false);
   const [enabledWhenSelection, setEnabledWhenSelection] = useState("Always");
   const [requiredWhenSelection, setRequiredWhenSelection] = useState("Always");
-  const { realm, attributeName } = useParams<AttributeParams>();
+  const { attributeName } = useParams<AttributeParams>();
   const editMode = attributeName ? true : false;
 
   const requiredToggle = useWatch({
@@ -51,52 +51,12 @@ export const AttributeGeneralSettings = () => {
   });
 
   useFetch(
-    () =>
-      Promise.all([
-        adminClient.users.getProfile({ realm }),
-        adminClient.clientScopes.find(),
-      ]),
-    ([config, clientScopes]) => {
-      setAttribute(
-        config.attributes!.find((attribute) => attribute.name === attributeName)
-      ),
-        setClientScopes(clientScopes);
+    () => adminClient.clientScopes.find(),
+    (clientScopes) => {
+      setClientScopes(clientScopes);
     },
     []
   );
-
-  console.log("AttributeGeneralSettings attribute >>> ", attribute);
-  // const formValues = form.getValues();
-
-  useEffect(() => {
-    // if (formValues.enabledWhen === "") {
-    //   form.setValue("enabledWhen", "Always");
-    // }
-
-    // if (formValues.requiredWhen === "") {
-    //   form.setValue("scopeRequired", "Always");
-    // }
-
-    // if (formValues.enabledWhen === "Always") {
-    //   form.setValue("scopes", []);
-    // }
-
-    // if (formValues.requiredWhen === "Always") {
-    //   form.setValue("scopeRequired", []);
-    // }
-
-    if (attribute) {
-      form.setValue("name", attribute?.name);
-      form.setValue("displayName", attribute?.displayName);
-      form.setValue("attributeGroup", attribute?.group);
-      form.setValue("enabledWhen", ""); //not part of saved attribute object
-      form.setValue("scopes", attribute.selector?.scopes);
-      form.setValue("required", ""); //not part of saved attribute object
-      form.setValue("roles", attribute?.required?.roles);
-      form.setValue("requiredWhen", ""); //not part of saved attribute object
-      form.setValue("scopeRequired", attribute.required?.scopes);
-    }
-  }, [attribute]);
 
   return (
     <FormAccess role="manage-realm" isHorizontal>
