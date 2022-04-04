@@ -8,6 +8,7 @@ import AssociatedRolesPage from "../support/pages/admin_console/manage/realm_rol
 import { keycloakBefore } from "../support/util/keycloak_hooks";
 import adminClient from "../support/util/AdminClient";
 import ClientRolesTab from "../support/pages/admin_console/manage/clients/ClientRolesTab";
+import KeyValueInput from "../support/pages/admin_console/manage/KeyValueInput";
 
 let itemId = "realm_role_crud";
 const loginPage = new LoginPage();
@@ -249,15 +250,33 @@ describe("Realm roles test", () => {
       createRealmRolePage.checkDescription(updateDescription);
     });
 
+    const keyValue = new KeyValueInput("attribute");
     it("should add attribute", () => {
       listingPage.itemExist(editRoleName).goToItemDetails(editRoleName);
 
-      cy.intercept("admin/realms/master/roles-by-id/*").as("load");
-      const attributesTab = new ClientRolesTab();
-      attributesTab.goToAttributesTab();
-      cy.wait(["@load", "@load"]);
+      createRealmRolePage.goToAttributesTab();
+      keyValue.fillKeyValue({ key: "one", value: "1" }).validateRows(2);
+      keyValue.save();
+      masthead.checkNotificationMessage("The role has been saved", true);
+      keyValue.validateRows(1);
+    });
 
-      attributesTab.addAttribute();
+    it("should add attribute multiple", () => {
+      listingPage.itemExist(editRoleName).goToItemDetails(editRoleName);
+
+      createRealmRolePage.goToAttributesTab();
+      keyValue
+        .fillKeyValue({ key: "two", value: "2" }, 1)
+        .fillKeyValue({ key: "three", value: "3" }, 2)
+        .save()
+        .validateRows(3);
+    });
+
+    it("should delete attribute", () => {
+      listingPage.itemExist(editRoleName).goToItemDetails(editRoleName);
+      createRealmRolePage.goToAttributesTab();
+
+      keyValue.deleteRow(1).save().validateRows(2);
     });
   });
 });
