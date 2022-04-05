@@ -116,6 +116,7 @@ export default {
     Saturday: "Saturday",
 
     assignRole: "Assign role",
+    assign: "Assign",
     unAssignRole: "Unassign",
     hideInheritedRoles: "Hide inherited roles",
     assignRolesTo: "Assign roles to {{client}} account",
