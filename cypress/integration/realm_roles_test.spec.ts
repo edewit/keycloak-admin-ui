@@ -221,17 +221,17 @@ describe("Realm roles test", () => {
     );
   });
 
-  describe.only("edit role details", () => {
+  describe("edit role details", () => {
     const editRoleName = "going to edit";
     const description = "some description";
     const updateDescription = "updated description";
 
-    before(async () => {
-      await adminClient.createRealmRole({
+    before(() =>
+      adminClient.createRealmRole({
         name: editRoleName,
         description,
-      });
-    });
+      })
+    );
 
     after(() => adminClient.deleteRealmRole(editRoleName));
 
