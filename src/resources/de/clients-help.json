@@ -1,0 +1,5 @@
+{
+  "webOrigins": "Erlaubte CORS Origins. Um alle Origins der Valid Redirect URIs zu erlauben, fügen Sie ein '+' hinzu. Dabei wird der '*' Platzhalter nicht mit übernommen. Um alle Origins zu erlauben, geben Sie explizit einen Eintrag mit '*' an.",
+  "resetActions": "Liste von Aktionen, die der Benutzer ausführen soll, wenn er eine E-Mail zum Zurücksetzen des Passworts erhält. 'Verify email' sendet bem Benutzer eine E-Mail um seine E-Mail-Adresse zu verifizieren. 'Update profile' verlangt vom Benutzer, dass er seine Profil-Informationen eingibt. 'Update password' verlangt vom Benutzer, dass er ein neues Passwort definiert. 'Configure OTP' verlangt vom Benutzer, dass er einen mobilen Passwort-Generator aufsetzt.",
+  "lifespan": "Maximale Zeit in der die Aktion zugelassen ist."
+}

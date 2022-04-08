@@ -42,7 +42,7 @@ export const initOptions = {
 
   backend: {
     expirationTime: 7 * 24 * 60 * 60 * 1000, // 7 days
-    loadPath: "/auth/admin/master/console/{{ns}}.json?lang={{lng}}",
+    loadPath: "/resources/{{lng}}/{{ns}}.json",
   },
 };
 
