@@ -1,51 +1,83 @@
-import i18n from "i18next";
+import i18n, { TOptions } from "i18next";
+import HttpBackend from "i18next-http-backend";
 import { initReactI18next } from "react-i18next";
 
-import HttpBackend from "i18next-http-backend";
+import type KeycloakAdminClient from "@keycloak/keycloak-admin-client";
 
 export const DEFAULT_LOCALE = "en";
 
-export const initOptions = {
-  defaultNS: "common",
-  lng: DEFAULT_LOCALE,
-  fallbackLng: DEFAULT_LOCALE,
-  preload: [DEFAULT_LOCALE],
-  ns: [
-    "common",
-    "common-help",
-    "dashboard",
-    "clients",
-    "clients-help",
-    "client-scopes",
-    "client-scopes-help",
-    "groups",
-    "realm",
-    "roles",
-    "users",
-    "users-help",
-    "sessions",
-    "events",
-    "realm-settings",
-    "realm-settings-help",
-    "authentication",
-    "authentication-help",
-    "user-federation",
-    "user-federation-help",
-    "identity-providers",
-    "identity-providers-help",
-    "dynamic",
-  ],
+export const initOptions = async (adminClient: KeycloakAdminClient) => {
+  const constructLoadPath = (_: string[], namespaces: string[]) => {
+    if (namespaces[0] === "overrides") {
+      return `/admin/realms/${adminClient.realmName}/localization/{{lng}}`;
+    } else {
+      return "/resources/{{lng}}/{{ns}}.json";
+    }
+  };
 
-  interpolation: {
-    escapeValue: false,
-  },
+  return {
+    defaultNS: "common",
+    fallbackLng: DEFAULT_LOCALE,
+    preload: [DEFAULT_LOCALE],
+    ns: [
+      "common",
+      "common-help",
+      "dashboard",
+      "clients",
+      "clients-help",
+      "client-scopes",
+      "client-scopes-help",
+      "groups",
+      "realm",
+      "roles",
+      "users",
+      "users-help",
+      "sessions",
+      "events",
+      "realm-settings",
+      "realm-settings-help",
+      "authentication",
+      "authentication-help",
+      "user-federation",
+      "user-federation-help",
+      "identity-providers",
+      "identity-providers-help",
+      "dynamic",
+      "overrides",
+    ],
 
-  backend: {
-    expirationTime: 7 * 24 * 60 * 60 * 1000, // 7 days
-    loadPath: "/resources/{{lng}}/{{ns}}.json",
-  },
+    interpolation: {
+      escapeValue: false,
+    },
+
+    postProcess: ["overrideProcessor"],
+
+    backend: {
+      expirationTime: 7 * 24 * 60 * 60 * 1000,
+      loadPath: constructLoadPath,
+      customHeaders: {
+        Authorization: `bearer ${await adminClient.getAccessToken()}`,
+      },
+    },
+  };
 };
 
-const configuredI18n = i18n.use(initReactI18next).use(HttpBackend);
+const configuredI18n = i18n
+  .use({
+    type: "postProcessor",
+    name: "overrideProcessor",
+    process: function (
+      value: string,
+      key: string,
+      _: TOptions,
+      translator: any
+    ) {
+      const override: string =
+        translator.resourceStore.data[translator.language].overrides[key];
+      return override || value;
+    },
+  })
+  .use(initReactI18next)
+  .use(HttpBackend);
 
 export default configuredI18n;

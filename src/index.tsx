@@ -6,8 +6,8 @@ import { App } from "./App";
 import i18n, { initOptions } from "./i18n";
 import init from "./context/auth/keycloak";
 
-i18n.init(initOptions, () => {
-  init().then((adminClient) => {
+init().then(async (adminClient) => {
+  i18n.init(await initOptions(adminClient), () => {
     ReactDOM.render(
       <StrictMode>
         <App adminClient={adminClient} />
