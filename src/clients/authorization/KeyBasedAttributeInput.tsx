@@ -58,6 +58,9 @@ const ValueInput = ({
   const { control, register, getValues } = useFormContext();
 
   const [isValueOpenArray, setIsValueOpenArray] = useState([false]);
+  const [attributeValues, setAttributeValues] = useState<
+    { key: string; name: string }[] | undefined
+  >([]);
 
   const toggleValueSelect = (rowIndex: number, open: boolean) => {
     const arr = [...isValueOpenArray];
@@ -65,19 +68,23 @@ const ValueInput = ({
     setIsValueOpenArray(arr);
   };
 
-  let attributeValues: { key: string; name: string }[] | undefined = [];
+  useEffect(() => {
+    let values: { key: string; name: string }[] | undefined = [];
 
-  const scopeValues = resources?.find(
-    (resource) => resource.name === getValues().resources[rowIndex]?.key
-  )?.scopes;
+    if (selectableValues) {
+      values = defaultContextAttributes.find(
+        (attr) => attr.key === getValues().context?.[rowIndex]?.key
+      )?.values;
+    }
 
-  if (selectableValues) {
-    attributeValues = defaultContextAttributes.find(
-      (attr) => attr.key === getValues().context[rowIndex]?.key
-    )?.values;
-  }
+    setAttributeValues(values);
+  }, [getValues]);
 
   const renderSelectOptionType = () => {
+    const scopeValues = resources?.find(
+      (resource) => resource.name === getValues().resources?.[rowIndex]?.key
+    )?.scopes;
+
     if (attributeValues?.length && !resources) {
       return attributeValues.map((attr) => (
         <SelectOption key={attr.key} value={attr.key}>
