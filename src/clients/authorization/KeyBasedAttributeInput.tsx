@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import {
@@ -56,11 +56,7 @@ const ValueInput = ({
 }: ValueInputProps) => {
   const { t } = useTranslation("common");
   const { control, register, getValues } = useFormContext();
-
   const [isValueOpenArray, setIsValueOpenArray] = useState([false]);
-  const [attributeValues, setAttributeValues] = useState<
-    { key: string; name: string }[] | undefined
-  >([]);
 
   const toggleValueSelect = (rowIndex: number, open: boolean) => {
     const arr = [...isValueOpenArray];
@@ -68,8 +64,8 @@ const ValueInput = ({
     setIsValueOpenArray(arr);
   };
 
-  useEffect(() => {
-    let values: { key: string; name: string }[] | undefined = [];
+  const attributeValues = useMemo(() => {
+    let values: AttributeType[] | undefined = [];
 
     if (selectableValues) {
       values = defaultContextAttributes.find(
@@ -77,7 +73,7 @@ const ValueInput = ({
       )?.values;
     }
 
-    setAttributeValues(values);
+    return values;
   }, [getValues]);
 
   const renderSelectOptionType = () => {
@@ -172,7 +168,7 @@ export const KeyBasedAttributeInput = ({
 
   useEffect(() => {
     if (!fields.length) {
-      append({ key: "", value: "" });
+      append({ key: "", value: "" }, false);
     }
   }, [fields]);
 
