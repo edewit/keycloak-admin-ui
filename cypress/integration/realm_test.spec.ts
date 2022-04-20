@@ -27,11 +27,13 @@ describe("Realm tests", () => {
     loginPage.logIn();
   });
 
-  after(() => {
-    [testRealmName, newRealmName, editedRealmName].map((realm) =>
-      adminClient.deleteRealm(realm)
-    );
-  });
+  after(() =>
+    Promise.all(
+      [testRealmName, newRealmName, editedRealmName].map((realm) =>
+        adminClient.deleteRealm(realm)
+      )
+    )
+  );
 
   it("should fail creating Master realm", () => {
     sidebarPage.goToCreateRealm();
