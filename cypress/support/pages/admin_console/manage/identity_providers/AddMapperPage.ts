@@ -1,3 +1,5 @@
+import KeyValueInput from "../KeyValueInput";
+
 export default class AddMapperPage {
   private mappersTab = "mappers-tab";
   private noMappersAddMapperButton = "no-mappers-empty-action";
@@ -391,8 +393,9 @@ export default class AddMapperPage {
 
     cy.findByTestId(this.idpMapperSelect).contains("Claim to Role").click();
 
-    cy.get('[data-testid="config.claims-key-input"]').clear().type("key");
-    cy.get('[data-testid="config.claims-value-input"]').clear().type("value");
+    const keyValue = new KeyValueInput("config.claims");
+
+    keyValue.fillKeyValue({ key: "key", value: "value" });
 
     this.toggleSwitch("are.claim.values.regex");
 
