@@ -56,7 +56,7 @@ export const KeyValueInput = ({ name }: KeyValueInputProps) => {
           </FlexItem>
         </Flex>
         {fields.map((attribute, index) => (
-          <Flex key={attribute.id} data-testId="row">
+          <Flex key={attribute.id} data-testid="row">
             <FlexItem grow={{ default: "grow" }}>
               <TextInput
                 name={`${name}[${index}].key`}
