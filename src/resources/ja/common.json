@@ -39,6 +39,28 @@
   "sessions": "セッション",
   "events": "イベント",
   "mappers": "マッパー",
+  "permissions": "パーミッション",
+  "usersPermissionsHint": "レルム内のすべてのユーザーを管理するきめ細かいパーミッション。レルム内のユーザーを管理できるユーザーには、さまざまなポリシーを定義できます。",
+  "clientsPermissionsHint": "このクライアントを管理したり、このクライアントによって定義されたロールを適用したりする管理者のきめ細かいパーミッションです。",
+  "permissionsEnabled": "パーミッションが有効",
+  "scopePermissions": {
+    "clients": {
+      "manage-description": "管理者がこのクライアントを管理できるかどうかを決定するポリシー",
+      "view-description": "管理者がこのクライアントを表示できるかどうかを決定するポリシー",
+      "map-roles-description": "管理者がこのクライアントによって定義されたロールをマップできるかどうかを決定するポリシー",
+      "map-roles-client-scope-description": "管理者がこのクライアントによって定義されたロールを別のクライアントのクライアント・スコープに適用できるかどうかを決定するポリシー",
+      "map-roles-composite-description": "管理者がこのクライアントによって定義されたロールをコンポジットとして別のロールに適用できるかどうかを決定するポリシー",
+      "token-exchange-description": "このクライアントを対象とするトークンのトークン交換を許可するクライアントを決定するポリシー。"
+    },
+    "users": {
+      "view-description": "管理者がレルム内のすべてのユーザーを表示できるかどうかを決定するポリシー",
+      "manage-description": "管理者がレルム内のすべてのユーザーを管理できるかどうかを決定するポリシー",
+      "map-roles-description": "管理者がすべてのユーザーのロールをマップできるかどうかを決定するポリシー",
+      "manage-group-membership-description": "管理者がレルム内のすべてのユーザーのグループ・メンバーシップを管理できるかどうかを決定するポリシー。これは、特定のグループポリシーと組み合わせて使用??されます",
+      "impersonate-description": "管理者が他のユーザーを偽装できるかどうかを決定するポリシー",
+      "user-impersonated-description": "どのユーザーを偽装するかを決定するポリシー。これらのポリシーは、偽装されているユーザーに適用されます。"
+    }
+  },
   "configure": "設定",
   "realmSettings": "レルムの設定",
   "authentication": "認証",

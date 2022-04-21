@@ -24,6 +24,8 @@
   "users": "Benutzer",
   "sessions": "Sessions",
   "events": "Ereignisse",
+  "usersPermissionsHint": "Feingranulare Berechtigungen für alle Benutzer in diesem Realm. Es können verschiedene Einstellungen definiert werden, wer in diesem Realm berechtigt ist, Benutzer zu verwalten.",
+  "permissionsEnabled": "Berechtigungen aktiv",
   "configure": "Konfigurieren",
   "realmSettings": "Realm-Einstellungen",
   "authentication": "Authentifizierung",

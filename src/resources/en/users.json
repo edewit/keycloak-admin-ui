@@ -1,6 +1,7 @@
 {
   "title": "Users",
   "usersExplain": "Placeholder for users explanation.",
+  "userList": "User list",
   "searchForUser": "Search user",
   "startBySearchingAUser": "Start by searching for users",
   "searchForUserDescription": "This realm has a federated provider. Viewing all users may cause the system to slow down. Please search for a user above.",

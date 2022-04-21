@@ -32,6 +32,7 @@
   "sessions": "会话",
   "events": "事件",
   "mappers": "Mappers",
+  "permissions": "权限",
   "configure": "配置",
   "realmSettings": "领域设置",
   "authentication": "验证",

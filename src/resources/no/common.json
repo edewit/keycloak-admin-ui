@@ -31,6 +31,7 @@
   "sessions": "Sesjoner",
   "events": "Hendelser",
   "mappers": "Mappere",
+  "permissions": "Tillatelser",
   "configure": "Konfigurer",
   "realmSettings": "Innstillinger for sikkerhetsdomene",
   "authentication": "Autentisering",

@@ -32,6 +32,7 @@
   "sessions": "Сессии",
   "events": "События",
   "mappers": "Сопоставления",
+  "permissions": "Разрешения",
   "configure": "Конфигурация",
   "realmSettings": "Настройки Realm",
   "authentication": "Аутентификация",
