@@ -8,7 +8,7 @@
   "eventType": "事件类型",
   "ipAddress": "IP地址",
   "client": "client",
-  "realm": "Realm",
+  "realm": "领域",
   "resourcePath": "资源路径",
   "resourceType": "资源类型",
   "resourceTypes": "资源类型",

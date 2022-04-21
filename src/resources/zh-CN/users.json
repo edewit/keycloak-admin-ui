@@ -19,7 +19,7 @@
   "identityProviderLinks": "身份提供者链接",
   "revoke": "撤消",
   "save": "保存",
-  "credentialType": "Type",
+  "credentialType": "类型",
   "password": "密码",
   "passwordConfirmation": "密码确认",
   "resetPassword": "重置密码",

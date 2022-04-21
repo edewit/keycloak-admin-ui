@@ -160,5 +160,14 @@
   "tokenLifespan": {
     "expires": "有効期限"
   },
-  "mappers": "マッパー"
+  "mappers": "マッパー",
+  "permissionsEnabled": "パーミッションが有効",
+  "scopePermissions": {
+    "manage-description": "管理者がこのクライアントを管理できるかどうかを決定するポリシー",
+    "view-description": "管理者がこのクライアントを表示できるかどうかを決定するポリシー",
+    "map-roles-description": "管理者がこのクライアントによって定義されたロールをマップできるかどうかを決定するポリシー",
+    "map-roles-client-scope-description": "管理者がこのクライアントによって定義されたロールを別のクライアントのクライアント・スコープに適用できるかどうかを決定するポリシー",
+    "map-roles-composite-description": "管理者がこのクライアントによって定義されたロールをコンポジットとして別のロールに適用できるかどうかを決定するポリシー",
+    "token-exchange-description": "このクライアントを対象とするトークンのトークン交換を許可するクライアントを決定するポリシー。"
+  }
 }

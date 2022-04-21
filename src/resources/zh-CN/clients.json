@@ -30,7 +30,7 @@
   "contextualAttributes": "上下文属性",
   "kc": {
     "realm": {
-      "name": "Realm"
+      "name": "领域"
     }
   },
   "password": "密码",
@@ -41,7 +41,7 @@
     "PERMISSIVE": "Permissive"
   },
   "decisionStrategy": "决策策略",
-  "type": "Type",
+  "type": "类型",
   "iconUri": "图标URI",
   "allowRemoteResourceManagement": "远程资源管理",
   "resources": "资源",
@@ -65,7 +65,7 @@
   "logic": "逻辑",
   "logicType": {
     "positive": "肯定",
-    "negative": "Negative"
+    "negative": "否定"
   },
   "user": "用户",
   "clientList": "客户端",

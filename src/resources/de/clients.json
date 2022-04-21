@@ -21,5 +21,6 @@
   "certificate": "Zertifikat",
   "tokenLifespan": {
     "expires": "Läuft ab in"
-  }
+  },
+  "permissionsEnabled": "Berechtigungen aktiv"
 }

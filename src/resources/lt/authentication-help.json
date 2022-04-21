@@ -5,6 +5,5 @@
   "otpType": "'totp' paremtas ribotą laiką galiojančiu vienkartiniu slaptažodžiu. 'hotp' - ribotą kartų galiojančiu vienkartiniu slaptažodžiu.",
   "otpHashAlgorithm": "Kuris maišos algoritmas turi būti naudojamas OTP generavimui.",
   "otpPolicyDigits": "Kiek OTP turėtų turėti skaitmenų?",
-  "lookAhead": "Koks intervalas yra leidžiamas tuo atveju, kai prieigos raktų generatoriaus ir serverio laikai arba skaitliukai nesutampa. ",
   "otpPolicyPeriod": "Kiek sekundžiu galios OTP prieigos raktas? Numatyta reikšmė 30 sekundžių."
 }

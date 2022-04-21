@@ -5,6 +5,5 @@
   "otpType": "totp是基于时间的一次性密码。 'hotp'是一个计数器基本一次性密码，其中服务器保持一个计数器哈希。",
   "otpHashAlgorithm": "应该使用什么散列算法来生成OTP。",
   "otpPolicyDigits": "OTP有多少位？",
-  "lookAhead": "如果令牌生成器和服务器不在时间同步或计数器同步，服务器应该向多远前进？",
   "otpPolicyPeriod": "OTP令牌有效多少秒？默认为30秒。"
 }

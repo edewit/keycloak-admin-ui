@@ -1,6 +1,6 @@
 {
   "protocol": "协议",
-  "type": "Type",
+  "type": "类型",
   "realmRolePrefix": "Realm角色前缀",
   "realmRoles": "Realm角色",
   "clients": "客户端",

@@ -5,6 +5,5 @@
   "otpType": "Totp er et tidsbasert engangspassord. 'hotp' er et teller basert engangspassord hvor serveren følger med på en teller som den kan hashe mot.",
   "otpHashAlgorithm": "Hva slags hashing algoritme skal brukes for å generere OTP.",
   "otpPolicyDigits": "Hvor mange sifre skal OTP ha?",
-  "lookAhead": "Hvor langt frem bør serveren se i tilfelle token generator og server er ute av tidssynkronisering eller tellersynkronisering?",
   "otpPolicyPeriod": "Hvor mange sekunder burde et engangskode token være gyldig? Standard er satt til 30 sekunder."
 }

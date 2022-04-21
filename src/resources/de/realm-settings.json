@@ -17,6 +17,8 @@
   "rememberMe": "Angemeldet bleiben",
   "rememberMeHelpText": "Zeigt eine Auswahlbox auf der Loginseite, die es dem Benutzer erlaubt, zwischen Browser-Neustarts eingeloggt zu bleiben, bis die Session abläuft.",
   "emailAsUsername": "E-Mail-Adresse als Benutzername",
+  "loginWithEmail": "Anmeldung mit E-Mail",
+  "loginWithEmailHelpText": "Erlaubt Benutzern, sich mit ihrer E-Mail-Adresse anzumelden.",
   "verifyEmail": "E-Mail verifizieren",
   "editUsername": "Benutzername editierbar",
   "htmlDisplayName": "HTML-Anzeigename",
