@@ -19,7 +19,7 @@ const logOutTest = () => {
 const goToAcctMgtTest = () => {
   sidebarPage.waitForPageLoad();
   masthead.accountManagement();
-  cy.contains("Welcome to Keycloak Account Management");
+  cy.get("h1").contains("Welcome to Keycloak account management");
   cy.get("#landingReferrerLink").click({ force: true });
   masthead.checkIsAdminConsole();
 };
