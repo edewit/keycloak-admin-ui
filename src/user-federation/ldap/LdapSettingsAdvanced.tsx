@@ -42,12 +42,11 @@ export const LdapSettingsAdvanced = ({
       );
       addAlert(t("testSuccess"));
       const passwordModifyOid = ldapOids.filter(
-        (id: any) => id.oid === PASSWORD_MODIFY_OID
+        (id: { oid: string }) => id.oid === PASSWORD_MODIFY_OID
       );
-      form.setValue(
-        "config.usePasswordModifyExtendedOp",
-        (passwordModifyOid.length > 0).toString()
-      );
+      form.setValue("config.usePasswordModifyExtendedOp", [
+        (passwordModifyOid.length > 0).toString(),
+      ]);
     } catch (error) {
       addError("user-federation:testError", error);
     }
