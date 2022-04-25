@@ -11,7 +11,7 @@ import { useRealm } from "../../context/realm-context/RealmContext";
 import { useAlerts } from "../../components/alert/Alerts";
 
 export type LdapSettingsAdvancedProps = {
-  id: string;
+  id?: string;
   form: UseFormMethods;
   showSectionHeading?: boolean;
   showSectionDescription?: boolean;
