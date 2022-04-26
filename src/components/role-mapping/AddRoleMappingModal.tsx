@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { findIndex } from "lodash-es";
 import {
@@ -27,6 +27,7 @@ import {
   Row,
   ServiceRole,
 } from "./RoleMapping";
+import { KeycloakSpinner } from "../keycloak-spinner/KeycloakSpinner";
 
 type AddRoleMappingModalProps = {
   id: string;
@@ -61,11 +62,10 @@ export const AddRoleMappingModal = ({
   const [clients, setClients] = useState<ClientRole[]>([]);
   const [searchToggle, setSearchToggle] = useState(false);
 
-  const [key, setKey] = useState(0);
-  const refresh = () => setKey(key + 1);
-
   const [selectedClients, setSelectedClients] = useState<ClientRole[]>([]);
   const [selectedRows, setSelectedRows] = useState<Row[]>([]);
+
+  const [data, setData] = useState<Row[]>();
 
   const mapType = mapping.find((m) => m.resource === type)!;
 
@@ -101,71 +101,80 @@ export const AddRoleMappingModal = ({
     []
   );
 
-  useEffect(refresh, [searchToggle]);
+  useFetch(
+    async () => {
+      const realmRolesSelected = findIndex(
+        selectedClients,
+        (client) => client.name === "realmRoles"
+      );
+      let selected = selectedClients;
+      if (realmRolesSelected !== -1) {
+        selected = selectedClients.filter(
+          (client) => client.name !== "realmRoles"
+        );
+      }
+
+      const availableRoles = await castAdminClient(
+        adminClient,
+        mapType.resource
+      )[mapType.functions.list[1]]({
+        id,
+      });
+
+      const realmRoles = availableRoles.map((role) => {
+        return {
+          id: role.id,
+          role,
+          client: undefined,
+        };
+      });
+
+      const allClients =
+        selectedClients.length !== 0
+          ? selected
+          : await adminClient.clients.find();
+
+      const roles = (
+        await Promise.all(
+          allClients.map(async (client) => {
+            const clientAvailableRoles = await castAdminClient(
+              adminClient,
+              mapType.resource === "roles" ? "clients" : mapType.resource
+            )[mapType.functions.list[0]]({
+              id: mapType.resource === "roles" ? client.id : id,
+              client: client.id,
+              clientUniqueId: client.id,
+            });
+
+            return clientAvailableRoles.map((role) => {
+              return {
+                id: role.id,
+                role,
+                client,
+              };
+            });
+          })
+        )
+      ).flat();
+
+      return [
+        ...(realmRolesSelected !== -1 || selected.length === 0
+          ? realmRoles
+          : []),
+        ...roles,
+      ];
+    },
+    setData,
+    [selectedClients]
+  );
 
   const removeClient = (client: ClientRole) => {
     setSelectedClients(selectedClients.filter((item) => item.id !== client.id));
   };
 
-  const loader = async () => {
-    const realmRolesSelected = findIndex(
-      selectedClients,
-      (client) => client.name === "realmRoles"
-    );
-    let selected = selectedClients;
-    if (realmRolesSelected !== -1) {
-      selected = selectedClients.filter(
-        (client) => client.name !== "realmRoles"
-      );
-    }
-
-    const availableRoles = await castAdminClient(adminClient, mapType.resource)[
-      mapType.functions.list[1]
-    ]({
-      id,
-    });
-
-    const realmRoles = availableRoles.map((role) => {
-      return {
-        id: role.id,
-        role,
-        client: undefined,
-      };
-    });
-
-    const allClients =
-      selectedClients.length !== 0
-        ? selected
-        : await adminClient.clients.find();
-
-    const roles = (
-      await Promise.all(
-        allClients.map(async (client) => {
-          const clientAvailableRoles = await castAdminClient(
-            adminClient,
-            mapType.resource === "roles" ? "clients" : mapType.resource
-          )[mapType.functions.list[0]]({
-            id: mapType.resource === "roles" ? client.id : id,
-            client: client.id,
-            clientUniqueId: client.id,
-          });
-
-          return clientAvailableRoles.map((role) => {
-            return {
-              id: role.id,
-              role,
-              client,
-            };
-          });
-        })
-      )
-    ).flat();
-
-    return [
-      ...(realmRolesSelected !== -1 || selected.length === 0 ? realmRoles : []),
-      ...roles,
-    ];
-  };
+  if (!data) {
+    return <KeycloakSpinner />;
+  }
 
   const createSelectGroup = (clients: ClientRepresentation[]) => [
     <SelectGroup key="role" label={t("realmRoles")}>
@@ -215,14 +224,13 @@ export const AddRoleMappingModal = ({
       ]}
     >
       <KeycloakDataTable
-        key={key}
         onSelect={(rows) => setSelectedRows([...rows])}
         searchPlaceholderKey="clients:searchByRoleName"
         searchTypeComponent={
           <ToolbarItem>
             <Select
               toggleId="role"
-              onToggle={() => setSearchToggle(!searchToggle)}
+              onToggle={setSearchToggle}
               isOpen={searchToggle}
               variant={isRadio ? SelectVariant.single : SelectVariant.checkbox}
               hasInlineFilter
@@ -232,6 +240,7 @@ export const AddRoleMappingModal = ({
                 </>
               }
               isGrouped
+              isCheckboxSelectionBadgeHidden
               onFilter={(evt) => {
                 const value = evt?.target.value || "";
                 return createSelectGroup(
@@ -259,10 +268,7 @@ export const AddRoleMappingModal = ({
               {selectedClients.map((client) => (
                 <Chip
                   key={`chip-${client.id}`}
-                  onClick={() => {
-                    removeClient(client);
-                    refresh();
-                  }}
+                  onClick={() => removeClient(client)}
                 >
                   {client.clientId || t("realmRoles")}
                   <Badge isRead={true}>{client.numberOfRoles}</Badge>
@@ -273,7 +279,7 @@ export const AddRoleMappingModal = ({
         }
         canSelectAll
         isRadio={isRadio}
-        loader={loader}
+        loader={data}
         ariaLabelKey="clients:roles"
         columns={[
           {
