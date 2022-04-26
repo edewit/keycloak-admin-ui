@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { findIndex } from "lodash-es";
 import {
   Badge,
   Button,
@@ -15,11 +14,11 @@ import {
   SelectVariant,
   ToolbarItem,
 } from "@patternfly/react-core";
+import { FilterIcon } from "@patternfly/react-icons";
 
 import type ClientRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientRepresentation";
 import { KeycloakDataTable } from "../table-toolbar/KeycloakDataTable";
 import { useFetch, useAdminClient } from "../../context/auth/AdminClient";
-import { FilterIcon } from "@patternfly/react-icons";
 import {
   castAdminClient,
   mapping,
@@ -103,12 +102,11 @@ export const AddRoleMappingModal = ({
 
   useFetch(
     async () => {
-      const realmRolesSelected = findIndex(
-        selectedClients,
+      const realmRolesSelected = selectedClients.some(
         (client) => client.name === "realmRoles"
       );
       let selected = selectedClients;
-      if (realmRolesSelected !== -1) {
+      if (realmRolesSelected) {
         selected = selectedClients.filter(
           (client) => client.name !== "realmRoles"
         );
@@ -158,9 +156,7 @@ export const AddRoleMappingModal = ({
       ).flat();
 
       return [
-        ...(realmRolesSelected !== -1 || selected.length === 0
-          ? realmRoles
-          : []),
+        ...(realmRolesSelected || selected.length === 0 ? realmRoles : []),
         ...roles,
       ];
     },
