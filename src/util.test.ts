@@ -111,4 +111,20 @@ describe("Tests the form convert util functions", () => {
       attributes: {},
     });
   });
+
+  it("convert single element arrays to string", () => {
+    const given = {
+      config: { group: ["one"], another: { nested: ["value"] } },
+    };
+    const values: { [index: string]: any } = {};
+    const spy = (name: string, value: any) => (values[name] = value);
+
+    //when
+    convertToFormValues(given, spy);
+
+    //then
+    expect(values).toEqual({
+      config: { group: "one", another: { nested: "value" } },
+    });
+  });
 });
