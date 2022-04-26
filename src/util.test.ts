@@ -116,15 +116,15 @@ describe("Tests the form convert util functions", () => {
     const given = {
       config: { group: ["one"], another: { nested: ["value"] } },
     };
-    const values: { [index: string]: any } = {};
-    const spy = (name: string, value: any) => (values[name] = value);
+    const setValue = jest.fn();
 
     //when
-    convertToFormValues(given, spy);
+    convertToFormValues(given, setValue);
 
     //then
-    expect(values).toEqual({
-      config: { group: "one", another: { nested: "value" } },
+    expect(setValue).toHaveBeenCalledWith("config", {
+      group: "one",
+      another: { nested: "value" },
     });
   });
 });
