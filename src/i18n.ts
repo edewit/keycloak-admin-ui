@@ -3,6 +3,7 @@ import HttpBackend from "i18next-http-backend";
 import { initReactI18next } from "react-i18next";
 
 import type KeycloakAdminClient from "@keycloak/keycloak-admin-client";
+import environment from "./environment";
 
 export const DEFAULT_LOCALE = "en";
 
@@ -11,7 +12,7 @@ export const initOptions = async (adminClient: KeycloakAdminClient) => {
     if (namespaces[0] === "overrides") {
       return `/admin/realms/${adminClient.realmName}/localization/{{lng}}`;
     } else {
-      return "/resources/{{lng}}/{{ns}}.json";
+      return `${environment.resourceUrl}/resources/{{lng}}/{{ns}}.json`;
     }
   };
 
