@@ -1,14 +1,21 @@
-import i18n, { TOptions } from "i18next";
-import HttpBackend from "i18next-http-backend";
+import i18n, { InitOptions, TOptions } from "i18next";
+import HttpBackend, { LoadPathOption } from "i18next-http-backend";
 import { initReactI18next } from "react-i18next";
-
 import type KeycloakAdminClient from "@keycloak/keycloak-admin-client";
+
 import environment from "./environment";
 
 export const DEFAULT_LOCALE = "en";
 
-export const initOptions = async (adminClient: KeycloakAdminClient) => {
-  const constructLoadPath = (_: string[], namespaces: string[]) => {
+export async function initI18n(adminClient: KeycloakAdminClient) {
+  const options = await initOptions(adminClient);
+  await i18n.init(options);
+}
+
+const initOptions = async (
+  adminClient: KeycloakAdminClient
+): Promise<InitOptions> => {
+  const constructLoadPath: LoadPathOption = (_, namespaces) => {
     if (namespaces[0] === "overrides") {
       return `/admin/realms/${adminClient.realmName}/localization/{{lng}}`;
     } else {
@@ -46,18 +53,14 @@ export const initOptions = async (adminClient: KeycloakAdminClient) => {
       "dynamic",
       "overrides",
     ],
-
     interpolation: {
       escapeValue: false,
     },
-
     postProcess: ["overrideProcessor"],
-
     backend: {
-      expirationTime: 7 * 24 * 60 * 60 * 1000,
       loadPath: constructLoadPath,
       customHeaders: {
-        Authorization: `bearer ${await adminClient.getAccessToken()}`,
+        Authorization: `Bearer ${await adminClient.getAccessToken()}`,
       },
     },
   };
