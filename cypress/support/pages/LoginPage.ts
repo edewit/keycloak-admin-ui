@@ -19,7 +19,6 @@ export default class LoginPage {
     cy.get('[role="progressbar"]').should("not.exist");
     cy.get(this.oldLoadContainer).should("not.exist");
     cy.get(this.loadContainer).should("not.exist");
-    cy.intercept("/admin/realms/master/localization/en").as("translation");
 
     cy.get("body")
       .children()
@@ -29,9 +28,9 @@ export default class LoginPage {
           cy.get(this.passwordInput).type(password);
 
           cy.get(this.submitBtn).click();
-          cy.wait("@translation");
         }
       });
+    cy.get('[role="progressbar"]').should("not.exist");
   }
 
   checkErrorIsDisplayed() {
