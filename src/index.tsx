@@ -13,13 +13,17 @@ if (import.meta.hot) {
   import.meta.hot.accept();
 }
 
-const adminClient = await initAdminClient();
+async function initialize() {
+  const adminClient = await initAdminClient();
 
-await initI18n(adminClient);
+  await initI18n(adminClient);
 
-ReactDOM.render(
-  <StrictMode>
-    <App adminClient={adminClient} />
-  </StrictMode>,
-  document.getElementById("app")
-);
+  ReactDOM.render(
+    <StrictMode>
+      <App adminClient={adminClient} />
+    </StrictMode>,
+    document.getElementById("app")
+  );
+}
+
+initialize();
