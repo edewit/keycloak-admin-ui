@@ -114,6 +114,18 @@
       "manage-group-membership-description": "Policies that decide if an administrator can manage group membership for all users in the realm.  This is used in conjunction with specific group policy",
       "impersonate-description": "Policies that decide if administrator can impersonate other users",
       "user-impersonated-description": "Policies that decide which users can be impersonated.  These policies are applied to the user being impersonated."
+    },
+    "groups": {
+      "view-description": "Policies that decide if an administrator can view this group",
+      "manage-description": "Policies that decide if an administrator can manage this group",
+      "view-members-description": "Policies that decide if an administrator can view the members of this group",
+      "manage-members-description": "Policies that decide if an administrator can manage the members of this group",
+      "manage-membership-description": "Policies that decide if an administrator can add or remove users from this group"
+    },
+    "roles": {
+      "map-role-description": "Policies that decide if an administrator can map this role to a user or group",
+      "map-role-client-scope-description": "Policies that decide if an administrator can apply this role to the client scope of a client",
+      "map-role-composite-description": "Policies that decide if an administrator can apply this role as a composite to another role"
     }
   },
   "configure": "Configure",
