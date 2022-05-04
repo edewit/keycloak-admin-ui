@@ -101,10 +101,12 @@ export default function AuthenticationSection() {
         flow.usedBy.values = idps.map(({ alias }) => alias!);
       }
 
-      const isDefault = defaultFlows.find(([, alias]) => flow.alias === alias);
-      if (isDefault) {
+      const defaultFlow = defaultFlows.find(
+        ([, alias]) => flow.alias === alias
+      );
+      if (defaultFlow) {
         flow.usedBy.type = "default";
-        flow.usedBy.values.push(isDefault[0]);
+        flow.usedBy.values.push(defaultFlow[0]);
       }
     }
 
