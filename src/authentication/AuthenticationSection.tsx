@@ -73,8 +73,8 @@ export default function AuthenticationSection() {
       throw new Error(t("common:notFound"));
     }
 
-    const defaultFlows = Object.entries(realmRep).filter((entry) =>
-      REALM_FLOWS.includes(entry[0])
+    const defaultFlows = Object.entries(realmRep).filter(([key]) =>
+      REALM_FLOWS.includes(key)
     );
 
     for (const flow of flows as AuthenticationType[]) {
