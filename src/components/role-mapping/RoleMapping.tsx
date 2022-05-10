@@ -174,7 +174,7 @@ export const RoleMapping = ({
   const [hide, setHide] = useState(false);
   const [showAssign, setShowAssign] = useState(false);
   const [selected, setSelected] = useState<Row[]>([]);
-  const [wait, toggle] = useToggle();
+  const [wait, toggleWait] = useToggle();
   const setTimeout = useSetTimeout();
 
   const assignRoles = async (rows: Row[]) => {
@@ -209,7 +209,7 @@ export const RoleMapping = ({
           })
         );
         addAlert(t("clients:clientScopeRemoveSuccess"), AlertVariant.success);
-        toggle();
+        toggleWait();
       } catch (error) {
         addError("clients:clientScopeRemoveError", error);
       }
