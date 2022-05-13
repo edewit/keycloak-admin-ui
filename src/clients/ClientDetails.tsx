@@ -202,6 +202,7 @@ export default function ClientDetails() {
 
   const form = useForm<ClientRepresentation>({ shouldUnregister: false });
   const { clientId } = useParams<ClientParams>();
+  const [key, setKey] = useState(0);
 
   const clientAuthenticatorType = useWatch({
     control: form.control,
@@ -258,7 +259,7 @@ export default function ClientDetails() {
       setClient(cloneDeep(fetchedClient));
       setupForm(fetchedClient);
     },
-    [clientId]
+    [clientId, key]
   );
 
   const save = async (
@@ -416,9 +417,10 @@ export default function ClientDetails() {
                 {...route("credentials")}
               >
                 <Credentials
-                  form={form}
-                  clientId={clientId}
-                  save={() => save()}
+                  key={key}
+                  client={client}
+                  save={save}
+                  refresh={() => setKey(key + 1)}
                 />
               </Tab>
             )}
