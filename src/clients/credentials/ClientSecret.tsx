@@ -62,13 +62,14 @@ const SecretInput = ({ id, buttonLabel, secret, toggle }: SecretInputProps) => {
 const ExpireDateFormatter = ({ time }: { time: number }) => {
   const { t } = useTranslation("clients");
   const { whoAmI } = useWhoAmI();
+  const locale = whoAmI.getLocale();
   const formatter = useMemo(
     () =>
-      new Intl.DateTimeFormat(whoAmI.getLocale(), {
+      new Intl.DateTimeFormat(locale, {
         dateStyle: "full",
         timeStyle: "long",
       }),
-    [whoAmI.getLocale()]
+    [locale]
   );
 
   const unixTimeToString = (time: number) =>
