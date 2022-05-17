@@ -68,8 +68,8 @@ export const Credentials = ({ client, save, refresh }: CredentialsProps) => {
   const [open, isOpen] = useState(false);
 
   useFetch(
-    async () =>
-      await Promise.all([
+    () =>
+      Promise.all([
         adminClient.authenticationManagement.getClientAuthenticatorProviders(),
         adminClient.clients.getClientSecret({
           id: clientId,
