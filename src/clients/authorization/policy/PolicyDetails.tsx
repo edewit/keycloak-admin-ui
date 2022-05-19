@@ -57,7 +57,8 @@ const COMPONENTS: {
   js: JavaScript,
 } as const;
 
-const isValidComponentType = (value: string): boolean => value in COMPONENTS;
+export const isValidComponentType = (value: string): boolean =>
+  value in COMPONENTS;
 
 export default function PolicyDetails() {
   const { t } = useTranslation("clients");
@@ -165,10 +166,9 @@ export default function PolicyDetails() {
     return <KeycloakSpinner />;
   }
 
-  if (!isValidComponentType(policyType)) {
-    throw new Error(`Not a supported ${policyType}!`);
-  }
-  const ComponentType = COMPONENTS[policyType];
+  const ComponentType = isValidComponentType(policyType)
+    ? COMPONENTS[policyType]
+    : COMPONENTS["js"];
 
   return (
     <>
