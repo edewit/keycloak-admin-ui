@@ -57,8 +57,7 @@ const COMPONENTS: {
   js: JavaScript,
 } as const;
 
-export const isValidComponentType = (value: string): boolean =>
-  value in COMPONENTS;
+export const isValidComponentType = (value: string) => value in COMPONENTS;
 
 export default function PolicyDetails() {
   const { t } = useTranslation("clients");

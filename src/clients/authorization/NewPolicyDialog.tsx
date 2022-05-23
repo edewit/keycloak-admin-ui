@@ -62,7 +62,7 @@ export const NewPolicyDialog = ({
             >
               <Td>{provider.name}</Td>
               <Td>
-                {isValidComponentType(provider.type) &&
+                {isValidComponentType(provider.type!) &&
                   t(`policyProvider.${provider.type}`)}
               </Td>
             </Tr>
