@@ -298,7 +298,7 @@ export default function ClientDetails() {
         );
       }
 
-      if (values.attributes?.default.acr.values) {
+      if (values.attributes?.default?.acr?.values) {
         values.attributes["default.acr.values"] = toStringValue(
           values.attributes.default.acr.values
         );
