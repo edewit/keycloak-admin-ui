@@ -35,6 +35,7 @@ export const LogoutPanel = ({
       isHorizontal
       fineGrainedAccess={access?.configure}
       role="manage-clients"
+      style={{ paddingBottom: "35px" }}
     >
       {protocol === "openid-connect" && (
         <>
