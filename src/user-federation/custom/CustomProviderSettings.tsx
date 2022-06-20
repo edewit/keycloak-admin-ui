@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FormProvider, useForm } from "react-hook-form";
 import {
@@ -138,9 +138,9 @@ export default function CustomProviderSettings() {
             </Button>
             <Button
               variant="link"
-              onClick={() =>
-                history.push(toUserFederation({ realm: realmName }))
-              }
+              component={(props) => (
+                <Link {...props} to={toUserFederation({ realm: realmName })} />
+              )}
               data-testid="custom-cancel"
             >
               {t("common:cancel")}
