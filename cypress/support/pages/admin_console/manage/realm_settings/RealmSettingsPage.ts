@@ -387,6 +387,14 @@ export default class RealmSettingsPage extends CommonPage {
     return this;
   }
 
+  toggleSwitchLogin(switchName: string) {
+    cy.intercept("/admin/realms/*").as("load");
+    cy.findByTestId(switchName).click({ force: true });
+    cy.wait("@load");
+
+    return this;
+  }
+
   toggleCheck(switchName: string) {
     cy.findByTestId(switchName).click();
 

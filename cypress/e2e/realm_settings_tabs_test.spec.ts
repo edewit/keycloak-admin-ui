@@ -39,15 +39,18 @@ describe("Realm settings tabs tests", () => {
   it("Go to login tab", () => {
     sidebarPage.goToRealmSettings();
     cy.findByTestId("rs-login-tab").click();
-    realmSettingsPage.toggleSwitch(realmSettingsPage.userRegSwitch);
+    sidebarPage.waitForPageLoad();
+    realmSettingsPage.toggleSwitchLogin(realmSettingsPage.userRegSwitch);
 
-    realmSettingsPage.toggleSwitch(realmSettingsPage.forgotPwdSwitch);
+    realmSettingsPage.toggleSwitchLogin(realmSettingsPage.forgotPwdSwitch);
 
-    realmSettingsPage.toggleSwitch(realmSettingsPage.rememberMeSwitch);
+    realmSettingsPage.toggleSwitchLogin(realmSettingsPage.rememberMeSwitch);
 
-    realmSettingsPage.toggleSwitch(realmSettingsPage.loginWithEmailSwitch);
+    realmSettingsPage.toggleSwitchLogin(realmSettingsPage.loginWithEmailSwitch);
 
-    realmSettingsPage.toggleSwitch(realmSettingsPage.duplicateEmailsSwitch);
+    realmSettingsPage.toggleSwitchLogin(
+      realmSettingsPage.duplicateEmailsSwitch
+    );
 
     // Check values
     cy.findByTestId(realmSettingsPage.userRegSwitch).should("have.value", "on");
