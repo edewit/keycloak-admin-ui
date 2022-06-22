@@ -98,6 +98,7 @@
   "noKeys": "No keys",
   "noKeysDescription": "You haven't created any active keys",
   "certificate": "Certificate",
+  "userRegistration": "User registration",
   "loginScreenCustomization": "Login screen customization",
   "registrationAllowed": "User registration",
   "userRegistrationHelpText": "Enable/disable the registration page. A link for registration will show on login page too.",
