@@ -19,10 +19,10 @@ describe("Partial import test", () => {
   });
 
   before(() => {
-    cy.wrap(null).then(async () => {
-      await adminClient.createRealm(TEST_REALM);
-      await adminClient.createRealm(TEST_REALM_2);
-    });
+    cy.wrap(null).then(() => Promise.all([
+      adminClient.createRealm(TEST_REALM),
+      adminClient.createRealm(TEST_REALM_2)
+    ]);
     keycloakBefore();
     loginPage.logIn();
     sidebarPage.goToRealm(TEST_REALM);
