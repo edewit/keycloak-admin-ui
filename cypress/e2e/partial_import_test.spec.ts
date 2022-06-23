@@ -19,18 +19,22 @@ describe("Partial import test", () => {
   });
 
   before(() => {
-    cy.wrap(null).then(() => Promise.all([
-      adminClient.createRealm(TEST_REALM),
-      adminClient.createRealm(TEST_REALM_2)
-    ]);
+    cy.wrap(null).then(() =>
+      Promise.all([
+        adminClient.createRealm(TEST_REALM),
+        adminClient.createRealm(TEST_REALM_2),
+      ])
+    );
     keycloakBefore();
     loginPage.logIn();
     sidebarPage.goToRealm(TEST_REALM);
   });
 
   after(async () => {
-    await adminClient.deleteRealm(TEST_REALM);
-    await adminClient.deleteRealm(TEST_REALM_2);
+    await Promise.all([
+      adminClient.deleteRealm(TEST_REALM),
+      adminClient.deleteRealm(TEST_REALM_2),
+    ]);
   });
 
   it("Opens and closes partial import dialog", () => {
