@@ -141,9 +141,13 @@ describe("Authentication test", () => {
   });
 
   it("Should set as default in action menu", () => {
+    const bindFlow = new BindFlowModal();
     listingPage.clickRowDetails("Copy of browser").clickDetailMenu("Bind flow");
-    new BindFlowModal().fill("Direct grant flow").save();
+    bindFlow.fill("Direct grant flow").save();
     masthead.checkNotificationMessage("Flow successfully updated");
+
+    listingPage.clickRowDetails("Direct grant").clickDetailMenu("Bind flow");
+    bindFlow.fill("Direct grant flow").save();
   });
 
   it("Should delete a flow from action menu", () => {
