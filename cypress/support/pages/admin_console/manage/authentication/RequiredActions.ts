@@ -39,17 +39,7 @@ export default class RequiredActions {
   }
 
   moveRowTo(from: string, to: string) {
-    cy.get("#" + this.toId(from))
-      .trigger("dragstart", {
-        dataTransfer: new DataTransfer(),
-      })
-      .trigger("dragleave");
-
-    cy.get("#" + this.toId(to))
-      .trigger("dragenter")
-      .trigger("dragover")
-      .trigger("drop")
-      .trigger("dragend");
+    cy.get("#" + this.toId(from)).drag("#" + this.toId(to));
 
     return this;
   }

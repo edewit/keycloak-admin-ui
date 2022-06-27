@@ -1,3 +1,5 @@
+import "@4tw/cypress-drag-drop";
+
 type RequirementType = "Required" | "Alternative" | "Disabled" | "Conditional";
 
 export default class FlowDetails {
@@ -16,15 +18,22 @@ export default class FlowDetails {
   }
 
   moveRowTo(from: string, to: string) {
-    cy.findByTestId(from).trigger("dragstart").trigger("dragleave");
-
-    cy.findByTestId(to)
-      .trigger("dragenter")
-      .trigger("dragover")
-      .trigger("drop")
-      .trigger("dragend");
+    cy.findAllByTestId(from).drag(to);
 
     return this;
+  }
+
+  expectPriorityChange(execution: string, callback: () => void) {
+    cy.findAllByTestId(execution).then((rowDetails) => {
+      const executionId = rowDetails.children().attr("id");
+      console.log("wait?", executionId);
+      cy.intercept(
+        "POST",
+        `/admin/realms/master/authentication/executions/${executionId}/lower-priority`
+      ).as("priority");
+      callback();
+      cy.wait("@priority");
+    });
   }
 
   changeRequirement(execution: string, requirement: RequirementType) {
