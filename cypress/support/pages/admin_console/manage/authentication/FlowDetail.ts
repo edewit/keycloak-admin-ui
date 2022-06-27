@@ -1,5 +1,3 @@
-import "@4tw/cypress-drag-drop";
-
 type RequirementType = "Required" | "Alternative" | "Disabled" | "Conditional";
 
 export default class FlowDetails {
@@ -26,7 +24,6 @@ export default class FlowDetails {
   expectPriorityChange(execution: string, callback: () => void) {
     cy.findAllByTestId(execution).then((rowDetails) => {
       const executionId = rowDetails.children().attr("id");
-      console.log("wait?", executionId);
       cy.intercept(
         "POST",
         `/admin/realms/master/authentication/executions/${executionId}/lower-priority`
