@@ -146,7 +146,9 @@ describe("Authentication test", () => {
     bindFlow.fill("Direct grant flow").save();
     masthead.checkNotificationMessage("Flow successfully updated");
 
-    listingPage.clickRowDetails("Direct grant").clickDetailMenu("Bind flow");
+    listingPage
+      .clickRowDetails("OpenID Connect Resource Owner Grant")
+      .clickDetailMenu("Bind flow");
     bindFlow.fill("Direct grant flow").save();
   });
 
@@ -158,7 +160,7 @@ describe("Authentication test", () => {
 
   it("should create flow from scratch", () => {
     const flowName = "Flow";
-    listingPage.itemExist("Copy of browser").goToCreateItem();
+    listingPage.goToCreateItem();
     detailPage.fillCreateForm(
       flowName,
       "Some nice description about what this flow does so that we can use it later",

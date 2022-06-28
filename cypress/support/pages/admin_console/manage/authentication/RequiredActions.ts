@@ -2,11 +2,16 @@ export default class RequiredActions {
   private toId(name: string) {
     return name.replace(/\s/g, "\\ ");
   }
+
+  private toKey(name: string) {
+    return name.replace(/\s/g, "-");
+  }
+
   private getEnabled(name: string) {
-    return `#enable-${this.toId(name)}`;
+    return `#enable-${this.toKey(name)}`;
   }
   private getDefault(name: string) {
-    return `#default-${this.toId(name)}`;
+    return `#default-${this.toKey(name)}`;
   }
 
   goToTab() {
