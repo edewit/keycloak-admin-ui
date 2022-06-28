@@ -24,10 +24,13 @@ describe("Authentication test", () => {
   const modalUtil = new ModalUtils();
 
   before(() => {
+    cy.wrap(adminClient.createRealm("test"));
     keycloakBefore();
     loginPage.logIn();
-    sidebarPage.waitForPageLoad();
+    sidebarPage.goToRealm("Test");
   });
+
+  after(() => adminClient.deleteRealm("test"));
 
   beforeEach(() => {
     sidebarPage.goToAuthentication();
@@ -145,21 +148,10 @@ describe("Authentication test", () => {
     listingPage.clickRowDetails("Copy of browser").clickDetailMenu("Bind flow");
     bindFlow.fill("Direct grant flow").save();
     masthead.checkNotificationMessage("Flow successfully updated");
-
-    listingPage
-      .clickRowDetails("OpenID Connect Resource Owner Grant")
-      .clickDetailMenu("Bind flow");
-    bindFlow.fill("Direct grant flow").save();
   });
 
-  it("Should delete a flow from action menu", () => {
-    listingPage.clickRowDetails("Copy of browser").clickDetailMenu("Delete");
-    modalUtil.confirmModal();
-    masthead.checkNotificationMessage("Flow successfully deleted");
-  });
-
+  const flowName = "Empty Flow";
   it("should create flow from scratch", () => {
-    const flowName = "Flow";
     listingPage.goToCreateItem();
     detailPage.fillCreateForm(
       flowName,
@@ -172,6 +164,12 @@ describe("Authentication test", () => {
     masthead.checkNotificationMessage("Flow successfully updated");
 
     detailPage.flowExists(flowName);
+  });
+
+  it("Should delete a flow from action menu", () => {
+    listingPage.clickRowDetails(flowName).clickDetailMenu("Delete");
+    modalUtil.confirmModal();
+    masthead.checkNotificationMessage("Flow successfully deleted");
   });
 });
 
@@ -190,9 +188,7 @@ describe("Required actions", () => {
     requiredActionsPage.goToTab();
   });
 
-  after(() => {
-    adminClient.deleteRealm("Test");
-  });
+  after(() => adminClient.deleteRealm("Test"));
 
   it("should enable delete account", () => {
     const action = "Delete Account";

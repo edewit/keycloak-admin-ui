@@ -26,7 +26,7 @@ export default class FlowDetails {
       const executionId = rowDetails.children().attr("id");
       cy.intercept(
         "POST",
-        `/admin/realms/master/authentication/executions/${executionId}/lower-priority`
+        `/admin/realms/test/authentication/executions/${executionId}/lower-priority`
       ).as("priority");
       callback();
       cy.wait("@priority");
