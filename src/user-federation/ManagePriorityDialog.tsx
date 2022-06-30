@@ -94,19 +94,14 @@ export const ManagePriorityDialog = ({
         >
           {order.map((name) => (
             <Draggable key={name} hasNoWrapper>
-              <DataListItem aria-labelledby={name} id={`${name}-item`}>
+              <DataListItem aria-labelledby={name}>
                 <DataListItemRow>
                   <DataListControl>
-                    <DataListDragButton
-                      aria-label="Reorder"
-                      aria-labelledby={name}
-                      aria-describedby={t("manageOrderItemAria")}
-                      aria-pressed="false"
-                    />
+                    <DataListDragButton aria-label={t("manageOrderItemAria")} />
                   </DataListControl>
                   <DataListItemCells
                     dataListCells={[
-                      <DataListCell key={`${name}-cell`} data-testid={name}>
+                      <DataListCell key={name} data-testid={name}>
                         <span id={name}>{name}</span>
                       </DataListCell>,
                     ]}

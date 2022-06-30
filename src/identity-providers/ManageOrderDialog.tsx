@@ -97,23 +97,14 @@ export const ManageOrderDialog = ({
         >
           {order.map((alias) => (
             <Draggable key={alias} hasNoWrapper>
-              <DataListItem
-                aria-labelledby={alias}
-                id={`${alias}-item`}
-                ref={React.createRef()}
-              >
+              <DataListItem aria-labelledby={alias}>
                 <DataListItemRow>
                   <DataListControl>
-                    <DataListDragButton
-                      aria-label="Reorder"
-                      aria-labelledby={alias}
-                      aria-describedby={t("manageOrderItemAria")}
-                      aria-pressed="false"
-                    />
+                    <DataListDragButton aria-label={t("manageOrderItemAria")} />
                   </DataListControl>
                   <DataListItemCells
                     dataListCells={[
-                      <DataListCell key={`${alias}-cell`} data-testid={alias}>
+                      <DataListCell key={alias} data-testid={alias}>
                         <span id={alias}>{alias}</span>
                       </DataListCell>,
                     ]}

@@ -8,7 +8,7 @@ type OrderChangeListProps = {
   children: React.ReactNode;
 };
 
-// Copied from patternfly this seems not exported
+//TODO Copied from patternfly this seems not exported
 interface DraggableItemPosition {
   /** Parent droppableId */
   droppableId: string;
@@ -46,18 +46,18 @@ export const OrderChangeList = ({
     source: DraggableItemPosition,
     dest?: DraggableItemPosition
   ): boolean => {
-    if (dest) {
-      const result = [...order];
-      const [removed] = result.splice(source.index, 1);
-      result.splice(dest.index, 0, removed);
-      onDrop(result);
-
-      setLiveText(t("common:onDragFinish", { list: order }));
-      return true; // Signal that this is a valid drop and not to animate the item returning home.
-    } else {
+    if (!dest) {
       setLiveText(t("common:onDragInvalid"));
+      return false;
     }
-    return false;
+
+    const result = [...order];
+    const [removed] = result.splice(source.index, 1);
+    result.splice(dest.index, 0, removed);
+    onDrop(result);
+
+    setLiveText(t("common:onDragFinish", { list: order }));
+    return true;
   };
 
   return (
