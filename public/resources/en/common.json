@@ -197,6 +197,7 @@
   "onDragMove": "Dragging item {{item}}",
   "onDragCancel": "Dragging cancelled. List is unchanged.",
   "onDragFinish": "Dragging finished {{list}}",
+  "onDragInvalid": "Invalid drop zone",
   "notFound": "Could not find the resource that you are looking for",
   "password": "Password",
   "passwordConfirmation": "Password confirmation",

@@ -69,12 +69,10 @@ export default function IdentityProvidersSection() {
       return provider.identityProviders!;
     },
     (providers) => {
-      setProviders(providers);
+      setProviders(sortBy(providers, ["config.guiOrder", "alias"]));
     },
-    []
+    [key]
   );
-
-  const loader = () => Promise.resolve(sortBy(providers, "alias"));
 
   const DetailLink = (identityProvider: IdentityProviderRepresentation) => (
     <Link
@@ -160,7 +158,10 @@ export default function IdentityProvidersSection() {
       <DeleteConfirm />
       {manageDisplayDialog && (
         <ManageOrderDialog
-          onClose={() => setManageDisplayDialog(false)}
+          onClose={() => {
+            setManageDisplayDialog(false);
+            setKey(key + 1);
+          }}
           providers={providers.filter((p) => p.enabled)}
         />
       )}
@@ -213,7 +214,7 @@ export default function IdentityProvidersSection() {
         {providers.length !== 0 && (
           <KeycloakDataTable
             key={key}
-            loader={loader}
+            loader={providers}
             ariaLabelKey="common:identityProviders"
             searchPlaceholderKey="identity-providers:searchForProvider"
             toolbarItem={
