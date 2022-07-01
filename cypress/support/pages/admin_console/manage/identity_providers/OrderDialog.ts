@@ -21,11 +21,13 @@ export default class OrderDialog {
   }
 
   checkOrder(providerNames: string[]) {
-    cy.get(`[data-testid=${this.list}] li`).should((providers) => {
-      expect(providers).to.have.length(providerNames.length);
-      for (let index = 0; index < providerNames.length; index++) {
-        expect(providers.eq(index)).to.contain(providerNames[index]);
-      }
-    });
+    cy.findByTestId(this.list)
+      .find("li")
+      .should((providers) => {
+        expect(providers).to.have.length(providerNames.length);
+        providerNames.forEach((providerName, index) =>
+          expect(providers.eq(index)).to.contain(providerName)
+        );
+      });
   }
 }

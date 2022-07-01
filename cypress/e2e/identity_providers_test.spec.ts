@@ -60,27 +60,20 @@ describe("Identity provider test", () => {
 
     it.skip("should change order of providers", () => {
       const orderDialog = new OrderDialog();
-      const providers = [identityProviderName, "facebook", "bitbucket"];
-
-      sidebarPage.goToIdentityProviders();
-      listingPage.itemExist("facebook");
-
-      sidebarPage.goToIdentityProviders();
-      listingPage.itemExist(identityProviderName);
 
       createProviderPage
         .clickCreateDropdown()
         .clickItem("bitbucket")
         .fill("bitbucket", "123")
         .clickAdd();
-      masthead.checkNotificationMessage(createSuccessMsg, true);
 
-      cy.wait(2000);
+      masthead.checkNotificationMessage(createSuccessMsg, true);
 
       sidebarPage.goToIdentityProviders();
       listingPage.itemExist(identityProviderName);
 
-      orderDialog.openDialog().checkOrder(providers);
+      orderDialog.openDialog();
+      orderDialog.checkOrder(["bitbucket", "facebook", identityProviderName]);
       orderDialog.moveRowTo("facebook", identityProviderName);
 
       orderDialog.checkOrder(["bitbucket", identityProviderName, "facebook"]);
