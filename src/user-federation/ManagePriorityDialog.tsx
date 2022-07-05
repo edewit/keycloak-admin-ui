@@ -129,7 +129,7 @@ export const ManagePriorityDialog = ({
                     key={component.name}
                     data-testid={component.name}
                   >
-                    <span>{component.name}</span>
+                    {component.name}
                   </DataListCell>,
                 ]}
               />

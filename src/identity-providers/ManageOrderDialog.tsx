@@ -128,7 +128,7 @@ export const ManageOrderDialog = ({
                     key={provider.alias}
                     data-testid={provider.alias}
                   >
-                    <span>{provider.alias}</span>
+                    {provider.alias}
                   </DataListCell>,
                 ]}
               />
