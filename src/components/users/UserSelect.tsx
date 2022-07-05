@@ -44,7 +44,7 @@ export const UserSelect = ({
   const adminClient = useAdminClient();
 
   useFetch(
-    async () => {
+    () => {
       const params: UserQuery = {
         max: 20,
       };
@@ -53,14 +53,14 @@ export const UserSelect = ({
       }
 
       if (values?.length && !search) {
-        return await Promise.all(
+        return Promise.all(
           values.map(
             (id: string) =>
               adminClient.users.findOne({ id }) as UserRepresentation
           )
         );
       }
-      return await adminClient.users.find(params);
+      return adminClient.users.find(params);
     },
     setUsers,
     [search]
