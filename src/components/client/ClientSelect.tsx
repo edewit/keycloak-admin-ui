@@ -8,6 +8,7 @@ import {
   SelectVariant,
 } from "@patternfly/react-core";
 
+import type ClientRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientRepresentation";
 import type { ClientQuery } from "@keycloak/keycloak-admin-client/lib/resources/clients";
 import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { HelpItem } from "../help-enabler/HelpItem";
@@ -31,7 +32,7 @@ export const ClientSelect = ({
   const { control, errors } = useFormContext();
 
   const [open, setOpen] = useState(false);
-  const [clients, setClients] = useState<JSX.Element[]>();
+  const [clients, setClients] = useState<ClientRepresentation[]>([]);
   const [search, setSearch] = useState("");
 
   const adminClient = useAdminClient();
@@ -47,14 +48,14 @@ export const ClientSelect = ({
       }
       return adminClient.clients.find(params);
     },
-    (clients) =>
-      setClients(
-        clients.map((option) => (
-          <SelectOption key={option.id} value={option.clientId} />
-        ))
-      ),
+    (clients) => setClients(clients),
     [search]
   );
+
+  const convert = (clients: ClientRepresentation[]) =>
+    clients.map((option) => (
+      <SelectOption key={option.id} value={option.clientId} />
+    ));
 
   return (
     <FormGroup
@@ -85,7 +86,7 @@ export const ClientSelect = ({
             selections={value}
             onFilter={(_, value) => {
               setSearch(value);
-              return clients;
+              return convert(clients);
             }}
             onSelect={(_, value) => {
               onChange(value.toString());
@@ -93,7 +94,7 @@ export const ClientSelect = ({
             }}
             aria-label={t(label!)}
           >
-            {clients}
+            {convert(clients)}
           </Select>
         )}
       />

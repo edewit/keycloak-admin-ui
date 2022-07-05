@@ -38,7 +38,7 @@ export const UserSelect = ({
   const values: string[] | undefined = getValues(name!);
 
   const [open, toggleOpen] = useToggle();
-  const [users, setUsers] = useState<UserRepresentation[]>([]);
+  const [users, setUsers] = useState<(UserRepresentation | undefined)[]>([]);
   const [search, setSearch] = useState("");
 
   const adminClient = useAdminClient();
@@ -54,10 +54,7 @@ export const UserSelect = ({
 
       if (values?.length && !search) {
         return Promise.all(
-          values.map(
-            (id: string) =>
-              adminClient.users.findOne({ id }) as UserRepresentation
-          )
+          values.map((id: string) => adminClient.users.findOne({ id }))
         );
       }
       return adminClient.users.find(params);
@@ -66,16 +63,18 @@ export const UserSelect = ({
     [search]
   );
 
-  const convert = (clients: UserRepresentation[]) =>
-    clients.map((option) => (
-      <SelectOption
-        key={option.id!}
-        value={option.id}
-        selected={values?.includes(option.id!)}
-      >
-        {option.username}
-      </SelectOption>
-    ));
+  const convert = (clients: (UserRepresentation | undefined)[]) =>
+    clients
+      .filter((c) => c !== undefined)
+      .map((option) => (
+        <SelectOption
+          key={option!.id}
+          value={option!.id}
+          selected={values?.includes(option!.id!)}
+        >
+          {option!.username}
+        </SelectOption>
+      ));
 
   return (
     <FormGroup

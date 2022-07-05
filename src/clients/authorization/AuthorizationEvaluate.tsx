@@ -107,8 +107,8 @@ export const AuthorizationEvaluate = ({ client }: Props) => {
     return <ForbiddenSection permissionNeeded="view-users" />;
 
   useFetch(
-    () => Promise.all([adminClient.roles.find()]),
-    ([roles]) => {
+    () => adminClient.roles.find(),
+    (roles) => {
       setClientRoles(roles);
     },
     []
