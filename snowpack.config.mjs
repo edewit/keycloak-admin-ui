@@ -24,6 +24,7 @@ export default {
     },
   },
   plugins: [
+    "@snowpack/plugin-webpack",
     "@snowpack/plugin-postcss",
     "@snowpack/plugin-react-refresh",
     "@snowpack/plugin-typescript",
@@ -38,11 +39,6 @@ export default {
         }),
     },
   ],
-  optimize: {
-    bundle: true,
-    splitting: true,
-    minify: true,
-  },
   devOptions: {
     hmrErrorOverlay: false,
   },
