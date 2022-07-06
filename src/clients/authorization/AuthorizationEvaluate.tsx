@@ -154,10 +154,10 @@ export const AuthorizationEvaluate = ({ client }: Props) => {
       },
     };
 
-    const evaluation = (await adminClient.clients.evaluateResource(
+    const evaluation = await adminClient.clients.evaluateResource(
       { id: client.id!, realm: realm.realm },
       resEval
-    )) as PolicyEvaluationResponse;
+    );
 
     setEvaluateResult(evaluation);
     return evaluation;
