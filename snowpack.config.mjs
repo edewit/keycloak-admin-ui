@@ -24,8 +24,18 @@ export default {
     },
   },
   plugins: [
-    "@snowpack/plugin-webpack",
     "@snowpack/plugin-postcss",
+    [
+      "@snowpack/plugin-webpack",
+      {
+        outputPattern: {
+          css: "[name].[contenthash].css",
+        },
+        extendConfig: {
+          output: { publicPath: "auto", path: path.resolve(".", "build") },
+        },
+      },
+    ],
     "@snowpack/plugin-react-refresh",
     "@snowpack/plugin-typescript",
   ],
