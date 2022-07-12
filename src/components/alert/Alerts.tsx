@@ -1,11 +1,15 @@
-import React, { createContext, FunctionComponent, useState } from "react";
+import React, {
+  createContext,
+  FunctionComponent,
+  useEffect,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { AlertVariant } from "@patternfly/react-core";
 import axios from "axios";
 import type { AxiosError } from "axios";
 
 import useRequiredContext from "../../utils/useRequiredContext";
-import useSetTimeout from "../../utils/useSetTimeout";
 import { AlertPanel, AlertType } from "./AlertPanel";
 
 export type AddAlertFunction = (
@@ -28,22 +32,37 @@ export const useAlerts = () => useRequiredContext(AlertContext);
 export const AlertProvider: FunctionComponent = ({ children }) => {
   const { t } = useTranslation();
   const [alerts, setAlerts] = useState<AlertType[]>([]);
-  const setTimeout = useSetTimeout();
 
-  const createId = () => Math.random().toString(16);
-
-  const hideAlert = (key: string) => {
-    setAlerts((alerts) => [...alerts.filter((el) => el.key !== key)]);
+  const clearAlerts = () => {
+    setAlerts((alerts) => [
+      ...alerts.filter((el) => el.key > new Date().getTime() - 8000),
+    ]);
   };
+
+  const hideAlert = (id: number) => {
+    setAlerts((alerts) => [...alerts.filter((el) => el.id !== id)]);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => clearAlerts(), 3000);
+    return () => clearTimeout(interval);
+  }, []);
 
   const addAlert = (
     message: string,
     variant: AlertVariant = AlertVariant.success,
     description?: string
   ) => {
-    const key = createId();
-    setTimeout(() => hideAlert(key), 8000);
-    setAlerts([{ key, message, variant, description }, ...alerts]);
+    setAlerts([
+      {
+        id: Math.random(),
+        key: new Date().getTime(),
+        message,
+        variant,
+        description,
+      },
+      ...alerts,
+    ]);
   };
 
   const addError = (message: string, error: Error | AxiosError | string) => {
