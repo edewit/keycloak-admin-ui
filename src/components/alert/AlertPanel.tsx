@@ -7,8 +7,6 @@ import {
 } from "@patternfly/react-core";
 import type { AlertType } from "./Alerts";
 
-const ALERT_TIMEOUT = 8000;
-
 type AlertPanelProps = {
   alerts: AlertType[];
   onCloseAlert: (id: number) => void;
@@ -30,7 +28,7 @@ export function AlertPanel({ alerts, onCloseAlert }: AlertPanelProps) {
               onClose={() => onCloseAlert(id)}
             />
           }
-          timeout={ALERT_TIMEOUT}
+          timeout
           onTimeout={() => onCloseAlert(id)}
         >
           {description && <p>{description}</p>}
