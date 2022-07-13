@@ -31,6 +31,7 @@ export function AlertPanel({ alerts, onCloseAlert }: AlertPanelProps) {
             />
           }
           timeout={ALERT_TIMEOUT}
+          onTimeout={() => onCloseAlert(id)}
         >
           {description && <p>{description}</p>}
         </Alert>
