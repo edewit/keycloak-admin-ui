@@ -5,14 +5,7 @@ import {
   AlertActionCloseButton,
   AlertVariant,
 } from "@patternfly/react-core";
-
-export type AlertType = {
-  id: number;
-  key: number;
-  message: string;
-  variant: AlertVariant;
-  description?: string;
-};
+import type { AlertType } from "./Alerts";
 
 type AlertPanelProps = {
   alerts: AlertType[];

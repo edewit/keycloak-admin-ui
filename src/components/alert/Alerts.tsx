@@ -10,7 +10,7 @@ import axios from "axios";
 import type { AxiosError } from "axios";
 
 import useRequiredContext from "../../utils/useRequiredContext";
-import { AlertPanel, AlertType } from "./AlertPanel";
+import { AlertPanel } from "./AlertPanel";
 
 export type AddAlertFunction = (
   message: string,
@@ -29,13 +29,21 @@ export const AlertContext = createContext<AlertProps | undefined>(undefined);
 
 export const useAlerts = () => useRequiredContext(AlertContext);
 
+export type AlertType = {
+  id: number;
+  created: number;
+  message: string;
+  variant: AlertVariant;
+  description?: string;
+};
+
 export const AlertProvider: FunctionComponent = ({ children }) => {
   const { t } = useTranslation();
   const [alerts, setAlerts] = useState<AlertType[]>([]);
 
   const clearAlerts = () => {
     setAlerts((alerts) => [
-      ...alerts.filter((el) => el.key > new Date().getTime() - 8000),
+      ...alerts.filter((el) => el.created > new Date().getTime() - 8000),
     ]);
   };
 
@@ -56,7 +64,7 @@ export const AlertProvider: FunctionComponent = ({ children }) => {
     setAlerts([
       {
         id: Math.random(),
-        key: new Date().getTime(),
+        created: new Date().getTime(),
         message,
         variant,
         description,
