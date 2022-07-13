@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  FunctionComponent,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, FunctionComponent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertVariant } from "@patternfly/react-core";
 import axios from "axios";
@@ -31,7 +26,6 @@ export const useAlerts = () => useRequiredContext(AlertContext);
 
 export type AlertType = {
   id: number;
-  created: number;
   message: string;
   variant: AlertVariant;
   description?: string;
@@ -41,20 +35,9 @@ export const AlertProvider: FunctionComponent = ({ children }) => {
   const { t } = useTranslation();
   const [alerts, setAlerts] = useState<AlertType[]>([]);
 
-  const clearAlerts = () => {
-    setAlerts((alerts) => [
-      ...alerts.filter((el) => el.created > new Date().getTime() - 8000),
-    ]);
-  };
-
   const hideAlert = (id: number) => {
-    setAlerts((alerts) => [...alerts.filter((el) => el.id !== id)]);
+    setAlerts((alerts) => alerts.filter((alert) => alert.id !== id));
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => clearAlerts(), 3000);
-    return () => clearTimeout(interval);
-  }, []);
 
   const addAlert = (
     message: string,
@@ -64,7 +47,6 @@ export const AlertProvider: FunctionComponent = ({ children }) => {
     setAlerts([
       {
         id: Math.random(),
-        created: new Date().getTime(),
         message,
         variant,
         description,
