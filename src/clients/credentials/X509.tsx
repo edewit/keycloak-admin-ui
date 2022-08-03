@@ -4,6 +4,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { FormGroup, Switch, ValidatedOptions } from "@patternfly/react-core";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
+import { convertAttributeNameToForm } from "../../util";
 
 export const X509 = () => {
   const { t } = useTranslation("clients");
@@ -26,7 +27,9 @@ export const X509 = () => {
         hasNoPaddingTop
       >
         <Controller
-          name="attributes.x509.allow.regex.pattern.comparison"
+          name={convertAttributeNameToForm(
+            "attributes.x509.allow.regex.pattern.comparison"
+          )}
           defaultValue="false"
           control={control}
           render={({ onChange, value }) => (
@@ -61,7 +64,7 @@ export const X509 = () => {
           ref={register({ required: true })}
           type="text"
           id="kc-subject"
-          name="attributes.x509.subjectdn"
+          name={convertAttributeNameToForm("attributes.x509.subjectdn")}
           validated={
             errors.attributes?.["x509.subjectdn"]
               ? ValidatedOptions.error

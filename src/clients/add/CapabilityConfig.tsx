@@ -13,6 +13,7 @@ import {
 import type ClientRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientRepresentation";
 import { FormAccess } from "../../components/form-access/FormAccess";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
+import { convertAttributeNameToForm } from "../../util";
 
 import "./capability-config.css";
 
@@ -69,7 +70,12 @@ export const CapabilityConfig = ({
                     if (!value) {
                       setValue("authorizationServicesEnabled", false);
                       setValue("serviceAccountsEnabled", false);
-                      setValue("attributes.oidc.ciba.grant.enabled", false);
+                      setValue(
+                        convertAttributeNameToForm(
+                          "attributes.oidc.ciba.grant.enabled"
+                        ),
+                        false
+                      );
                     }
                   }}
                 />
@@ -217,7 +223,9 @@ export const CapabilityConfig = ({
               </GridItem>
               <GridItem lg={8} sm={6}>
                 <Controller
-                  name="attributes.oauth2.device.authorization.grant.enabled"
+                  name={convertAttributeNameToForm(
+                    "attributes.oauth2.device.authorization.grant.enabled"
+                  )}
                   defaultValue={false}
                   control={control}
                   render={({ onChange, value }) => (
@@ -240,7 +248,9 @@ export const CapabilityConfig = ({
               </GridItem>
               <GridItem lg={8} sm={6}>
                 <Controller
-                  name="attributes.oidc.ciba.grant.enabled"
+                  name={convertAttributeNameToForm(
+                    "attributes.oidc.ciba.grant.enabled"
+                  )}
                   defaultValue={false}
                   control={control}
                   render={({ onChange, value }) => (
@@ -280,7 +290,7 @@ export const CapabilityConfig = ({
             hasNoPaddingTop
           >
             <Controller
-              name="attributes.saml.encrypt"
+              name={convertAttributeNameToForm("attributes.saml.encrypt")}
               control={control}
               defaultValue={false}
               render={({ onChange, value }) => (
@@ -307,7 +317,9 @@ export const CapabilityConfig = ({
             hasNoPaddingTop
           >
             <Controller
-              name="attributes.saml.client.signature"
+              name={convertAttributeNameToForm(
+                "attributes.saml.client.signature"
+              )}
               control={control}
               defaultValue={false}
               render={({ onChange, value }) => (

@@ -2,6 +2,7 @@ import React from "react";
 import type { ConfigPropertyRepresentation } from "@keycloak/keycloak-admin-client/lib/defs/authenticatorConfigInfoRepresentation";
 
 import { COMPONENTS, isValidComponentType } from "./components";
+import { convertAttributeNameToForm } from "../../util";
 
 type DynamicComponentProps = {
   properties: ConfigPropertyRepresentation[];
@@ -25,3 +26,6 @@ export const DynamicComponents = ({
     })}
   </>
 );
+
+export const convertToName = (name: string) =>
+  convertAttributeNameToForm(`config.${name}`);

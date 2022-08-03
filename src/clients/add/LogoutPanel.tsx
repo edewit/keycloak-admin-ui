@@ -10,6 +10,7 @@ import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
 import { useAccess } from "../../context/access/Access";
 import { SaveReset } from "../advanced/SaveReset";
+import { convertAttributeNameToForm } from "../../util";
 
 export const LogoutPanel = ({
   save,
@@ -85,7 +86,9 @@ export const LogoutPanel = ({
           <KeycloakTextInput
             type="text"
             id="frontchannelLogoutUrl"
-            name="attributes.frontchannel.logout.url"
+            name={convertAttributeNameToForm(
+              "attributes.frontchannel.logout.url"
+            )}
             ref={register({
               validate: (uri) =>
                 ((uri.startsWith("https://") || uri.startsWith("http://")) &&
@@ -124,7 +127,9 @@ export const LogoutPanel = ({
             <KeycloakTextInput
               type="text"
               id="backchannelLogoutUrl"
-              name="attributes.backchannel.logout.url"
+              name={convertAttributeNameToForm(
+                "attributes.backchannel.logout.url"
+              )}
               ref={register({
                 validate: (uri) =>
                   ((uri.startsWith("https://") || uri.startsWith("http://")) &&
@@ -151,7 +156,9 @@ export const LogoutPanel = ({
             hasNoPaddingTop
           >
             <Controller
-              name="attributes.backchannel.logout.session.required"
+              name={convertAttributeNameToForm(
+                "attributes.backchannel.logout.session.required"
+              )}
               defaultValue="true"
               control={control}
               render={({ onChange, value }) => (
@@ -177,7 +184,9 @@ export const LogoutPanel = ({
             hasNoPaddingTop
           >
             <Controller
-              name="attributes.backchannel.logout.revoke.offline.tokens"
+              name={convertAttributeNameToForm(
+                "attributes.backchannel.logout.revoke.offline.tokens"
+              )}
               defaultValue="false"
               control={control}
               render={({ onChange, value }) => (

@@ -3,6 +3,8 @@ import { convertFormValuesToObject, convertToFormValues } from "./util";
 
 vi.mock("react");
 
+const TOKEN = "🍺";
+
 describe("Tests the form convert util functions", () => {
   it("convert to form values", () => {
     const given = {
@@ -31,7 +33,7 @@ describe("Tests the form convert util functions", () => {
     const given = {
       name: "client",
       attributes: [{ key: "one", value: "1" }],
-      config: { one: { two: "3" } },
+      config: { [`one${TOKEN}two`]: "3" },
     };
 
     //when
@@ -51,10 +53,10 @@ describe("Tests the form convert util functions", () => {
       description: "",
       type: "default",
       attributes: {
-        display: { on: { consent: { screen: "true" } } },
-        include: { in: { token: { scope: "true" } } },
-        gui: { order: "1" },
-        consent: { screen: { text: "" } },
+        [`display${TOKEN}on${TOKEN}consent${TOKEN}screen`]: "true",
+        [`include${TOKEN}in${TOKEN}token${TOKEN}scope`]: "true",
+        [`gui${TOKEN}order`]: "1",
+        [`consent${TOKEN}screen${TOKEN}text`]: "",
       },
     };
 
@@ -92,12 +94,10 @@ describe("Tests the form convert util functions", () => {
 
     //then
     expect(values).toEqual({
-      attributes: {
-        display: { on: { consent: { screen: "true" } } },
-        include: { in: { token: { scope: "true" } } },
-        gui: { order: "1" },
-        consent: { screen: { text: "" } },
-      },
+      [`attributes.display${TOKEN}on${TOKEN}consent${TOKEN}screen`]: "true",
+      [`attributes.include${TOKEN}in${TOKEN}token${TOKEN}scope`]: "true",
+      [`attributes.gui${TOKEN}order`]: "1",
+      [`attributes.consent${TOKEN}screen${TOKEN}text`]: "",
     });
   });
 
@@ -115,17 +115,21 @@ describe("Tests the form convert util functions", () => {
 
   it("convert single element arrays to string", () => {
     const given = {
-      config: { group: ["one"], another: { nested: ["value"] } },
+      config: {
+        group: ["one"],
+        "another.nested": ["value"],
+      },
     };
-    const setValue = vi.fn();
+    const values: { [index: string]: any } = {};
+    const spy = (name: string, value: any) => (values[name] = value);
 
     //when
-    convertToFormValues(given, setValue);
+    convertToFormValues(given, spy);
 
     //then
-    expect(setValue).toHaveBeenCalledWith("config", {
-      group: "one",
-      another: { nested: "value" },
+    expect(values).toEqual({
+      "config.group": "one",
+      [`config.another${TOKEN}nested`]: "value",
     });
   });
 });
