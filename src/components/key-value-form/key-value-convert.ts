@@ -3,11 +3,16 @@ export type KeyValueType = { key: string; value: string };
 export const keyValueToArray = (
   attributeArray: KeyValueType[] = []
 ): Record<string, string[]> =>
-  Object.fromEntries(
-    attributeArray
-      .filter(({ key }) => key !== "")
-      .map(({ key, value }) => [key, [value]])
-  );
+  attributeArray
+    .filter(({ key }) => key !== "")
+    .reduce((obj, item) => {
+      if (item.key in obj) {
+        obj[item.key].push(item.value);
+      } else {
+        obj[item.key] = [item.value];
+      }
+      return obj;
+    }, {} as Record<string, string[]>);
 
 export const arrayToKeyValue = (
   attributes: Record<string, string[]> = {}
