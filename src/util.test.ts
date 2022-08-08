@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { convertFormValuesToObject, convertToFormValues } from "./util";
+import {
+  convertAttributeNameToForm,
+  convertFormValuesToObject,
+  convertToFormValues,
+} from "./util";
 
 vi.mock("react");
 
@@ -131,5 +135,15 @@ describe("Tests the form convert util functions", () => {
       "config.group": "one",
       [`config.another${TOKEN}nested`]: "value",
     });
+  });
+
+  it("should convert attribute name to form", () => {
+    const given = "attributes.some.strange.attribute";
+
+    //when
+    const form = convertAttributeNameToForm(given);
+
+    //then
+    expect(form).toEqual(`attributes.some${TOKEN}strange${TOKEN}attribute`);
   });
 });
