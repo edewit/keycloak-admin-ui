@@ -166,6 +166,10 @@ export default function AddMapper() {
 
   const setupForm = (mapper: IdentityProviderMapperRepresentation) => {
     convertToFormValues(mapper, form.setValue);
+    form.setValue(
+      "config.attributes",
+      JSON.parse(mapper.config.attributes || "{}")
+    );
   };
 
   if (!mapperTypes || !currentMapper) {
