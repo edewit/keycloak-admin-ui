@@ -177,6 +177,8 @@
   "addMapper": "Add mapper",
   "createNewMapper": "Create new mapper",
   "searchForMapper": "Search for mapper",
+  "filterByRoles": "Filter by roles",
+  "filterByClients": "Filter by clients",
   "mapperType": "Mapper type",
   "mappingDeletedSuccess": "Mapping successfully deleted",
   "mappingDeletedError": "Could not delete mapping: '{{error}}'",
