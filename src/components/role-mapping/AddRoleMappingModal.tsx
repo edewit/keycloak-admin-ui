@@ -59,7 +59,7 @@ export const AddRoleMappingModal = ({
   };
 
   const loader = async (first?: number, max?: number, search?: string) => {
-    const params: { [name: string]: string | number } = {
+    const params: Record<string, string | number> = {
       first: first!,
       max: max!,
     };
