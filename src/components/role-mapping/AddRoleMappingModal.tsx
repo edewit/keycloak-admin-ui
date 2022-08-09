@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { sortBy } from "lodash-es";
 import {
   Button,
   Dropdown,
@@ -14,6 +13,7 @@ import { FilterIcon } from "@patternfly/react-icons";
 
 import { KeycloakDataTable } from "../table-toolbar/KeycloakDataTable";
 import { useAdminClient } from "../../context/auth/AdminClient";
+import useLocaleSort from "../../utils/useLocaleSort";
 import {
   castAdminClient,
   mapping,
@@ -54,11 +54,14 @@ export const AddRoleMappingModal = ({
   const refresh = () => setKey(key + 1);
 
   const mapType = mapping.find((m) => m.resource === type)!;
-  const alphabetize = (rolesList: Row[]) => {
-    return sortBy(rolesList, ({ role }) => role.name?.toUpperCase());
-  };
+  const localeSort = useLocaleSort();
+  const compareRow = ({ role: { name } }: Row) => name?.toUpperCase();
 
-  const loader = async (first?: number, max?: number, search?: string) => {
+  const loader = async (
+    first?: number,
+    max?: number,
+    search?: string
+  ): Promise<Row[]> => {
     const params: Record<string, string | number> = {
       first: first!,
       max: max!,
@@ -68,7 +71,7 @@ export const AddRoleMappingModal = ({
       params.search = search;
     }
 
-    return (
+    const roles = (
       await castAdminClient(adminClient, mapType.resource)[
         mapType.functions.list[1]
       ]({ ...params, id })
@@ -77,10 +80,12 @@ export const AddRoleMappingModal = ({
       role,
       client: undefined,
     }));
+
+    return localeSort(roles, compareRow);
   };
 
   /* this is still pretty expensive querying all client and then all roles */
-  const clientRolesLoader = async () => {
+  const clientRolesLoader = async (): Promise<Row[]> => {
     const allClients = await adminClient.clients.find();
 
     const roles = (
@@ -106,7 +111,7 @@ export const AddRoleMappingModal = ({
       )
     ).flat();
 
-    return alphabetize(roles);
+    return localeSort(roles, compareRow);
   };
 
   return (
