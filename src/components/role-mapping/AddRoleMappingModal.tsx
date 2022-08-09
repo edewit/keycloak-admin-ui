@@ -64,10 +64,8 @@ export const AddRoleMappingModal = ({
       max: max!,
     };
 
-    const searchParam = search || "";
-
-    if (searchParam) {
-      params.search = searchParam;
+    if (search) {
+      params.search = search;
     }
 
     return (
