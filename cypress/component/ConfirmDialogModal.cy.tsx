@@ -1,3 +1,4 @@
+import { mount } from "cypress/react";
 import { ConfirmDialogModal } from "../../src/components/confirm-dialog/ConfirmDialog";
 
 describe("ConfirmDialogModal", () => {
@@ -6,7 +7,8 @@ describe("ConfirmDialogModal", () => {
   it("should mount", () => {
     const toggle = cy.spy().as("toggleDialogSpy");
     const confirm = cy.spy().as("onConfirmSpy");
-    cy.mount(
+
+    mount(
       <ConfirmDialogModal
         continueButtonLabel="Yes"
         cancelButtonLabel="No"
@@ -26,5 +28,3 @@ describe("ConfirmDialogModal", () => {
     cy.get("@toggleDialogSpy").should("have.been.called");
   });
 });
-
-export {};
