@@ -2,12 +2,9 @@ import ClientRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clien
 import { joinPath } from "./joinPath";
 
 export const convertClientToUrl = (
-  client: ClientRepresentation,
+  { rootUrl, baseUrl }: ClientRepresentation,
   adminClientBaseUrl: string
 ) => {
-  const rootUrl = client.rootUrl;
-  const baseUrl = client.baseUrl;
-
   // absolute base url configured, use base url is
   if (baseUrl?.startsWith("http")) {
     return baseUrl;
