@@ -36,9 +36,10 @@ const fetchRoles = async ({
   max,
   search,
   endpoint,
-  return fetchAdminUI(adminClient, `/admin-ui/${type}/${id}`, {
-    first: first.toString(),
-    max: max.toString(),
+}: Query): Promise<ClientRole[]> => {
+  return fetchAdminUI(adminClient, `/admin-ui-${endpoint}/${type}/${id}`, {
+    first: (first || 0).toString(),
+    max: (max || 10).toString(),
     search: search || "",
   });
 };
