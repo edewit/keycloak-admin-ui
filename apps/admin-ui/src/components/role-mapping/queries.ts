@@ -13,10 +13,8 @@ export type ResourcesKey = keyof KeycloakAdminClient;
 
 type DeleteFunctions =
   | keyof Pick<Groups, "delClientRoleMappings" | "delRealmRoleMappings">
-  | keyof Pick<
-      ClientScopes,
-      "delClientScopeMappings" | "delRealmScopeMappings"
-    >;
+  | keyof Pick<ClientScopes, "delClientScopeMappings" | "delRealmScopeMappings">
+  | keyof Pick<Roles, "delCompositeRoles">;
 
 type ListEffectiveFunction =
   | keyof Pick<Groups, "listRoleMappings" | "listAvailableRealmRoleMappings">
@@ -83,7 +81,7 @@ const mapping: ResourceMapping = {
   clientScopes: clientFunctions,
   clients: clientFunctions,
   roles: {
-    delete: [],
+    delete: ["delCompositeRoles", "delCompositeRoles"],
     listEffective: [
       "getCompositeRoles",
       "getCompositeRoles",

@@ -184,7 +184,7 @@ export default function RealmRoleTabs() {
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: "roles:roleDeleteConfirm",
     messageKey: t("roles:roleDeleteConfirmDialog", {
-      name: role?.name || t("createRole"),
+      selectedRoleName: role?.name || t("createRole"),
     }),
     continueButtonLabel: "common:delete",
     continueButtonVariant: ButtonVariant.danger,
