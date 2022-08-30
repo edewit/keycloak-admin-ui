@@ -1,13 +1,18 @@
-import KeycloakAdminClient from "@keycloak/keycloak-admin-client";
+import type KeycloakAdminClient from "@keycloak/keycloak-admin-client";
 import { fetchAdminUI } from "../../context/auth/admin-ui-endpoint";
+import type UserRepresentation from "@keycloak/keycloak-admin-client/lib/defs/userRepresentation";
+import { joinPath } from "../../utils/joinPath";
 
 type BaseQuery = {
   adminClient: KeycloakAdminClient;
+};
+
+type IDQuery = BaseQuery & {
   id: string;
   type: string;
 };
 
-type PaginatingQuery = BaseQuery & {
+type PaginatingQuery = IDQuery & {
   first: number;
   max: number;
   search?: string;
@@ -30,13 +35,8 @@ type ClientRole = {
 
 const fetchEndpoint = async ({
   adminClient,
-  id,
-  type,
-  first,
-  max,
-  search,
   endpoint,
-}: Query): Promise<any> => {
+  ...query
   return fetchAdminUI(adminClient, `/admin-ui-${endpoint}/${type}/${id}`, {
     first: (first || 0).toString(),
     max: (max || 10).toString(),
@@ -53,6 +53,25 @@ export const getEffectiveClientRoles = (
   query: EffectiveClientRolesQuery
 ): Promise<ClientRole[]> =>
   fetchEndpoint({ ...query, endpoint: "effective-roles" });
+};
 
-export const fetchUsedBy = (query: PaginatingQuery): Promise<string[]> =>
-  fetchEndpoint({ ...query, endpoint: "authentication-management" });
+type UserQuery = BaseClientRolesQuery & {
+  lastName?: string;
+  firstName?: string;
+  email?: string;
+  username?: string;
+  emailVerified?: boolean;
+  idpAlias?: string;
+  idpUserId?: string;
+  enabled?: boolean;
+  briefRepresentation?: boolean;
+  exact?: boolean;
+  q?: string;
+};
+
+export type BruteUser = UserRepresentation & {
+  bruteForceStatus?: Record<string, object>;
+};
+
+export const findUsers = (query: UserQuery): Promise<BruteUser[]> => {
+  return fetchRoles({ ...query, endpoint: "brute-force-user" });
