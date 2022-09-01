@@ -1,7 +1,6 @@
 import type KeycloakAdminClient from "@keycloak/keycloak-admin-client";
 import { fetchAdminUI } from "../../context/auth/admin-ui-endpoint";
 import type UserRepresentation from "@keycloak/keycloak-admin-client/lib/defs/userRepresentation";
-import { joinPath } from "../../utils/joinPath";
 
 type BaseQuery = {
   adminClient: KeycloakAdminClient;
@@ -18,7 +17,7 @@ type PaginatingQuery = IDQuery & {
   search?: string;
 };
 
-type EffectiveClientRolesQuery = BaseQuery;
+type EffectiveClientRolesQuery = IDQuery;
 
 type Query = Partial<Omit<PaginatingQuery, "adminClient">> & {
   adminClient: KeycloakAdminClient;
@@ -35,14 +34,18 @@ type ClientRole = {
 
 const fetchEndpoint = async ({
   adminClient,
+  id,
+  type,
+  first,
+  max,
+  search,
   endpoint,
-  ...query
-  return fetchAdminUI(adminClient, `/admin-ui-${endpoint}/${type}/${id}`, {
+}: Query): Promise<any> =>
+  fetchAdminUI(adminClient, `/admin-ui-${endpoint}/${type}/${id}`, {
     first: (first || 0).toString(),
     max: (max || 10).toString(),
     search: search || "",
   });
-};
 
 export const getAvailableClientRoles = (
   query: PaginatingQuery
@@ -53,9 +56,8 @@ export const getEffectiveClientRoles = (
   query: EffectiveClientRolesQuery
 ): Promise<ClientRole[]> =>
   fetchEndpoint({ ...query, endpoint: "effective-roles" });
-};
 
-type UserQuery = BaseClientRolesQuery & {
+type UserQuery = BaseQuery & {
   lastName?: string;
   firstName?: string;
   email?: string;
@@ -73,5 +75,15 @@ export type BruteUser = UserRepresentation & {
   bruteForceStatus?: Record<string, object>;
 };
 
-export const findUsers = (query: UserQuery): Promise<BruteUser[]> => {
-  return fetchRoles({ ...query, endpoint: "brute-force-user" });
+export const findUsers = ({
+  adminClient,
+  ...query
+}: UserQuery): Promise<BruteUser[]> =>
+  fetchAdminUI(
+    adminClient,
+    "admin-ui-brute-force-user",
+    query as Record<string, string>
+  );
+
+export const fetchUsedBy = (query: PaginatingQuery): Promise<string[]> =>
+  fetchEndpoint({ ...query, endpoint: "authentication-management" });

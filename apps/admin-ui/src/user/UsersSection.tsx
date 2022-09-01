@@ -128,7 +128,6 @@ export default function UsersSection() {
     try {
       return await findUsers({
         adminClient,
-        realm: realmName,
         briefRepresentation: true,
         ...params,
       });
