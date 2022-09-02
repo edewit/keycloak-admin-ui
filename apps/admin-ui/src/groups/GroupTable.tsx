@@ -2,7 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom-v5-compat";
 import { useLocation, useNavigate } from "react-router-dom-v5-compat";
 import { useTranslation } from "react-i18next";
-import { cellWidth } from "@patternfly/react-table";
+import {
+  Radio,
+  SearchInput,
+  Split,
+  SplitItem,
+  ToolbarItem,
+} from "@patternfly/react-core";
 
 import type GroupRepresentation from "@keycloak/keycloak-admin-client/lib/defs/groupRepresentation";
 import { useAdminClient } from "../context/auth/AdminClient";
@@ -19,9 +25,28 @@ import useToggle from "../utils/useToggle";
 import { DeleteGroup } from "./components/DeleteGroup";
 import { GroupToolbar, ViewType } from "./components/GroupToolbar";
 import { MoveDialog } from "./components/MoveDialog";
+import { GroupPath } from "../components/group/GroupPath";
 
 type GroupTableProps = {
   toggleView?: (viewType: ViewType) => void;
+};
+
+type SearchType = "global" | "local";
+
+type SearchGroup = GroupRepresentation & {
+  link?: string;
+};
+
+const flatten = (groups: GroupRepresentation[], id?: string): SearchGroup[] => {
+  let result: SearchGroup[] = [];
+  for (const group of groups) {
+    const link = `${id || ""}${id ? "/" : ""}${group.id}`;
+    result.push({ ...group, link });
+    if (group.subGroups) {
+      result = [...result, ...flatten(group.subGroups, link)];
+    }
+  }
+  return result;
 };
 
 export const GroupTable = ({ toggleView }: GroupTableProps) => {
@@ -37,7 +62,9 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
   const { subGroups, currentGroup, setSubGroups } = useSubGroups();
 
   const [key, setKey] = useState(0);
-  const refresh = () => setKey(new Date().getTime());
+  const refresh = () => setKey(key + 1);
+  const [searchType, setSearchType] = useState<SearchType>("global");
+  const [search, setSearch] = useState<string>();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,7 +76,20 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
     hasAccess("query-groups", "view-users") ||
     hasAccess("manage-users", "query-groups");
 
-  const loader = async () => {
+  const loader = async (
+    first?: number,
+    max?: number
+  ): Promise<SearchGroup[]> => {
+    const params: Record<string, string> = {
+      search: search || "",
+      first: first?.toString() || "",
+      max: max?.toString() || "",
+    };
+    if (searchType === "global" && search) {
+      const result = await fetchAdminUI(adminClient, "admin-ui-groups", params);
+      return flatten(result);
+    }
+
     let groupsData = undefined;
     if (id) {
       const group = await adminClient.groups.findOne({ id });
@@ -59,7 +99,10 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
 
       groupsData = group.subGroups;
     } else {
-      groupsData = await fetchAdminUI(adminClient, "admin-ui-groups");
+      groupsData = await fetchAdminUI(adminClient, "admin-ui-groups", {
+        ...params,
+        global: "false",
+      });
     }
 
     if (!groupsData) {
@@ -92,6 +135,9 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
     setIsCreateModalOpen(!isCreateModalOpen);
   };
 
+  const Path = (group: SearchGroup) =>
+    group.link ? <GroupPath group={group} /> : undefined;
+
   return (
     <>
       <DeleteGroup
@@ -109,15 +155,63 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
         canSelectAll
         loader={loader}
         ariaLabelKey="groups:groups"
-        searchPlaceholderKey="groups:searchForGroups"
+        isPaginated
+        isSearching={!!search}
         toolbarItem={
-          <GroupToolbar
-            currentView={ViewType.Table}
-            toggleView={toggleView}
-            toggleCreate={handleModalToggle}
-            toggleDelete={toggleShowDelete}
-            kebabDisabled={selectedRows!.length === 0}
-          />
+          <>
+            <ToolbarItem>
+              <SearchInput
+                placeholder={t("searchForGroups")}
+                value={search}
+                onChange={setSearch}
+                onSearch={refresh}
+                onClear={() => {
+                  setSearch("");
+                  refresh();
+                }}
+              />
+            </ToolbarItem>
+            <GroupToolbar
+              currentView={ViewType.Table}
+              toggleView={toggleView}
+              toggleCreate={handleModalToggle}
+              toggleDelete={toggleShowDelete}
+              kebabDisabled={selectedRows!.length === 0}
+            />
+          </>
+        }
+        subToolbar={
+          !!search && (
+            <ToolbarItem>
+              <Split hasGutter>
+                <SplitItem>{t("searchFor")}</SplitItem>
+                <SplitItem>
+                  <Radio
+                    id="global"
+                    isChecked={searchType === "global"}
+                    onChange={() => {
+                      setSearchType("global");
+                      refresh();
+                    }}
+                    name="searchType"
+                    label={t("global")}
+                  />
+                </SplitItem>
+                <SplitItem>
+                  <Radio
+                    id="local"
+                    isChecked={searchType === "local"}
+                    onChange={() => {
+                      setSearchType("local");
+                      refresh();
+                    }}
+                    name="searchType"
+                    label={t("local")}
+                  />
+                </SplitItem>
+              </Split>
+            </ToolbarItem>
+          )
         }
         actions={
           !isManager
@@ -145,7 +239,11 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
             name: "name",
             displayKey: "groups:groupName",
             cellRenderer: GroupNameCell,
-            transforms: [cellWidth(90)],
+          },
+          {
+            name: "path",
+            displayKey: "groups:path",
+            cellRenderer: Path,
           },
         ]}
         emptyState={
