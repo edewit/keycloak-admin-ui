@@ -63,12 +63,14 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
 
   const [key, setKey] = useState(0);
   const refresh = () => setKey(key + 1);
-  const [searchType, setSearchType] = useState<SearchType>("global");
   const [search, setSearch] = useState<string>();
 
   const navigate = useNavigate();
   const location = useLocation();
   const id = getLastId(location.pathname);
+  const [searchType, setSearchType] = useState<SearchType>(
+    id ? "local" : "global"
+  );
 
   const { hasAccess } = useAccess();
   const isManager = hasAccess("manage-users") || currentGroup()?.access?.manage;
@@ -97,7 +99,9 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
         throw new Error(t("common:notFound"));
       }
 
-      groupsData = group.subGroups;
+      groupsData = !search
+        ? group.subGroups
+        : group.subGroups?.filter((g) => g.name?.includes(search));
     } else {
       groupsData = await fetchAdminUI(adminClient, "admin-ui-groups", {
         ...params,
@@ -161,6 +165,7 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
           <>
             <ToolbarItem>
               <SearchInput
+                data-testid="group-search"
                 placeholder={t("searchForGroups")}
                 value={search}
                 onChange={setSearch}
@@ -181,7 +186,8 @@ export const GroupTable = ({ toggleView }: GroupTableProps) => {
           </>
         }
         subToolbar={
-          !!search && (
+          !!search &&
+          !id && (
             <ToolbarItem>
               <Split hasGutter>
                 <SplitItem>{t("searchFor")}</SplitItem>

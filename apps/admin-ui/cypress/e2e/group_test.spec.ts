@@ -62,7 +62,7 @@ describe("Group test", () => {
         .assertNoGroupsInThisRealmEmptyStateMessageExist(true)
         .createGroup(groupName, true)
         .assertNotificationGroupCreated()
-        .searchGroup(groupName)
+        .searchGroup(groupName, true)
         .assertGroupItemExist(groupName, true);
     });
 
@@ -71,7 +71,7 @@ describe("Group test", () => {
         .assertNoGroupsInThisRealmEmptyStateMessageExist(false)
         .createGroup(groupName, false)
         .assertNotificationGroupCreated()
-        .searchGroup(groupName)
+        .searchGroup(groupName, true)
         .assertGroupItemExist(groupName, true);
     });
 
@@ -81,7 +81,6 @@ describe("Group test", () => {
         .createGroup(" ", false)
         .assertNotificationCouldNotCreateGroupWithEmptyName();
       groupModal.closeModal();
-      groupPage.searchGroup(" ").assertNoSearchResultsMessageExist(true);
     });
 
     it("Fail to create group with duplicated name", () => {
@@ -112,10 +111,9 @@ describe("Group test", () => {
 
     it("Delete group from item bar", () => {
       groupPage
-        .searchGroup(groupNames[0])
+        .searchGroup(groupNames[0], true)
         .deleteGroupItem(groupNames[0])
         .assertNotificationGroupDeleted()
-        .searchGroup(groupNames[0])
         .assertNoSearchResultsMessageExist(true);
     });
 
@@ -159,9 +157,7 @@ describe("Group test", () => {
       groupPage
         .goToGroupChildGroupsTab(predefinedGroups[0])
         .searchGroup(predefinedGroups[1])
-        .goToGroupChildGroupsTab(predefinedGroups[1])
-        .searchGroup(predefinedGroups[2])
-        .assertGroupItemExist(predefinedGroups[2], true);
+        .assertGroupItemExist(predefinedGroups[1], true);
     });
 
     it("Search non existing child group in group", () => {
@@ -191,30 +187,7 @@ describe("Group test", () => {
     });
 
     describe("Search globally", () => {
-      it("Check empty state", () => {
-        groupPage
-          .headerActionsearchGroup()
-          .assertNoSearchResultsMessageExist(true);
-      });
-
-      it("Search with multiple words", () => {
-        groupPage.headerActionsearchGroup();
-        searchGroupPage
-          .searchGroup(
-            predefinedGroups[0].substr(0, predefinedGroups[0].length / 2)
-          )
-          .assertGroupItemExist(predefinedGroups[0], true)
-          .searchGroup(
-            predefinedGroups[0].substr(
-              predefinedGroups[0].length / 2,
-              predefinedGroups[0].length
-            )
-          )
-          .assertGroupItemExist(predefinedGroups[0], true);
-      });
-
       it("Navigate to parent group details", () => {
-        groupPage.headerActionsearchGroup();
         searchGroupPage
           .searchGroup(predefinedGroups[0])
           .goToGroupChildGroupsTab(predefinedGroups[0])
@@ -222,7 +195,6 @@ describe("Group test", () => {
       });
 
       it("Navigate to sub-group details", () => {
-        groupPage.headerActionsearchGroup();
         searchGroupPage
           .searchGroup(predefinedGroups[1])
           .goToGroupChildGroupsTab(predefinedGroups[1])
