@@ -1,8 +1,9 @@
 /** @type {import("eslint").Linter.Config } */
 module.exports = {
   root: true,
-  ignorePatterns: ["node_modules", "build", "keycloak-theme", "server"],
+  ignorePatterns: ["node_modules", "dist", "keycloak-theme", "server"],
   parserOptions: {
+    tsconfigRootDir: __dirname,
     project: "./tsconfig.eslint.json",
     extraFileExtensions: [".mjs"],
   },
@@ -13,6 +14,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/base",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:prettier/recommended",
@@ -44,6 +46,18 @@ module.exports = {
         endOfLine: "auto",
       },
     ],
+    // Prevent default imports from React, named imports should be used instead.
+    "no-restricted-imports": [
+      "error",
+      {
+        paths: [
+          {
+            name: "react",
+            importNames: ["default"],
+          },
+        ],
+      },
+    ],
   },
   overrides: [
     {
@@ -54,11 +68,16 @@ module.exports = {
       },
     },
     {
-      files: ["cypress/**/*"],
-      extends: ["plugin:cypress/recommended"],
+      files: ["**/cypress/**/*"],
+      extends: ["plugin:cypress/recommended", "plugin:mocha/recommended"],
       // TODO: Set these rules to "error" when issues have been resolved.
       rules: {
         "cypress/no-unnecessary-waiting": "warn",
+        "mocha/max-top-level-suites": "off",
+        "mocha/no-exclusive-tests": "error",
+        "mocha/no-identical-title": "off",
+        "mocha/no-mocha-arrows": "off",
+        "mocha/no-setup-in-describe": "off",
       },
     },
   ],
