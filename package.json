@@ -3,7 +3,8 @@
   "workspaces": [
     "libs/keycloak-js",
     "apps/account-ui",
-    "apps/admin-ui"
+    "apps/admin-ui",
+    "libs/masthead"
   ],
   "scripts": {
     "prepare": "husky install"
