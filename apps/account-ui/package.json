@@ -17,6 +17,7 @@
     "@patternfly/react-table": "^4.104.7",
     "i18next": "^21.9.1",
     "keycloak-js": "^19.0.1",
+    "keycloak-masthead": "*",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-error-boundary": "^3.1.4",

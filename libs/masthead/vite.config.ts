@@ -1,6 +1,8 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import checker from "vite-plugin-checker";
+import path from "node:path";
+import dts from "vite-plugin-dts";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,7 +10,30 @@ export default defineConfig({
     mainFields: ["module"],
     dedupe: ["react", "react-dom"],
   },
-  plugins: [react(), checker({ typescript: true })],
+  build: {
+    lib: {
+      entry: path.resolve(__dirname, "src/index.ts"),
+      name: "KeycloakMasthead",
+      formats: ["es", "umd"],
+      fileName: (format) => `keycloak-masthead.${format}.js`,
+    },
+    rollupOptions: {
+      external: ["react", "react-dom"],
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      },
+    },
+  },
+  plugins: [
+    react(),
+    checker({ typescript: true }),
+    dts({
+      insertTypesEntry: true,
+    }),
+  ],
   test: {
     setupFiles: "vitest.setup.ts",
     watch: false,

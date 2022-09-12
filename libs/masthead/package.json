@@ -1,5 +1,6 @@
 {
-  "name": "masthead",
+  "name": "keycloak-masthead",
+  "version": "0.0.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -41,7 +42,20 @@
     "cypress": "^10.6.0",
     "vite": "^3.1.0",
     "vite-plugin-checker": "^0.5.1",
+    "vite-plugin-dts": "^0.9.9",
     "vitest": "^0.23.1",
     "webpack": "^5.74.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/keycloak-masthead.umd.js",
+  "module": "./dist/keycloak-masthead.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/keycloak-masthead.es.js",
+      "require": "./dist/keycloak-masthead.umd.js"
+    }
   }
 }

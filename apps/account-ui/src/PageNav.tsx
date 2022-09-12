@@ -31,8 +31,7 @@ export const PageNav = ({ content }: PageNavProps) => {
       item.content ? (
         <NavExpandable
           id={`nav-link-${item.id}`}
-          groupId={item.groupId}
-          key={item.groupId}
+          key={item.id}
           title={t(item.label, item.labelParams)}
           isExpanded={isChildOf(item, activePage)}
         >

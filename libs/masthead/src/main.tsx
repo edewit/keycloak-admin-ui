@@ -6,7 +6,8 @@ import ReactDOM from "react-dom";
 import { DropdownItem, Page } from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";
 
-import { KeycloakMasthead } from "./Masthead";
+import KeycloakMasthead from "./Masthead";
+
 async function initialize() {
   ReactDOM.render(
     <StrictMode>

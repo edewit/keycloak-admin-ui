@@ -24,7 +24,7 @@ type KeycloakMastheadProps = PageHeaderProps & {
   dropdownItems: ReactNode[];
 };
 
-export const KeycloakMasthead = ({
+const KeycloakMasthead = ({
   brand: { onClick: onBrandLogoClick, ...brandProps },
   avatar,
   kebabDropdownItems,
@@ -68,3 +68,5 @@ export const KeycloakMasthead = ({
     />
   );
 };
+
+export default KeycloakMasthead;
