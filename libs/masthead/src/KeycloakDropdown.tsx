@@ -3,12 +3,14 @@ import { Dropdown, DropdownToggle, KebabToggle } from "@patternfly/react-core";
 
 type KeycloakDropdownProps = {
   isKebab?: boolean;
+  title?: ReactNode;
   dropDownItems: ReactNode[];
 };
 
 export const KeycloakDropdown = ({
-  dropDownItems,
   isKebab = false,
+  title,
+  dropDownItems,
 }: KeycloakDropdownProps) => {
   const [open, setOpen] = useState(false);
 
@@ -18,9 +20,9 @@ export const KeycloakDropdown = ({
       position="right"
       toggle={
         isKebab ? (
-          <KebabToggle onToggle={setOpen} />
+          <KebabToggle onToggle={setOpen}>{title}</KebabToggle>
         ) : (
-          <DropdownToggle onToggle={setOpen} />
+          <DropdownToggle onToggle={setOpen}>{title}</DropdownToggle>
         )
       }
       isOpen={open}

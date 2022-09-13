@@ -5,6 +5,7 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import { DropdownItem, Page } from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";
+import Keycloak from "keycloak-js";
 
 import KeycloakMasthead from "./Masthead";
 
@@ -20,13 +21,22 @@ async function initialize() {
               className: "logo",
             }}
             dropdownItems={[
-              <DropdownItem key="manage">Manage account</DropdownItem>,
               <DropdownItem key="server info">Realm info</DropdownItem>,
               <DropdownItem key="help" icon={<HelpIcon />}>
                 Help on
               </DropdownItem>,
-              <DropdownItem key="sign out">Sign out</DropdownItem>,
             ]}
+            keycloak={
+              {
+                tokenParsed: {
+                  given_name: "Erik Jan",
+                  family_name: "de Wit",
+                },
+                login: () => console.log("Logging in..."),
+                logout: () => console.log("Logging out.."),
+                accountManagement: () => console.log("To account management"),
+              } as unknown as Keycloak
+            }
           />
         }
       />

@@ -4,14 +4,21 @@ import {
   AvatarProps,
   Brand,
   BrandProps,
+  DropdownItem,
   PageHeader,
   PageHeaderProps,
   PageHeaderTools,
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
 } from "@patternfly/react-core";
+import Keycloak from "keycloak-js";
 
 import { KeycloakDropdown } from "./KeycloakDropdown";
+import { loggedInUserName } from "./util";
+
+declare const keycloak: Keycloak | undefined;
+
+export type TranslateFunction = (key: string, params?: string[]) => string;
 
 type BrandLogo = BrandProps & {
   onClick?: () => void;
@@ -20,17 +27,53 @@ type BrandLogo = BrandProps & {
 type KeycloakMastheadProps = PageHeaderProps & {
   brand: BrandLogo;
   avatar?: AvatarProps;
+  features?: {
+    hasLogout?: boolean;
+    hasManageAccount?: boolean;
+    hasUsername?: boolean;
+  };
+  keycloak?: Keycloak;
   kebabDropdownItems?: ReactNode[];
   dropdownItems: ReactNode[];
+  translate?: TranslateFunction;
 };
 
 const KeycloakMasthead = ({
   brand: { onClick: onBrandLogoClick, ...brandProps },
   avatar,
+  features: {
+    hasLogout = true,
+    hasManageAccount = true,
+    hasUsername = true,
+  } = {},
+  keycloak: keycloakParam,
   kebabDropdownItems,
   dropdownItems,
+  translate,
   ...rest
 }: KeycloakMastheadProps) => {
+  const keyClk = (keycloakParam || keycloak)!;
+  const t =
+    translate ||
+    function (key) {
+      return key;
+    };
+  const extraItems = [
+    hasManageAccount && (
+      <DropdownItem
+        key="manageAccount"
+        onClick={() => keyClk.accountManagement()}
+      >
+        {t("manageAccount")}
+      </DropdownItem>
+    ),
+    hasLogout && (
+      <DropdownItem key="signOut" onClick={() => keyClk.logout()}>
+        {t("doSignOut")}
+      </DropdownItem>
+    ),
+  ];
+
   return (
     <PageHeader
       {...rest}
@@ -46,20 +89,26 @@ const KeycloakMasthead = ({
             <PageHeaderToolsItem
               visibility={{
                 md: "hidden",
-              }} /** this kebab dropdown replaces the icon buttons and is hidden for desktop sizes */
+              }}
             >
               <KeycloakDropdown
                 isKebab
-                dropDownItems={kebabDropdownItems || dropdownItems}
+                dropDownItems={[
+                  ...(kebabDropdownItems || dropdownItems),
+                  extraItems,
+                ]}
               />
             </PageHeaderToolsItem>
             <PageHeaderToolsItem
               visibility={{
                 default: "hidden",
                 md: "visible",
-              }} /** this user dropdown is hidden on mobile sizes */
+              }}
             >
-              <KeycloakDropdown dropDownItems={dropdownItems} />
+              <KeycloakDropdown
+                dropDownItems={[...dropdownItems, extraItems]}
+                title={hasUsername ? loggedInUserName(keyClk, t) : undefined}
+              />
             </PageHeaderToolsItem>
           </PageHeaderToolsGroup>
           <Avatar {...{ src: "/avatar.svg", alt: "avatar", ...avatar }} />
