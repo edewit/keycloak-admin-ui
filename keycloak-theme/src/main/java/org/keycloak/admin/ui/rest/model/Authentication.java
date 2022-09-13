@@ -12,7 +12,7 @@ public class Authentication {
     private String alias;
 
     @Schema(required = true)
-    private boolean buildIn;
+    private boolean builtIn;
 
     private UsedBy usedBy;
 
@@ -34,12 +34,12 @@ public class Authentication {
         this.id = id;
     }
 
-    public boolean isBuildIn() {
-        return buildIn;
+    public boolean isBuiltIn() {
+        return builtIn;
     }
 
-    public void setBuildIn(boolean buildIn) {
-        this.buildIn = buildIn;
+    public void setBuiltIn(boolean builtIn) {
+        this.builtIn = builtIn;
     }
 
     public String getAlias() {
@@ -65,16 +65,16 @@ public class Authentication {
         if (o == null || getClass() != o.getClass())
             return false;
         Authentication that = (Authentication) o;
-        return buildIn == that.buildIn && Objects.equals(usedBy, that.usedBy) && Objects.equals(id, that.id) && Objects.equals(alias,
+        return builtIn == that.builtIn && Objects.equals(usedBy, that.usedBy) && Objects.equals(id, that.id) && Objects.equals(alias,
                 that.alias) && Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(usedBy, id, buildIn, alias, description);
+        return Objects.hash(usedBy, id, builtIn, alias, description);
     }
 
     @Override public String toString() {
-        return "Authentication{" + "usedBy=" + usedBy + ", id='" + id + '\'' + ", buildIn=" + buildIn + ", alias='" + alias + '\'' + ", description='" + description + '\'' + '}';
+        return "Authentication{" + "usedBy=" + usedBy + ", id='" + id + '\'' + ", buildIn=" + builtIn + ", alias='" + alias + '\'' + ", description='" + description + '\'' + '}';
     }
 }

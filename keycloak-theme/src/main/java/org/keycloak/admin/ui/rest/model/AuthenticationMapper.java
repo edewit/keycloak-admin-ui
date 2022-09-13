@@ -19,7 +19,7 @@ public class AuthenticationMapper {
         final Authentication authentication = new Authentication();
         authentication.setId(flow.getId());
         authentication.setAlias(flow.getAlias());
-        authentication.setBuildIn(flow.isBuiltIn());
+        authentication.setBuiltIn(flow.isBuiltIn());
         authentication.setDescription(flow.getDescription());
 
         final List<String> usedByIdp = identityProviders.filter(idp -> idp.getFirstBrokerLoginFlowId().equals(flow.getId()))

@@ -214,7 +214,7 @@ export default function AuthenticationSection() {
                       },
                     ]
                   : []),
-                ...(!data.builtIn && data.usedBy?.values.length === 0
+                ...(!data.builtIn && !data.usedBy
                   ? [
                       {
                         title: t("common:delete"),
