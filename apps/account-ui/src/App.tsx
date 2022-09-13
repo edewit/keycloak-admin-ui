@@ -11,7 +11,8 @@ import { HelpIcon } from "@patternfly/react-icons";
 
 import { KeycloakMasthead } from "keycloak-masthead";
 import { PageNav } from "./PageNav";
-import { logo } from "./app.module.css";
+
+import style from "./app.module.css";
 
 export const App = () => {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ export const App = () => {
             brand={{
               src: "/logo.svg",
               alt: "keycloak logo",
-              className: logo,
+              className: style.logo,
             }}
             dropdownItems={[
               <DropdownItem key="manage">Manage account</DropdownItem>,

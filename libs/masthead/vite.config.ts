@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import checker from "vite-plugin-checker";
 import path from "node:path";
 import dts from "vite-plugin-dts";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -25,6 +26,11 @@ export default defineConfig({
           "react-dom": "ReactDOM",
         },
       },
+      plugins: [
+        peerDepsExternal({
+          includeDependencies: true,
+        }),
+      ],
     },
   },
   plugins: [
