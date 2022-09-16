@@ -1,11 +1,11 @@
 {
   "name": "account-ui",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext js,jsx,mjs,ts,tsx",
-    "test": "vitest",
+    "dev": "wireit",
+    "build": "wireit",
+    "preview": "wireit",
+    "lint": "wireit",
+    "test": "wireit",
     "cy:open": "cypress open --e2e --browser chrome",
     "cy:run": "cypress run --browser chrome",
     "cy:check-types": "tsc --project cypress/tsconfig.json"
@@ -44,5 +44,37 @@
     "vite-plugin-checker": "^0.5.1",
     "vitest": "^0.23.1",
     "webpack": "^5.74.0"
+  },
+  "wireit": {
+    "dev": {
+      "command": "vite --host",
+      "dependencies": [
+        "../../libs/masthead:build"
+      ]
+    },
+    "preview": {
+      "command": "vite preview",
+      "dependencies": [
+        "../../libs/masthead:build"
+      ]
+    },
+    "build": {
+      "command": "vite build",
+      "dependencies": [
+        "../../libs/masthead:build"
+      ]
+    },
+    "lint": {
+      "command": "eslint . --ext js,jsx,mjs,ts,tsx",
+      "dependencies": [
+        "../../libs/masthead:build"
+      ]
+    },
+    "test": {
+      "command": "vitest",
+      "dependencies": [
+        "../../libs/masthead:build"
+      ]
+    }
   }
 }
