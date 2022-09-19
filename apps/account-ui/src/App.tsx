@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Page,
@@ -7,19 +7,22 @@ import {
   Spinner,
   DropdownItem,
 } from "@patternfly/react-core";
-import { HelpIcon } from "@patternfly/react-icons";
 
 import { KeycloakMasthead } from "keycloak-masthead";
+import { useAccountClient } from "./context/AccountClient";
 import { PageNav } from "./PageNav";
+import Pages from "./page/pages";
 
 import style from "./app.module.css";
 
 export const App = () => {
   const { t } = useTranslation();
   const [content, setContent] = useState<ContentItem[]>();
+  const accountClient = useAccountClient();
 
   useEffect(() => {
     (async () => {
+      await accountClient.init();
       const response = await fetch("/resources/content.json");
       setContent(await response.json());
     })();
@@ -32,26 +35,34 @@ export const App = () => {
       <Page
         header={
           <KeycloakMasthead
+            features={{ hasManageAccount: false }}
             showNavToggle
             brand={{
               src: "/logo.svg",
               alt: "keycloak logo",
               className: style.logo,
             }}
-            dropdownItems={[
-              <DropdownItem key="manage">Manage account</DropdownItem>,
-              <DropdownItem key="server info">Realm info</DropdownItem>,
-              <DropdownItem key="help" icon={<HelpIcon />}>
-                Help on
-              </DropdownItem>,
-              <DropdownItem key="sign out">Sign out</DropdownItem>,
-            ]}
+            dropdownItems={[<DropdownItem key="back">Realm info</DropdownItem>]}
+            keycloak={accountClient.keycloak}
+            trans={(key: string, params?: object): string => t(key, params)}
           />
         }
         isManagedSidebar
         sidebar={<PageNav content={content} />}
       >
-        <PageSection>{t("accountManagementWelcomeMessage")}</PageSection>
+        <PageSection variant="light" isFilled>
+          <Switch>
+            {content
+              .filter((r) => r.componentName !== undefined)
+              .map((route) => (
+                <Route
+                  key={route.id}
+                  path={`/${route.path}`}
+                  component={Pages[route.componentName!]}
+                />
+              ))}
+          </Switch>
+        </PageSection>
       </Page>
     </Router>
   );

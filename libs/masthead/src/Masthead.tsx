@@ -18,7 +18,7 @@ import { loggedInUserName } from "./util";
 
 declare const keycloak: Keycloak | undefined;
 
-export type TranslateFunction = (key: string, params?: string[]) => string;
+export type TranslateFunction = (key: string, params?: object) => string;
 
 type BrandLogo = BrandProps & {
   onClick?: () => void;
@@ -35,7 +35,7 @@ type KeycloakMastheadProps = PageHeaderProps & {
   keycloak?: Keycloak;
   kebabDropdownItems?: ReactNode[];
   dropdownItems: ReactNode[];
-  translate?: TranslateFunction;
+  trans?: TranslateFunction;
 };
 
 const KeycloakMasthead = ({
@@ -49,31 +49,35 @@ const KeycloakMasthead = ({
   keycloak: keycloakParam,
   kebabDropdownItems,
   dropdownItems,
-  translate,
+  trans,
   ...rest
 }: KeycloakMastheadProps) => {
   const keyClk = (keycloakParam || keycloak)!;
   const t =
-    translate ||
+    trans ||
     function (key) {
       return key;
     };
-  const extraItems = [
-    hasManageAccount && (
+  const extraItems = [];
+  if (hasManageAccount) {
+    extraItems.push(
       <DropdownItem
         key="manageAccount"
         onClick={() => keyClk.accountManagement()}
       >
-        {t("manageAccount")}
+        {t("manage-account")}
       </DropdownItem>
-    ),
-    hasLogout && (
+    );
+  }
+  if (hasLogout) {
+    extraItems.push(
       <DropdownItem key="signOut" onClick={() => keyClk.logout()}>
         {t("doSignOut")}
       </DropdownItem>
-    ),
-  ];
+    );
+  }
 
+  const picture = keyClk.tokenParsed?.picture;
   return (
     <PageHeader
       {...rest}
@@ -111,7 +115,9 @@ const KeycloakMasthead = ({
               />
             </PageHeaderToolsItem>
           </PageHeaderToolsGroup>
-          <Avatar {...{ src: "/avatar.svg", alt: "avatar", ...avatar }} />
+          <Avatar
+            {...{ src: picture || "/avatar.svg", alt: "avatar", ...avatar }}
+          />
         </PageHeaderTools>
       }
     />

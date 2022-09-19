@@ -7,6 +7,12 @@ export default defineConfig({
   base: "",
   server: {
     port: 8080,
+    proxy: {
+      "/account": {
+        target: "http://localhost:8180/realms/master",
+        changeOrigin: true,
+      },
+    },
   },
   resolve: {
     // Resolve the 'module' entrypoint at all times (not the default due to Node.js compatibility issues).
