@@ -1,9 +1,9 @@
 type ContentItem = {
   id: string;
   label: string;
+  descriptionLabel?: string;
   labelParams?: string[];
   hidden?: string;
-  groupId: string; // computed value
   content?: ContentItem[];
   path?: string;
   componentName?: string;

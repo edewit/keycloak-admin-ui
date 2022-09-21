@@ -24,10 +24,14 @@ export class AccountClient {
   }
 
   async fetchPersonalInfo(params: RequestInit): Promise<UserRepresentation> {
-    return this.doGet("/", params);
+    return this.doRequest("/", params);
   }
 
-  private async doGet<T>(path: string, params: RequestInit): Promise<T> {
+  async savePersonalInfo(info: UserRepresentation): Promise<void> {
+    return this.doRequest("/", { body: JSON.stringify(info), method: "post" });
+  }
+
+  private async doRequest<T>(path: string, params: RequestInit): Promise<T> {
     const token = await this.getAccessToken();
     const response = await fetch("/account" + path, {
       ...params,

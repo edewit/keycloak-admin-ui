@@ -1,3 +1,4 @@
+type Locale = { locale: string; label: string };
 export type Environment = {
   /** The realm which should be used when signing into the application. */
   loginRealm: string;
@@ -16,6 +17,22 @@ export type Environment = {
   commitHash: string;
   /** Indicates if the application is running as a Keycloak theme. */
   isRunningAsTheme: boolean;
+
+  /** features that are enabled for this realm */
+  features: {
+    isRegistrationEmailAsUsername: boolean;
+    isEditUserNameAllowed: boolean;
+    isInternationalizationEnabled: boolean;
+    isLinkedAccountsEnabled: boolean;
+    isEventsEnabled: boolean;
+    isMyResourcesEnabled: boolean;
+    isTotpConfigured: boolean;
+    deleteAccountAllowed: boolean;
+    updateEmailFeatureEnabled: boolean;
+    updateEmailActionEnable: boolean;
+    isViewGroupsEnabled: boolean;
+  };
+  availableLocales: Locale[];
 };
 
 // During development the realm can be passed as a query parameter when redirecting back from Keycloak.
@@ -33,6 +50,20 @@ const defaultEnvironment: Environment = {
   resourceVersion: "unknown",
   commitHash: "unknown",
   isRunningAsTheme: false,
+  features: {
+    isRegistrationEmailAsUsername: false,
+    isEditUserNameAllowed: false,
+    isInternationalizationEnabled: false,
+    isLinkedAccountsEnabled: false,
+    isEventsEnabled: false,
+    isMyResourcesEnabled: false,
+    isTotpConfigured: false,
+    deleteAccountAllowed: false,
+    updateEmailFeatureEnabled: false,
+    updateEmailActionEnable: false,
+    isViewGroupsEnabled: false,
+  },
+  availableLocales: [],
 };
 
 // Merge the default and injected environment variables together.

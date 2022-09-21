@@ -143,7 +143,7 @@
   "error-invalid-date": "'{{0}}' is invalid date.",
   "error-invalid-email": "Invalid email address.",
   "error-invalid-length": "'{{0}}' must have a length between {{1}} and {{2}}.",
-  "error-invalid-length-too-long": "'{{0}}' must have maximal length of {{2}}.",
+  "error-invalid-length-too-long": "'{{0}}' must have maximal length of {{1}}.",
   "error-invalid-length-too-short": "'{{0}}' must have minimal length of {{1}}.",
   "error-invalid-number": "'{{0}}' is invalid number.",
   "error-invalid-uri": "'{{0}}' is invalid URL.",
@@ -469,5 +469,6 @@
   "webauthn-passwordless-help-text": "Use your security key for passwordless sign in.",
   "website": "Web page",
 
-  "manage-account":"Manage account"
+  "manage-account": "Manage account",
+  "emailInvalid": "You must enter a valid email."
 }
