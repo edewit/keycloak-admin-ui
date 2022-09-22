@@ -1,6 +1,6 @@
 import Keycloak from "keycloak-js";
 import environment from "../environment";
-import { UserRepresentation } from "../representations";
+import { CredentialContainer, UserRepresentation } from "../representations";
 
 export class AccountClient {
   private kc: Keycloak;
@@ -29,6 +29,10 @@ export class AccountClient {
 
   async savePersonalInfo(info: UserRepresentation): Promise<void> {
     return this.doRequest("/", { body: JSON.stringify(info), method: "post" });
+  }
+
+  async fetchCredentials(params: RequestInit): Promise<CredentialContainer[]> {
+    return this.doRequest("/credentials", params);
   }
 
   private async doRequest<T>(path: string, params: RequestInit): Promise<T> {

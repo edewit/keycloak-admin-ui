@@ -18,6 +18,7 @@
         "id": "signingin",
         "path": "security/signingin",
         "label": "signingInSidebarTitle",
+        "descriptionLabel": "signingInSubMessage",
         "modulePath": "/content/signingin-page/SigningInPage.js",
         "componentName": "SigningInPage"
       },

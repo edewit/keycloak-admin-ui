@@ -156,3 +156,33 @@ export interface Serializable {
 
 export interface Comparable<T> {
 }
+
+export interface CredentialMetadataRepresentation {
+    infoMessage: string;
+    warningMessageTitle: string;
+    warningMessageDescription: string;
+}
+
+export interface CredentialTypeMetadata {
+    type: string;
+    displayName: string;
+    helpText: string;
+    iconCssClass: string;
+    createAction: string;
+    updateAction: string;
+    removeable: boolean;
+    category: "basic-authentication" | "two-factor" | "passwordless";
+}
+
+export interface CredentialContainer {
+    type: string;
+    category: string;
+    displayName: string;
+    helptext: string;
+    iconCssClass: string;
+    createAction: string;
+    updateAction: string;
+    removeable: boolean;
+    userCredentialMetadatas: CredentialMetadataRepresentation[];
+    metadata : CredentialTypeMetadata;
+}

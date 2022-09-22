@@ -7,6 +7,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { NavLink, useLocation } from "react-router-dom";
 
+import environment from "./environment";
+
 type PageNavProps = {
   content: ContentItem[];
 };
@@ -25,6 +27,12 @@ export function flattenContent(pageDefs: ContentItem[]) {
   return flat;
 }
 
+const isHidden = (condition: string): boolean => {
+  return eval(
+    `const features = ${JSON.stringify(environment.features)}; ${condition}`
+  );
+};
+
 export const PageNav = ({ content }: PageNavProps) => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -33,30 +41,32 @@ export const PageNav = ({ content }: PageNavProps) => {
     activePage: ContentItem,
     contentParam: ContentItem[]
   ) =>
-    contentParam.map((item) =>
-      item.content ? (
-        <NavExpandable
-          id={`nav-link-${item.id}`}
-          key={item.id}
-          title={t(item.label, item.labelParams)}
-          isExpanded={activePage.path?.includes(item.id)}
-        >
-          {createNavItems(activePage, item.content)}
-        </NavExpandable>
-      ) : (
-        <NavLink
-          id={`nav-link-${item.id}`}
-          key={item.id}
-          to={"/" + item.path}
-          className="pf-c-nav__link"
-          activeClassName="pf-m-current"
-          isActive={() => item.id === activePage.id}
-          type="button"
-        >
-          {t(item.label, item.labelParams)}
-        </NavLink>
-      )
-    );
+    contentParam
+      .filter((i) => (i.hidden ? !isHidden(i.hidden) : true))
+      .map((item) =>
+        item.content ? (
+          <NavExpandable
+            id={`nav-link-${item.id}`}
+            key={item.id}
+            title={t(item.label, item.labelParams)}
+            isExpanded={activePage.path?.includes(item.id)}
+          >
+            {createNavItems(activePage, item.content)}
+          </NavExpandable>
+        ) : (
+          <NavLink
+            id={`nav-link-${item.id}`}
+            key={item.id}
+            to={"/" + item.path}
+            className="pf-c-nav__link"
+            activeClassName="pf-m-current"
+            isActive={() => item.id === activePage.id}
+            type="button"
+          >
+            {t(item.label, item.labelParams)}
+          </NavLink>
+        )
+      );
 
   const currentContentItem = flattenContent(content).find(
     (c) => c.path === location.pathname.substring(1)
