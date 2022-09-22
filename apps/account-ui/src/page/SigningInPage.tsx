@@ -28,6 +28,7 @@ import {
 } from "../representations";
 import useFormatDate from "../context/format-date";
 import { ContinueCancelModal } from "./components/continue-cancel/ContinueCancelModel";
+import { useAlerts } from "../context/alerts";
 
 type MobileLinkProps = {
   title: string;
@@ -65,16 +66,19 @@ export function SigningInPage() {
   const { t } = useTranslation();
   const format = useFormatDate();
   const accountClient = useAccountClient();
+  const { addAlert, addError } = useAlerts();
   const {
     keycloak: { login },
   } = accountClient;
 
   const [credentials, setCredentials] = useState<CredentialContainer[]>();
+  const [key, setKey] = useState(1);
+  const refresh = () => setKey(key + 1);
 
   useFetch(
     (signal) => accountClient.fetchCredentials({ signal }),
     setCredentials,
-    []
+    [key]
   );
 
   const credentialRowCells = (
@@ -154,6 +158,7 @@ export function SigningInPage() {
               <DataListItem>
                 <DataListItemRow className="pf-u-align-items-center pf-p-b-0">
                   <DataListItemCells
+                    className="pf-u-py-0"
                     dataListCells={[
                       <DataListCell key="0" />,
                       <EmptyState key="1" variant="xs">
@@ -192,9 +197,17 @@ export function SigningInPage() {
                             modalMessage={t("stopUsingCred", [
                               label(meta.credential),
                             ])}
-                            onContinue={() =>
-                              accountClient.deleteCredentials(meta.credential)
-                            }
+                            onContinue={async () => {
+                              try {
+                                await accountClient.deleteCredentials(
+                                  meta.credential
+                                );
+                                addAlert("successRemovedMessage");
+                                refresh();
+                              } catch (error) {
+                                addError("errorRemovedMessage", error);
+                              }
+                            }}
                           />
                         ) : (
                           <Button

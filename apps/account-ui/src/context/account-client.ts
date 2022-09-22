@@ -68,6 +68,9 @@ export class AccountClient {
         Authorization: "Bearer " + token,
       },
     });
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
     if (response.status !== 204) return response.json();
   }
 

@@ -13,6 +13,7 @@ import { AccountClientContext, useAccountClient } from "./context/fetch";
 import { flattenContent, PageNav } from "./PageNav";
 import { ContentPage } from "./page/ContentPage";
 import Pages from "./page/pages";
+import { AlertProvider } from "./context/alerts";
 
 import style from "./app.module.css";
 
@@ -53,25 +54,28 @@ export const App = () => {
       >
         <PageSection variant="light" isFilled>
           <AccountClientContext.Provider value={accountClient}>
-            <Switch>
-              {flattenContent(content)
-                .filter(
-                  (r) => r.componentName && Pages[r.componentName] !== undefined
-                )
-                .map((route) => {
-                  const Component = Pages[route.componentName!]!;
-                  return (
-                    <Route key={route.id} path={`/${route.path}`}>
-                      <ContentPage
-                        title={route.label}
-                        description={route.descriptionLabel}
-                      >
-                        <Component />
-                      </ContentPage>
-                    </Route>
-                  );
-                })}
-            </Switch>
+            <AlertProvider>
+              <Switch>
+                {flattenContent(content)
+                  .filter(
+                    (r) =>
+                      r.componentName && Pages[r.componentName] !== undefined
+                  )
+                  .map((route) => {
+                    const Component = Pages[route.componentName!]!;
+                    return (
+                      <Route key={route.id} path={`/${route.path}`}>
+                        <ContentPage
+                          title={route.label}
+                          description={route.descriptionLabel}
+                        >
+                          <Component />
+                        </ContentPage>
+                      </Route>
+                    );
+                  })}
+              </Switch>
+            </AlertProvider>
           </AccountClientContext.Provider>
         </PageSection>
       </Page>
