@@ -192,7 +192,9 @@ export function SigningInPage() {
                             modalMessage={t("stopUsingCred", [
                               label(meta.credential),
                             ])}
-                            onContinue={() => console.log("delete")}
+                            onContinue={() =>
+                              accountClient.deleteCredentials(meta.credential)
+                            }
                           />
                         ) : (
                           <Button

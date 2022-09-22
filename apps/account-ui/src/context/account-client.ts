@@ -1,6 +1,10 @@
 import Keycloak from "keycloak-js";
 import environment from "../environment";
-import { CredentialContainer, UserRepresentation } from "../representations";
+import {
+  CredentialContainer,
+  CredentialRepresentation,
+  UserRepresentation,
+} from "../representations";
 
 export class AccountClient {
   private kc: Keycloak;
@@ -24,18 +28,38 @@ export class AccountClient {
   }
 
   async fetchPersonalInfo(params: RequestInit): Promise<UserRepresentation> {
-    return this.doRequest("/", params);
+    const response = await this.doRequest<UserRepresentation>("/", params);
+    if (response === undefined) {
+      throw Error("could not fetch");
+    }
+    return response;
   }
 
-  async savePersonalInfo(info: UserRepresentation): Promise<void> {
+  async savePersonalInfo(info: UserRepresentation) {
     return this.doRequest("/", { body: JSON.stringify(info), method: "post" });
   }
 
   async fetchCredentials(params: RequestInit): Promise<CredentialContainer[]> {
-    return this.doRequest("/credentials", params);
+    const response = await this.doRequest<CredentialContainer[]>(
+      "/credentials",
+      params
+    );
+    if (response === undefined) {
+      throw Error("could not fetch");
+    }
+    return response;
   }
 
-  private async doRequest<T>(path: string, params: RequestInit): Promise<T> {
+  async deleteCredentials(credential: CredentialRepresentation) {
+    return this.doRequest("/credentials/" + credential.id, {
+      method: "delete",
+    });
+  }
+
+  private async doRequest<T>(
+    path: string,
+    params: RequestInit
+  ): Promise<T | undefined> {
     const token = await this.getAccessToken();
     const response = await fetch("/account" + path, {
       ...params,
@@ -44,7 +68,7 @@ export class AccountClient {
         Authorization: "Bearer " + token,
       },
     });
-    return response.json();
+    if (response.status !== 204) return response.json();
   }
 
   private async getAccessToken() {
