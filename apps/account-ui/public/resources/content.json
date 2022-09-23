@@ -26,6 +26,7 @@
         "id": "device-activity",
         "path": "security/device-activity",
         "label": "deviceActivitySidebarTitle",
+        "descriptionLabel": "signedInDevicesExplanation",
         "modulePath": "/content/device-activity-page/DeviceActivityPage.js",
         "componentName": "DeviceActivityPage"
       },

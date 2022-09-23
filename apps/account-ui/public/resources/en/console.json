@@ -418,6 +418,7 @@
   "successGrantRevokedMessage": "Grant revoked successfully.",
   "successRemovedMessage": "successfully removed.",
   "errorRemovedMessage": "Could not be removed: {{error}}",
+  "errorSignOutMessage": "Could not be signed out: {{error}}",
   "successTotpMessage": "Mobile authenticator configured.",
   "successTotpRemovedMessage": "Mobile authenticator removed.",
   "systemDefined": "System defined",

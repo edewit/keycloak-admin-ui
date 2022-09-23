@@ -26,7 +26,7 @@ import {
   CredentialMetadataRepresentation,
   CredentialRepresentation,
 } from "../representations";
-import useFormatDate from "../context/format-date";
+import useFormatter from "../context/format-date";
 import { ContinueCancelModal } from "./components/continue-cancel/ContinueCancelModel";
 import { useAlerts } from "../context/alerts";
 
@@ -64,7 +64,7 @@ const MobileLink = ({ title, onClick }: MobileLinkProps) => {
 
 export function SigningInPage() {
   const { t } = useTranslation();
-  const format = useFormatDate();
+  const { formatDate } = useFormatter();
   const accountClient = useAccountClient();
   const { addAlert, addError } = useAlerts();
   const {
@@ -102,7 +102,7 @@ export function SigningInPage() {
         <DataListCell key={"created" + credential.id}>
           <Trans i18nKey="credentialCreatedAt">
             <strong className="pf-u-mr-md"></strong>
-            {{ date: format(new Date(credential.createdDate)) }}
+            {{ date: formatDate(new Date(credential.createdDate)) }}
           </Trans>
         </DataListCell>
       );

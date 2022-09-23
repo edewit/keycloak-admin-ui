@@ -3,6 +3,7 @@ import environment from "../environment";
 import {
   CredentialContainer,
   CredentialRepresentation,
+  DeviceRepresentation,
   UserRepresentation,
 } from "../representations";
 
@@ -29,10 +30,7 @@ export class AccountClient {
 
   async fetchPersonalInfo(params: RequestInit): Promise<UserRepresentation> {
     const response = await this.doRequest<UserRepresentation>("/", params);
-    if (response === undefined) {
-      throw Error("could not fetch");
-    }
-    return response;
+    return this.checkResponse(response);
   }
 
   async savePersonalInfo(info: UserRepresentation) {
@@ -44,9 +42,25 @@ export class AccountClient {
       "/credentials",
       params
     );
-    if (response === undefined) {
-      throw Error("could not fetch");
-    }
+    return this.checkResponse(response);
+  }
+
+  async fetchDevices(params: RequestInit): Promise<DeviceRepresentation[]> {
+    const response = await this.doRequest<DeviceRepresentation[]>(
+      "/sessions/devices",
+      params
+    );
+    return this.checkResponse(response);
+  }
+
+  async deleteSession(id?: string) {
+    return this.doRequest(`"/sessions${id ? `/${id}` : ""}`, {
+      method: "delete",
+    });
+  }
+
+  private checkResponse<T>(response: T) {
+    if (!response) throw new Error("Could not fetch");
     return response;
   }
 

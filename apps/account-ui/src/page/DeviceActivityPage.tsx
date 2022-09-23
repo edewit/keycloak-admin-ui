@@ -1,0 +1,242 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  Button,
+  DataList,
+  DataListContent,
+  DataListItem,
+  DataListItemRow,
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
+  Grid,
+  GridItem,
+  Label,
+  Spinner,
+  Split,
+  SplitItem,
+  Title,
+  Tooltip,
+} from "@patternfly/react-core";
+import {
+  DesktopIcon,
+  MobileAltIcon,
+  SyncAltIcon,
+} from "@patternfly/react-icons";
+
+import { ContinueCancelModal } from "./components/continue-cancel/ContinueCancelModel";
+import { useAccountClient, useFetch } from "../context/fetch";
+import {
+  ClientRepresentation,
+  DeviceRepresentation,
+  SessionRepresentation,
+} from "../representations";
+import { useAlerts } from "../context/alerts";
+import useFormatter from "../context/format-date";
+
+export function DeviceActivityPage() {
+  const accountClient = useAccountClient();
+  const { addAlert, addError } = useAlerts();
+  const { t } = useTranslation();
+  const { formatTime } = useFormatter();
+
+  const [devices, setDevices] = useState<DeviceRepresentation[]>();
+  const [key, setKey] = useState(0);
+  const refresh = () => setKey(key + 1);
+
+  const moveCurrentToTop = (devices: DeviceRepresentation[]) => {
+    let currentDevice = devices[0];
+
+    const index = devices.findIndex((d) => d.current);
+    currentDevice = devices.splice(index, 1)[0];
+    devices.unshift(currentDevice);
+
+    const sessionIndex = currentDevice.sessions.findIndex((s) => s.current);
+    const currentSession = currentDevice.sessions.splice(sessionIndex, 1)[0];
+    currentDevice.sessions.unshift(currentSession);
+
+    setDevices(devices);
+  };
+
+  useFetch(
+    (signal) => accountClient.fetchDevices({ signal }),
+    moveCurrentToTop,
+    [key]
+  );
+
+  const signOutAll = async () => {
+    await accountClient.deleteSession();
+    accountClient.keycloak.logout();
+  };
+
+  const signOutSession = async (
+    session: SessionRepresentation,
+    device: DeviceRepresentation
+  ) => {
+    try {
+      await accountClient.deleteSession(session.id);
+      addAlert(t("signedOutSession", [session.browser, device.os]));
+      refresh();
+    } catch (error) {
+      addError("errorSignOutMessage", error);
+    }
+  };
+
+  const makeClientsString = (clients: ClientRepresentation[]): string => {
+    let clientsString = "";
+    clients.forEach((client, index) => {
+      let clientName: string;
+      if (client.clientName !== "") {
+        clientName = t(client.clientName);
+      } else {
+        clientName = client.clientId;
+      }
+
+      clientsString += clientName;
+
+      if (clients.length > index + 1) clientsString += ", ";
+    });
+
+    return clientsString;
+  };
+
+  if (!devices) {
+    return <Spinner />;
+  }
+
+  return (
+    <>
+      <Split hasGutter className="pf-u-mb-lg">
+        <SplitItem isFilled>
+          <Title headingLevel="h2" size="xl">
+            {t("signedInDevices")}
+          </Title>
+        </SplitItem>
+        <SplitItem>
+          <Tooltip content={t("refreshPage")}>
+            <Button
+              aria-describedby="refresh page"
+              id="refresh-page"
+              variant="link"
+              onClick={() => refresh()}
+              icon={<SyncAltIcon />}
+            >
+              Refresh
+            </Button>
+          </Tooltip>
+
+          {(devices.length > 1 || devices[0].sessions.length > 1) && (
+            <ContinueCancelModal
+              buttonTitle="signOutAllDevices"
+              modalTitle="signOutAllDevices"
+              modalMessage="signOutAllDevicesWarning"
+              onContinue={() => signOutAll()}
+            />
+          )}
+        </SplitItem>
+      </Split>
+      <DataList
+        className="signed-in-device-list"
+        aria-label={t("signedInDevices")}
+      >
+        <DataListItem aria-labelledby="sessions">
+          {devices.map((device) =>
+            device.sessions.map((session) => (
+              <DataListItemRow key={device.id}>
+                <DataListContent
+                  aria-label="device-sessions-content"
+                  className="pf-u-flex-grow-1"
+                >
+                  <Grid hasGutter>
+                    <GridItem span={1} rowSpan={2}>
+                      {device.mobile ? <MobileAltIcon /> : <DesktopIcon />}
+                    </GridItem>
+                    <GridItem sm={8} md={9} span={10}>
+                      <span className="pf-u-mr-md session-title">
+                        {device.os.toLowerCase().includes("unknown")
+                          ? t("unknownOperatingSystem")
+                          : device.os}{" "}
+                        {!device.osVersion.toLowerCase().includes("unknown") &&
+                          device.osVersion}{" "}
+                        / {session.browser}
+                      </span>
+                      {session.current && (
+                        <Label color="green">{t("currentSession")}</Label>
+                      )}
+                    </GridItem>
+                    <GridItem
+                      className="pf-u-text-align-right"
+                      sm={3}
+                      md={2}
+                      span={1}
+                    >
+                      {!session.current && (
+                        <ContinueCancelModal
+                          buttonTitle="doSignOut"
+                          modalTitle="doSignOut"
+                          buttonVariant="secondary"
+                          modalMessage="signOutWarning"
+                          onContinue={() => signOutSession(session, device)}
+                        />
+                      )}
+                    </GridItem>
+                    <GridItem span={11}>
+                      <DescriptionList
+                        className="signed-in-device-grid"
+                        columnModifier={{ sm: "2Col", lg: "3Col" }}
+                        cols={5}
+                        rows={1}
+                      >
+                        <DescriptionListGroup>
+                          <DescriptionListTerm>
+                            {t("ipAddress")}
+                          </DescriptionListTerm>
+                          <DescriptionListDescription>
+                            {session.ipAddress}
+                          </DescriptionListDescription>
+                        </DescriptionListGroup>
+                        <DescriptionListGroup>
+                          <DescriptionListTerm>
+                            {t("lastAccessedOn")}
+                          </DescriptionListTerm>
+                          <DescriptionListDescription>
+                            {formatTime(session.lastAccess)}
+                          </DescriptionListDescription>
+                        </DescriptionListGroup>
+                        <DescriptionListGroup>
+                          <DescriptionListTerm>
+                            {t("clients")}
+                          </DescriptionListTerm>
+                          <DescriptionListDescription>
+                            {makeClientsString(session.clients)}
+                          </DescriptionListDescription>
+                        </DescriptionListGroup>
+                        <DescriptionListGroup>
+                          <DescriptionListTerm>
+                            {t("started")}
+                          </DescriptionListTerm>
+                          <DescriptionListDescription>
+                            {formatTime(session.started)}
+                          </DescriptionListDescription>
+                        </DescriptionListGroup>
+                        <DescriptionListGroup>
+                          <DescriptionListTerm>
+                            {t("expires")}
+                          </DescriptionListTerm>
+                          <DescriptionListDescription>
+                            {formatTime(session.expires)}
+                          </DescriptionListDescription>
+                        </DescriptionListGroup>
+                      </DescriptionList>
+                    </GridItem>
+                  </Grid>
+                </DataListContent>
+              </DataListItemRow>
+            ))
+          )}
+        </DataListItem>
+      </DataList>
+    </>
+  );
+}
