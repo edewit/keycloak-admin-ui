@@ -7,6 +7,7 @@ import {
   DropdownItem,
   DropdownToggle,
   Label,
+  Spinner,
   Split,
   SplitItem,
 } from "@patternfly/react-core";
@@ -27,7 +28,7 @@ import "./realm-selector.css";
 
 export const RealmSelector = () => {
   const { realm } = useRealm();
-  const { realms } = useRealms();
+  const { realms, refresh } = useRealms();
   const { whoAmI } = useWhoAmI();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -83,16 +84,23 @@ export const RealmSelector = () => {
     navigate(toDashboard({ realm }));
   };
 
-  const dropdownItems = realms.map((r) => (
-    <DropdownItem
-      key={`realm-dropdown-item-${r.realm}`}
-      onClick={() => {
-        selectRealm(r.realm!);
-      }}
-    >
-      <RealmText value={r.realm!} />
-    </DropdownItem>
-  ));
+  const dropdownItems =
+    realms.length !== 0
+      ? realms.map((r) => (
+          <DropdownItem
+            key={`realm-dropdown-item-${r.realm}`}
+            onClick={() => {
+              selectRealm(r.realm!);
+            }}
+          >
+            <RealmText value={r.realm!} />
+          </DropdownItem>
+        ))
+      : [
+          <DropdownItem key="load">
+            Loading <Spinner size="sm" />
+          </DropdownItem>,
+        ];
 
   const addRealmComponent = (
     <Fragment key="Add Realm">
@@ -162,6 +170,7 @@ export const RealmSelector = () => {
               {toUpperCase(realm)}
             </DropdownToggle>
           }
+          onFocus={refresh}
           dropdownItems={[...dropdownItems, addRealmComponent]}
         />
       )}
