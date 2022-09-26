@@ -118,7 +118,7 @@ export const FileUpload: React.FunctionComponent<FileUploadProps> = ({
     if (acceptedFiles.length > 0) {
       const fileHandle = acceptedFiles[0];
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (event && event.type === "drop") {
+      if (event?.type === "drop") {
         onFileInputChange?.(event, fileHandle);
       }
       if (type === fileReaderType.text || type === fileReaderType.dataURL) {
