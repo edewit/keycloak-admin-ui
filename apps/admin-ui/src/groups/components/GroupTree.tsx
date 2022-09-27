@@ -158,7 +158,9 @@ export const GroupTree = ({ refresh: viewRefresh }: GroupTreeProps) => {
       inputGroupPlaceholder={t("groups:searchForGroups")}
       inputGroupOnEnter={setSearch}
     >
-      <TreeView data={data} allExpanded={search.length > 0} />
+      {data.length > 0 && (
+        <TreeView data={data} allExpanded={search.length > 0} />
+      )}
     </PaginatingTableToolbar>
   ) : (
     <KeycloakSpinner />

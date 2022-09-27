@@ -100,15 +100,19 @@ export default function GroupsSection() {
         show={deleteOpen}
         toggleDialog={toggleDeleteOpen}
         selectedRows={[currentGroup()!]}
-        refresh={() => navigate(toGroups({ realm }))}
+        refresh={() => {
+          navigate(toGroups({ realm }));
+          refresh();
+        }}
       />
       {rename && (
         <GroupsModal
           id={id}
           rename={rename}
-          refresh={(group) =>
-            setSubGroups([...subGroups.slice(0, subGroups.length - 1), group!])
-          }
+          refresh={(group) => {
+            refresh();
+            setSubGroups([...subGroups.slice(0, subGroups.length - 1), group!]);
+          }}
           handleModalToggle={() => setRename(undefined)}
         />
       )}
@@ -116,11 +120,7 @@ export default function GroupsSection() {
         <Drawer isInline isExpanded key={key}>
           <DrawerContent
             panelContent={
-              <DrawerPanelContent
-                isResizable
-                defaultSize="80%"
-                minSize="500px"
-              >
+              <DrawerPanelContent isResizable defaultSize="80%" minSize="500px">
                 <DrawerHead>
                   <GroupBreadCrumbs />
                   <ViewHeader
