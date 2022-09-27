@@ -118,8 +118,8 @@ export default function GroupsSection() {
             panelContent={
               <DrawerPanelContent
                 isResizable
-                defaultSize={"80%"}
-                minSize={"500px"}
+                defaultSize="80%"
+                minSize="500px"
               >
                 <DrawerHead>
                   <GroupBreadCrumbs />
