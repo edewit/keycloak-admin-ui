@@ -113,7 +113,7 @@ export default function GroupsSection() {
         />
       )}
       <PageSection variant={PageSectionVariants.light} className="pf-u-p-0">
-        <Drawer isInline isExpanded={true} key={key}>
+        <Drawer isInline isExpanded key={key}>
           <DrawerContent
             panelContent={
               <DrawerPanelContent
