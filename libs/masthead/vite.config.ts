@@ -15,7 +15,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "KeycloakMasthead",
-      formats: ["es", "umd"],
+      formats: ["es"],
       fileName: (format) => `keycloak-masthead.${format}.js`,
     },
     rollupOptions: {
