@@ -1,6 +1,7 @@
 import Keycloak from "keycloak-js";
 import environment from "../environment";
 import {
+  ClientRepresentation,
   CredentialContainer,
   CredentialRepresentation,
   DeviceRepresentation,
@@ -45,6 +46,12 @@ export class AccountClient {
     return this.checkResponse(response);
   }
 
+  async deleteCredentials(credential: CredentialRepresentation) {
+    return this.doRequest("/credentials/" + credential.id, {
+      method: "delete",
+    });
+  }
+
   async fetchDevices(params: RequestInit): Promise<DeviceRepresentation[]> {
     const response = await this.doRequest<DeviceRepresentation[]>(
       "/sessions/devices",
@@ -59,15 +66,23 @@ export class AccountClient {
     });
   }
 
+  async fetchApplications(
+    params: RequestInit
+  ): Promise<ClientRepresentation[]> {
+    const response = await this.doRequest<ClientRepresentation[]>(
+      "/applications",
+      params
+    );
+    return this.checkResponse(response);
+  }
+
+  async deleteConcent(id: string) {
+    return this.doRequest(`/applications/${id}/consent`, { method: "delete" });
+  }
+
   private checkResponse<T>(response: T) {
     if (!response) throw new Error("Could not fetch");
     return response;
-  }
-
-  async deleteCredentials(credential: CredentialRepresentation) {
-    return this.doRequest("/credentials/" + credential.id, {
-      method: "delete",
-    });
   }
 
   private async doRequest<T>(

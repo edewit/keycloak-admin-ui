@@ -18,7 +18,7 @@ export interface ClientRepresentation {
   rootUrl: string;
   baseUrl: string;
   effectiveUrl: string;
-  consent: ConsentRepresentation;
+  consent?: ConsentRepresentation;
   logoUri: string;
   policyUri: string;
   tosUri: string;
