@@ -5,10 +5,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx,mjs,ts,tsx",
-    "test": "vitest",
-    "cy:open": "cypress open --e2e --browser chrome",
-    "cy:run": "cypress run --browser chrome",
-    "cy:check-types": "tsc --project cypress/tsconfig.json"
+    "test": "vitest"
   },
   "dependencies": {
     "@patternfly/patternfly": "^4.210.2",
