@@ -2,9 +2,9 @@
   "name": "keycloak-ui",
   "workspaces": [
     "libs/keycloak-js",
+    "libs/masthead",
     "apps/account-ui",
-    "apps/admin-ui",
-    "libs/masthead"
+    "apps/admin-ui"
   ],
   "scripts": {
     "prepare": "husky install"

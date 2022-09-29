@@ -29,7 +29,7 @@ export const App = () => {
         isManagedSidebar
         sidebar={<PageNav content={content} />}
       >
-        <PageSection>{t("accountManagementWelcomeMessage")}</PageSection>
+        <PageSection>{t("welcomeMessage")}</PageSection>
       </Page>
     </Router>
   );

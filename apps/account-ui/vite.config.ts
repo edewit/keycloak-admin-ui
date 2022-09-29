@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import checker from "vite-plugin-checker";
 
@@ -24,12 +24,4 @@ export default defineConfig({
     },
   },
   plugins: [react(), checker({ typescript: true })],
-  test: {
-    setupFiles: "vitest.setup.ts",
-    watch: false,
-    deps: {
-      // Ensure '.mjs' files are used for '@patternfly/react-styles'.
-      inline: [/@patternfly\/react-styles/],
-    },
-  },
 });

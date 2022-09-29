@@ -1,63 +1,48 @@
 [
   {
     "id": "personal-info",
+    "label": "personalInfo",
     "path": "personal-info",
-    "icon": "pf-icon-user",
-    "label": "personalInfoSidebarTitle",
-    "descriptionLabel": "personalInfoIntroMessage",
-    "componentName": "AccountPage"
+    "icon": "pf-icon-user"
   },
   {
     "id": "security",
+    "label": "accountSecurity",
     "icon": "pf-icon-security",
-    "label": "accountSecuritySidebarTitle",
-    "descriptionLabel": "accountSecurityIntroMessage",
     "content": [
       {
         "id": "signingin",
         "path": "security/signingin",
-        "label": "signingInSidebarTitle",
-        "componentName": "SigningInPage"
+        "label": "signingIn"
       },
       {
         "id": "device-activity",
         "path": "security/device-activity",
-        "label": "deviceActivitySidebarTitle",
-        "componentName": "DeviceActivityPage"
+        "label": "deviceActivity"
       },
       {
         "id": "linked-accounts",
         "path": "security/linked-accounts",
-        "label": "linkedAccountsSidebarTitle",
-        "componentName": "LinkedAccountsPage",
-        "hidden": "!features.isLinkedAccountsEnabled"
+        "label": "linkedAccounts"
       }
     ]
   },
   {
     "id": "applications",
-    "icon": "pf-icon-applications",
-    "path": "applications",
     "label": "applications",
-    "descriptionLabel": "applicationsIntroMessage",
-    "componentName": "ApplicationsPage"
+    "path": "applications",
+    "icon": "pf-icon-applications"
   },
   {
     "id": "groups",
+    "label": "groups",
     "path": "groups",
-    "icon": "pf-icon-server-group",
-    "label": "groupLabel",
-    "descriptionLabel": "groupDescriptionLabel",
-    "componentName": "GroupsPage",
-    "hidden": "!features.isViewGroupsEnabled"
+    "icon": "pf-icon-server-group"
   },
   {
     "id": "resources",
-    "icon": "pf-icon-repository",
-    "path": "resources",
     "label": "resources",
-    "descriptionLabel": "resourceIntroMessage",
-    "componentName": "MyResourcesPage",
-    "hidden": "!features.isMyResourcesEnabled"
+    "path": "resources",
+    "icon": "pf-icon-repository"
   }
 ]
