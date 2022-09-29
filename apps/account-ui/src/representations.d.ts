@@ -223,3 +223,30 @@ export interface ClientRepresentation {
   policyUri: string;
   tosUri: string;
 }
+
+export interface Scope {
+  name: string;
+  displayName?: string;
+}
+
+export interface Resource {
+  _id: string;
+  name: string;
+  client: Client;
+  scopes: Scope[];
+  uris: string[];
+  shareRequests: Permission[];
+}
+
+export interface Permission {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  scopes: Scope[] | string[]; // this should be Scope[] - fix API
+  username: string;
+}
+
+export interface Permissions {
+  permissions: Permission[];
+  row?: number;
+}

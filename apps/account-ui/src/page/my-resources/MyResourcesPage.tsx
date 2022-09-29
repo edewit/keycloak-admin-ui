@@ -1,10 +1,12 @@
-import { Tab, Tabs, TabTitleText } from "@patternfly/react-core";
-import { t } from "i18next";
 import { useState } from "react";
-import { ResourceToolbar } from "./ResourceToolbar";
+import { t } from "i18next";
+import { Tab, Tabs, TabTitleText } from "@patternfly/react-core";
+
+import { ResourcesTab } from "./ResourcesTab";
 
 export function MyResourcesPage() {
   const [activeTabKey, setActiveTabKey] = useState(0);
+
   return (
     <Tabs
       activeKey={activeTabKey}
@@ -13,14 +15,12 @@ export function MyResourcesPage() {
       unmountOnExit
     >
       <Tab eventKey={0} title={<TabTitleText>{t("myResources")}</TabTitleText>}>
-        <ResourceToolbar onFilter={() => console.log("super")} />
-        <h1>Hello</h1>
+        <ResourcesTab />
       </Tab>
       <Tab
         eventKey={1}
         title={<TabTitleText>{t("sharedwithMe")}</TabTitleText>}
       >
-        <ResourceToolbar onFilter={() => console.log("hello")} />
         <h1>Share</h1>
       </Tab>
     </Tabs>
