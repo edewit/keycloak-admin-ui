@@ -80,7 +80,7 @@ export const ClientScopes = ({
   const [rest, setRest] = useState<ClientScopeRepresentation[]>();
   const [selectedRows, setSelectedRowState] = useState<Row[]>([]);
   const setSelectedRows = (rows: Row[]) =>
-    setSelectedRowState([...rows.filter((r) => r.id !== DEDICATED_ROW)]);
+    setSelectedRowState(rows.filter(({ id }) => id !== DEDICATED_ROW));
 
   const [key, setKey] = useState(0);
   const refresh = () => setKey(key + 1);
