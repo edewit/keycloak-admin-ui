@@ -7,9 +7,56 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 
-type PageNavProps = {
-  content: ContentItem[];
+type ContentItem = {
+  id: string;
+  label: string;
+  path?: string;
+  content?: ContentItem[];
 };
+
+const content: ContentItem[] = [
+  {
+    id: "personal-info",
+    label: "personalInfo",
+    path: "personal-info",
+  },
+  {
+    id: "security",
+    label: "accountSecurity",
+    content: [
+      {
+        id: "signingin",
+        path: "security/signingin",
+        label: "signingIn",
+      },
+      {
+        id: "device-activity",
+        path: "security/device-activity",
+        label: "deviceActivity",
+      },
+      {
+        id: "linked-accounts",
+        path: "security/linked-accounts",
+        label: "linkedAccounts",
+      },
+    ],
+  },
+  {
+    id: "applications",
+    label: "applications",
+    path: "applications",
+  },
+  {
+    id: "groups",
+    label: "groups",
+    path: "groups",
+  },
+  {
+    id: "resources",
+    label: "resources",
+    path: "resources",
+  },
+];
 
 function isChildOf(parent: ContentItem, child: ContentItem): boolean {
   for (const item of parent.content!) {
@@ -19,7 +66,7 @@ function isChildOf(parent: ContentItem, child: ContentItem): boolean {
   return false;
 }
 
-export const PageNav = ({ content }: PageNavProps) => {
+export const PageNav = () => {
   const { t } = useTranslation();
 
   const createNavItems = (
