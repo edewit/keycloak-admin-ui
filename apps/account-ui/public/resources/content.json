@@ -2,13 +2,11 @@
   {
     "id": "personal-info",
     "label": "personalInfo",
-    "path": "personal-info",
-    "icon": "pf-icon-user"
+    "path": "personal-info"
   },
   {
     "id": "security",
     "label": "accountSecurity",
-    "icon": "pf-icon-security",
     "content": [
       {
         "id": "signingin",
@@ -30,19 +28,16 @@
   {
     "id": "applications",
     "label": "applications",
-    "path": "applications",
-    "icon": "pf-icon-applications"
+    "path": "applications"
   },
   {
     "id": "groups",
     "label": "groups",
-    "path": "groups",
-    "icon": "pf-icon-server-group"
+    "path": "groups"
   },
   {
     "id": "resources",
     "label": "resources",
-    "path": "resources",
-    "icon": "pf-icon-repository"
+    "path": "resources"
   }
 ]
