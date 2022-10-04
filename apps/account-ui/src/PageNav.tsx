@@ -14,7 +14,6 @@ type PageNavProps = {
 function isChildOf(parent: ContentItem, child: ContentItem): boolean {
   for (const item of parent.content!) {
     if (item.content && isChildOf(item, child)) return true;
-    if (parent.groupId === child.groupId) return true;
   }
 
   return false;
@@ -31,9 +30,8 @@ export const PageNav = ({ content }: PageNavProps) => {
       item.content ? (
         <NavExpandable
           id={`nav-link-${item.id}`}
-          groupId={item.groupId}
-          key={item.groupId}
-          title={t(item.label, item.labelParams)}
+          key={item.id}
+          title={t(item.label)}
           isExpanded={isChildOf(item, activePage)}
         >
           {createNavItems(activePage, item.content)}
@@ -46,7 +44,7 @@ export const PageNav = ({ content }: PageNavProps) => {
           isActive={activePage.id === item.id}
           type="button"
         >
-          {t(item.label, item.labelParams)}
+          {t(item.label)}
         </NavItem>
       )
     );
