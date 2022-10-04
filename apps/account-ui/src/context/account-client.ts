@@ -139,6 +139,15 @@ export class AccountClient {
     });
   }
 
+  async findUser(resourceId: string, username: string) {
+    return this.doRequest<string>(
+      `/resources/${resourceId}/user?value=${username}`,
+      {
+        method: "get",
+      }
+    );
+  }
+
   private checkResponse<T>(response: T) {
     if (!response) throw new Error("Could not fetch");
     return response;

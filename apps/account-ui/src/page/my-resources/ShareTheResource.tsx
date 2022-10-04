@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import {
+  FormProvider,
+  useFieldArray,
+  useForm,
+  useWatch,
+} from "react-hook-form";
 import {
   Modal,
   Button,
@@ -40,11 +45,13 @@ export const ShareTheResource = ({
   const { t } = useTranslation();
   const accountClient = useAccountClient();
   const { addAlert, addError } = useAlerts();
-  const form = useForm<FormValues>({ mode: "onChange" });
+  const form = useForm<FormValues>();
   const {
     control,
     register,
     formState: { errors, isValid },
+    setError,
+    clearErrors,
     handleSubmit,
   } = form;
   const { fields, append, remove } = useFieldArray<FormValues>({
@@ -58,6 +65,15 @@ export const ShareTheResource = ({
     }
   }, [fields]);
 
+  const watchFields = useWatch({
+    control,
+    name: "usernames",
+  });
+
+  const isDisabled = watchFields.every(
+    ({ value }) => value.trim().length === 0
+  );
+
   const addShare = async ({ usernames, permissions }: FormValues) => {
     try {
       await Promise.all(
@@ -70,6 +86,27 @@ export const ShareTheResource = ({
     } catch (error) {
       addError("shareError", error);
     }
+  };
+
+  const validateUser = async () => {
+    const userOrEmails = fields.map((f) => f.value).filter((f) => f !== "");
+    const userPermission = permissions
+      ?.map((p) => [p.username, p.email])
+      .flat();
+
+    const hasUsers = userOrEmails.length > 0;
+    const alreadyShared =
+      userOrEmails.filter((u) => userPermission?.includes(u)).length !== 0;
+
+    if (!hasUsers || alreadyShared) {
+      setError("usernames", {
+        message: !hasUsers ? t("required") : t("resourceAlreadyShared"),
+      });
+    } else {
+      clearErrors();
+    }
+
+    return hasUsers && !alreadyShared;
   };
 
   return (
@@ -98,7 +135,7 @@ export const ShareTheResource = ({
         <FormGroup
           label={t("shareUserLabel")}
           type="string"
-          helperTextInvalid={t("resourceAlreadyShared")}
+          helperTextInvalid={errors.usernames?.message}
           fieldId="users"
           isRequired
           validated={
@@ -115,8 +152,7 @@ export const ShareTheResource = ({
                   : ValidatedOptions.default
               }
               {...register(`usernames.${fields.length - 1}.value`, {
-                required: true,
-                validate: () => fields.length > 0,
+                validate: validateUser,
               })}
             />
             <Button
@@ -124,7 +160,7 @@ export const ShareTheResource = ({
               variant="primary"
               id="add"
               onClick={() => append({ value: "" })}
-              isDisabled={!isValid}
+              isDisabled={isDisabled}
             >
               {t("add")}
             </Button>
