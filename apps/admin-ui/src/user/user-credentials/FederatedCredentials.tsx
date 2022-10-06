@@ -82,17 +82,14 @@ export const FederatedCredentials = ({
               <Td>
                 <Button
                   variant="link"
+                  isDisabled={!access.hasAccess("view-realm")}
                   component={(props) => (
                     <Link
                       {...props}
-                      to={
-                        access.hasAccess("view-realm")
-                          ? toUserFederationLdap({
-                              id: component.id!,
-                              realm,
-                            })
-                          : "#"
-                      }
+                      to={toUserFederationLdap({
+                        id: component.id!,
+                        realm,
+                      })}
                     />
                   )}
                 >
