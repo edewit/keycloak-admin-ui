@@ -498,7 +498,7 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
       {groupedUserCredentials.length === 0 &&
         !(user.federationLink || user.origin) && (
           <ListEmptyState
-            hasIcon={true}
+            hasIcon
             message={t("noCredentials")}
             instructions={t("noCredentialsText")}
             primaryActionText={t("setPassword")}
