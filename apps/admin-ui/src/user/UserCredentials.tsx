@@ -37,6 +37,7 @@ import { CredentialRow } from "./user-credentials/CredentialRow";
 import { toUpperCase } from "../util";
 
 import "./user-credentials.css";
+import { FederatedCredentials } from "./user-credentials/FederatedCredentials";
 
 type UserCredentialsProps = {
   user: UserRepresentation;
@@ -361,7 +362,7 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
           <Divider />
         </>
       )}
-      {groupedUserCredentials.length !== 0 ? (
+      {groupedUserCredentials.length !== 0 && (
         <>
           {user.email && (
             <Button
@@ -490,26 +491,31 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
             </TableComposable>
           </PageSection>
         </>
-      ) : (
-        <ListEmptyState
-          hasIcon={true}
-          message={t("noCredentials")}
-          instructions={t("noCredentialsText")}
-          primaryActionText={t("setPassword")}
-          onPrimaryAction={toggleModal}
-          secondaryActions={
-            user.email
-              ? [
-                  {
-                    text: t("credentialResetBtn"),
-                    onClick: toggleCredentialsResetModal,
-                    type: ButtonVariant.link,
-                  },
-                ]
-              : undefined
-          }
-        />
       )}
+      {(user.federationLink || user.origin) && (
+        <FederatedCredentials user={user} onSetPassword={toggleModal} />
+      )}
+      {groupedUserCredentials.length === 0 &&
+        !(user.federationLink || user.origin) && (
+          <ListEmptyState
+            hasIcon={true}
+            message={t("noCredentials")}
+            instructions={t("noCredentialsText")}
+            primaryActionText={t("setPassword")}
+            onPrimaryAction={toggleModal}
+            secondaryActions={
+              user.email
+                ? [
+                    {
+                      text: t("credentialResetBtn"),
+                      onClick: toggleCredentialsResetModal,
+                      type: ButtonVariant.link,
+                    },
+                  ]
+                : undefined
+            }
+          />
+        )}
     </>
   );
 };
