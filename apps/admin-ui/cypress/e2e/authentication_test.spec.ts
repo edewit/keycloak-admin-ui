@@ -27,7 +27,7 @@ describe("Authentication test", () => {
     cy.wrap(adminClient.createRealm("test"));
     keycloakBefore();
     loginPage.logIn();
-    sidebarPage.goToRealm("Test");
+    sidebarPage.goToRealm("test");
   });
 
   after(() => adminClient.deleteRealm("test"));
