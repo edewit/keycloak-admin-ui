@@ -7,14 +7,14 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 
-type ContentItem = {
+type MenuItem = {
   id: string;
   label: string;
   path?: string;
-  content?: ContentItem[];
+  children?: MenuItem[];
 };
 
-const content: ContentItem[] = [
+const menuItems: MenuItem[] = [
   {
     id: "personal-info",
     label: "personalInfo",
@@ -23,7 +23,7 @@ const content: ContentItem[] = [
   {
     id: "security",
     label: "accountSecurity",
-    content: [
+    children: [
       {
         id: "signingin",
         path: "security/signingin",
@@ -58,52 +58,40 @@ const content: ContentItem[] = [
   },
 ];
 
-function isChildOf(parent: ContentItem, child: ContentItem): boolean {
-  for (const item of parent.content!) {
-    if (item.content && isChildOf(item, child)) return true;
-  }
+export const PageNav = () => (
+  <PageSidebar
+    nav={
+      <Nav>
+        <NavList>
+          {menuItems.map((menuItem) => (
+            <NavMenuItem key={menuItem.id} menuItem={menuItem} />
+          ))}
+        </NavList>
+      </Nav>
+    }
+  />
+);
 
-  return false;
-}
+type NavMenuItemProps = {
+  menuItem: MenuItem;
+};
 
-export const PageNav = () => {
+function NavMenuItem({ menuItem }: NavMenuItemProps) {
   const { t } = useTranslation();
 
-  const createNavItems = (
-    activePage: ContentItem,
-    contentParam: ContentItem[]
-  ) =>
-    contentParam.map((item) =>
-      item.content ? (
-        <NavExpandable
-          id={`nav-link-${item.id}`}
-          key={item.id}
-          title={t(item.label)}
-          isExpanded={isChildOf(item, activePage)}
-        >
-          {createNavItems(activePage, item.content)}
-        </NavExpandable>
-      ) : (
-        <NavItem
-          id={`nav-link-${item.id}`}
-          key={item.id}
-          to={"#/" + item.path}
-          isActive={activePage.id === item.id}
-          type="button"
-        >
-          {t(item.label)}
-        </NavItem>
-      )
+  if (menuItem.children) {
+    return (
+      <NavExpandable title={t(menuItem.label)}>
+        {menuItem.children.map((child) => (
+          <NavMenuItem key={child.id} menuItem={child} />
+        ))}
+      </NavExpandable>
     );
+  }
 
   return (
-    <PageSidebar
-      className="keycloak__page_nav__nav"
-      nav={
-        <Nav>
-          <NavList>{createNavItems(content[0], content)}</NavList>
-        </Nav>
-      }
-    />
+    <NavItem to={"#/" + menuItem.path} type="button">
+      {t(menuItem.label)}
+    </NavItem>
   );
-};
+}
