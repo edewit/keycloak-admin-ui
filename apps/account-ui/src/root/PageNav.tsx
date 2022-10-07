@@ -5,9 +5,19 @@ import {
   NavList,
   PageSidebar,
 } from "@patternfly/react-core";
-import { FunctionComponent, MouseEvent as ReactMouseEvent } from "react";
+import {
+  FunctionComponent,
+  MouseEvent as ReactMouseEvent,
+  useMemo,
+} from "react";
 import { useTranslation } from "react-i18next";
-import { To, useHref, useLinkClickHandler } from "react-router-dom";
+import {
+  matchPath,
+  To,
+  useHref,
+  useLinkClickHandler,
+  useLocation,
+} from "react-router-dom";
 
 type RootMenuItem = {
   label: string;
@@ -77,13 +87,26 @@ type NavMenuItemProps = {
 
 function NavMenuItem({ menuItem }: NavMenuItemProps) {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
+  const isActive = useMemo(
+    () => matchMenuItem(pathname, menuItem),
+    [pathname, menuItem]
+  );
 
   if ("path" in menuItem) {
-    return <NavLink to={menuItem.path}>{t(menuItem.label)}</NavLink>;
+    return (
+      <NavLink to={menuItem.path} isActive={isActive}>
+        {t(menuItem.label)}
+      </NavLink>
+    );
   }
 
   return (
-    <NavExpandable title={t(menuItem.label)}>
+    <NavExpandable
+      title={t(menuItem.label)}
+      isActive={isActive}
+      isExpanded={isActive}
+    >
       {menuItem.children.map((child) => (
         <NavMenuItem key={child.label} menuItem={child} />
       ))}
@@ -91,17 +114,31 @@ function NavMenuItem({ menuItem }: NavMenuItemProps) {
   );
 }
 
+function matchMenuItem(currentPath: string, menuItem: MenuItem): boolean {
+  if ("path" in menuItem) {
+    return !!matchPath(menuItem.path, currentPath);
+  }
+
+  return menuItem.children.some((child) => matchMenuItem(currentPath, child));
+}
+
 type NavLinkProps = {
   to: To;
+  isActive: boolean;
 };
 
-const NavLink: FunctionComponent<NavLinkProps> = ({ to, children }) => {
+const NavLink: FunctionComponent<NavLinkProps> = ({
+  to,
+  isActive,
+  children,
+}) => {
   const href = useHref(to);
   const handleClick = useLinkClickHandler(to);
 
   return (
     <NavItem
       to={href}
+      isActive={isActive}
       onClick={(event) =>
         // PatternFly does not have the correct type for this event, so we need to cast it.
         handleClick(event as unknown as ReactMouseEvent<HTMLAnchorElement>)
