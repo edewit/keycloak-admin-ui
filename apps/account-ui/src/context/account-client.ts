@@ -139,6 +139,13 @@ export class AccountClient {
     });
   }
 
+  async updatePermissions(resourceId: string, permissions: Permission[]) {
+    return this.doRequest(`/resources/${resourceId}/permissions`, {
+      method: "put",
+      body: JSON.stringify(permissions),
+    });
+  }
+
   async findUser(resourceId: string, username: string) {
     return this.doRequest<string>(
       `/resources/${resourceId}/user?value=${username}`,

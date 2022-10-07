@@ -49,6 +49,7 @@ export const ShareTheResource = ({
   const {
     control,
     register,
+    reset,
     formState: { errors, isValid },
     setError,
     clearErrors,
@@ -68,6 +69,7 @@ export const ShareTheResource = ({
   const watchFields = useWatch({
     control,
     name: "usernames",
+    defaultValue: [],
   });
 
   const isDisabled = watchFields.every(
@@ -77,15 +79,18 @@ export const ShareTheResource = ({
   const addShare = async ({ usernames, permissions }: FormValues) => {
     try {
       await Promise.all(
-        usernames.map(({ value: username }) =>
-          accountClient.updateRequest(resource._id, username, permissions)
-        )
+        usernames
+          .filter(({ value }) => value !== "")
+          .map(({ value: username }) =>
+            accountClient.updateRequest(resource._id, username, permissions)
+          )
       );
       addAlert("shareSuccess");
       onClose();
     } catch (error) {
       addError("shareError", error);
     }
+    reset({});
   };
 
   const validateUser = async () => {

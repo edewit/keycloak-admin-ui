@@ -5,12 +5,13 @@ import { Button, ButtonProps, Modal, ModalProps } from "@patternfly/react-core";
 type ContinueCancelModalProps = Omit<ModalProps, "ref" | "children"> & {
   modalTitle: string;
   modalMessage?: string;
-  buttonTitle: string;
+  buttonTitle: string | ReactNode;
   buttonVariant?: ButtonProps["variant"];
   isDisabled?: boolean;
   onContinue: () => void;
   continueLabel?: string;
   cancelLabel?: string;
+  component?: React.ElementType<any> | React.ComponentType<any>;
   children?: ReactNode;
 };
 
@@ -23,20 +24,23 @@ export const ContinueCancelModal = ({
   onContinue,
   continueLabel = "continue",
   cancelLabel = "doCancel",
+  component = "button",
   children,
   ...rest
 }: ContinueCancelModalProps) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const Component = component;
+
   return (
     <>
-      <Button
+      <Component
         variant={buttonVariant}
         onClick={() => setOpen(true)}
         isDisabled={isDisabled}
       >
-        {t(buttonTitle)}
-      </Button>
+        {typeof buttonTitle === "string" ? t(buttonTitle) : buttonTitle}
+      </Component>
       <Modal
         variant="small"
         {...rest}

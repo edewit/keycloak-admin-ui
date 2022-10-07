@@ -19,12 +19,14 @@ type FormSelectProps = Omit<
   "name" | "onToggle" | "selections" | "onSelect" | "onClear" | "isOpen"
 > & {
   name: string;
+  label?: string;
   options: string[] | Option[];
   controller: Omit<ControllerProps, "name" | "render">;
 };
 
 export const FormSelect = ({
   name,
+  label,
   options,
   controller,
   ...rest
@@ -38,7 +40,7 @@ export const FormSelect = ({
   return (
     <FormGroup
       isRequired={controller.rules?.required === true}
-      label={t(name)}
+      label={t(label || name)}
       fieldId={name}
       helperTextInvalid={errors[name]?.message}
       validated={
