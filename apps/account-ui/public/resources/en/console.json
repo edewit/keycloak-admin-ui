@@ -7,5 +7,8 @@
   "personalInfo": "Personal info",
   "resources": "Resources",
   "signingIn": "Signing in",
-  "welcomeMessage": "Welcome to Keycloak Account Management"
+  "somethingWentWrong": "Something went wrong",
+  "somethingWentWrongDescription": "Sorry, an unexpected error has occurred.",
+  "tryAgain": "Try again",
+  "welcomeMessage": "Welcome to Keycloak Account Management."
 }

@@ -6,7 +6,7 @@ export const DEFAULT_LOCALE = "en";
 
 export const init = () => {
   const options = initOptions();
-  i18n.init(options);
+  return i18n.init(options);
 };
 
 const initOptions = (): InitOptions => {

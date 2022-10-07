@@ -1,39 +1,20 @@
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/react-core/dist/styles/base.css";
 
-import { StrictMode, Suspense } from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom";
-import { ErrorBoundary, FallbackProps } from "react-error-boundary";
-import { Spinner } from "@patternfly/react-core";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { init } from "./i18n";
-import { App } from "./App";
+import { routes } from "./routes";
 
-function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
-  return (
-    <div role="alert">
-      <p>Something went wrong:</p>
-      <pre>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Try again</button>
-    </div>
-  );
-}
+const router = createBrowserRouter(routes);
 
 async function initialize() {
-  init();
+  await init();
   ReactDOM.render(
     <StrictMode>
-      <ErrorBoundary
-        FallbackComponent={ErrorFallback}
-        onReset={() =>
-          (window.location.href =
-            window.location.origin + window.location.pathname)
-        }
-      >
-        <Suspense fallback={<Spinner />}>
-          <App />
-        </Suspense>
-      </ErrorBoundary>
+      <RouterProvider router={router} />
     </StrictMode>,
     document.getElementById("app")
   );
