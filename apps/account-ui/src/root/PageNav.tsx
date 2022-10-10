@@ -10,7 +10,7 @@ import {
   MouseEvent as ReactMouseEvent,
   useMemo,
 } from "react";
-import { useTranslation } from "react-i18next";
+import { TFuncKey, useTranslation } from "react-i18next";
 import {
   matchPath,
   To,
@@ -20,12 +20,12 @@ import {
 } from "react-router-dom";
 
 type RootMenuItem = {
-  label: string;
+  label: TFuncKey;
   path: string;
 };
 
 type MenuItemWithChildren = {
-  label: string;
+  label: TFuncKey;
   children: MenuItem[];
 };
 

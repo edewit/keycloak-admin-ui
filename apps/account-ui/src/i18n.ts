@@ -5,7 +5,7 @@ import { initReactI18next } from "react-i18next";
 import { environment } from "./environment";
 
 const DEFAULT_LOCALE = "en";
-const DEFAULT_NAMESPACE = "console";
+const DEFAULT_NAMESPACE = "translation";
 
 export const i18n = createInstance({
   defaultNS: DEFAULT_NAMESPACE,
