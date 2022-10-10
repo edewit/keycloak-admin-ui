@@ -1,5 +1,7 @@
 import { PageSection } from "@patternfly/react-core";
 
-export const Applications = () => (
+const Applications = () => (
   <PageSection>This is the applications page.</PageSection>
 );
+
+export default Applications;

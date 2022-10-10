@@ -1,15 +1,17 @@
+import { lazy } from "react";
 import type { IndexRouteObject, RouteObject } from "react-router";
 
-import { DeviceActivity } from "./account-security/DeviceActivity";
-import { LinkedAccounts } from "./account-security/LinkedAccounts";
-import { SigningIn } from "./account-security/SigningIn";
-import { Applications } from "./applications/Applications";
-import { Groups } from "./groups/Groups";
-import { PersonalInfo } from "./personal-info/PersonalInfo";
-import { Resources } from "./resources/Resources";
 import { ErrorPage } from "./root/ErrorPage";
 import { Root } from "./root/Root";
 import { RootIndex } from "./root/RootIndex";
+
+const DeviceActivity = lazy(() => import("./account-security/DeviceActivity"));
+const LinkedAccounts = lazy(() => import("./account-security/LinkedAccounts"));
+const SigningIn = lazy(() => import("./account-security/SigningIn"));
+const Applications = lazy(() => import("./applications/Applications"));
+const Groups = lazy(() => import("./groups/Groups"));
+const PersonalInfo = lazy(() => import("./personal-info/PersonalInfo"));
+const Resources = lazy(() => import("./resources/Resources"));
 
 export const DeviceActivityRoute: RouteObject = {
   path: "account-security/device-activity",

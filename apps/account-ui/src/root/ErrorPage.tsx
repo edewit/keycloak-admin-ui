@@ -36,7 +36,7 @@ export const ErrorPage = () => {
         <TextContent>
           <Text>{t("somethingWentWrongDescription")}</Text>
           {errorMessage && (
-            <Text component={TextVariants.pre}>{errorMessage}</Text>
+            <Text component={TextVariants.small}>{errorMessage}</Text>
           )}
         </TextContent>
       </Modal>
