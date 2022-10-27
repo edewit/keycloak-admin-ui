@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertVariant } from "@patternfly/react-core";
 import axios from "axios";
@@ -40,8 +40,16 @@ export const AlertProvider: FunctionComponent = ({ children }) => {
   const [alerts, setAlerts] = useState<AlertType[]>([]);
 
   const hideAlert = (id: number) => {
-    setAlerts((alerts) => alerts.filter((alert) => alert.id !== id));
+    setAlerts(alerts.filter((alert) => alert.id !== id));
   };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const cutoff = new Date().getTime() - 8000;
+      setAlerts(alerts.filter((a) => a.id > cutoff));
+    }, 4000);
+    return () => clearInterval(timer);
+  });
 
   const addAlert = (
     message: string,
@@ -50,7 +58,7 @@ export const AlertProvider: FunctionComponent = ({ children }) => {
   ) => {
     setAlerts([
       {
-        id: Math.random(),
+        id: new Date().getTime(),
         message,
         variant,
         description,
