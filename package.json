@@ -2,7 +2,7 @@
   "name": "keycloak-ui",
   "workspaces": [
     "libs/keycloak-js",
-    "libs/masthead",
+    "libs/keycloak-masthead",
     "apps/account-ui",
     "apps/admin-ui"
   ],
