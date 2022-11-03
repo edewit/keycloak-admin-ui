@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Controller, useFormContext } from "react-hook-form";
-import { Form, FormGroup, Select } from "@patternfly/react-core";
+import { Form, FormGroup, Select, SelectOption } from "@patternfly/react-core";
 
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import { KeycloakTextInput } from "../components/keycloak-text-input/KeycloakTextInput";
@@ -22,7 +22,10 @@ export const UserProfileFields = () => {
     attr && ROOT_ATTRIBUTES.includes(attr);
 
   const isSelect = (attribute: UserProfileAttribute) =>
-    attribute.validations?.filter((validation) => validation.options);
+    Object.prototype.hasOwnProperty.call(
+      attribute.validations as unknown as Record<string, string[]> | undefined,
+      "options"
+    );
 
   const fieldName = (attribute: UserProfileAttribute) =>
     `${isRootAttribute(attribute.name) ? "" : "attribute."}${attribute.name}`;
@@ -44,12 +47,12 @@ export const UserProfileFields = () => {
         >
           {isSelect(attribute) ? (
             <Controller
-              name="bindingType"
-              defaultValue={"browserFlow"}
+              name={fieldName(attribute)}
+              defaultValue=""
               control={control}
               render={({ onChange, value }) => (
                 <Select
-                  toggleId="chooseBindingType"
+                  toggleId={attribute.name}
                   onToggle={toggle}
                   onSelect={(_, value) => {
                     onChange(value.toString());
@@ -57,15 +60,19 @@ export const UserProfileFields = () => {
                   }}
                   selections={value}
                   variant="single"
-                  aria-label={t("bindingFlow")}
+                  aria-label={t("common:selectOne")}
                   isOpen={open}
-                  menuAppendTo="parent"
                 >
-                  {/* {(attribute.validations?. as string[]).map((option) => (
+                  {(
+                    attribute.validations as unknown as Record<
+                      string,
+                      { options: string[] }
+                    >
+                  ).options.options.map((option) => (
                     <SelectOption selected={value === option} key={option}>
                       {option}
                     </SelectOption>
-                  ))} */}
+                  ))}
                 </Select>
               )}
             />
@@ -74,7 +81,7 @@ export const UserProfileFields = () => {
               ref={register()}
               type="text"
               id={attribute.name}
-              aria-label={t("username")}
+              aria-label={attribute.name}
               name={fieldName(attribute)}
             />
           )}
