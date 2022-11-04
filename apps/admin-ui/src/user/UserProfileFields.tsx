@@ -22,13 +22,10 @@ export const UserProfileFields = () => {
     attr && ROOT_ATTRIBUTES.includes(attr);
 
   const isSelect = (attribute: UserProfileAttribute) =>
-    Object.prototype.hasOwnProperty.call(
-      attribute.validations as unknown as Record<string, string[]> | undefined,
-      "options"
-    );
+    Object.prototype.hasOwnProperty.call(attribute.validations, "options");
 
   const fieldName = (attribute: UserProfileAttribute) =>
-    `${isRootAttribute(attribute.name) ? "" : "attribute."}${attribute.name}`;
+    `${isRootAttribute(attribute.name) ? "" : "attributes."}${attribute.name}`;
 
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
@@ -64,16 +61,22 @@ export const UserProfileFields = () => {
                   aria-label={t("common:selectOne")}
                   isOpen={open}
                 >
-                  {(
-                    attribute.validations as unknown as Record<
-                      string,
-                      { options: string[] }
-                    >
-                  ).options.options.map((option) => (
-                    <SelectOption selected={value === option} key={option}>
-                      {option}
-                    </SelectOption>
-                  ))}
+                  {[
+                    <SelectOption key="empty" value="">
+                      {t("common:choose")}
+                    </SelectOption>,
+                    ...(
+                      attribute.validations?.options as { options: string[] }
+                    ).options.map((option) => (
+                      <SelectOption
+                        selected={value === option}
+                        key={option}
+                        value={option}
+                      >
+                        {option}
+                      </SelectOption>
+                    )),
+                  ]}
                 </Select>
               )}
             />
