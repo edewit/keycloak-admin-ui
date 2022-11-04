@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Controller, useFormContext } from "react-hook-form";
-import { Form, FormGroup, Select, SelectOption } from "@patternfly/react-core";
+import { FormGroup, Select, SelectOption } from "@patternfly/react-core";
 
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import { KeycloakTextInput } from "../components/keycloak-text-input/KeycloakTextInput";
@@ -31,7 +31,8 @@ export const UserProfileFields = () => {
     `${isRootAttribute(attribute.name) ? "" : "attribute."}${attribute.name}`;
 
   return (
-    <Form>
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <>
       {config?.attributes?.map((attribute) => (
         <FormGroup
           key={attribute.name}
@@ -87,6 +88,6 @@ export const UserProfileFields = () => {
           )}
         </FormGroup>
       ))}
-    </Form>
+    </>
   );
 };
