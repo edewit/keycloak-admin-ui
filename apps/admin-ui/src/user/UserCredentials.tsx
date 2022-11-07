@@ -375,10 +375,7 @@ export const UserCredentials = ({ user }: UserCredentialsProps) => {
             </Button>
           )}
           <PageSection variant={PageSectionVariants.light}>
-            <TableComposable
-              aria-label="userCredentials-table"
-              variant={"compact"}
-            >
+            <TableComposable variant={"compact"}>
               <Thead>
                 <Tr className="kc-table-header">
                   <Th>

@@ -65,7 +65,7 @@ export const FederatedCredentials = ({
 
   return (
     <PageSection variant={PageSectionVariants.light}>
-      <TableComposable aria-label="userCredentials-table" variant={"compact"}>
+      <TableComposable variant={"compact"}>
         <Thead>
           <Tr>
             <Th>{t("type")}</Th>
