@@ -56,6 +56,8 @@ type PermissionEdit = [
   }
 ];
 
+export const USERNAME_EMAIL = ["username", "email"];
+
 const CreateAttributeFormContent = ({
   save,
 }: {
@@ -108,7 +110,9 @@ export default function NewAttributeSettings() {
   const [config, setConfig] = useState<UserProfileConfig | null>(null);
   const editMode = attributeName ? true : false;
 
-  const convert = (obj: Record<string, unknown>[] | undefined) =>
+  const convert = (
+    obj: Record<string, unknown>[] | Record<string, any> | undefined
+  ) =>
     Object.entries(obj || []).map(([key, value]) => ({
       key,
       value,
@@ -134,13 +138,21 @@ export default function NewAttributeSettings() {
         flatten<any, any>({ permissions, selector, required }, { safe: true })
       ).map(([key, value]) => form.setValue(key, value));
       form.setValue("annotations", convert(annotations));
-      form.setValue("validations", validations);
+      form.setValue("validations", convert(validations));
       form.setValue("isRequired", required !== undefined);
     },
     []
   );
 
   const save = async (profileConfig: UserProfileAttributeType) => {
+    const validations = (
+      profileConfig.validations! as unknown as KeyValueType[]
+    ).reduce((prevValidations: any, currentValidations: any) => {
+      prevValidations[currentValidations.key] =
+        currentValidations.value?.length === 0 ? {} : currentValidations.value;
+      return prevValidations;
+    }, {});
+
     const annotations = (profileConfig.annotations! as KeyValueType[]).reduce(
       (obj, item) => Object.assign(obj, { [item.key]: item.value }),
       {}
@@ -161,6 +173,7 @@ export default function NewAttributeSettings() {
             selector: profileConfig.selector,
             permissions: profileConfig.permissions!,
             annotations,
+            validations,
           },
           profileConfig.isRequired
             ? { required: profileConfig.required }
