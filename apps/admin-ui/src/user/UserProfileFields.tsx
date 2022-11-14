@@ -1,68 +1,64 @@
+import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { Controller, useFormContext } from "react-hook-form";
 import {
-  FormFieldGroupExpandable,
-  FormFieldGroupHeader,
+  Form,
   FormGroup,
   Select,
   SelectOption,
+  Text,
 } from "@patternfly/react-core";
 
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import type { UserProfileAttributeRequired } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
+import { ScrollForm } from "../components/scroll-form/ScrollForm";
 import { KeycloakTextInput } from "../components/keycloak-text-input/KeycloakTextInput";
 import { useUserProfile } from "../realm-settings/user-profile/UserProfileContext";
 import useToggle from "../utils/useToggle";
-import { Fragment, useMemo } from "react";
 
 const ROOT_ATTRIBUTES = ["username", "fistName", "lastName", "email"];
+const DEFAULT_ROLES = ["admin", "user"];
 
-export const UserProfileFields = () => {
+type UserProfileFieldsProps = {
+  roles?: string[];
+};
+
+export const UserProfileFields = ({
+  roles = ["admin"],
+}: UserProfileFieldsProps) => {
+  const { t } = useTranslation("realm-settings");
   const { config } = useUserProfile();
 
-  const attributes = useMemo(
-    () =>
-      config?.attributes?.sort((a, b) => {
-        if ((a.group || "") > (b.group || "")) {
-          return 1;
-        } else if ((a.group || "") < (b.group || "")) {
-          return -1;
-        } else {
-          return 0;
-        }
-      }),
-    [config]
-  );
-
   return (
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    <>
-      {[{ name: "" }, ...(config?.groups || [])].map((g) => (
-        <FormFieldGroupExpandable
-          key={g.name}
-          label={g.displayHeader}
-          header={
-            <FormFieldGroupHeader
-              titleText={{ text: g.displayHeader, id: g.name! }}
-              titleDescription={g.displayDescription}
-            />
-          }
-          isExpanded
-        >
-          {attributes?.map((attribute) => (
-            <Fragment key={attribute.name}>
-              {(attribute.group || "") === g.name && (
-                <FormField attribute={attribute} />
-              )}
-            </Fragment>
-          ))}
-        </FormFieldGroupExpandable>
-      ))}
-    </>
+    <ScrollForm
+      sections={[{ name: "" }, ...(config?.groups || [])].map((g) => ({
+        title: g.name || t("general"),
+        panel: (
+          <Form>
+            {g.displayDescription && (
+              <Text className="pf-u-pb-lg">{g.displayDescription}</Text>
+            )}
+            {config?.attributes?.map((attribute) => (
+              <Fragment key={attribute.name}>
+                {(attribute.group || "") === g.name &&
+                  (attribute.permissions?.view || DEFAULT_ROLES).some((r) =>
+                    roles.includes(r)
+                  ) && <FormField attribute={attribute} roles={roles} />}
+              </Fragment>
+            ))}
+          </Form>
+        ),
+      }))}
+    />
   );
 };
 
-const FormField = ({ attribute }: { attribute: UserProfileAttribute }) => {
+type FormFieldProps = {
+  attribute: UserProfileAttribute;
+  roles: string[];
+};
+
+const FormField = ({ attribute, roles }: FormFieldProps) => {
   const { t } = useTranslation("users");
   const { errors, register, control } = useFormContext();
   const [open, toggle] = useToggle();
@@ -115,6 +111,11 @@ const FormField = ({ attribute }: { attribute: UserProfileAttribute }) => {
               variant="single"
               aria-label={t("common:selectOne")}
               isOpen={open}
+              isDisabled={
+                !(attribute.permissions?.edit || DEFAULT_ROLES).some((r) =>
+                  roles.includes(r)
+                )
+              }
             >
               {[
                 <SelectOption key="empty" value="">
@@ -142,6 +143,11 @@ const FormField = ({ attribute }: { attribute: UserProfileAttribute }) => {
           id={attribute.name}
           aria-label={attribute.name}
           name={fieldName(attribute)}
+          isDisabled={
+            !(attribute.permissions?.edit || DEFAULT_ROLES).some((r) =>
+              roles.includes(r)
+            )
+          }
         />
       )}
     </FormGroup>

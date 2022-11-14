@@ -31,7 +31,6 @@ import type RequiredActionProviderRepresentation from "@keycloak/keycloak-admin-
 import { useAccess } from "../context/access/Access";
 import useIsFeatureEnabled, { Feature } from "../utils/useIsFeatureEnabled";
 import { UserProfileFields } from "./UserProfileFields";
-import { UserProfileProvider } from "../realm-settings/user-profile/UserProfileContext";
 
 export type BruteForced = {
   isBruteForceProtected?: boolean;
@@ -245,9 +244,7 @@ export const UserForm = ({
       </FormGroup>
       {isFeatureEnabled(Feature.DeclarativeUserProfile) &&
       realm?.attributes?.userProfileEnabled === "true" ? (
-        <UserProfileProvider>
-          <UserProfileFields />
-        </UserProfileProvider>
+        <UserProfileFields />
       ) : (
         <>
           {!realm?.registrationEmailAsUsername && (
