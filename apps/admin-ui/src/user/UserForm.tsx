@@ -257,7 +257,6 @@ export const UserForm = ({
             >
               <KeycloakTextInput
                 ref={register()}
-                type="text"
                 id="kc-username"
                 aria-label={t("username")}
                 name="username"
