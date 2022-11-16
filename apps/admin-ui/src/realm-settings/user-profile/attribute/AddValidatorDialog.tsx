@@ -62,7 +62,7 @@ export const AddValidatorDialog = ({
         onClose={toggleDialog}
       >
         {validators.length !== 0 ? (
-          <TableComposable aria-label="validators-table">
+          <TableComposable>
             <Thead>
               <Tr>
                 <Th>{t("validatorDialogColNames.colName")}</Th>
