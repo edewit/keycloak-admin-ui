@@ -46,7 +46,7 @@ export const UserAttributes = ({ user: defaultUser }: UserAttributesProps) => {
   const save = async (attributeForm: AttributeForm) => {
     try {
       const attributes = Object.assign(
-        user.attributes!,
+        user.attributes || {},
         keyValueToArray(attributeForm.attributes!)
       );
       await adminClient.users.update({ id: user.id! }, { ...user, attributes });
