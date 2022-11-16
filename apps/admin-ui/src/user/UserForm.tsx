@@ -324,7 +324,6 @@ export const UserForm = ({
               data-testid="firstName-input"
               type="text"
               id="kc-firstname"
-              aria-label={t("firstName")}
               name="firstName"
             />
           </FormGroup>
