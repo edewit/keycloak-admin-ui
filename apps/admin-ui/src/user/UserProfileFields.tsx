@@ -67,10 +67,7 @@ const FormField = ({ attribute, roles }: FormFieldProps) => {
   const unWrap = (key: string) => key.substring(2, key.length - 1);
 
   const isSelect = (attribute: UserProfileAttribute) =>
-    Object.hasOwn(
-      attribute.validations || {},
-      "options"
-    );
+    Object.hasOwn(attribute.validations || {}, "options");
 
   const isRootAttribute = (attr?: string) =>
     attr && ROOT_ATTRIBUTES.includes(attr);

@@ -103,7 +103,7 @@ const UsersTabs = () => {
       } else {
         const createdUser = await adminClient.users.create({
           ...formUser,
-          groups: addedGroups.map((group) => group.path!)
+          groups: addedGroups.map((group) => group.path!),
         });
 
         addAlert(t("userCreated"), AlertVariant.success);
