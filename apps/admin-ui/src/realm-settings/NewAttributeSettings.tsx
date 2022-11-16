@@ -23,13 +23,30 @@ import { useAlerts } from "../components/alert/Alerts";
 import { UserProfileProvider } from "./user-profile/UserProfileContext";
 import type { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
 import type { AttributeParams } from "./routes/Attribute";
-import type { KeyValueType } from "../components/key-value-form/key-value-convert";
 import { convertToFormValues } from "../util";
 import { flatten } from "flat";
 
 import "./realm-settings-section.css";
 
-type UserProfileAttributeType = UserProfileAttribute & Attribute & Permission;
+type IndexedAnnotationsType = {
+  key: string;
+  value: unknown;
+};
+
+export type IndexedValidationsType = {
+  key: string;
+  value?: Record<string, unknown>[];
+};
+
+type UserProfileAttributeType = Omit<
+  UserProfileAttribute,
+  "validations" | "annotations"
+> &
+  Attribute &
+  Permission & {
+    validations: IndexedValidationsType[];
+    annotations: IndexedAnnotationsType[];
+  };
 
 type Attribute = {
   roles: string[];
@@ -110,9 +127,7 @@ export default function NewAttributeSettings() {
   const [config, setConfig] = useState<UserProfileConfig | null>(null);
   const editMode = attributeName ? true : false;
 
-  const convert = (
-    obj: Record<string, unknown>[] | Record<string, any> | undefined
-  ) =>
+  const convert = (obj: Record<string, any> | undefined) =>
     Object.entries(obj || []).map(([key, value]) => ({
       key,
       value,
@@ -145,15 +160,18 @@ export default function NewAttributeSettings() {
   );
 
   const save = async (profileConfig: UserProfileAttributeType) => {
-    const validations = (
-      profileConfig.validations! as unknown as KeyValueType[]
-    ).reduce((prevValidations: any, currentValidations: any) => {
-      prevValidations[currentValidations.key] =
-        currentValidations.value?.length === 0 ? {} : currentValidations.value;
-      return prevValidations;
-    }, {});
+    const validations = profileConfig.validations.reduce(
+      (prevValidations, currentValidations) => {
+        prevValidations[currentValidations.key] =
+          currentValidations.value?.length === 0
+            ? {}
+            : currentValidations.value;
+        return prevValidations;
+      },
+      {} as Record<string, any>
+    );
 
-    const annotations = (profileConfig.annotations! as KeyValueType[]).reduce(
+    const annotations = profileConfig.annotations.reduce(
       (obj, item) => Object.assign(obj, { [item.key]: item.value }),
       {}
     );
