@@ -141,7 +141,6 @@ const FormField = ({ attribute, roles }: FormFieldProps) => {
           ref={register()}
           type="text"
           id={attribute.name}
-          aria-label={attribute.name}
           name={fieldName(attribute)}
           isDisabled={
             !(attribute.permissions?.edit || DEFAULT_ROLES).some((r) =>
