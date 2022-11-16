@@ -310,7 +310,6 @@ export const UserForm = ({
                   isChecked={value}
                   label={t("common:on")}
                   labelOff={t("common:off")}
-                  aria-label={t("emailVerified")}
                 />
               )}
             />
