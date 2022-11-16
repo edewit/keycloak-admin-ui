@@ -46,6 +46,7 @@ export const UserAttributes = ({ user: defaultUser }: UserAttributesProps) => {
   const save = async (attributeForm: AttributeForm) => {
     try {
       const attributes = Object.assign(
+        {},
         user.attributes || {},
         keyValueToArray(attributeForm.attributes!)
       );
