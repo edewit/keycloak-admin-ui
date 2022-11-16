@@ -365,7 +365,6 @@ export const UserForm = ({
             isDisabled={!locked}
             label={t("common:on")}
             labelOff={t("common:off")}
-            aria-label={t("temporaryLocked")}
           />
         </FormGroup>
       )}
