@@ -139,7 +139,6 @@ const FormField = ({ attribute, roles }: FormFieldProps) => {
       ) : (
         <KeycloakTextInput
           ref={register()}
-          type="text"
           id={attribute.name}
           name={fieldName(attribute)}
           isDisabled={
