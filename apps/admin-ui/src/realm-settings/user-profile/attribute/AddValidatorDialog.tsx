@@ -15,13 +15,13 @@ import {
   Tr,
 } from "@patternfly/react-table";
 
-import type { IndexedValidationsType } from "../../NewAttributeSettings";
+import type { IndexedValidations } from "../../NewAttributeSettings";
 import { AddValidatorRoleDialog } from "./AddValidatorRoleDialog";
 import { Validator, validators as allValidator } from "./Validators";
 import useToggle from "../../../utils/useToggle";
 
 export type AddValidatorDialogProps = {
-  selectedValidators: IndexedValidationsType[];
+  selectedValidators: IndexedValidations[];
   toggleDialog: () => void;
   onConfirm: (newValidator: Validator) => void;
 };

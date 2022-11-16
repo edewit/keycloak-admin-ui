@@ -28,12 +28,12 @@ import { flatten } from "flat";
 
 import "./realm-settings-section.css";
 
-type IndexedAnnotationsType = {
+type IndexedAnnotations = {
   key: string;
   value: unknown;
 };
 
-export type IndexedValidationsType = {
+export type IndexedValidations = {
   key: string;
   value?: Record<string, unknown>[];
 };
@@ -44,8 +44,8 @@ type UserProfileAttributeType = Omit<
 > &
   Attribute &
   Permission & {
-    validations: IndexedValidationsType[];
-    annotations: IndexedAnnotationsType[];
+    validations: IndexedValidations[];
+    annotations: IndexedAnnotations[];
   };
 
 type Attribute = {
@@ -127,12 +127,6 @@ export default function NewAttributeSettings() {
   const [config, setConfig] = useState<UserProfileConfig | null>(null);
   const editMode = attributeName ? true : false;
 
-  const convert = (obj: Record<string, any> | undefined) =>
-    Object.entries(obj || []).map(([key, value]) => ({
-      key,
-      value,
-    }));
-
   useFetch(
     () => adminClient.users.getProfile(),
     (config) => {
@@ -152,8 +146,20 @@ export default function NewAttributeSettings() {
       Object.entries(
         flatten<any, any>({ permissions, selector, required }, { safe: true })
       ).map(([key, value]) => form.setValue(key, value));
-      form.setValue("annotations", convert(annotations));
-      form.setValue("validations", convert(validations));
+      form.setValue(
+        "annotations",
+        Object.entries(annotations || {}).map(([key, value]) => ({
+          key,
+          value,
+        }))
+      );
+      form.setValue(
+        "validations",
+        Object.entries(validations || {}).map(([key, value]) => ({
+          key,
+          value,
+        }))
+      );
       form.setValue("isRequired", required !== undefined);
     },
     []
@@ -168,7 +174,7 @@ export default function NewAttributeSettings() {
             : currentValidations.value;
         return prevValidations;
       },
-      {} as Record<string, any>
+      {} as Record<string, unknown>
     );
 
     const annotations = profileConfig.annotations.reduce(

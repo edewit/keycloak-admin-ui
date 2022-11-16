@@ -18,7 +18,7 @@ import {
   Tr,
 } from "@patternfly/react-table";
 
-import type { IndexedValidationsType } from "../../NewAttributeSettings";
+import type { IndexedValidations } from "../../NewAttributeSettings";
 import { useConfirmDialog } from "../../../components/confirm-dialog/ConfirmDialog";
 import useToggle from "../../../utils/useToggle";
 import { useFormContext, useWatch } from "react-hook-form";
@@ -33,7 +33,7 @@ export const AttributeValidations = () => {
   }>();
   const { setValue, control, register } = useFormContext();
 
-  const validators = useWatch<IndexedValidationsType[]>({
+  const validators = useWatch<IndexedValidations[]>({
     name: "validations",
     control,
     defaultValue: [],
