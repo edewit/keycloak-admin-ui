@@ -304,7 +304,7 @@ export const UserForm = ({
               render={({ onChange, value }) => (
                 <Switch
                   data-testid="email-verified-switch"
-                  id={"kc-user-email-verified"}
+                  id="kc-user-email-verified"
                   isDisabled={false}
                   onChange={(value) => onChange(value)}
                   isChecked={value}
