@@ -322,7 +322,6 @@ export const UserForm = ({
             <KeycloakTextInput
               ref={register()}
               data-testid="firstName-input"
-              type="text"
               id="kc-firstname"
               name="firstName"
             />
@@ -335,10 +334,8 @@ export const UserForm = ({
             <KeycloakTextInput
               ref={register()}
               data-testid="lastName-input"
-              type="text"
               id="kc-lastname"
               name="lastName"
-              aria-label={t("lastName")}
             />
           </FormGroup>
         </>
@@ -356,7 +353,7 @@ export const UserForm = ({
         >
           <Switch
             data-testid="user-locked-switch"
-            id={"temporaryLocked"}
+            id="temporaryLocked"
             onChange={(value) => {
               unLockUser();
               setLocked(value);
