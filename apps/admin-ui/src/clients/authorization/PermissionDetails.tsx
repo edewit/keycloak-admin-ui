@@ -2,12 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom-v5-compat";
 import { useTranslation } from "react-i18next";
-import {
-  Controller,
-  FormProvider,
-  useForm,
-  useWatch,
-} from "react-hook-form-v7";
+import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import {
   ActionGroup,
   AlertVariant,
@@ -40,26 +35,17 @@ import { toUpperCase } from "../../util";
 import { KeycloakSpinner } from "../../components/keycloak-spinner/KeycloakSpinner";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
 import { KeycloakTextArea } from "../../components/keycloak-text-area/KeycloakTextArea";
-import { DecisionStrategy } from "@keycloak/keycloak-admin-client/lib/defs/policyRepresentation";
 
-type PermissionResource = PolicyRepresentation & {
-  resourceType: string;
-};
+const DECISION_STRATEGIES = ["UNANIMOUS", "AFFIRMATIVE", "CONSENSUS"] as const;
 
 export default function PermissionDetails() {
   const { t } = useTranslation("clients");
 
-  const form = useForm<PermissionResource>({
+  const form = useForm<PolicyRepresentation>({
     shouldUnregister: false,
     mode: "onChange",
   });
-  const {
-    register,
-    control,
-    reset,
-    formState: { errors },
-    handleSubmit,
-  } = form;
+  const { register, control, reset, errors, handleSubmit } = form;
 
   const navigate = useNavigate();
   const { id, realm, permissionType, permissionId, selectedId } = useParams<
@@ -119,7 +105,7 @@ export default function PermissionDetails() {
     []
   );
 
-  const onSubmit = async (permission: PermissionResource) => {
+  const save = async (permission: PolicyRepresentation) => {
     try {
       if (permissionId) {
         await adminClient.clients.updatePermission(
@@ -173,7 +159,7 @@ export default function PermissionDetails() {
     },
   });
 
-  const resourcesIds = useWatch({
+  const resourcesIds = useWatch<PolicyRepresentation["resources"]>({
     control,
     name: "resources",
     defaultValue: [],
@@ -210,7 +196,7 @@ export default function PermissionDetails() {
         <FormAccess
           isHorizontal
           role="view-clients"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(save)}
         >
           <FormProvider {...form}>
             <FormGroup
@@ -228,7 +214,8 @@ export default function PermissionDetails() {
             >
               <KeycloakTextInput
                 id="name"
-                {...register("name", { required: true })}
+                name="name"
+                ref={register({ required: true })}
                 validated={errors.name ? "error" : "default"}
               />
             </FormGroup>
@@ -246,7 +233,8 @@ export default function PermissionDetails() {
             >
               <KeycloakTextArea
                 id="description"
-                {...register("description", {
+                name="description"
+                ref={register({
                   maxLength: {
                     value: 255,
                     message: t("common:maxLength", { length: 255 }),
@@ -289,9 +277,8 @@ export default function PermissionDetails() {
               >
                 <KeycloakTextInput
                   id="resourceType"
-                  {...register("resourceType", {
-                    required: permissionType === "scope",
-                  })}
+                  name="resourceType"
+                  ref={register({ required: permissionType === "scope" })}
                 />
               </FormGroup>
             ) : (
@@ -375,18 +362,18 @@ export default function PermissionDetails() {
               <Controller
                 name="decisionStrategy"
                 data-testid="decisionStrategy"
-                defaultValue={DecisionStrategy.UNANIMOUS}
+                defaultValue={DECISION_STRATEGIES[0]}
                 control={control}
-                render={({ field }) => (
+                render={({ onChange, value }) => (
                   <>
-                    {Object.keys(DecisionStrategy).map((strategy) => (
+                    {DECISION_STRATEGIES.map((strategy) => (
                       <Radio
                         id={strategy}
                         key={strategy}
                         data-testid={strategy}
-                        isChecked={field.value === strategy}
+                        isChecked={value === strategy}
                         name="decisionStrategies"
-                        onChange={() => field.onChange(strategy)}
+                        onChange={() => onChange(strategy)}
                         label={t(`decisionStrategies.${strategy}`)}
                         className="pf-u-mb-md"
                       />

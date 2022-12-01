@@ -1,18 +1,18 @@
-import { useTranslation } from "react-i18next";
-import { useFormContext } from "react-hook-form-v7";
 import { FormGroup } from "@patternfly/react-core";
+import { useFormContext } from "react-hook-form-v7";
+import { useTranslation } from "react-i18next";
 
-import type { ClientSettingsProps } from "../ClientSettings";
-import { MultiLineInput } from "../../components/multi-line-input/MultiLineInput";
 import { FormAccess } from "../../components/form-access/FormAccess";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
-import { SaveReset } from "../advanced/SaveReset";
-import environment from "../../environment";
-import { useRealm } from "../../context/realm-context/RealmContext";
+import { MultiLineInput } from "../../components/multi-line-input/hook-form-v7/MultiLineInput";
 import { useAccess } from "../../context/access/Access";
+import { useRealm } from "../../context/realm-context/RealmContext";
+import environment from "../../environment";
 import { convertAttributeNameToForm } from "../../util";
+import { SaveReset } from "../advanced/SaveReset";
 import { FormFields } from "../ClientDetails";
+import type { ClientSettingsProps } from "../ClientSettings";
 
 export const AccessSettings = ({
   client,
