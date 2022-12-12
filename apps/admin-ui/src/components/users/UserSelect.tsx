@@ -114,7 +114,9 @@ export const UserSelect = ({
             }}
             onSelect={(_, v) => {
               const option = v.toString();
-              if (value.includes(option)) {
+              if (variant !== SelectVariant.typeaheadMulti) {
+                onChange([option]);
+              } else if (value.includes(option)) {
                 onChange(value.filter((item: string) => item !== option));
               } else {
                 onChange([...value, option]);
