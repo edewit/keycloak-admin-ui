@@ -6,8 +6,8 @@ import {
   TextInputProps,
 } from "@patternfly/react-core";
 import { MinusCircleIcon, PlusCircleIcon } from "@patternfly/react-icons";
-import { Fragment, useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form-v7";
+import { Fragment, useEffect, useMemo } from "react";
+import { useFormContext, useWatch } from "react-hook-form-v7";
 import { useTranslation } from "react-i18next";
 
 function stringToMultiline(value?: string): string[] {
@@ -42,9 +42,23 @@ export const MultiLineInput = ({
   ...rest
 }: MultiLineInputProps) => {
   const { t } = useTranslation();
-  const { register, setValue, getValues } = useFormContext();
+  const { register, setValue, control } = useFormContext();
+  const value = useWatch({
+    name,
+    control,
+    defaultValue: defaultValue || "",
+  });
 
-  const [fields, setFields] = useState<IdValue[]>([]);
+  const fields = useMemo<IdValue[]>(() => {
+    let values = stringify ? stringToMultiline(value as string) : value;
+
+    values =
+      Array.isArray(values) && values.length !== 0
+        ? values
+        : defaultValue || [""];
+
+    return values.map((value: string) => ({ value, id: generateId() }));
+  }, [value]);
 
   const remove = (index: number) => {
     update([...fields.slice(0, index), ...fields.slice(index + 1)]);
@@ -63,24 +77,15 @@ export const MultiLineInput = ({
   };
 
   const update = (values: IdValue[]) => {
-    setFields(values);
     const fieldValue = values.flatMap((field) => field.value);
-    setValue(name, stringify ? toStringValue(fieldValue) : fieldValue);
+    setValue(name, stringify ? toStringValue(fieldValue) : fieldValue, {
+      shouldDirty: true,
+    });
   };
 
   useEffect(() => {
     register(name);
-    let values = stringify
-      ? stringToMultiline(getValues(name))
-      : getValues(name);
-
-    values =
-      Array.isArray(values) && values.length !== 0
-        ? values
-        : defaultValue || [""];
-
-    setFields(values.map((value: string) => ({ value, id: generateId() })));
-  }, [register, getValues]);
+  }, [register]);
 
   return (
     <>
