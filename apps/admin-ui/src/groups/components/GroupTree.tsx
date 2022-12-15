@@ -133,7 +133,6 @@ export const GroupTree = ({ refresh: viewRefresh }: GroupTreeProps) => {
       name: (
         <Tooltip content={group.name}>
           <Link
-            key={group.id}
             to={`/${realm}/groups/${joinPath(...groups.map((g) => g.id!))}`}
             onClick={() => setSubGroups(groups)}
           >
