@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom-v5-compat";
 import { useTranslation } from "react-i18next";
 import { AlertVariant, Button, ButtonVariant } from "@patternfly/react-core";
 
-import { useAdminClient, useFetch } from "../context/auth/AdminClient";
+import { useAdminClient } from "../context/auth/AdminClient";
 import type RoleRepresentation from "@keycloak/keycloak-admin-client/lib/defs/roleRepresentation";
 import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
 import { KeycloakSpinner } from "../components/keycloak-spinner/KeycloakSpinner";
@@ -13,7 +13,6 @@ import { useAlerts } from "../components/alert/Alerts";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { emptyFormatter, upperCaseFormatter } from "../util";
 import { useRealm } from "../context/realm-context/RealmContext";
-import type RealmRepresentation from "@keycloak/keycloak-admin-client/lib/defs/realmRepresentation";
 import { HelpItem } from "../components/help-enabler/HelpItem";
 import { ClientParams, ClientRoute } from "../clients/routes/Client";
 import { toClientRole } from "./routes/ClientRole";
@@ -60,26 +59,20 @@ export const RolesList = ({
   const { adminClient } = useAdminClient();
   const { addAlert, addError } = useAlerts();
   const { url } = useRouteMatch();
-  const { realm: realmName } = useRealm();
-  const [realm, setRealm] = useState<RealmRepresentation>();
+  const { realmRepresentation: realm } = useRealm();
 
   const [selectedRole, setSelectedRole] = useState<RoleRepresentation>();
 
-  useFetch(
-    () => adminClient.realms.findOne({ realm: realmName }),
-    (realm) => {
-      setRealm(realm);
-    },
-    []
-  );
-
   const RoleDetailLink = (role: RoleRepresentation) =>
-    role.name !== realm?.defaultRole?.name ? (
+    role.name !== realm.defaultRole?.name ? (
       <RoleLink role={role}>{role.name}</RoleLink>
     ) : (
       <>
         <Link
-          to={toRealmSettings({ realm: realmName, tab: "user-registration" })}
+          to={toRealmSettings({
+            realm: realm.realm!,
+            tab: "user-registration",
+          })}
         >
           {role.name}{" "}
         </Link>

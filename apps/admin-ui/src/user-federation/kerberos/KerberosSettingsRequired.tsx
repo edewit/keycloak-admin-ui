@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FormGroup,
   Select,
@@ -16,7 +16,6 @@ import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { isEqual } from "lodash-es";
 import { WizardSectionHeader } from "../../components/wizard-section-header/WizardSectionHeader";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
-import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 
 export type KerberosSettingsRequiredProps = {
   form: UseFormMethods;
@@ -32,8 +31,7 @@ export const KerberosSettingsRequired = ({
   const { t } = useTranslation("user-federation");
   const { t: helpText } = useTranslation("user-federation-help");
 
-  const { adminClient } = useAdminClient();
-  const { realm } = useRealm();
+  const { realm, realmRepresentation } = useRealm();
 
   const [isEditModeDropdownOpen, setIsEditModeDropdownOpen] = useState(false);
 
@@ -42,10 +40,9 @@ export const KerberosSettingsRequired = ({
     name: "config.allowPasswordAuthentication",
   });
 
-  useFetch(
-    () => adminClient.realms.findOne({ realm }),
-    (result) => form.setValue("parentId", result!.id),
-    []
+  useEffect(
+    () => form.setValue("parentId", realmRepresentation.id),
+    [form, realmRepresentation]
   );
 
   return (

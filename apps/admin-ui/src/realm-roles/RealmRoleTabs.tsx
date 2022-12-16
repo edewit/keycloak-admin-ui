@@ -1,4 +1,3 @@
-import type RealmRepresentation from "@keycloak/keycloak-admin-client/lib/defs/realmRepresentation";
 import type RoleRepresentation from "@keycloak/keycloak-admin-client/lib/defs/roleRepresentation";
 import {
   AlertVariant,
@@ -25,7 +24,6 @@ import {
   arrayToKeyValue,
   keyValueToArray,
 } from "../components/key-value-form/key-value-convert";
-import { KeycloakSpinner } from "../components/keycloak-spinner/KeycloakSpinner";
 import { KeycloakTabs } from "../components/keycloak-tabs/KeycloakTabs";
 import { PermissionsTab } from "../components/permission-tab/PermissionTab";
 import { AddRoleMappingModal } from "../components/role-mapping/AddRoleMappingModal";
@@ -59,7 +57,7 @@ export default function RealmRoleTabs() {
 
   const { url } = useRouteMatch();
 
-  const { realm: realmName } = useRealm();
+  const { realmRepresentation: realm } = useRealm();
 
   const [key, setKey] = useState(0);
 
@@ -80,23 +78,17 @@ export default function RealmRoleTabs() {
     };
   };
 
-  const [realm, setRealm] = useState<RealmRepresentation>();
-
   useFetch(
-    async () => {
-      const realm = await adminClient.realms.findOne({ realm: realmName });
-      if (!id) {
-        return { realm };
+    () => {
+      if (id) {
+        return adminClient.roles.findOneById({ id });
       }
-      const role = await adminClient.roles.findOneById({ id });
-      return { realm, role };
+      return Promise.resolve(undefined);
     },
-    ({ realm, role }) => {
-      if (!realm || (!role && id)) {
+    (role) => {
+      if (!role && id) {
         throw new Error(t("common:notFound"));
       }
-
-      setRealm(realm);
 
       if (role) {
         const convertedRole = convert(role);
@@ -291,7 +283,7 @@ export default function RealmRoleTabs() {
           tab: "details",
         })
       : toRealmRole({
-          realm: realm?.realm!,
+          realm: realm.realm!,
           id,
           tab: "details",
         });
@@ -305,7 +297,7 @@ export default function RealmRoleTabs() {
           tab: "associated-roles",
         })
       : toRealmRole({
-          realm: realm?.realm!,
+          realm: realm.realm!,
           id,
           tab: "associated-roles",
         });
@@ -326,11 +318,8 @@ export default function RealmRoleTabs() {
     }
   };
 
-  const isDefaultRole = (name: string) => realm?.defaultRole!.name === name;
+  const isDefaultRole = (name: string) => realm.defaultRole!.name === name;
 
-  if (!realm) {
-    return <KeycloakSpinner />;
-  }
   if (!role) {
     return (
       <RealmRoleForm

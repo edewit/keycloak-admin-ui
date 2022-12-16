@@ -33,7 +33,6 @@ import type { IRowData } from "@patternfly/react-table";
 
 import type ComponentRepresentation from "@keycloak/keycloak-admin-client/lib/defs/componentRepresentation";
 import type UserRepresentation from "@keycloak/keycloak-admin-client/lib/defs/userRepresentation";
-import type RealmRepresentation from "@keycloak/keycloak-admin-client/lib/defs/realmRepresentation";
 import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 import { useAlerts } from "../components/alert/Alerts";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
@@ -62,12 +61,11 @@ export default function UsersSection() {
   const { t } = useTranslation("users");
   const { adminClient } = useAdminClient();
   const { addAlert, addError } = useAlerts();
-  const { realm: realmName } = useRealm();
+  const { realm: realmName, realmRepresentation: realm } = useRealm();
   const history = useHistory();
   const navigate = useNavigate();
   const [userStorage, setUserStorage] = useState<ComponentRepresentation[]>();
   const [searchUser, setSearchUser] = useState<string>();
-  const [realm, setRealm] = useState<RealmRepresentation | undefined>();
   const [kebabOpen, setKebabOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<UserRepresentation[]>([]);
   const { profileInfo } = useServerInfo();
@@ -85,21 +83,12 @@ export default function UsersSection() {
       };
 
       try {
-        return await Promise.all([
-          adminClient.components.find(testParams),
-          adminClient.realms.findOne({ realm: realmName }),
-        ]);
+        return await adminClient.components.find(testParams);
       } catch {
-        return [[], {}] as [
-          ComponentRepresentation[],
-          RealmRepresentation | undefined
-        ];
+        return [] as ComponentRepresentation[];
       }
     },
-    ([storageProviders, realm]) => {
-      setUserStorage(storageProviders);
-      setRealm(realm);
-    },
+    setUserStorage,
     []
   );
 
@@ -213,7 +202,7 @@ export default function UsersSection() {
 
   const goToCreate = () => navigate(toAddUser({ realm: realmName }));
 
-  if (!userStorage || !realm) {
+  if (!userStorage) {
     return <KeycloakSpinner />;
   }
 

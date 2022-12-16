@@ -26,7 +26,6 @@ import { KeycloakTextInput } from "../components/keycloak-text-input/KeycloakTex
 import { emailRegexPattern } from "../util";
 import useFormatDate from "../utils/useFormatDate";
 import { GroupPickerDialog } from "../components/group/GroupPickerDialog";
-import type RealmRepresentation from "@keycloak/keycloak-admin-client/lib/defs/realmRepresentation";
 import type RequiredActionProviderRepresentation from "@keycloak/keycloak-admin-client/lib/defs/requiredActionProviderRepresentation";
 import { useAccess } from "../context/access/Access";
 import useIsFeatureEnabled, { Feature } from "../utils/useIsFeatureEnabled";
@@ -55,7 +54,7 @@ export const UserForm = ({
   onGroupsUpdate,
 }: UserFormProps) => {
   const { t } = useTranslation("users");
-  const { realm: realmName } = useRealm();
+  const { realmRepresentation: realm } = useRealm();
   const formatDate = useFormatDate();
   const isFeatureEnabled = useIsFeatureEnabled();
 
@@ -83,24 +82,13 @@ export const UserForm = ({
   );
   const [open, setOpen] = useState(false);
   const [locked, setLocked] = useState(isLocked);
-  const [realm, setRealm] = useState<RealmRepresentation>();
   const [requiredActions, setRequiredActions] = useState<
     RequiredActionProviderRepresentation[]
   >([]);
 
   useFetch(
-    () =>
-      Promise.all([
-        adminClient.realms.findOne({ realm: realmName }),
-        adminClient.authenticationManagement.getRequiredActions(),
-      ]),
-    ([realm, actions]) => {
-      if (!realm) {
-        throw new Error(t("common:notFound"));
-      }
-      setRealm(realm);
-      setRequiredActions(actions);
-    },
+    () => adminClient.authenticationManagement.getRequiredActions(),
+    setRequiredActions,
     []
   );
 
@@ -257,11 +245,11 @@ export const UserForm = ({
         </FormGroup>
       )}
       {isFeatureEnabled(Feature.DeclarativeUserProfile) &&
-      realm?.attributes?.userProfileEnabled === "true" ? (
+      realm.attributes?.userProfileEnabled === "true" ? (
         <UserProfileFields />
       ) : (
         <>
-          {!realm?.registrationEmailAsUsername && (
+          {!realm.registrationEmailAsUsername && (
             <FormGroup
               label={t("username")}
               fieldId="kc-username"
@@ -276,8 +264,8 @@ export const UserForm = ({
                 name="username"
                 isReadOnly={
                   !!user?.id &&
-                  !realm?.editUsernameAllowed &&
-                  realm?.editUsernameAllowed !== undefined
+                  !realm.editUsernameAllowed &&
+                  realm.editUsernameAllowed !== undefined
                 }
               />
             </FormGroup>
@@ -426,7 +414,7 @@ export const UserForm = ({
           isDisabled={
             !user?.id &&
             !watchUsernameInput &&
-            !realm?.registrationEmailAsUsername
+            !realm.registrationEmailAsUsername
           }
           variant="primary"
           type="submit"
@@ -436,7 +424,7 @@ export const UserForm = ({
         <Button
           data-testid="cancel-create-user"
           onClick={() =>
-            user?.id ? reset(user) : navigate(`/${realmName}/users`)
+            user?.id ? reset(user) : navigate(`/${realm.realm}/users`)
           }
           variant="link"
         >

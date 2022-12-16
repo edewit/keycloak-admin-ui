@@ -38,7 +38,7 @@ export const UserIdentityProviderLinks = ({
   const [isLinkIdPModalOpen, setIsLinkIdPModalOpen] = useState(false);
 
   const { adminClient } = useAdminClient();
-  const { realm } = useRealm();
+  const { realmRepresentation: realm } = useRealm();
   const { addAlert, addError } = useAlerts();
   const { t } = useTranslation("users");
 
@@ -65,10 +65,6 @@ export const UserIdentityProviderLinks = ({
     return allFedIds;
   };
 
-  const getAvailableIdPs = async () => {
-    return (await adminClient.realms.findOne({ realm }))!.identityProviders;
-  };
-
   const linkedIdPsLoader = async () => {
     return getFederatedIdentities();
   };
@@ -78,7 +74,7 @@ export const UserIdentityProviderLinks = ({
       (x) => x.identityProvider
     );
 
-    return (await getAvailableIdPs())?.filter(
+    return realm.identityProviders!.filter(
       (item) => !linkedNames.includes(item.alias)
     )!;
   };
@@ -110,7 +106,7 @@ export const UserIdentityProviderLinks = ({
     return (
       <Link
         to={toIdentityProvider({
-          realm,
+          realm: realm.realm!,
           providerId: idp.providerId,
           alias: idp.identityProvider!,
           tab: "settings",

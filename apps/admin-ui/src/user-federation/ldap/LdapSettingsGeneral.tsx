@@ -5,7 +5,7 @@ import {
   SelectVariant,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { UseFormMethods, Controller } from "react-hook-form";
 import { FormAccess } from "../../components/form-access/FormAccess";
@@ -13,7 +13,6 @@ import { useRealm } from "../../context/realm-context/RealmContext";
 
 import { WizardSectionHeader } from "../../components/wizard-section-header/WizardSectionHeader";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
-import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 
 export type LdapSettingsGeneralProps = {
   form: UseFormMethods;
@@ -31,13 +30,11 @@ export const LdapSettingsGeneral = ({
   const { t } = useTranslation("user-federation");
   const { t: helpText } = useTranslation("user-federation-help");
 
-  const { adminClient } = useAdminClient();
-  const { realm } = useRealm();
+  const { realm, realmRepresentation } = useRealm();
 
-  useFetch(
-    () => adminClient.realms.findOne({ realm }),
-    (result) => form.setValue("parentId", result!.id),
-    []
+  useEffect(
+    () => form.setValue("parentId", realmRepresentation.id),
+    [form, realmRepresentation]
   );
   const [isVendorDropdownOpen, setIsVendorDropdownOpen] = useState(false);
 

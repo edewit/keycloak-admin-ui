@@ -44,7 +44,7 @@ const UsersTabs = () => {
   const { t } = useTranslation("users");
   const { addAlert, addError } = useAlerts();
   const navigate = useNavigate();
-  const { realm } = useRealm();
+  const { realmRepresentation: realm } = useRealm();
   const { hasAccess } = useAccess();
   const history = useHistory();
 
@@ -65,9 +65,7 @@ const UsersTabs = () => {
           throw new Error(t("common:notFound"));
         }
 
-        const isBruteForceProtected = (await adminClient.realms.findOne({
-          realm,
-        }))!.bruteForceProtected;
+        const isBruteForceProtected = realm.bruteForceProtected;
         const bruteForce = await adminClient.attackDetection.findOne({
           id: user.id!,
         });
@@ -114,7 +112,9 @@ const UsersTabs = () => {
         });
 
         addAlert(t("userCreated"), AlertVariant.success);
-        navigate(toUser({ id: createdUser.id, realm, tab: "settings" }));
+        navigate(
+          toUser({ id: createdUser.id, realm: realm.realm!, tab: "settings" })
+        );
       }
     } catch (error) {
       addError("users:userCreateError", error);
@@ -130,7 +130,7 @@ const UsersTabs = () => {
       try {
         await adminClient.users.del({ id });
         addAlert(t("userDeletedSuccess"), AlertVariant.success);
-        navigate(toUsers({ realm }));
+        navigate(toUsers({ realm: realm.realm! }));
       } catch (error) {
         addError("users:userDeletedError", error);
       }
@@ -145,7 +145,7 @@ const UsersTabs = () => {
       try {
         const data = await adminClient.users.impersonation(
           { id },
-          { user: id, realm }
+          { user: id, realm: realm.realm! }
         );
         if (data.sameRealm) {
           window.location = data.redirect;
@@ -164,7 +164,7 @@ const UsersTabs = () => {
 
   const toTab = (tab: UserTab) =>
     toUser({
-      realm,
+      realm: realm.realm!,
       id,
       tab,
     });

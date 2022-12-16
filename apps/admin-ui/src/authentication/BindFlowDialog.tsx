@@ -33,16 +33,14 @@ export const BindFlowDialog = ({ flowAlias, onClose }: BindFlowDialogProps) => {
   const { control, handleSubmit } = useForm<BindingForm>();
   const { adminClient } = useAdminClient();
   const { addAlert, addError } = useAlerts();
-  const { realm } = useRealm();
+  const { realm, realmRepresentation } = useRealm();
   const [open, toggleOpen] = useToggle();
 
   const onSubmit = async ({ bindingType }: BindingForm) => {
-    const realmRep = await adminClient.realms.findOne({ realm });
-
     try {
       await adminClient.realms.update(
         { realm },
-        { ...realmRep, [bindingType]: flowAlias }
+        { ...realmRepresentation, [bindingType]: flowAlias }
       );
       addAlert(t("updateFlowSuccess"), AlertVariant.success);
     } catch (error) {

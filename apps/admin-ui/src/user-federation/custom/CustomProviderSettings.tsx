@@ -6,7 +6,6 @@ import {
   FormGroup,
   PageSection,
 } from "@patternfly/react-core";
-import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom-v5-compat";
@@ -48,8 +47,8 @@ export default function CustomProviderSettings() {
 
   const { adminClient } = useAdminClient();
   const { addAlert, addError } = useAlerts();
-  const { realm: realmName } = useRealm();
-  const [parentId, setParentId] = useState("");
+  const { realm, realmRepresentation } = useRealm();
+  const parentId = realmRepresentation.id!;
 
   const provider = (
     useServerInfo().componentTypes?.[
@@ -74,15 +73,6 @@ export default function CustomProviderSettings() {
     []
   );
 
-  useFetch(
-    () =>
-      adminClient.realms.findOne({
-        realm: realmName,
-      }),
-    (realm) => setParentId(realm?.id!),
-    []
-  );
-
   const save = async (component: ComponentRepresentation) => {
     const saveComponent = convertFormValuesToObject({
       ...component,
@@ -100,7 +90,7 @@ export default function CustomProviderSettings() {
     try {
       if (!id) {
         await adminClient.components.create(saveComponent);
-        navigate(toUserFederation({ realm: realmName }));
+        navigate(toUserFederation({ realm }));
       } else {
         await adminClient.components.update({ id }, saveComponent);
       }
@@ -163,7 +153,7 @@ export default function CustomProviderSettings() {
             <Button
               variant="link"
               component={(props) => (
-                <Link {...props} to={toUserFederation({ realm: realmName })} />
+                <Link {...props} to={toUserFederation({ realm })} />
               )}
               data-testid="custom-cancel"
             >
