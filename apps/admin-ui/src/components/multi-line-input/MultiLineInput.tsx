@@ -18,13 +18,6 @@ function toStringValue(formValue: string[]): string {
   return formValue.join("##");
 }
 
-type IdValue = {
-  id: number;
-  value: string;
-};
-
-const generateId = () => Math.floor(Math.random() * 1000);
-
 export type MultiLineInputProps = Omit<TextInputProps, "form"> & {
   name: string;
   addButtonLabel?: string;
@@ -49,7 +42,7 @@ export const MultiLineInput = ({
     defaultValue: defaultValue || "",
   });
 
-  const fields = useMemo<IdValue[]>(() => {
+  const fields = useMemo<string[]>(() => {
     let values = stringify ? stringToMultiline(value as string) : value;
 
     values =
@@ -57,7 +50,7 @@ export const MultiLineInput = ({
         ? values
         : defaultValue || [""];
 
-    return values.map((value: string) => ({ value, id: generateId() }));
+    return values;
   }, [value]);
 
   const remove = (index: number) => {
@@ -65,19 +58,15 @@ export const MultiLineInput = ({
   };
 
   const append = () => {
-    update([...fields, { id: generateId(), value: "" }]);
+    update([...fields, ""]);
   };
 
   const updateValue = (index: number, value: string) => {
-    update([
-      ...fields.slice(0, index),
-      { ...fields[index], value },
-      ...fields.slice(index + 1),
-    ]);
+    update([...fields.slice(0, index), value, ...fields.slice(index + 1)]);
   };
 
-  const update = (values: IdValue[]) => {
-    const fieldValue = values.flatMap((field) => field.value);
+  const update = (values: string[]) => {
+    const fieldValue = values.flatMap((field) => field);
     setValue(name, stringify ? toStringValue(fieldValue) : fieldValue, {
       shouldDirty: true,
     });
@@ -89,8 +78,8 @@ export const MultiLineInput = ({
 
   return (
     <>
-      {fields.map(({ id, value }, index) => (
-        <Fragment key={id}>
+      {fields.map((value, index) => (
+        <Fragment key={index}>
           <InputGroup>
             <TextInput
               data-testid={name + index}
