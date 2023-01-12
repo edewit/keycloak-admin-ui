@@ -195,6 +195,10 @@ const EditUserForm = ({ user, bruteForced, refresh }: EditUserFormProps) => {
             {t("common:delete")}
           </DropdownItem>,
         ]}
+        onToggle={async (value) => {
+          await save({ ...user, enabled: value });
+        }}
+        isEnabled={user.enabled}
       />
 
       <PageSection variant="light" className="pf-u-p-0">
