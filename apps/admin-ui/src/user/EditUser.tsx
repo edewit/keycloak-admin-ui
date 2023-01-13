@@ -195,9 +195,7 @@ const EditUserForm = ({ user, bruteForced, refresh }: EditUserFormProps) => {
             {t("common:delete")}
           </DropdownItem>,
         ]}
-        onToggle={async (value) => {
-          await save({ ...user, enabled: value });
-        }}
+        onToggle={(value) => save({ ...user, enabled: value })}
         isEnabled={user.enabled}
       />
 
