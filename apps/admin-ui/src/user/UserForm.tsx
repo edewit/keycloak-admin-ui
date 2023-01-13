@@ -68,7 +68,6 @@ const EmailVerified = () => {
           <Switch
             data-testid="email-verified-switch"
             id="kc-user-email-verified"
-            isDisabled={false}
             onChange={(value) => onChange(value)}
             isChecked={value}
             label={t("common:yes")}
