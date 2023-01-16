@@ -69,6 +69,7 @@ export const LoginSettings = ({
         }
       >
         <MultiLineInput
+          id="kc-redirect"
           name="redirectUris"
           aria-label={t("validRedirectUri")}
           addButtonLabel="clients:addRedirectUri"
@@ -85,6 +86,7 @@ export const LoginSettings = ({
         }
       >
         <MultiLineInput
+          id="kc-postLogoutRedirect"
           name={convertAttributeNameToForm(
             "attributes.post.logout.redirect.uris"
           )}
@@ -164,6 +166,7 @@ export const LoginSettings = ({
           }
         >
           <MultiLineInput
+            id="kc-web-origins"
             name="webOrigins"
             aria-label={t("webOrigins")}
             addButtonLabel="clients:addWebOrigins"
