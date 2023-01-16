@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Controller, useFormContext } from "react-hook-form";
 import {
   FormGroup,
   Select,
   SelectOption,
   SelectVariant,
 } from "@patternfly/react-core";
+import { useState } from "react";
+import { Controller, useFormContext } from "react-hook-form-v7";
+import { useTranslation } from "react-i18next";
 
 import type AuthenticationFlowRepresentation from "@keycloak/keycloak-admin-client/lib/defs/authenticationFlowRepresentation";
-import { useFetch, useAdminClient } from "../../context/auth/AdminClient";
+import { HelpItem } from "../../components/help-enabler/HelpItem";
+import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
+import type { FieldProps } from "../component/FormGroupField";
 import { SwitchField } from "../component/SwitchField";
 import { TextField } from "../component/TextField";
-import { HelpItem } from "../../components/help-enabler/HelpItem";
-import type { FieldProps } from "../component/FormGroupField";
 
 const LoginFlow = ({
   field,
@@ -49,42 +49,38 @@ const LoginFlow = ({
         name={field}
         defaultValue={defaultValue}
         control={control}
-        render={({ onChange, value }) => (
+        render={({ field }) => (
           <Select
             toggleId={label}
             required
             onToggle={() => setOpen(!open)}
             onSelect={(_, value) => {
-              onChange(value as string);
+              field.onChange(value as string);
               setOpen(false);
             }}
-            selections={value || t("common:none")}
+            selections={field.value || t("common:none")}
             variant={SelectVariant.single}
             aria-label={t(label)}
             isOpen={open}
           >
-            {/* The type for the children of Select are incorrect, so we need a fragment here. */}
-            {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
-            <>
-              {defaultValue === "" && (
-                <SelectOption key="empty" value={defaultValue}>
-                  {t("common:none")}
-                </SelectOption>
-              )}
-            </>
-            {/* The type for the children of Select are incorrect, so we need a fragment here. */}
-            {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
-            <>
-              {flows?.map((option) => (
+            {[
+              ...(defaultValue === ""
+                ? [
+                    <SelectOption key="empty" value="">
+                      {t("common:none")}
+                    </SelectOption>,
+                  ]
+                : []),
+              ...(flows?.map((option) => (
                 <SelectOption
-                  selected={option.alias === value}
+                  selected={option.alias === field.value}
                   key={option.id}
                   value={option.alias}
                 >
                   {option.alias}
                 </SelectOption>
-              ))}
-            </>
+              )) || []),
+            ]}
           </Select>
         )}
       />
@@ -155,24 +151,24 @@ export const AdvancedSettings = ({ isOIDC, isSAML }: AdvancedSettingsProps) => {
           name="config.syncMode"
           defaultValue={syncModes[0].toUpperCase()}
           control={control}
-          render={({ onChange, value }) => (
+          render={({ field }) => (
             <Select
               toggleId="syncMode"
               required
               direction="up"
               onToggle={() => setSyncModeOpen(!syncModeOpen)}
               onSelect={(_, value) => {
-                onChange(value as string);
+                field.onChange(value as string);
                 setSyncModeOpen(false);
               }}
-              selections={t(`syncModes.${value.toLowerCase()}`)}
+              selections={t(`syncModes.${field.value.toLowerCase()}`)}
               variant={SelectVariant.single}
               aria-label={t("syncMode")}
               isOpen={syncModeOpen}
             >
               {syncModes.map((option) => (
                 <SelectOption
-                  selected={option === value}
+                  selected={option === field.value}
                   key={option}
                   value={option.toUpperCase()}
                 >

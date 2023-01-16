@@ -10,11 +10,17 @@ import {
 } from "@patternfly/react-core";
 import { omit } from "lodash-es";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useRouteMatch } from "react-router-dom";
-import { useNavigate } from "react-router-dom-v5-compat";
+import { useLocation, useMatch, useNavigate } from "react-router-dom-v5-compat";
 
+import { toClient } from "../clients/routes/Client";
+import {
+  ClientRoleParams,
+  ClientRoleRoute,
+  ClientRoleTab,
+  toClientRole,
+} from "../clients/routes/ClientRole";
 import { useAlerts } from "../components/alert/Alerts";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import {
@@ -26,22 +32,21 @@ import {
   keyValueToArray,
 } from "../components/key-value-form/key-value-convert";
 import { KeycloakSpinner } from "../components/keycloak-spinner/KeycloakSpinner";
-import { KeycloakTabs } from "../components/keycloak-tabs/KeycloakTabs";
 import { PermissionsTab } from "../components/permission-tab/PermissionTab";
+import { RoleForm } from "../components/role-form/RoleForm";
 import { AddRoleMappingModal } from "../components/role-mapping/AddRoleMappingModal";
 import { RoleMapping } from "../components/role-mapping/RoleMapping";
+import {
+  RoutableTabs,
+  useRoutableTab,
+} from "../components/routable-tabs/RoutableTabs";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { useAdminClient, useFetch } from "../context/auth/AdminClient";
 import { useRealm } from "../context/realm-context/RealmContext";
 import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 import { useParams } from "../utils/useParams";
-import { RealmRoleForm } from "./RealmRoleForm";
-import {
-  ClientRoleParams,
-  ClientRoleRoute,
-  toClientRole,
-} from "./routes/ClientRole";
-import { toRealmRole } from "./routes/RealmRole";
+import { RealmRoleRoute, RealmRoleTab, toRealmRole } from "./routes/RealmRole";
+import { toRealmRoles } from "./routes/RealmRoles";
 import { UsersInRoleTab } from "./UsersInRoleTab";
 
 export default function RealmRoleTabs() {
@@ -49,15 +54,14 @@ export default function RealmRoleTabs() {
   const form = useForm<AttributeForm>({
     mode: "onChange",
   });
-  const { setValue, getValues, trigger, reset } = form;
+  const { setValue, reset } = form;
   const navigate = useNavigate();
 
   const { adminClient } = useAdminClient();
   const [role, setRole] = useState<AttributeForm>();
 
-  const { id, clientId } = useParams<{ id: string; clientId: string }>();
-
-  const { url } = useRouteMatch();
+  const { id, clientId } = useParams<ClientRoleParams>();
+  const { pathname } = useLocation();
 
   const { realm: realmName } = useRealm();
 
@@ -84,106 +88,115 @@ export default function RealmRoleTabs() {
 
   useFetch(
     async () => {
-      const realm = await adminClient.realms.findOne({ realm: realmName });
-      if (!id) {
-        return { realm };
-      }
-      const role = await adminClient.roles.findOneById({ id });
+      const [realm, role] = await Promise.all([
+        adminClient.realms.findOne({ realm: realmName }),
+        adminClient.roles.findOneById({ id }),
+      ]);
+
       return { realm, role };
     },
     ({ realm, role }) => {
-      if (!realm || (!role && id)) {
+      if (!realm || !role) {
         throw new Error(t("common:notFound"));
       }
 
-      setRealm(realm);
+      const convertedRole = convert(role);
 
-      if (role) {
-        const convertedRole = convert(role);
-        setRole(convertedRole);
-        Object.entries(convertedRole).map((entry) => {
-          setValue(entry[0], entry[1]);
-        });
-      }
+      reset(convertedRole);
+      setRealm(realm);
+      setRole(convertedRole);
     },
-    [key, url]
+    [key]
   );
 
-  const save = async () => {
+  const onSubmit: SubmitHandler<AttributeForm> = async (formValues) => {
     try {
-      const values = getValues();
       if (
-        values.attributes &&
-        values.attributes[values.attributes.length - 1]?.key === ""
+        formValues.attributes &&
+        formValues.attributes[formValues.attributes.length - 1]?.key === ""
       ) {
         setValue(
           "attributes",
-          values.attributes.slice(0, values.attributes.length - 1)
+          formValues.attributes.slice(0, formValues.attributes.length - 1)
         );
       }
-      if (!(await trigger())) {
-        return;
-      }
-      const { attributes, ...rest } = values;
+
+      const { attributes, ...rest } = formValues;
       let roleRepresentation: RoleRepresentation = rest;
 
       roleRepresentation.name = roleRepresentation.name?.trim();
 
-      if (id) {
-        if (attributes) {
-          roleRepresentation.attributes = keyValueToArray(attributes);
-        }
-        roleRepresentation = {
-          ...omit(role!, "attributes"),
-          ...roleRepresentation,
-        };
-        if (!clientId) {
-          await adminClient.roles.updateById({ id }, roleRepresentation);
-        } else {
-          await adminClient.clients.updateRole(
-            { id: clientId, roleName: values.name! },
-            roleRepresentation
-          );
-        }
-
-        setRole(convert(roleRepresentation));
+      if (attributes) {
+        roleRepresentation.attributes = keyValueToArray(attributes);
+      }
+      roleRepresentation = {
+        ...omit(role!, "attributes"),
+        ...roleRepresentation,
+      };
+      if (!clientId) {
+        await adminClient.roles.updateById({ id }, roleRepresentation);
       } else {
-        let createdRole;
-        if (!clientId) {
-          await adminClient.roles.create(roleRepresentation);
-          createdRole = await adminClient.roles.findOneByName({
-            name: values.name!,
-          });
-        } else {
-          await adminClient.clients.createRole({
-            id: clientId,
-            name: values.name,
-          });
-          if (values.description) {
-            await adminClient.clients.updateRole(
-              { id: clientId, roleName: values.name! },
-              roleRepresentation
-            );
-          }
-          createdRole = await adminClient.clients.findRole({
-            id: clientId,
-            roleName: values.name!,
-          });
-        }
-        if (!createdRole) {
-          throw new Error(t("common:notFound"));
-        }
-
-        setRole(convert(createdRole));
-        navigate(
-          url.substr(0, url.lastIndexOf("/") + 1) + createdRole.id + "/details"
+        await adminClient.clients.updateRole(
+          { id: clientId, roleName: formValues.name! },
+          roleRepresentation
         );
       }
-      addAlert(t(id ? "roleSaveSuccess" : "roleCreated"), AlertVariant.success);
+
+      setRole(convert(roleRepresentation));
+      addAlert(t("roleSaveSuccess"), AlertVariant.success);
     } catch (error) {
-      addError(`roles:${id ? "roleSave" : "roleCreate"}Error`, error);
+      addError("roles:roleSaveError", error);
     }
   };
+
+  const realmRoleMatch = useMatch(RealmRoleRoute.path);
+  const clientRoleMatch = useMatch(ClientRoleRoute.path);
+
+  const toOverview = () => {
+    if (realmRoleMatch) {
+      return toRealmRoles({ realm: realmName });
+    }
+
+    if (clientRoleMatch) {
+      return toClient({
+        realm: realmName,
+        clientId: clientRoleMatch.params.clientId!,
+        tab: "roles",
+      });
+    }
+
+    throw new Error("Roles overview route could not be determined.");
+  };
+
+  const toTab = (tab: RealmRoleTab | ClientRoleTab) => {
+    if (realmRoleMatch) {
+      return toRealmRole({
+        realm: realmName,
+        id,
+        tab,
+      });
+    }
+
+    if (clientRoleMatch) {
+      return toClientRole({
+        realm: realmName,
+        id,
+        clientId: clientRoleMatch.params.clientId!,
+        tab: tab as ClientRoleTab,
+      });
+    }
+
+    throw new Error("Route could not be determined.");
+  };
+
+  const useTab = (tab: RealmRoleTab | ClientRoleTab) =>
+    useRoutableTab(toTab(tab));
+
+  const detailsTab = useTab("details");
+  const associatedRolesTab = useTab("associated-roles");
+  const attributesTab = useTab("attributes");
+  const usersInRoleTab = useTab("users-in-role");
+  const permissionsTab = useTab("permissions");
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: "roles:roleDeleteConfirm",
@@ -199,18 +212,18 @@ export default function RealmRoleTabs() {
         } else {
           await adminClient.clients.delRole({
             id: clientId,
-            roleName: role!.name as string,
+            roleName: role!.name!,
           });
         }
         addAlert(t("roleDeletedSuccess"), AlertVariant.success);
-        navigate(url.substr(0, url.indexOf("/roles") + "/roles".length));
+        navigate(toOverview());
       } catch (error) {
         addError("roles:roleDeleteError", error);
       }
     },
   });
 
-  const dropdownItems = url.includes("associated-roles")
+  const dropdownItems = pathname.includes("associated-roles")
     ? [
         <DropdownItem
           key="delete-all-associated"
@@ -268,7 +281,7 @@ export default function RealmRoleTabs() {
           AlertVariant.success,
           t("compositesRemovedAlertDescription")
         );
-        toDetail();
+        navigate(toTab("details"));
         refresh();
       } catch (error) {
         addError("roles:roleDeleteError", error);
@@ -280,38 +293,6 @@ export default function RealmRoleTabs() {
     setOpen(!open);
   };
 
-  const clientRoleRouteMatch = useRouteMatch<ClientRoleParams>(
-    ClientRoleRoute.path
-  );
-
-  const toDetail = () => {
-    const to = clientRoleRouteMatch
-      ? toClientRole({
-          ...clientRoleRouteMatch.params,
-          tab: "details",
-        })
-      : toRealmRole({
-          realm: realm?.realm!,
-          id,
-          tab: "details",
-        });
-    navigate(to);
-  };
-
-  const toAssociatedRoles = () => {
-    const to = clientRoleRouteMatch
-      ? toClientRole({
-          ...clientRoleRouteMatch.params,
-          tab: "associated-roles",
-        })
-      : toRealmRole({
-          realm: realm?.realm!,
-          id,
-          tab: "associated-roles",
-        });
-    navigate(to);
-  };
-
   const addComposites = async (composites: RoleRepresentation[]) => {
     try {
       await adminClient.roles.createComposite(
@@ -319,7 +300,7 @@ export default function RealmRoleTabs() {
         composites
       );
       refresh();
-      toAssociatedRoles();
+      navigate(toTab("associated-roles"));
       addAlert(t("addAssociatedRolesSuccess"), AlertVariant.success);
     } catch (error) {
       addError("roles:addAssociatedRolesError", error);
@@ -328,18 +309,8 @@ export default function RealmRoleTabs() {
 
   const isDefaultRole = (name: string) => realm?.defaultRole!.name === name;
 
-  if (!realm) {
+  if (!realm || !role) {
     return <KeycloakSpinner />;
-  }
-  if (!role) {
-    return (
-      <RealmRoleForm
-        reset={() => reset(role)}
-        form={form}
-        save={save}
-        editMode={false}
-      />
-    );
   }
 
   return (
@@ -356,7 +327,7 @@ export default function RealmRoleTabs() {
         />
       )}
       <ViewHeader
-        titleKey={role.name || t("createRole")}
+        titleKey={role.name!}
         badges={[
           {
             id: "composite-role-badge",
@@ -364,73 +335,76 @@ export default function RealmRoleTabs() {
             readonly: true,
           },
         ]}
-        subKey={id ? "" : "roles:roleCreateExplain"}
         actionsDropdownId="roles-actions-dropdown"
         dropdownItems={dropdownItems}
-        divider={!id}
+        divider={false}
       />
       <PageSection variant="light" className="pf-u-p-0">
-        {id && (
-          <KeycloakTabs isBox mountOnEnter>
+        <RoutableTabs isBox mountOnEnter defaultLocation={toTab("details")}>
+          <Tab
+            title={<TabTitleText>{t("common:details")}</TabTitleText>}
+            {...detailsTab}
+          >
+            <RoleForm
+              form={form}
+              onSubmit={onSubmit}
+              role={clientRoleMatch ? "manage-clients" : "manage-realm"}
+              cancelLink={
+                clientRoleMatch
+                  ? toClient({ realm: realmName, clientId, tab: "roles" })
+                  : toRealmRoles({ realm: realmName })
+              }
+              editMode={true}
+            />
+          </Tab>
+          {role.composite && (
             <Tab
-              eventKey="details"
-              title={<TabTitleText>{t("common:details")}</TabTitleText>}
+              data-testid="associatedRolesTab"
+              title={<TabTitleText>{t("associatedRolesText")}</TabTitleText>}
+              {...associatedRolesTab}
             >
-              <RealmRoleForm
-                reset={() => reset(role)}
-                form={form}
-                save={save}
-                editMode={true}
+              <RoleMapping
+                name={role.name!}
+                id={role.id!}
+                type="roles"
+                isManager
+                save={(rows) => addComposites(rows.map((r) => r.role))}
               />
             </Tab>
-            {role.composite && (
-              <Tab
-                eventKey="associated-roles"
-                className="kc-associated-roles-tab"
-                title={<TabTitleText>{t("associatedRolesText")}</TabTitleText>}
-              >
-                <RoleMapping
-                  name={role.name!}
-                  id={role.id!}
-                  type="roles"
-                  isManager
-                  save={(rows) => addComposites(rows.map((r) => r.role))}
-                />
-              </Tab>
-            )}
-            {!isDefaultRole(role.name!) && (
-              <Tab
-                eventKey="attributes"
-                className="kc-attributes-tab"
-                title={<TabTitleText>{t("common:attributes")}</TabTitleText>}
-              >
-                <AttributesForm
-                  form={form}
-                  save={save}
-                  reset={() => reset(role)}
-                />
-              </Tab>
-            )}
-            {!isDefaultRole(role.name!) && (
-              <Tab
-                eventKey="users-in-role"
-                title={<TabTitleText>{t("usersInRole")}</TabTitleText>}
-              >
-                <UsersInRoleTab data-cy="users-in-role-tab" />
-              </Tab>
-            )}
-            {!profileInfo?.disabledFeatures?.includes(
-              "ADMIN_FINE_GRAINED_AUTHZ"
-            ) && (
-              <Tab
-                eventKey="permissions"
-                title={<TabTitleText>{t("common:permissions")}</TabTitleText>}
-              >
-                <PermissionsTab id={role.id} type="roles" />
-              </Tab>
-            )}
-          </KeycloakTabs>
-        )}
+          )}
+          {!isDefaultRole(role.name!) && (
+            <Tab
+              data-testid="attributesTab"
+              className="kc-attributes-tab"
+              title={<TabTitleText>{t("common:attributes")}</TabTitleText>}
+              {...attributesTab}
+            >
+              <AttributesForm
+                form={form}
+                save={onSubmit}
+                reset={() => reset(role)}
+              />
+            </Tab>
+          )}
+          {!isDefaultRole(role.name!) && (
+            <Tab
+              title={<TabTitleText>{t("usersInRole")}</TabTitleText>}
+              {...usersInRoleTab}
+            >
+              <UsersInRoleTab data-cy="users-in-role-tab" />
+            </Tab>
+          )}
+          {!profileInfo?.disabledFeatures?.includes(
+            "ADMIN_FINE_GRAINED_AUTHZ"
+          ) && (
+            <Tab
+              title={<TabTitleText>{t("common:permissions")}</TabTitleText>}
+              {...permissionsTab}
+            >
+              <PermissionsTab id={role.id} type="roles" />
+            </Tab>
+          )}
+        </RoutableTabs>
       </PageSection>
     </>
   );

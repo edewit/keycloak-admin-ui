@@ -13,7 +13,6 @@ import type ClientRepresentation from "@keycloak/keycloak-admin-client/lib/defs/
 import type { ClientQuery } from "@keycloak/keycloak-admin-client/lib/resources/clients";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom-v5-compat";
 import { useAlerts } from "../components/alert/Alerts";
 import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
@@ -35,8 +34,8 @@ import { isRealmClient, getProtocolName } from "./utils";
 import helpUrls from "../help-urls";
 import { useAccess } from "../context/access/Access";
 import {
-  routableTab,
   RoutableTabs,
+  useRoutableTab,
 } from "../components/routable-tabs/RoutableTabs";
 import { ClientsTab, toClients } from "./routes/Clients";
 
@@ -46,7 +45,6 @@ export default function ClientsSection() {
 
   const { adminClient } = useAdminClient();
   const { realm } = useRealm();
-  const history = useHistory();
 
   const [key, setKey] = useState(0);
   const refresh = () => setKey(new Date().getTime());
@@ -66,6 +64,11 @@ export default function ClientsSection() {
     }
     return await adminClient.clients.find({ ...params });
   };
+
+  const useTab = (tab: ClientsTab) => useRoutableTab(toClients({ realm, tab }));
+
+  const listTab = useTab("list");
+  const initialAccessTokenTab = useTab("initial-access-token");
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
     titleKey: t("clientDelete", { clientId: selectedClient?.clientId }),
@@ -97,6 +100,12 @@ export default function ClientsSection() {
         </Badge>
       )}
     </Link>
+  );
+
+  const ClientName = (client: ClientRepresentation) => (
+    <TableText wrapModifier="truncate">
+      {emptyFormatter()(client.name)}
+    </TableText>
   );
 
   const ClientDescription = (client: ClientRepresentation) => (
@@ -134,12 +143,6 @@ export default function ClientsSection() {
     );
   };
 
-  const route = (tab: ClientsTab) =>
-    routableTab({
-      to: toClients({ realm, tab }),
-      history,
-    });
-
   return (
     <>
       <ViewHeader
@@ -160,7 +163,7 @@ export default function ClientsSection() {
           <Tab
             data-testid="list"
             title={<TabTitleText>{t("clientsList")}</TabTitleText>}
-            {...route("list")}
+            {...listTab}
           >
             <DeleteConfirm />
             <KeycloakDataTable
@@ -200,23 +203,32 @@ export default function ClientsSection() {
                 {
                   name: "clientId",
                   displayKey: "common:clientId",
+                  transforms: [cellWidth(20)],
                   cellRenderer: ClientDetailLink,
+                },
+                {
+                  name: "clientName",
+                  displayKey: "common:clientName",
+                  transforms: [cellWidth(20)],
+                  cellRenderer: ClientName,
                 },
                 {
                   name: "protocol",
                   displayKey: "common:type",
+                  transforms: [cellWidth(10)],
                   cellRenderer: (client) =>
                     getProtocolName(t, client.protocol ?? "openid-connect"),
                 },
                 {
                   name: "description",
                   displayKey: "common:description",
-                  transforms: [cellWidth(20)],
+                  transforms: [cellWidth(30)],
                   cellRenderer: ClientDescription,
                 },
                 {
                   name: "baseUrl",
                   displayKey: "clients:homeURL",
+                  transforms: [cellWidth(20)],
                   cellFormatters: [formattedLinkTableCell(), emptyFormatter()],
                   cellRenderer: (c) =>
                     convertClientToUrl(c, adminClient.baseUrl),
@@ -227,7 +239,7 @@ export default function ClientsSection() {
           <Tab
             data-testid="initialAccessToken"
             title={<TabTitleText>{t("initialAccessToken")}</TabTitleText>}
-            {...route("initial-access-token")}
+            {...initialAccessTokenTab}
           >
             <InitialAccessTokenList />
           </Tab>

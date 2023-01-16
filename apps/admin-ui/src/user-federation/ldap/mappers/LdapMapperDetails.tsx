@@ -1,5 +1,6 @@
 import type ComponentRepresentation from "@keycloak/keycloak-admin-client/lib/defs/componentRepresentation";
 import type ComponentTypeRepresentation from "@keycloak/keycloak-admin-client/lib/defs/componentTypeRepresentation";
+import { DirectionType } from "@keycloak/keycloak-admin-client/lib/resources/userStorageProvider";
 import {
   ActionGroup,
   AlertVariant,
@@ -14,7 +15,6 @@ import {
   SelectVariant,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import { DirectionType } from "libs/keycloak-admin-client/lib/resources/userStorageProvider";
 import { useState } from "react";
 import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -33,6 +33,7 @@ import { useRealm } from "../../../context/realm-context/RealmContext";
 import { convertFormValuesToObject, convertToFormValues } from "../../../util";
 import { useParams } from "../../../utils/useParams";
 import { toUserFederationLdap } from "../../routes/UserFederationLdap";
+import { UserFederationLdapMapperParams } from "../../routes/UserFederationLdapMapper";
 
 export default function LdapMapperDetails() {
   const form = useForm<ComponentRepresentation>();
@@ -40,7 +41,7 @@ export default function LdapMapperDetails() {
   const [components, setComponents] = useState<ComponentTypeRepresentation[]>();
 
   const { adminClient } = useAdminClient();
-  const { id, mapperId } = useParams<{ id: string; mapperId: string }>();
+  const { id, mapperId } = useParams<UserFederationLdapMapperParams>();
   const navigate = useNavigate();
   const { realm } = useRealm();
   const { t } = useTranslation("user-federation");
@@ -265,7 +266,11 @@ export default function LdapMapperDetails() {
               label={t("common:mapperType")}
               labelIcon={
                 <HelpItem
-                  helpText="user-federation-help:mapperTypeHelp"
+                  helpText={
+                    mapper?.helpText
+                      ? mapper.helpText
+                      : t("user-federation-help:mapperTypeHelp")
+                  }
                   fieldLabelId="mapperType"
                 />
               }
@@ -287,7 +292,11 @@ export default function LdapMapperDetails() {
               label={t("common:mapperType")}
               labelIcon={
                 <HelpItem
-                  helpText="user-federation-help:mapperTypeHelp"
+                  helpText={
+                    mapper?.helpText
+                      ? mapper.helpText
+                      : t("user-federation-help:mapperTypeHelp")
+                  }
                   fieldLabelId="mapperType"
                 />
               }

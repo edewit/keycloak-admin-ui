@@ -1,8 +1,8 @@
 class CreateRealmRolePage {
   private realmRoleNameInput = "#kc-name";
   private realmRoleNameError = "#kc-name-helper";
-  private realmRoleDescriptionInput = "#kc-role-description";
-  private saveBtn = "realm-roles-save-button";
+  private realmRoleDescriptionInput = "#kc-description";
+  private saveBtn = "save";
   private cancelBtn = "cancel";
 
   //#region General Settings
@@ -63,9 +63,7 @@ class CreateRealmRolePage {
   }
 
   goToAttributesTab() {
-    cy.intercept("admin/realms/master/roles-by-id/*").as("load");
-    cy.get(".kc-attributes-tab > button").click();
-    cy.wait(["@load", "@load"]);
+    cy.findByTestId("attributesTab").click();
     return this;
   }
 }
