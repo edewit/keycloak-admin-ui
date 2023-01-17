@@ -499,6 +499,7 @@ describe("Clients test", () => {
         .selectClientType("openid-connect")
         .fillClientData(client)
         .continue()
+        .continue()
         .save();
       commonPage
         .masthead()
