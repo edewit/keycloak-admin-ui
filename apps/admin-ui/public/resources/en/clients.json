@@ -313,6 +313,7 @@
   "copySuccess": "Successfully copied to clipboard!",
   "clipboardCopyError": "Error copying to clipboard.",
   "copyToClipboard": "Copy to clipboard",
+  "clientRegistration": "Client registration",
   "clientAuthentication": "Client authentication",
   "authentication": "Authentication",
   "authenticationFlow": "Authentication flow",

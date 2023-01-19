@@ -2,6 +2,7 @@ import type { RouteDef } from "../route-config";
 import { AddClientRoute } from "./routes/AddClient";
 import { AuthorizationRoute } from "./routes/AuthenticationTab";
 import { ClientRoute } from "./routes/Client";
+import { ClientRegistrationRoute } from "./routes/ClientRegistration";
 import { ClientRoleRoute } from "./routes/ClientRole";
 import { ClientsRoute, ClientsRouteWithTab } from "./routes/Clients";
 import { ClientScopesRoute } from "./routes/ClientScopeTab";
@@ -37,6 +38,7 @@ const routes: RouteDef[] = [
   ClientsRoute,
   ClientsRouteWithTab,
   CreateInitialAccessTokenRoute,
+  ClientRegistrationRoute,
   ClientRoute,
   MapperRoute,
   DedicatedScopeDetailsRoute,
