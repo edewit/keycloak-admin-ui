@@ -7,11 +7,11 @@ export type ClientRegistrationTab = "anonymous" | "authenticated";
 
 export type ClientRegistrationParams = {
   realm: string;
-  tab: ClientRegistrationTab;
+  subTab: ClientRegistrationTab;
 };
 
 export const ClientRegistrationRoute: RouteDef = {
-  path: "/:realm/clients/client-registration/:tab",
+  path: "/:realm/clients/client-registration/:subTab",
   component: lazy(() => import("../ClientsSection")),
   breadcrumb: (t) => t("clients:clientRegistration"),
   access: "view-clients",

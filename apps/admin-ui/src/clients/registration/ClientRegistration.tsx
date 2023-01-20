@@ -9,32 +9,33 @@ import {
   ClientRegistrationTab,
   toClientRegistration,
 } from "../routes/ClientRegistration";
+import { AnonymousList } from "./AnonymousList";
 
 export const ClientRegistration = () => {
   const { t } = useTranslation("clients");
   const { realm } = useRealm();
 
-  const useTab = (tab: ClientRegistrationTab) =>
-    useRoutableTab(toClientRegistration({ realm, tab }));
+  const useTab = (subTab: ClientRegistrationTab) =>
+    useRoutableTab(toClientRegistration({ realm, subTab }));
 
   const anonymousTab = useTab("anonymous");
   const authenticatedTab = useTab("authenticated");
 
   return (
     <RoutableTabs
-      defaultLocation={toClientRegistration({ realm, tab: "anonymous" })}
+      defaultLocation={toClientRegistration({ realm, subTab: "anonymous" })}
       mountOnEnter
     >
       <Tab
         data-testid="anonymous"
-        title={<TabTitleText>{t("clientsList")}</TabTitleText>}
+        title={<TabTitleText>{t("anonymousAccessPolicies")}</TabTitleText>}
         {...anonymousTab}
       >
-        <h1>subtab</h1>
+        <AnonymousList />
       </Tab>
       <Tab
         data-testid="authenticated"
-        title={<TabTitleText>{t("clientsList")}</TabTitleText>}
+        title={<TabTitleText>{t("authenticatedAccessPolicies")}</TabTitleText>}
         {...authenticatedTab}
       >
         <h1>authenticatedTab</h1>
