@@ -13,7 +13,7 @@ export const AddRegistrationProviderRoute: RouteDef = {
   path: "/:realm/clients/client-registration/:subTab/:providerId",
   component: lazy(() => import("../registration/AddProvider")),
   breadcrumb: (t) => t("clients:clientSettings"),
-  access: "view-clients",
+  access: "manage-clients",
 };
 
 export const toAddRegistrationProviderTab = (
