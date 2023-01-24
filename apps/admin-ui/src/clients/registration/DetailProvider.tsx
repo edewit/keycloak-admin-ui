@@ -3,6 +3,8 @@ import ComponentTypeRepresentation from "@keycloak/keycloak-admin-client/lib/def
 import {
   ActionGroup,
   Button,
+  ButtonVariant,
+  DropdownItem,
   FormGroup,
   PageSection,
   ValidatedOptions,
@@ -12,6 +14,7 @@ import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useAlerts } from "../../components/alert/Alerts";
+import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
 import { DynamicComponents } from "../../components/dynamic/DynamicComponents";
 import { FormAccess } from "../../components/form-access/FormAccess";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
@@ -27,7 +30,7 @@ import {
 } from "../routes/AddRegistrationProvider";
 import { toClientRegistration } from "../routes/ClientRegistration";
 
-export default function AddProvider() {
+export default function DetailProvider() {
   const { t } = useTranslation("clients");
   const { id, providerId, subTab } = useParams<AddRegistrationProviderParams>();
   const navigate = useNavigate();
@@ -65,10 +68,6 @@ export default function AddProvider() {
 
   const providerName = useWatch({ control, defaultValue: "", name: "name" });
 
-  if (!provider) {
-    return <KeycloakSpinner />;
-  }
-
   const onSubmit = async (component: ComponentRepresentation) => {
     if (component.config)
       Object.entries(component.config).forEach(
@@ -92,18 +91,57 @@ export default function AddProvider() {
           toAddRegistrationProviderTab({ id, realm, subTab, providerId })
         );
       }
-      addAlert(t("providerCreateSuccess"));
+      addAlert(t(`provider${id ? "Updated" : "Create"}Success`));
     } catch (error) {
-      addError("clients:providerCreateError", error);
+      addError(`clients:provider${id ? "Updated" : "Create"}Error`, error);
     }
   };
+
+  const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
+    titleKey: "clients:clientRegisterPolicyDeleteConfirmTitle",
+    messageKey: t("clientRegisterPolicyDeleteConfirm", {
+      name: providerName,
+    }),
+    continueButtonLabel: "common:delete",
+    continueButtonVariant: ButtonVariant.danger,
+    onConfirm: async () => {
+      try {
+        await adminClient.components.del({
+          realm,
+          id: id!,
+        });
+        addAlert(t("clientRegisterPolicyDeleteSuccess"));
+        navigate(toClientRegistration({ realm, subTab }));
+      } catch (error) {
+        addError("clients:clientRegisterPolicyDeleteError", error);
+      }
+    },
+  });
+
+  if (!provider) {
+    return <KeycloakSpinner />;
+  }
 
   return (
     <>
       <ViewHeader
         titleKey={id ? providerName : "clients:createPolicy"}
         subKey={id}
+        dropdownItems={
+          id
+            ? [
+                <DropdownItem
+                  data-testid="delete"
+                  key="delete"
+                  onClick={toggleDeleteDialog}
+                >
+                  {t("common:delete")}
+                </DropdownItem>,
+              ]
+            : undefined
+        }
       />
+      <DeleteConfirm />
       <PageSection variant="light">
         <FormAccess
           role="manage-clients"
