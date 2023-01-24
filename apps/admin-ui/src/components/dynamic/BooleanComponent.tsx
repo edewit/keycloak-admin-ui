@@ -27,7 +27,7 @@ export const BooleanComponent = ({
       <Controller
         name={convertToName(name!)}
         data-testid={name}
-        defaultValue={[false]}
+        defaultValue={false}
         control={control}
         render={({ field }) => (
           <Switch
