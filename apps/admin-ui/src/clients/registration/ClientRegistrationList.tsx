@@ -15,7 +15,13 @@ import { toAddRegistrationProviderTab } from "../routes/AddRegistrationProvider"
 import { ClientRegistrationParams } from "../routes/ClientRegistration";
 import { AddProviderDialog } from "./AddProviderDialog";
 
-export const AnonymousList = () => {
+type ClientRegistrationListProps = {
+  subType: "anonymous" | "authenticated";
+};
+
+export const ClientRegistrationList = ({
+  subType,
+}: ClientRegistrationListProps) => {
   const { t } = useTranslation("clients");
   const { subTab } = useParams<ClientRegistrationParams>();
   const navigate = useNavigate();
@@ -33,7 +39,7 @@ export const AnonymousList = () => {
       adminClient.components.find({
         type: "org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy",
       }),
-    setPolicies,
+    (policies) => setPolicies(policies.filter((p) => p.subType === subType)),
     [selectedPolicy]
   );
 

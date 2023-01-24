@@ -9,7 +9,7 @@ import {
   ClientRegistrationTab,
   toClientRegistration,
 } from "../routes/ClientRegistration";
-import { AnonymousList } from "./AnonymousList";
+import { ClientRegistrationList } from "./ClientRegistrationList";
 
 export const ClientRegistration = () => {
   const { t } = useTranslation("clients");
@@ -31,14 +31,14 @@ export const ClientRegistration = () => {
         title={<TabTitleText>{t("anonymousAccessPolicies")}</TabTitleText>}
         {...anonymousTab}
       >
-        <AnonymousList />
+        <ClientRegistrationList subType="anonymous" />
       </Tab>
       <Tab
         data-testid="authenticated"
         title={<TabTitleText>{t("authenticatedAccessPolicies")}</TabTitleText>}
         {...authenticatedTab}
       >
-        <h1>authenticatedTab</h1>
+        <ClientRegistrationList subType="authenticated" />
       </Tab>
     </RoutableTabs>
   );
