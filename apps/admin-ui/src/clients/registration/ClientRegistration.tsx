@@ -1,5 +1,6 @@
 import { Tab, TabTitleText } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
+import { HelpItem } from "../../components/help-enabler/HelpItem";
 import {
   RoutableTabs,
   useRoutableTab,
@@ -28,14 +29,34 @@ export const ClientRegistration = () => {
     >
       <Tab
         data-testid="anonymous"
-        title={<TabTitleText>{t("anonymousAccessPolicies")}</TabTitleText>}
+        title={
+          <TabTitleText>
+            {t("anonymousAccessPolicies")}{" "}
+            <HelpItem
+              fieldLabelId=""
+              helpText="clients-help:anonymousAccessPolicies"
+              noVerticalAlign={false}
+              unWrap
+            />
+          </TabTitleText>
+        }
         {...anonymousTab}
       >
         <ClientRegistrationList subType="anonymous" />
       </Tab>
       <Tab
         data-testid="authenticated"
-        title={<TabTitleText>{t("authenticatedAccessPolicies")}</TabTitleText>}
+        title={
+          <TabTitleText>
+            {t("authenticatedAccessPolicies")}{" "}
+            <HelpItem
+              fieldLabelId=""
+              helpText="clients-help:authenticatedAccessPolicies"
+              noVerticalAlign={false}
+              unWrap
+            />
+          </TabTitleText>
+        }
         {...authenticatedTab}
       >
         <ClientRegistrationList subType="authenticated" />
