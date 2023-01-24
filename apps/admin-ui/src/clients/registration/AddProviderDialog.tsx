@@ -1,6 +1,4 @@
 import {
-  Button,
-  ButtonVariant,
   DataList,
   DataListCell,
   DataListItem,
@@ -49,29 +47,6 @@ export const AddProviderDialog = ({
       title={t("chooseAPolicyProvider")}
       isOpen
       onClose={toggleDialog}
-      actions={[
-        <Button
-          id="modal-confirm"
-          data-testid="confirm"
-          key="confirm"
-          onClick={() => {
-            //onConfirm();
-          }}
-        >
-          {t("import")}
-        </Button>,
-        <Button
-          id="modal-cancel"
-          data-testid="cancel"
-          key="cancel"
-          variant={ButtonVariant.link}
-          onClick={() => {
-            toggleDialog();
-          }}
-        >
-          {t("common:cancel")}
-        </Button>,
-      ]}
     >
       <DataList
         onSelectDataListItem={(id) => {

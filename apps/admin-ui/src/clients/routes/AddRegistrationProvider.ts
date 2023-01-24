@@ -7,17 +7,30 @@ import { ClientRegistrationTab } from "./ClientRegistration";
 export type AddRegistrationProviderParams = {
   realm: string;
   subTab: ClientRegistrationTab;
+  id?: string;
   providerId: string;
 };
+
 export const AddRegistrationProviderRoute: RouteDef = {
   path: "/:realm/clients/client-registration/:subTab/:providerId",
-  component: lazy(() => import("../registration/AddProvider")),
+  component: lazy(() => import("../registration/DetailProvider")),
   breadcrumb: (t) => t("clients:clientSettings"),
   access: "manage-clients",
 };
 
+export const EditRegistrationProviderRoute: RouteDef = {
+  ...AddRegistrationProviderRoute,
+  path: "/:realm/clients/client-registration/:subTab/:providerId/:id",
+};
+
 export const toAddRegistrationProviderTab = (
   params: AddRegistrationProviderParams
-): Partial<Path> => ({
-  pathname: generatePath(AddRegistrationProviderRoute.path, params),
-});
+): Partial<Path> => {
+  const path = params.id
+    ? EditRegistrationProviderRoute.path
+    : AddRegistrationProviderRoute.path;
+
+  return {
+    pathname: generatePath(path, params),
+  };
+};

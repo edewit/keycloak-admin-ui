@@ -1,6 +1,9 @@
 import type { RouteDef } from "../route-config";
 import { AddClientRoute } from "./routes/AddClient";
-import { AddRegistrationProviderRoute } from "./routes/AddRegistrationProvider";
+import {
+  AddRegistrationProviderRoute,
+  EditRegistrationProviderRoute,
+} from "./routes/AddRegistrationProvider";
 import { AuthorizationRoute } from "./routes/AuthenticationTab";
 import { ClientRoute } from "./routes/Client";
 import { ClientRegistrationRoute } from "./routes/ClientRegistration";
@@ -36,6 +39,7 @@ import {
 const routes: RouteDef[] = [
   ClientRegistrationRoute,
   AddRegistrationProviderRoute,
+  EditRegistrationProviderRoute,
   AddClientRoute,
   ImportClientRoute,
   ClientsRoute,

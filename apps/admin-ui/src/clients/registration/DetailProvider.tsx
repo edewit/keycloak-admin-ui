@@ -8,9 +8,9 @@ import {
   ValidatedOptions,
 } from "@patternfly/react-core";
 import { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAlerts } from "../../components/alert/Alerts";
 import { DynamicComponents } from "../../components/dynamic/DynamicComponents";
 import { FormAccess } from "../../components/form-access/FormAccess";
@@ -21,18 +21,24 @@ import { ViewHeader } from "../../components/view-header/ViewHeader";
 import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { useParams } from "../../utils/useParams";
-import { AddRegistrationProviderParams } from "../routes/AddRegistrationProvider";
+import {
+  AddRegistrationProviderParams,
+  toAddRegistrationProviderTab,
+} from "../routes/AddRegistrationProvider";
 import { toClientRegistration } from "../routes/ClientRegistration";
 
 export default function AddProvider() {
   const { t } = useTranslation("clients");
-  const { providerId, subTab } = useParams<AddRegistrationProviderParams>();
+  const { id, providerId, subTab } = useParams<AddRegistrationProviderParams>();
+  const navigate = useNavigate();
   const form = useForm<ComponentRepresentation>({
     defaultValues: { providerId },
   });
   const {
     register,
+    control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = form;
 
@@ -40,25 +46,24 @@ export default function AddProvider() {
   const { realm } = useRealm();
   const { addAlert, addError } = useAlerts();
   const [provider, setProvider] = useState<ComponentTypeRepresentation>();
-  const [policy, setPolicy] = useState<ComponentRepresentation>();
   const [parentId, setParentId] = useState("");
 
   useFetch(
     async () =>
       await Promise.all([
-        adminClient.components.find({
-          type: "org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy",
-        }),
         adminClient.realms.getClientRegistrationPolicyProviders({ realm }),
         adminClient.realms.findOne({ realm }),
+        id ? adminClient.components.findOne({ id }) : Promise.resolve(),
       ]),
-    ([policies, providers, realm]) => {
+    ([providers, realm, data]) => {
       setProvider(providers.find((p) => p.id === providerId));
-      setPolicy(policies.find((p) => p.providerId === providerId));
       setParentId(realm?.id || "");
+      reset(data || { providerId });
     },
     []
   );
+
+  const providerName = useWatch({ control, defaultValue: "", name: "name" });
 
   if (!provider) {
     return <KeycloakSpinner />;
@@ -66,13 +71,22 @@ export default function AddProvider() {
 
   const onSubmit = async (component: ComponentTypeRepresentation) => {
     try {
-      await adminClient.components.create({
+      const updatedComponent = {
         ...component,
         subType: subTab,
         parentId,
-        providerType: policy?.providerType,
+        providerType:
+          "org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy",
         providerId,
-      });
+      };
+      if (id) {
+        await adminClient.components.update({ id }, updatedComponent);
+      } else {
+        const { id } = await adminClient.components.create(updatedComponent);
+        navigate(
+          toAddRegistrationProviderTab({ id, realm, subTab, providerId })
+        );
+      }
       addAlert(t("providerCreateSuccess"));
     } catch (error) {
       addError("clients:providerCreateError", error);
@@ -81,7 +95,10 @@ export default function AddProvider() {
 
   return (
     <>
-      <ViewHeader titleKey="clients:createPolicy" />
+      <ViewHeader
+        titleKey={id ? providerName : "clients:createPolicy"}
+        subKey={id}
+      />
       <PageSection variant="light">
         <FormAccess
           role="manage-clients"
