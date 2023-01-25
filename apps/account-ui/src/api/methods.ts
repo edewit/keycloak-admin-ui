@@ -1,5 +1,7 @@
 import { parseResponse } from "./parse-response";
 import {
+  CredentialContainer,
+  CredentialRepresentation,
   ClientRepresentation,
   DeviceRepresentation,
   Permission,
@@ -55,6 +57,19 @@ export async function deleteConsent(id: string) {
 
 export async function deleteSession(id?: string) {
   return request(`"/sessions${id ? `/${id}` : ""}`, {
+    method: "DELETE",
+  });
+}
+
+export async function getCredentials({ signal }: CallOptions) {
+  const response = await request("/credentials", {
+    signal,
+  });
+  return parseResponse<CredentialContainer[]>(response);
+}
+
+export async function deleteCredentials(credential: CredentialRepresentation) {
+  return request("/credentials/" + credential.id, {
     method: "DELETE",
   });
 }
