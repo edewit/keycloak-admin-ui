@@ -1,6 +1,7 @@
 import { parseResponse } from "./parse-response";
 import {
   ClientRepresentation,
+  DeviceRepresentation,
   Permission,
   UserRepresentation,
 } from "./representations";
@@ -34,6 +35,12 @@ export async function getPermissionRequests(
   return parseResponse<Permission[]>(response);
 }
 
+export async function getDevices({
+  signal,
+}: CallOptions): Promise<DeviceRepresentation[]> {
+  const response = await request("/sessions/devices", { signal });
+  return parseResponse<DeviceRepresentation[]>(response);
+  
 export async function getApplications({ signal }: CallOptions = {}): Promise<
   ClientRepresentation[]
 > {
@@ -43,4 +50,9 @@ export async function getApplications({ signal }: CallOptions = {}): Promise<
 
 export async function deleteConsent(id: string) {
   return request(`/applications/${id}/consent`, { method: "DELETE" });
+
+export async function deleteSession(id?: string) {
+  return request(`"/sessions${id ? `/${id}` : ""}`, {
+    method: "DELETE",
+  });
 }
