@@ -11,7 +11,7 @@ import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import useToggle from "../../utils/useToggle";
 
-import { toAddRegistrationProviderTab } from "../routes/AddRegistrationProvider";
+import { toRegistrationProvider } from "../routes/AddRegistrationProvider";
 import { ClientRegistrationParams } from "../routes/ClientRegistration";
 import { AddProviderDialog } from "./AddProviderDialog";
 
@@ -46,7 +46,7 @@ export const ClientRegistrationList = ({
   const DetailLink = (comp: ComponentRepresentation) => (
     <Link
       key={comp.id}
-      to={toAddRegistrationProviderTab({
+      to={toRegistrationProvider({
         realm,
         subTab: subTab || "anonymous",
         providerId: comp.providerId!,
@@ -84,7 +84,7 @@ export const ClientRegistrationList = ({
         <AddProviderDialog
           onConfirm={(providerId) =>
             navigate(
-              toAddRegistrationProviderTab({
+              toRegistrationProvider({
                 realm,
                 subTab: subTab || "anonymous",
                 providerId,

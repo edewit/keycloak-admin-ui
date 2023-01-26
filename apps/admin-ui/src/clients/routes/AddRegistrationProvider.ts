@@ -4,7 +4,7 @@ import { generatePath } from "react-router-dom";
 import type { RouteDef } from "../../route-config";
 import { ClientRegistrationTab } from "./ClientRegistration";
 
-export type AddRegistrationProviderParams = {
+export type RegistrationProviderParams = {
   realm: string;
   subTab: ClientRegistrationTab;
   id?: string;
@@ -23,8 +23,8 @@ export const EditRegistrationProviderRoute: RouteDef = {
   path: "/:realm/clients/client-registration/:subTab/:providerId/:id",
 };
 
-export const toAddRegistrationProviderTab = (
-  params: AddRegistrationProviderParams
+export const toRegistrationProvider = (
+  params: RegistrationProviderParams
 ): Partial<Path> => {
   const path = params.id
     ? EditRegistrationProviderRoute.path

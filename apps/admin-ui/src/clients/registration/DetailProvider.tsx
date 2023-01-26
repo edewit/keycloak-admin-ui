@@ -25,14 +25,14 @@ import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { useParams } from "../../utils/useParams";
 import {
-  AddRegistrationProviderParams,
-  toAddRegistrationProviderTab,
+  RegistrationProviderParams,
+  toRegistrationProvider,
 } from "../routes/AddRegistrationProvider";
 import { toClientRegistration } from "../routes/ClientRegistration";
 
 export default function DetailProvider() {
   const { t } = useTranslation("clients");
-  const { id, providerId, subTab } = useParams<AddRegistrationProviderParams>();
+  const { id, providerId, subTab } = useParams<RegistrationProviderParams>();
   const navigate = useNavigate();
   const form = useForm<ComponentRepresentation>({
     defaultValues: { providerId },
@@ -87,9 +87,7 @@ export default function DetailProvider() {
         await adminClient.components.update({ id }, updatedComponent);
       } else {
         const { id } = await adminClient.components.create(updatedComponent);
-        navigate(
-          toAddRegistrationProviderTab({ id, realm, subTab, providerId })
-        );
+        navigate(toRegistrationProvider({ id, realm, subTab, providerId }));
       }
       addAlert(t(`provider${id ? "Updated" : "Create"}Success`));
     } catch (error) {
