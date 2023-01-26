@@ -156,8 +156,9 @@ export const RealmSettingsTokensTab = ({
               control={form.control}
               render={({ field }) => (
                 <TimeSelector
+                  id="oAuthDeviceCodeLifespan"
                   data-testid="oAuthDeviceCodeLifespan"
-                  aria-label={t("oAuthDeviceCodeLifespan")}
+                  value={field.value}
                   onChange={field.onChange}
                   units={["minute", "hour", "day"]}
                 />
@@ -178,16 +179,16 @@ export const RealmSettingsTokensTab = ({
               name="oauth2DevicePollingInterval"
               defaultValue=""
               control={form.control}
-              render={({ onChange, value }) => (
+              render={({ field }) => (
                 <NumberInput
                   id="oAuthDevicePollingInterval"
-                  value={value}
+                  value={field.value}
                   min={0}
-                  onPlus={() => onChange(value + 1)}
-                  onMinus={() => onChange(value - 1)}
+                  onPlus={() => field.onChange(field.value + 1)}
+                  onMinus={() => field.onChange(field.value - 1)}
                   onChange={(event) => {
                     const newValue = Number(event.currentTarget.value);
-                    onChange(!isNaN(newValue) ? newValue : 0);
+                    field.onChange(!isNaN(newValue) ? newValue : 0);
                   }}
                   placeholder={t("oAuthDevicePollingInterval")}
                 />
@@ -206,9 +207,8 @@ export const RealmSettingsTokensTab = ({
           >
             <KeycloakTextInput
               id="shortVerificationUri"
-              name="attributes.shortVerificationUri"
               placeholder={t("shortVerificationUri")}
-              ref={form.register()}
+              {...form.register("attributes.shortVerificationUri")}
             />
           </FormGroup>
         </FormAccess>
