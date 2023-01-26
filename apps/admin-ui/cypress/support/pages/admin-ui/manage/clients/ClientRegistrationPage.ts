@@ -12,7 +12,7 @@ export class ClientRegistrationPage extends CommonPage {
   }
 
   selectRow(name: string) {
-    cy.get(`#${name}`).click();
+    cy.findAllByTestId(name).click();
     return this;
   }
 

@@ -73,7 +73,7 @@ export const AddProviderDialog = ({
           <DataListItem
             aria-label={provider.id}
             key={provider.id}
-            id={provider.id}
+            data-testid={provider.id}
           >
             <DataListItemRow>
               <DataListItemCells
