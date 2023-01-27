@@ -123,7 +123,7 @@ export default function DetailProvider() {
   return (
     <>
       <ViewHeader
-        titleKey={id ? providerName : "clients:createPolicy"}
+        titleKey={id ? providerName! : "clients:createPolicy"}
         subKey={id}
         dropdownItems={
           id
@@ -150,8 +150,7 @@ export default function DetailProvider() {
             <KeycloakTextInput
               id="providerId"
               data-testid="providerId"
-              name="providerId"
-              ref={register()}
+              {...register("providerId")}
               readOnly
             />
           </FormGroup>
@@ -173,11 +172,10 @@ export default function DetailProvider() {
             <KeycloakTextInput
               id="kc-name"
               data-testid="name"
-              name="name"
               validated={
                 errors.name ? ValidatedOptions.error : ValidatedOptions.default
               }
-              ref={register({ required: true })}
+              {...register("name", { required: true })}
             />
           </FormGroup>
           <FormProvider {...form}>
