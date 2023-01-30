@@ -15,7 +15,7 @@ export type AddAlertFunction = (
 
 export type AddErrorFunction = (message: string, error: any) => void;
 
-type AlertProps = {
+export type AlertProps = {
   addAlert: AddAlertFunction;
   addError: AddErrorFunction;
 };
