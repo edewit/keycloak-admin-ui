@@ -20,9 +20,6 @@
   "wireit": {
     "build": {
       "command": "vite build",
-      "dependencies": [
-        "../../libs/keycloak-js:build"
-      ],
       "files": [
         "src/**",
         "package.json",
