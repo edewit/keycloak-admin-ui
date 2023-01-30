@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, ButtonProps, Modal, ModalProps } from "@patternfly/react-core";
 
-type ContinueCancelModalProps = Omit<ModalProps, "ref" | "children"> & {
+export type ContinueCancelModalProps = Omit<ModalProps, "ref" | "children"> & {
   modalTitle: string;
   modalMessage?: string;
   buttonTitle: string | ReactNode;
