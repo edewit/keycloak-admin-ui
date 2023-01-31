@@ -17,6 +17,7 @@ import {
   SplitItem,
   Title,
 } from "@patternfly/react-core";
+import { TFuncKey } from "i18next";
 import { useState, CSSProperties } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { deleteCredentials, getCredentials } from "../api/methods";
@@ -88,7 +89,7 @@ const SigningIn = () => {
         className="pf-u-max-width"
         style={maxWidth}
       >
-        {credential.userLabel || t(credential.type)}
+        {credential.userLabel || t(credential.type as TFuncKey)}
       </DataListCell>,
     ];
 
@@ -106,7 +107,7 @@ const SigningIn = () => {
   };
 
   const label = (credential: CredentialRepresentation) =>
-    credential.userLabel || t(credential.type);
+    credential.userLabel || t(credential.type as TFuncKey);
 
   if (!credentials) {
     return <Spinner />;
@@ -122,16 +123,16 @@ const SigningIn = () => {
             className="pf-u-px-0"
           >
             <Title headingLevel="h2" size="xl">
-              {t(container.category)}
+              {t(container.category as TFuncKey)}
             </Title>
             <Split className="pf-u-mt-lg pf-u-mb-lg">
               <SplitItem>
                 <Title headingLevel="h3" size="md" className="pf-u-mb-md">
                   <span className="cred-title pf-u-display-block">
-                    {t(container.displayName)}
+                    {t(container.displayName as TFuncKey)}
                   </span>
                 </Title>
-                {t(container.helptext)}
+                {t(container.helptext as TFuncKey)}
               </SplitItem>
               {container.createAction && (
                 <SplitItem isFilled>
@@ -142,7 +143,9 @@ const SigningIn = () => {
                           action: container.createAction,
                         })
                       }
-                      title={t("setUpNew", [t(container.displayName)])}
+                      title={t("setUpNew", [
+                        t(container.displayName as TFuncKey),
+                      ])}
                     />
                   </div>
                 </SplitItem>
@@ -159,7 +162,9 @@ const SigningIn = () => {
                         <DataListCell key="0" />,
                         <EmptyState key="1" variant="xs">
                           <EmptyStateBody>
-                            {t("notSetUp", [t(container.displayName)])}
+                            {t("notSetUp", [
+                              t(container.displayName as TFuncKey),
+                            ])}
                           </EmptyStateBody>
                           ,
                         </EmptyState>,
