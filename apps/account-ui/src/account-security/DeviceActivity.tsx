@@ -22,6 +22,7 @@ import {
   MobileAltIcon,
   DesktopIcon,
 } from "@patternfly/react-icons";
+import { TFuncKey } from "i18next";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { deleteSession, getDevices } from "../api/methods";
@@ -85,7 +86,7 @@ const DeviceActivity = () => {
     clients.forEach((client, index) => {
       let clientName: string;
       if (client.clientName !== "") {
-        clientName = t(client.clientName);
+        clientName = t(client.clientName as TFuncKey);
       } else {
         clientName = client.clientId;
       }
