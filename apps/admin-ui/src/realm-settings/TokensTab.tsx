@@ -152,13 +152,13 @@ export const RealmSettingsTokensTab = ({
           >
             <Controller
               name="oauth2DeviceCodeLifespan"
-              defaultValue=""
+              defaultValue={0}
               control={form.control}
               render={({ field }) => (
                 <TimeSelector
                   id="oAuthDeviceCodeLifespan"
                   data-testid="oAuthDeviceCodeLifespan"
-                  value={field.value}
+                  value={field.value || 0}
                   onChange={field.onChange}
                   units={["minute", "hour", "day"]}
                 />
@@ -177,15 +177,15 @@ export const RealmSettingsTokensTab = ({
           >
             <Controller
               name="oauth2DevicePollingInterval"
-              defaultValue=""
+              defaultValue={0}
               control={form.control}
               render={({ field }) => (
                 <NumberInput
                   id="oAuthDevicePollingInterval"
                   value={field.value}
                   min={0}
-                  onPlus={() => field.onChange(field.value + 1)}
-                  onMinus={() => field.onChange(field.value - 1)}
+                  onPlus={() => field.onChange(field.value || 0 + 1)}
+                  onMinus={() => field.onChange(field.value || 0 - 1)}
                   onChange={(event) => {
                     const newValue = Number(event.currentTarget.value);
                     field.onChange(!isNaN(newValue) ? newValue : 0);
