@@ -74,6 +74,7 @@ export const AddProviderDialog = ({
             aria-label={provider.id}
             key={provider.id}
             data-testid={provider.id}
+            id={provider.id}
           >
             <DataListItemRow>
               <DataListItemCells
