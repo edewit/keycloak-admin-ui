@@ -80,7 +80,7 @@ describe("Client authentication subtab", () => {
       .formUtils()
       .save();
 
-    masthead.checkNotificationMessage("Resource successfully updated", true);
+    masthead.checkNotificationMessage("Resource successfully updated");
     sidebarPage.waitForPageLoad();
     authenticationTab.formUtils().cancel();
   });
