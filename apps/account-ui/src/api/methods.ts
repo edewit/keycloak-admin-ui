@@ -1,8 +1,8 @@
 import { parseResponse } from "./parse-response";
 import {
+  ClientRepresentation,
   CredentialContainer,
   CredentialRepresentation,
-  ClientRepresentation,
   DeviceRepresentation,
   Permission,
   UserRepresentation,
