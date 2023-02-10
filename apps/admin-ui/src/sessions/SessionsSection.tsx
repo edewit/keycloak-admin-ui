@@ -1,17 +1,25 @@
-import { DropdownItem, PageSection } from "@patternfly/react-core";
+import {
+  DropdownItem,
+  PageSection,
+  Select,
+  SelectOption,
+} from "@patternfly/react-core";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { FilterIcon } from "@patternfly/react-icons";
+import { useAlerts } from "../components/alert/Alerts";
+import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
 import { ViewHeader } from "../components/view-header/ViewHeader";
 import { useAdminClient } from "../context/auth/AdminClient";
+import { useRealm } from "../context/realm-context/RealmContext";
 import helpUrls from "../help-urls";
 import { RevocationModal } from "./RevocationModal";
 import SessionsTable from "./SessionsTable";
-import { useConfirmDialog } from "../components/confirm-dialog/ConfirmDialog";
-import { useAlerts } from "../components/alert/Alerts";
-import { useRealm } from "../context/realm-context/RealmContext";
 
 import "./SessionsSection.css";
+
+type FilterType = "all" | "regular" | "offline";
 
 export default function SessionsSection() {
   const { t } = useTranslation("sessions");
@@ -23,6 +31,8 @@ export default function SessionsSection() {
   const { realm } = useRealm();
 
   const [revocationModalOpen, setRevocationModalOpen] = useState(false);
+  const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
+  const [filterType, setFilterType] = useState<FilterType>("all");
   const [noSessions, setNoSessions] = useState(false);
 
   const handleRevocationModalToggle = () => {
@@ -31,26 +41,38 @@ export default function SessionsSection() {
 
   const loader = async () => {
     const activeClients = await adminClient.sessions.find();
-    const clientSessions = (
-      await Promise.all(
-        activeClients.map((client) =>
-          adminClient.clients.listSessions({ id: client.id })
-        )
-      )
-    ).flat();
 
-    setNoSessions(clientSessions.length === 0);
+    const clientSessions =
+      filterType === "all" || filterType === "regular"
+        ? (
+            await Promise.all(
+              activeClients.map((client) =>
+                adminClient.clients.listSessions({ id: client.id })
+              )
+            )
+          ).flat()
+        : [];
 
-    const userIds = Array.from(
-      new Set(clientSessions.map((session) => session.userId))
-    );
-    const userSessions = (
-      await Promise.all(
-        userIds.map((userId) => adminClient.users.listSessions({ id: userId! }))
-      )
-    ).flat();
+    const offline =
+      filterType === "all" || filterType === "offline"
+        ? (
+            await Promise.all(
+              activeClients.map((client) =>
+                adminClient.clients.listOfflineSessions({ id: client.id })
+              )
+            )
+          ).flat()
+        : [];
 
-    return userSessions;
+    setNoSessions(clientSessions.length === 0 && offline.length === 0);
+
+    return [
+      ...clientSessions.map((s) => ({
+        type: t("sessionsType.regularSSO"),
+        ...s,
+      })),
+      ...offline.map((s) => ({ type: t("sessionsType.offline"), ...s })),
+    ];
   };
 
   const [toggleLogoutDialog, LogoutConfirm] = useConfirmDialog({
@@ -105,7 +127,34 @@ export default function SessionsSection() {
             }}
           />
         )}
-        <SessionsTable key={key} loader={loader} />
+        <SessionsTable
+          key={key}
+          loader={loader}
+          filter={
+            <Select
+              data-testid="filter-session-type-select"
+              isOpen={filterDropdownOpen}
+              onToggle={(value) => setFilterDropdownOpen(value)}
+              toggleIcon={<FilterIcon />}
+              onSelect={(_, value) => {
+                setFilterType(value as FilterType);
+                refresh();
+                setFilterDropdownOpen(false);
+              }}
+              selections={filterType}
+            >
+              <SelectOption data-testid="all-sessions-option" value="all">
+                {t("sessionsType.allSessions")}
+              </SelectOption>
+              <SelectOption data-testid="regular-sso-option" value="regular">
+                {t("sessionsType.regularSSO")}
+              </SelectOption>
+              <SelectOption data-testid="offline-option" value="offline">
+                {t("sessionsType.offline")}
+              </SelectOption>
+            </Select>
+          }
+        />
       </PageSection>
     </>
   );

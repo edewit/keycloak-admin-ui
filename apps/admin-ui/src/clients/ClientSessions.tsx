@@ -16,8 +16,24 @@ export const ClientSessions = ({ client }: ClientSessionsProps) => {
   const { adminClient } = useAdminClient();
   const { t } = useTranslation("sessions");
 
-  const loader: LoaderFunction<UserSessionRepresentation> = (first, max) =>
-    adminClient.clients.listSessions({ id: client.id!, first, max });
+  const loader: LoaderFunction<UserSessionRepresentation> = async (
+    first,
+    max
+  ) =>
+    (
+      await Promise.all([
+        (
+          await adminClient.clients.listSessions({ id: client.id!, first, max })
+        ).map((s) => ({ type: t("sessions:sessionsType.regularSSO"), ...s })),
+        (
+          await adminClient.clients.listOfflineSessions({
+            id: client.id!,
+            first,
+            max,
+          })
+        ).map((s) => ({ type: t("sessions:sessionsType.offline"), ...s })),
+      ])
+    ).flat();
 
   return (
     <PageSection variant="light" className="pf-u-p-0">
