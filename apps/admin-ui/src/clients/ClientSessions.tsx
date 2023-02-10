@@ -1,7 +1,6 @@
 import type ClientRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientRepresentation";
 import type UserSessionRepresentation from "@keycloak/keycloak-admin-client/lib/defs/userSessionRepresentation";
 import { PageSection } from "@patternfly/react-core";
-
 import { useTranslation } from "react-i18next";
 
 import type { LoaderFunction } from "../components/table-toolbar/KeycloakDataTable";
@@ -19,21 +18,29 @@ export const ClientSessions = ({ client }: ClientSessionsProps) => {
   const loader: LoaderFunction<UserSessionRepresentation> = async (
     first,
     max
-  ) =>
-    (
-      await Promise.all([
-        (
-          await adminClient.clients.listSessions({ id: client.id!, first, max })
-        ).map((s) => ({ type: t("sessions:sessionsType.regularSSO"), ...s })),
-        (
-          await adminClient.clients.listOfflineSessions({
-            id: client.id!,
-            first,
-            max,
-          })
-        ).map((s) => ({ type: t("sessions:sessionsType.offline"), ...s })),
-      ])
-    ).flat();
+  ) => {
+    const mapSessionsToType =
+      (type: string) => (sessions: UserSessionRepresentation[]) =>
+        sessions.map((session) => ({
+          type,
+          ...session,
+        }));
+
+    const allSessions = await Promise.all([
+      adminClient.clients
+        .listSessions({ id: client.id!, first, max })
+        .then(mapSessionsToType(t("sessions:sessionsType.regularSSO"))),
+      adminClient.clients
+        .listOfflineSessions({
+          id: client.id!,
+          first,
+          max,
+        })
+        .then(mapSessionsToType(t("sessions:sessionsType.offline"))),
+    ]);
+
+    return allSessions.flat();
+  };
 
   return (
     <PageSection variant="light" className="pf-u-p-0">
