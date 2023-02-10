@@ -1,3 +1,4 @@
+import { ClientSessionStat } from "@keycloak/keycloak-admin-client/lib/defs/clientSessionStat";
 import {
   DropdownItem,
   PageSection,
@@ -39,9 +40,9 @@ export default function SessionsSection() {
     setRevocationModalOpen(!revocationModalOpen);
   };
 
-  async function getClientSessions(activeSessions: Record<string, any>[]) {
+  async function getClientSessions(clientSessionStats: ClientSessionStat[]) {
     const sessions = await Promise.all(
-      activeSessions.map((client) =>
+      clientSessionStats.map((client) =>
         adminClient.clients.listSessions({ id: client.id })
       )
     );
@@ -49,9 +50,9 @@ export default function SessionsSection() {
     return sessions.flat();
   }
 
-  async function getOfflineSessions(activeSessions: Record<string, any>[]) {
+  async function getOfflineSessions(clientSessionStats: ClientSessionStat[]) {
     const sessions = await Promise.all(
-      activeSessions.map((client) =>
+      clientSessionStats.map((client) =>
         adminClient.clients.listOfflineSessions({ id: client.id })
       )
     );
@@ -60,10 +61,13 @@ export default function SessionsSection() {
   }
 
   const loader = async () => {
-    const activeSessions = await adminClient.sessions.find();
+    const clientSessionStats = await adminClient.realms.getClientSessionStats({
+      realm,
+    });
+
     const [clientSessions, offlineSessions] = await Promise.all([
-      filterType !== "offline" ? getClientSessions(activeSessions) : [],
-      filterType !== "regular" ? getOfflineSessions(activeSessions) : [],
+      filterType !== "offline" ? getClientSessions(clientSessionStats) : [],
+      filterType !== "regular" ? getOfflineSessions(clientSessionStats) : [],
     ]);
 
     setNoSessions(clientSessions.length === 0 && offlineSessions.length === 0);
