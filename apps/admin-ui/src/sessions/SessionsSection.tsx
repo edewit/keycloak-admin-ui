@@ -39,39 +39,44 @@ export default function SessionsSection() {
     setRevocationModalOpen(!revocationModalOpen);
   };
 
+  async function getClientSessions(activeSessions: Record<string, any>[]) {
+    const sessions = await Promise.all(
+      activeSessions.map((client) =>
+        adminClient.clients.listSessions({ id: client.id })
+      )
+    );
+
+    return sessions.flat();
+  }
+
+  async function getOfflineSessions(activeSessions: Record<string, any>[]) {
+    const sessions = await Promise.all(
+      activeSessions.map((client) =>
+        adminClient.clients.listOfflineSessions({ id: client.id })
+      )
+    );
+
+    return sessions.flat();
+  }
+
   const loader = async () => {
-    const activeClients = await adminClient.sessions.find();
+    const activeSessions = await adminClient.sessions.find();
+    const [clientSessions, offlineSessions] = await Promise.all([
+      filterType !== "offline" ? getClientSessions(activeSessions) : [],
+      filterType !== "regular" ? getOfflineSessions(activeSessions) : [],
+    ]);
 
-    const clientSessions =
-      filterType === "all" || filterType === "regular"
-        ? (
-            await Promise.all(
-              activeClients.map((client) =>
-                adminClient.clients.listSessions({ id: client.id })
-              )
-            )
-          ).flat()
-        : [];
-
-    const offline =
-      filterType === "all" || filterType === "offline"
-        ? (
-            await Promise.all(
-              activeClients.map((client) =>
-                adminClient.clients.listOfflineSessions({ id: client.id })
-              )
-            )
-          ).flat()
-        : [];
-
-    setNoSessions(clientSessions.length === 0 && offline.length === 0);
+    setNoSessions(clientSessions.length === 0 && offlineSessions.length === 0);
 
     return [
       ...clientSessions.map((s) => ({
         type: t("sessionsType.regularSSO"),
         ...s,
       })),
-      ...offline.map((s) => ({ type: t("sessionsType.offline"), ...s })),
+      ...offlineSessions.map((s) => ({
+        type: t("sessionsType.offline"),
+        ...s,
+      })),
     ];
   };
 
