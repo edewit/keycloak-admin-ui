@@ -8,8 +8,6 @@ import { App } from "./App";
 import { initAdminClient } from "./context/auth/AdminClient";
 import { initI18n } from "./i18n";
 
-import "./index.css";
-
 async function initialize() {
   const { keycloak, adminClient } = await initAdminClient();
 

@@ -39,8 +39,6 @@ import { addTrailingSlash } from "../util";
 import { getAuthorizationHeaders } from "../utils/getAuthorizationHeaders";
 import useLocaleSort, { mapByKey } from "../utils/useLocaleSort";
 
-import "./authentication-section.css";
-
 type UsedBy = "SPECIFIC_CLIENTS" | "SPECIFIC_PROVIDERS" | "DEFAULT";
 
 export type AuthenticationType = AuthenticationFlowRepresentation & {

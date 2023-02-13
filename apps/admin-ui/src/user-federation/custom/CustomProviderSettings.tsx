@@ -27,8 +27,6 @@ import { ExtendedHeader } from "../shared/ExtendedHeader";
 import { SettingsCache } from "../shared/SettingsCache";
 import { SyncSettings } from "./SyncSettings";
 
-import "./custom-provider-settings.css";
-
 export default function CustomProviderSettings() {
   const { t } = useTranslation("user-federation");
   const { id, providerId } = useParams<CustomUserFederationRouteParams>();

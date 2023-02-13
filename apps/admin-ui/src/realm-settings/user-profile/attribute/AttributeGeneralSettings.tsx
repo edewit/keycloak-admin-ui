@@ -23,8 +23,6 @@ import { useParams } from "../../../utils/useParams";
 import { USERNAME_EMAIL } from "../../NewAttributeSettings";
 import type { AttributeParams } from "../../routes/Attribute";
 
-import "../../realm-settings-section.css";
-
 const REQUIRED_FOR = [
   { label: "requiredForLabel.both", value: ["admin", "user"] },
   { label: "requiredForLabel.users", value: ["user"] },

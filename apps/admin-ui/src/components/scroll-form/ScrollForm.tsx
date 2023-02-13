@@ -13,8 +13,6 @@ import { mainPageContentId } from "../../App";
 import { FormPanel } from "./FormPanel";
 import { ScrollPanel } from "./ScrollPanel";
 
-import "./scroll-form.css";
-
 type ScrollSection = {
   title: string;
   panel: ReactNode;

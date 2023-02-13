@@ -1,8 +1,6 @@
 import { Title } from "@patternfly/react-core";
 import { HTMLProps } from "react";
 
-import "./form-panel.css";
-
 type ScrollPanelProps = HTMLProps<HTMLFormElement> & {
   title: string;
   scrollId: string;

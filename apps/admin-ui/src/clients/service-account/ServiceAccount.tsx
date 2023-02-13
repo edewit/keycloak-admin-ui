@@ -15,8 +15,6 @@ import { toUser } from "../../user/routes/User";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { useAccess } from "../../context/access/Access";
 
-import "./service-account.css";
-
 type ServiceAccountProps = {
   client: ClientRepresentation;
 };

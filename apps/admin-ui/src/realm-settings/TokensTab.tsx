@@ -28,8 +28,6 @@ import { useServerInfo } from "../context/server-info/ServerInfoProvider";
 import { useWhoAmI } from "../context/whoami/WhoAmI";
 import { convertToFormValues } from "../util";
 
-import "./realm-settings-section.css";
-
 type RealmSettingsSessionsTabProps = {
   realm: RealmRepresentation;
   save: (realm: RealmRepresentation) => void;

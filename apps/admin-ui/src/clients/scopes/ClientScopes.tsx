@@ -41,8 +41,6 @@ import useLocaleSort, { mapByKey } from "../../utils/useLocaleSort";
 import { useAccess } from "../../context/access/Access";
 import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
 
-import "./client-scopes.css";
-
 export type ClientScopesProps = {
   clientId: string;
   protocol: string;

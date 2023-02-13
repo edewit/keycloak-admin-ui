@@ -14,8 +14,6 @@ import { ReactElement, useState } from "react";
 import { To, useNavigate } from "react-router-dom";
 import { ClickableCard } from "./ClickableCard";
 
-import "./keycloak-card.css";
-
 export type KeycloakCardProps = {
   title: string;
   dropdownItems?: ReactElement[];

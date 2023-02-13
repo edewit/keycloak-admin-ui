@@ -20,8 +20,6 @@ import { prettyPrintJSON } from "../../util";
 import { useParams } from "../../utils/useParams";
 import type { ClientParams } from "../routes/Client";
 
-import "./authorization-details.css";
-
 export const AuthorizationExport = () => {
   const { t } = useTranslation("clients");
   const { adminClient } = useAdminClient();

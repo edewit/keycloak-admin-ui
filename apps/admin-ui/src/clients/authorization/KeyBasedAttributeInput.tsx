@@ -22,8 +22,6 @@ import type ResourceRepresentation from "@keycloak/keycloak-admin-client/lib/def
 import { defaultContextAttributes } from "../utils";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
 
-import "./key-based-attribute-input.css";
-
 export type AttributeType = {
   key?: string;
   name: string;

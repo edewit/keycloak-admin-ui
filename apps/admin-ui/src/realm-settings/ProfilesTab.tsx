@@ -30,8 +30,6 @@ import type ClientProfileRepresentation from "@keycloak/keycloak-admin-client/li
 import { toClientProfile } from "./routes/ClientProfile";
 import { KeycloakSpinner } from "../components/keycloak-spinner/KeycloakSpinner";
 
-import "./realm-settings-section.css";
-
 type ClientProfile = ClientProfileRepresentation & {
   global: boolean;
 };

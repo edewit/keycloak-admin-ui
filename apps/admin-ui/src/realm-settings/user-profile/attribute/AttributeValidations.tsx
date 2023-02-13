@@ -23,8 +23,6 @@ import useToggle from "../../../utils/useToggle";
 import type { IndexedValidations } from "../../NewAttributeSettings";
 import { AddValidatorDialog } from "../attribute/AddValidatorDialog";
 
-import "../../realm-settings-section.css";
-
 export const AttributeValidations = () => {
   const { t } = useTranslation("realm-settings");
   const [addValidatorModalOpen, toggleModal] = useToggle();

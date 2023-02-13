@@ -31,7 +31,6 @@ import { ClientSecret } from "./ClientSecret";
 import { SignedJWT } from "./SignedJWT";
 import { X509 } from "./X509";
 
-import "./credentials.css";
 import { FormFields } from "../ClientDetails";
 
 type AccessToken = {

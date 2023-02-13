@@ -37,8 +37,6 @@ import { defaultContextAttributes } from "../utils";
 import { Results } from "./evaluate/Results";
 import { KeyBasedAttributeInput } from "./KeyBasedAttributeInput";
 
-import "./auth-evaluate.css";
-
 interface EvaluateFormInputs
   extends Omit<ResourceEvaluation, "context" | "resources"> {
   alias: string;

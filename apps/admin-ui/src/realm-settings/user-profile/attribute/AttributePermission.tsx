@@ -5,8 +5,6 @@ import { useTranslation } from "react-i18next";
 import { FormAccess } from "../../../components/form-access/FormAccess";
 import { HelpItem } from "../../../components/help-enabler/HelpItem";
 
-import "../../realm-settings-section.css";
-
 const Permissions = ({ name }: { name: string }) => {
   const { t } = useTranslation("realm-settings");
   const { control } = useFormContext();

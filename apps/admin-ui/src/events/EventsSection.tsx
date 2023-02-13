@@ -50,8 +50,6 @@ import useFormatDate, { FORMAT_DATE_AND_TIME } from "../utils/useFormatDate";
 import { AdminEvents } from "./AdminEvents";
 import { EventsTab, toEvents } from "./routes/Events";
 
-import "./events.css";
-
 type UserEventSearchForm = {
   client: string;
   dateFrom: string;

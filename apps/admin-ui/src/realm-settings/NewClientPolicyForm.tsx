@@ -48,8 +48,6 @@ import {
 } from "./routes/EditClientPolicy";
 import { toEditClientPolicyCondition } from "./routes/EditCondition";
 
-import "./realm-settings-section.css";
-
 type NewClientPolicyForm = Required<ClientPolicyRepresentation>;
 
 const defaultValues: NewClientPolicyForm = {

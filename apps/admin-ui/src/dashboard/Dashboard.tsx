@@ -40,8 +40,6 @@ import {
 import { DashboardTab, toDashboard } from "./routes/Dashboard";
 import { ProviderInfo } from "./ProviderInfo";
 
-import "./dashboard.css";
-
 const EmptyDashboard = () => {
   const { t } = useTranslation("dashboard");
   const { realm } = useRealm();

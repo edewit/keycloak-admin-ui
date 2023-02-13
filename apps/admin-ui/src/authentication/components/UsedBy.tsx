@@ -16,8 +16,6 @@ import useToggle from "../../utils/useToggle";
 import { useAdminClient } from "../../context/auth/AdminClient";
 import { fetchUsedBy } from "../../components/role-mapping/resource";
 
-import "./used-by.css";
-
 type UsedByProps = {
   authType: AuthenticationType;
 };

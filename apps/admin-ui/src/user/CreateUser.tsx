@@ -18,8 +18,6 @@ import {
   userProfileErrorToString,
 } from "./UserProfileFields";
 
-import "./user-section.css";
-
 export default function CreateUser() {
   const { t } = useTranslation("users");
   const { addAlert, addError } = useAlerts();

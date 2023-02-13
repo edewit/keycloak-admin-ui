@@ -24,8 +24,6 @@ import { KeycloakSpinner } from "../../components/keycloak-spinner/KeycloakSpinn
 import { useRealm } from "../../context/realm-context/RealmContext";
 import useToggle from "../../utils/useToggle";
 
-import "../realm-settings-section.css";
-
 const FILTER_OPTIONS = ["ACTIVE", "PASSIVE", "DISABLED"] as const;
 type FilterType = (typeof FILTER_OPTIONS)[number];
 

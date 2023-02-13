@@ -18,8 +18,6 @@ import helpUrls from "../help-urls";
 import { RevocationModal } from "./RevocationModal";
 import SessionsTable from "./SessionsTable";
 
-import "./SessionsSection.css";
-
 type FilterType = "all" | "regular" | "offline";
 
 export default function SessionsSection() {

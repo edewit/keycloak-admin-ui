@@ -16,8 +16,6 @@ import { FormPanel } from "../components/scroll-form/FormPanel";
 import { TimeSelector } from "../components/time-selector/TimeSelector";
 import { convertToFormValues } from "../util";
 
-import "./realm-settings-section.css";
-
 type RealmSettingsSessionsTabProps = {
   realm: RealmRepresentation;
   save: (realm: RealmRepresentation) => void;

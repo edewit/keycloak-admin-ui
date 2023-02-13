@@ -24,8 +24,6 @@ import { useWhoAmI } from "../../context/whoami/WhoAmI";
 import { toDashboard } from "../../dashboard/routes/Dashboard";
 import { toAddRealm } from "../../realm/routes/AddRealm";
 
-import "./realm-selector.css";
-
 type AddRealmProps = {
   onClick: () => void;
 };

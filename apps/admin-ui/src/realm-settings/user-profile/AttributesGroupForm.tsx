@@ -23,8 +23,6 @@ import type { EditAttributesGroupParams } from "../routes/EditAttributesGroup";
 import { toUserProfile } from "../routes/UserProfile";
 import { useUserProfile } from "./UserProfileContext";
 
-import "../realm-settings-section.css";
-
 function parseAnnotations(input: Record<string, unknown>): KeyValueType[] {
   return Object.entries(input).reduce((p, [key, value]) => {
     if (typeof value === "string") {

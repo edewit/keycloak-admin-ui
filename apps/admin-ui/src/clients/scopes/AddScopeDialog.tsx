@@ -30,8 +30,6 @@ import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState
 import { getProtocolName } from "../utils";
 import useToggle from "../../utils/useToggle";
 
-import "./client-scopes.css";
-
 export type AddScopeDialogProps = {
   clientScopes: ClientScopeRepresentation[];
   clientName?: string;

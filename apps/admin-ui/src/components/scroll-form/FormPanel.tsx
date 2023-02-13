@@ -7,8 +7,6 @@ import {
 } from "@patternfly/react-core";
 import { PropsWithChildren } from "react";
 
-import "./form-panel.css";
-
 type FormPanelProps = {
   title: string;
   scrollId?: string;

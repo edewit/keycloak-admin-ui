@@ -37,8 +37,6 @@ import { DeleteGroup } from "./components/DeleteGroup";
 import useToggle from "../utils/useToggle";
 import { GroupBreadCrumbs } from "../components/bread-crumb/GroupBreadCrumbs";
 
-import "./GroupsSection.css";
-
 export default function GroupsSection() {
   const { t } = useTranslation("groups");
   const [activeTab, setActiveTab] = useState(0);

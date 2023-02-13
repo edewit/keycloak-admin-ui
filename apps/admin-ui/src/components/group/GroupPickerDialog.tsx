@@ -22,8 +22,6 @@ import { ListEmptyState } from "../list-empty-state/ListEmptyState";
 import { PaginatingTableToolbar } from "../table-toolbar/PaginatingTableToolbar";
 import { GroupPath } from "./GroupPath";
 
-import "./group-picker-dialog.css";
-
 export type GroupPickerDialogProps = {
   id?: string;
   type: "selectOne" | "selectMany";

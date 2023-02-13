@@ -29,8 +29,6 @@ import { HelpItem } from "../../components/help-enabler/HelpItem";
 import useLocaleSort from "../../utils/useLocaleSort";
 import { useConfirmDialog } from "../confirm-dialog/ConfirmDialog";
 
-import "./permissions-tab.css";
-
 type PermissionScreenType =
   | "clients"
   | "users"

@@ -40,8 +40,6 @@ import {
 import { UserRoleMapping } from "./UserRoleMapping";
 import { UserSessions } from "./UserSessions";
 
-import "./user-section.css";
-
 export default function EditUser() {
   const { adminClient } = useAdminClient();
   const { realm } = useRealm();

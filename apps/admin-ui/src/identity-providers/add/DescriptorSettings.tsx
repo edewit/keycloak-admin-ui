@@ -18,8 +18,6 @@ import { KeycloakTextInput } from "../../components/keycloak-text-input/Keycloak
 import { FormGroupField } from "../component/FormGroupField";
 import { SwitchField } from "../component/SwitchField";
 
-import "./discovery-settings.css";
-
 type DescriptorSettingsProps = {
   readOnly: boolean;
 };

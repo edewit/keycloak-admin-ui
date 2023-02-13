@@ -47,8 +47,6 @@ import type { Row } from "../clients/scopes/ClientScopes";
 import { getProtocolName } from "../clients/utils";
 import helpUrls from "../help-urls";
 
-import "./client-scope.css";
-
 type TypeSelectorProps = ClientScopeDefaultOptionalType & {
   refresh: () => void;
 };

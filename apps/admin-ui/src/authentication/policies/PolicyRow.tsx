@@ -15,8 +15,6 @@ import { useTranslation } from "react-i18next";
 import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
 
-import "./policy-row.css";
-
 type PolicyRowProps = {
   policy: PasswordPolicyTypeRepresentation;
   onRemove: (id?: string) => void;

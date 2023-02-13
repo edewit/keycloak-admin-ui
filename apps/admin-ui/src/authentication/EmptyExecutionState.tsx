@@ -14,8 +14,6 @@ import { ListEmptyState } from "../components/list-empty-state/ListEmptyState";
 import { AddStepModal } from "./components/modals/AddStepModal";
 import { AddSubFlowModal, Flow } from "./components/modals/AddSubFlowModal";
 
-import "./empty-execution-state.css";
-
 const SECTIONS = ["addExecution", "addSubFlow"] as const;
 type SectionType = (typeof SECTIONS)[number] | undefined;
 

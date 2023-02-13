@@ -27,8 +27,6 @@ import { AttributePermission } from "./user-profile/attribute/AttributePermissio
 import { AttributeValidations } from "./user-profile/attribute/AttributeValidations";
 import { UserProfileProvider } from "./user-profile/UserProfileContext";
 
-import "./realm-settings-section.css";
-
 type IndexedAnnotations = {
   key: string;
   value?: Record<string, unknown>;

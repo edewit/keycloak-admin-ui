@@ -17,8 +17,6 @@ import { createNamedContext } from "../../utils/createNamedContext";
 import useRequiredContext from "../../utils/useRequiredContext";
 import { useStoredState } from "../../utils/useStoredState";
 
-import "./help-header.css";
-
 type HelpContextProps = {
   enabled: boolean;
   toggleHelp: () => void;

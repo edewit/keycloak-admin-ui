@@ -16,8 +16,6 @@ import { KeycloakTextInput } from "../../components/keycloak-text-input/Keycloak
 import { SwitchField } from "../component/SwitchField";
 import { TextField } from "../component/TextField";
 
-import "./discovery-settings.css";
-
 const PKCE_METHODS = ["plain", "S256"] as const;
 
 type DiscoverySettingsProps = {

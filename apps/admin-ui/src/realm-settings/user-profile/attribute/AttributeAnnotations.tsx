@@ -4,8 +4,6 @@ import { FormGroup, Grid, GridItem } from "@patternfly/react-core";
 import { FormAccess } from "../../../components/form-access/FormAccess";
 import { KeyValueInput } from "../../../components/key-value-form/KeyValueInput";
 
-import "../../realm-settings-section.css";
-
 export const AttributeAnnotations = () => {
   const { t } = useTranslation("realm-settings");
 

@@ -40,8 +40,6 @@ import { prettyPrintJSON } from "../util";
 import useFormatDate, { FORMAT_DATE_AND_TIME } from "../utils/useFormatDate";
 import { CellResourceLinkRenderer } from "./ResourceLinks";
 
-import "./events.css";
-
 type DisplayDialogProps = {
   titleKey: string;
   onClose: () => void;

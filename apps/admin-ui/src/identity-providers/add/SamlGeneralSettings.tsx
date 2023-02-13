@@ -11,8 +11,6 @@ import { DisplayOrder } from "../component/DisplayOrder";
 import { RedirectUrl } from "../component/RedirectUrl";
 import { TextField } from "../component/TextField";
 
-import "./saml-general-settings.css";
-
 type SamlGeneralSettingsProps = {
   id: string;
   isAliasReadonly?: boolean;

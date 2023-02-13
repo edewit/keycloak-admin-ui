@@ -9,8 +9,6 @@ import { toScopeDetails } from "../routes/Scope";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { toPermissionDetails } from "../routes/PermissionDetails";
 
-import "./detail-cell.css";
-
 type Scope = { id: string; name: string }[];
 
 type DetailCellProps = {

@@ -31,8 +31,6 @@ import { useParams } from "../../utils/useParams";
 import { toClientScope } from "../routes/ClientScope";
 import { MapperParams, MapperRoute } from "../routes/Mapper";
 
-import "./mapping-details.css";
-
 export default function MappingDetails() {
   const { t } = useTranslation("client-scopes");
   const { adminClient } = useAdminClient();

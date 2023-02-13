@@ -15,8 +15,6 @@ import { HelpItem } from "../../components/help-enabler/HelpItem";
 import { convertAttributeNameToForm } from "../../util";
 import { FormFields } from "../ClientDetails";
 
-import "./capability-config.css";
-
 type CapabilityConfigProps = {
   unWrap?: boolean;
   protocol?: string;

@@ -8,8 +8,6 @@ import { FormAccess } from "../../components/form-access/FormAccess";
 import { HelpLinkTextInput } from "./HelpLinkTextInput";
 import { convertToFormValues } from "../../util";
 
-import "./security-defences.css";
-
 type HeadersFormProps = {
   realm: RealmRepresentation;
   save: (realm: RealmRepresentation) => void;

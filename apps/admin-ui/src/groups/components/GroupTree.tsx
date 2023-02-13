@@ -27,8 +27,6 @@ import { fetchAdminUI } from "../../context/auth/admin-ui-endpoint";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { joinPath } from "../../utils/joinPath";
 
-import "./group-tree.css";
-
 type GroupTreeContextMenuProps = {
   group: GroupRepresentation;
   refresh: () => void;

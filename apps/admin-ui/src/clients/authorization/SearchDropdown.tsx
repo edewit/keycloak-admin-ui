@@ -17,8 +17,6 @@ import { useTranslation } from "react-i18next";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
 import useToggle from "../../utils/useToggle";
 
-import "./search-dropdown.css";
-
 export type SearchForm = {
   name?: string;
   resource?: string;

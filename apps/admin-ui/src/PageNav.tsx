@@ -16,8 +16,6 @@ import { useRealm } from "./context/realm-context/RealmContext";
 import { AddRealmRoute } from "./realm/routes/AddRealm";
 import { routes } from "./route-config";
 
-import "./page-nav.css";
-
 type LeftNavProps = { title: string; path: string };
 
 const LeftNav = ({ title, path }: LeftNavProps) => {

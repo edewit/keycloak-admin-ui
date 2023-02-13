@@ -55,8 +55,6 @@ import {
 import { useAccess } from "../context/access/Access";
 import { BruteUser, findUsers } from "../components/role-mapping/resource";
 
-import "./user-section.css";
-
 export default function UsersSection() {
   const { t } = useTranslation("users");
   const { adminClient } = useAdminClient();

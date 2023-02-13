@@ -41,8 +41,6 @@ import { toPermissionDetails } from "../routes/PermissionDetails";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 import { toPolicyDetails } from "../routes/PolicyDetails";
 
-import "./permissions.css";
-
 type PermissionsProps = {
   clientId: string;
 };

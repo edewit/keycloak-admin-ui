@@ -23,8 +23,6 @@ import { ExecutionConfigModal } from "./ExecutionConfigModal";
 import { AddFlowDropdown } from "./AddFlowDropdown";
 import { EditFlow } from "./EditFlow";
 
-import "./flow-row.css";
-
 type FlowRowProps = {
   builtIn: boolean;
   execution: ExpandableExecution;

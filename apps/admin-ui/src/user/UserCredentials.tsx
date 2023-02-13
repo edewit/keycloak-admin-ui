@@ -36,7 +36,6 @@ import styles from "@patternfly/react-styles/css/components/Table/table";
 import { CredentialRow } from "./user-credentials/CredentialRow";
 import { toUpperCase } from "../util";
 
-import "./user-credentials.css";
 import { FederatedCredentials } from "./user-credentials/FederatedCredentials";
 
 type UserCredentialsProps = {

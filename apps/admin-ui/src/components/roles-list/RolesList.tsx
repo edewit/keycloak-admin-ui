@@ -16,8 +16,6 @@ import { KeycloakSpinner } from "../keycloak-spinner/KeycloakSpinner";
 import { ListEmptyState } from "../list-empty-state/ListEmptyState";
 import { KeycloakDataTable } from "../table-toolbar/KeycloakDataTable";
 
-import "./RolesList.css";
-
 type RolesListProps = {
   paginated?: boolean;
   parentRoleId?: string;

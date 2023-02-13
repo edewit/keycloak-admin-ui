@@ -19,8 +19,6 @@ import { useAdminClient } from "../context/auth/AdminClient";
 import { useRealm } from "../context/realm-context/RealmContext";
 import { prettyPrintJSON } from "../util";
 
-import "./partial-export.css";
-
 export type PartialExportDialogProps = {
   isOpen: boolean;
   onClose: () => void;

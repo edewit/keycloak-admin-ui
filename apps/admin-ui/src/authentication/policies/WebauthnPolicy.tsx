@@ -35,8 +35,6 @@ import { useAdminClient } from "../../context/auth/AdminClient";
 import { useRealm } from "../../context/realm-context/RealmContext";
 import { convertFormValuesToObject, convertToFormValues } from "../../util";
 
-import "./webauthn-policy.css";
-
 const SIGNATURE_ALGORITHMS = [
   "ES256",
   "ES384",

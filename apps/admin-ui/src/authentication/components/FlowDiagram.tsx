@@ -25,7 +25,6 @@ import { ConditionalNode } from "./diagram/ConditionalNode";
 import { EndSubFlowNode, StartSubFlowNode } from "./diagram/SubFlowNode";
 
 import "reactflow/dist/style.css";
-import "./flow-diagram.css";
 
 type FlowDiagramProps = {
   executionList: ExecutionList;

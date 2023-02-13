@@ -1,7 +1,5 @@
 import { Card, CardBody } from "@patternfly/react-core";
 
-import "./flow-title.css";
-
 type FlowTitleProps = {
   id?: string;
   title: string;

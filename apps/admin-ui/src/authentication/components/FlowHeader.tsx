@@ -7,8 +7,6 @@ import {
   DataListCell,
 } from "@patternfly/react-core";
 
-import "./flow-header.css";
-
 export const FlowHeader = () => {
   const { t } = useTranslation("authentication");
   return (
