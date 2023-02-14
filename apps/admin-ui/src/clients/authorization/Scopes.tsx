@@ -24,7 +24,6 @@ import { KeycloakSpinner } from "../../components/keycloak-spinner/KeycloakSpinn
 import { PaginatingTableToolbar } from "../../components/table-toolbar/PaginatingTableToolbar";
 import { useAdminClient, useFetch } from "../../context/auth/AdminClient";
 import { useRealm } from "../../context/realm-context/RealmContext";
-import { MoreLabel } from "./MoreLabel";
 import { toScopeDetails } from "../routes/Scope";
 import { toNewScope } from "../routes/NewScope";
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
@@ -48,17 +47,6 @@ type ExpandableRow = {
   id: string;
   isExpanded: boolean;
 };
-
-const PermissionsRenderer = ({
-  row,
-}: {
-  row: PermissionScopeRepresentation;
-}) => (
-  <>
-    {row.permissions?.[0]?.name ? row.permissions[0]?.name : "—"}{" "}
-    <MoreLabel array={row.permissions} />
-  </>
-);
 
 export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
   const { t } = useTranslation("clients");
@@ -87,27 +75,13 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
         deep: false,
         name: search,
       };
-      const scopes = await adminClient.clients.listAllScopes({
+      return await adminClient.clients.listAllScopes({
         ...params,
         id: clientId,
       });
-
-      return await Promise.all(
-        scopes.map(async (scope) => {
-          const options = { id: clientId, scopeId: scope.id! };
-          const permissions =
-            await adminClient.clients.listAllPermissionsByScope(options);
-
-          return {
-            ...scope,
-            permissions,
-            isLoaded: false,
-          };
-        })
-      );
     },
     (scopes) => {
-      setScopes(scopes);
+      setScopes(scopes.map((s) => ({ ...s, isLoaded: false })));
       setCollapsed(scopes.map((s) => ({ id: s.id!, isExpanded: false })));
     },
     [key, search, first, max]
@@ -128,6 +102,10 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
         newlyOpened.map(async (scope) => ({
           ...scope,
           resources: await adminClient.clients.listAllResourcesByScope({
+            id: clientId,
+            scopeId: scope.id!,
+          }),
+          permissions: await adminClient.clients.listAllPermissionsByScope({
             id: clientId,
             scopeId: scope.id!,
           }),
@@ -201,7 +179,6 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
                 <Tr>
                   <Th />
                   <Th>{t("common:name")}</Th>
-                  <Th>{t("common:permissions")}</Th>
                   <Th />
                   <Th />
                 </Tr>
@@ -232,9 +209,6 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
                       >
                         {scope.name}
                       </Link>
-                    </Td>
-                    <Td>
-                      <PermissionsRenderer row={scope} />
                     </Td>
                     <Td width={10}>
                       <Button
@@ -276,7 +250,7 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
                     <Td />
                     <Td colSpan={4}>
                       <ExpandableRowContent>
-                        {isExpanded(scope.id) && (
+                        {isExpanded(scope.id) && scope.isLoaded ? (
                           <DescriptionList
                             isHorizontal
                             className="keycloak_resource_details"
@@ -307,6 +281,8 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
                               }
                             />
                           </DescriptionList>
+                        ) : (
+                          <KeycloakSpinner />
                         )}
                       </ExpandableRowContent>
                     </Td>
