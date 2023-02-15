@@ -1,19 +1,5 @@
 name: Cypress
-on:
-  push:
-    branches: [main, release/**]
-  pull_request:
-    branches: [main, release/**]
-  schedule:
-    - cron: '0 4 * * *'
-  workflow_dispatch:
-    inputs:
-      keycloakRepo:
-        description: The location of the Keycloak repo (e.g. keycloak/keycloak).
-        required: false
-      keycloakBranch:
-        description: The branch to check out for the Keycloak repo (e.g. main).
-        required: false
+on: [push]
 concurrency:
   # Only cancel jobs for new commits on PRs, and always do a complete run on other branches (e.g. `main`).
   # See: https://docs.github.com/en/actions/using-jobs/using-concurrency#example-using-a-fallback-value
@@ -138,7 +124,7 @@ jobs:
         env:
           CYPRESS_BASE_URL: http://localhost:8080/admin/
           CYPRESS_KEYCLOAK_SERVER: http://localhost:8080
-          CYPRESS_RECORD_KEY: b8f1d15e-eab8-4ee7-8e44-c6d7cd8fc0eb
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload server logs
