@@ -68,14 +68,14 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
   const [search, setSearch] = useState("");
 
   useFetch(
-    async () => {
+    () => {
       const params = {
         first,
         max: max + 1,
         deep: false,
         name: search,
       };
-      return await adminClient.clients.listAllScopes({
+      return adminClient.clients.listAllScopes({
         ...params,
         id: clientId,
       });
@@ -98,20 +98,27 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
         .map(({ id }) => getScope(id))
         .filter((s) => !s.isLoaded);
 
-      return await Promise.all(
-        newlyOpened.map(async (scope) => ({
-          ...scope,
-          resources: await adminClient.clients.listAllResourcesByScope({
-            id: clientId,
-            scopeId: scope.id!,
-          }),
-          permissions: await adminClient.clients.listAllPermissionsByScope({
-            id: clientId,
-            scopeId: scope.id!,
-          }),
-          isLoaded: true,
-        }))
+      const list = await Promise.all(
+        newlyOpened.map(async (scope) => {
+          return await Promise.all([
+            adminClient.clients.listAllResourcesByScope({
+              id: clientId,
+              scopeId: scope.id!,
+            }),
+            adminClient.clients.listAllPermissionsByScope({
+              id: clientId,
+              scopeId: scope.id!,
+            }),
+          ]);
+        })
       );
+
+      return newlyOpened.map((scope, index) => ({
+        ...scope,
+        resources: list[index][0],
+        permissions: list[index][1],
+        isLoaded: true,
+      }));
     },
     (resourcesScopes) => {
       let result = [...(scopes || [])];
