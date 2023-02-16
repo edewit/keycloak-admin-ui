@@ -56,7 +56,7 @@ const LinkedAccounts = () => {
         </StackItem>
         <StackItem>
           <Title headingLevel="h2" className="pf-u-mt-xl pf-u-mb-lg" size="xl">
-            {t("unlinkedLoginProviders")}{" "}
+            {t("unlinkedLoginProviders")}
           </Title>
           <DataList id="unlinked-idps" aria-label={t("unlinkedLoginProviders")}>
             {unLinkedAccounts.length > 0 ? (
