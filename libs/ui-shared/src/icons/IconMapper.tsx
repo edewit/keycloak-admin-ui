@@ -13,42 +13,45 @@ import {
   StackOverflowIcon,
   TwitterIcon,
 } from "@patternfly/react-icons";
-import type { SVGIconProps } from "@patternfly/react-icons/dist/js/createIcon";
 
 type IconMapperProps = {
   icon: string;
 };
 
 export const IconMapper = ({ icon }: IconMapperProps) => {
-  const defaultProps: SVGIconProps = { size: "lg" };
+  const Icon = getIcon(icon);
+  return <Icon size="lg" />;
+};
+
+function getIcon(icon: string) {
   switch (icon) {
     case "github":
-      return <GithubIcon {...defaultProps} />;
+      return GithubIcon;
     case "facebook":
-      return <FacebookSquareIcon {...defaultProps} />;
+      return FacebookSquareIcon;
     case "gitlab":
-      return <GitlabIcon {...defaultProps} />;
+      return GitlabIcon;
     case "google":
-      return <GoogleIcon {...defaultProps} />;
+      return GoogleIcon;
     case "linkedin":
-      return <LinkedinIcon {...defaultProps} />;
+      return LinkedinIcon;
 
     case "openshift-v3":
     case "openshift-v4":
-      return <OpenshiftIcon {...defaultProps} />;
+      return OpenshiftIcon;
     case "stackoverflow":
-      return <StackOverflowIcon {...defaultProps} />;
+      return StackOverflowIcon;
     case "twitter":
-      return <TwitterIcon {...defaultProps} />;
+      return TwitterIcon;
     case "microsoft":
-      return <MicrosoftIcon {...defaultProps} />;
+      return MicrosoftIcon;
     case "bitbucket":
-      return <BitbucketIcon {...defaultProps} />;
+      return BitbucketIcon;
     case "instagram":
-      return <InstagramIcon {...defaultProps} />;
+      return InstagramIcon;
     case "paypal":
-      return <PaypalIcon {...defaultProps} />;
+      return PaypalIcon;
     default:
-      return <CubeIcon {...defaultProps} />;
+      return CubeIcon;
   }
-};
+}
