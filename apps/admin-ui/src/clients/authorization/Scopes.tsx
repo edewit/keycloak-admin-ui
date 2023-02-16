@@ -92,15 +92,15 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
     collapsed.find((c) => c.id === id)?.isExpanded || false;
 
   useFetch(
-    async () => {
+    () => {
       const newlyOpened = collapsed
         .filter((row) => row.isExpanded)
         .map(({ id }) => getScope(id))
         .filter((s) => !s.isLoaded);
 
-      const list = await Promise.all(
+      return Promise.all(
         newlyOpened.map(async (scope) => {
-          return await Promise.all([
+          const [resources, permissions] = await Promise.all([
             adminClient.clients.listAllResourcesByScope({
               id: clientId,
               scopeId: scope.id!,
@@ -110,15 +110,15 @@ export const AuthorizationScopes = ({ clientId }: ScopesProps) => {
               scopeId: scope.id!,
             }),
           ]);
+
+          return {
+            ...scope,
+            resources,
+            permissions,
+            isLoaded: true,
+          };
         })
       );
-
-      return newlyOpened.map((scope, index) => ({
-        ...scope,
-        resources: list[index][0],
-        permissions: list[index][1],
-        isLoaded: true,
-      }));
     },
     (resourcesScopes) => {
       let result = [...(scopes || [])];
