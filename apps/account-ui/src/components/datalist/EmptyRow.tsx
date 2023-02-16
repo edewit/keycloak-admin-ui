@@ -6,7 +6,7 @@ import {
 } from "@patternfly/react-core";
 
 type EmptyRowProps = {
-  message?: string;
+  message: string;
 };
 
 export const EmptyRow = ({ message }: EmptyRowProps) => {
