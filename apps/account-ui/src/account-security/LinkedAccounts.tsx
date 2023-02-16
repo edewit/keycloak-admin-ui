@@ -5,10 +5,11 @@ import {
   StackItem,
   Title,
 } from "@patternfly/react-core";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getLinkedAccounts } from "../api/methods";
 import { LinkedAccountRepresentation } from "../api/representations";
+import { EmptyRow } from "../components/datalist/EmptyRow";
 import { usePromise } from "../utils/usePromise";
 import { AccountRow } from "./AccountRow";
 
@@ -21,6 +22,16 @@ const LinkedAccounts = () => {
 
   usePromise((signal) => getLinkedAccounts({ signal }), setAccounts, [key]);
 
+  const linkedAccounts = useMemo(
+    () => accounts.filter((account) => account.connected),
+    [accounts]
+  );
+
+  const unLinkedAccounts = useMemo(
+    () => accounts.filter((account) => !account.connected),
+    [accounts]
+  );
+
   return (
     <PageSection isFilled variant="light">
       <Stack hasGutter>
@@ -29,16 +40,18 @@ const LinkedAccounts = () => {
             {t("linkedLoginProviders")}
           </Title>
           <DataList id="linked-idps" aria-label={t("linkedLoginProviders")}>
-            {accounts
-              .filter((account) => account.connected)
-              .map((account) => (
+            {linkedAccounts.length > 0 ? (
+              linkedAccounts.map((account) => (
                 <AccountRow
                   key={account.providerName}
                   account={account}
                   isLinked
                   refresh={refresh}
                 />
-              ))}
+              ))
+            ) : (
+              <EmptyRow message={t("linkedEmpty")} />
+            )}
           </DataList>
         </StackItem>
         <StackItem>
@@ -46,15 +59,17 @@ const LinkedAccounts = () => {
             {t("unlinkedLoginProviders")}{" "}
           </Title>
           <DataList id="unlinked-idps" aria-label={t("unlinkedLoginProviders")}>
-            {accounts
-              .filter((account) => !account.connected)
-              .map((account) => (
+            {unLinkedAccounts.length > 0 ? (
+              unLinkedAccounts.map((account) => (
                 <AccountRow
                   key={account.providerName}
                   account={account}
                   refresh={refresh}
                 />
-              ))}
+              ))
+            ) : (
+              <EmptyRow message={t("unlinkedEmpty")} />
+            )}
           </DataList>
         </StackItem>
       </Stack>

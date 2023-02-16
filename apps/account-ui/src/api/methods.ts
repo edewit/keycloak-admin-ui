@@ -1,3 +1,5 @@
+import { environment } from "../environment";
+import { joinPath } from "../utils/joinPath";
 import { parseResponse } from "./parse-response";
 import {
   ClientRepresentation,
@@ -89,7 +91,12 @@ export async function unLinkAccount(account: LinkedAccountRepresentation) {
 
 export async function linkAccount(account: LinkedAccountRepresentation) {
   const redirectUri = encodeURIComponent(
-    "http://localhost:8180/realms/master/account/"
+    joinPath(
+      environment.authServerUrl,
+      "realms",
+      environment.loginRealm,
+      "account"
+    )
   );
   const response = await request("/linked-accounts/" + account.providerName, {
     searchParams: { providerId: account.providerName, redirectUri },
