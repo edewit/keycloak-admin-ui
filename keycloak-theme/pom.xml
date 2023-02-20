@@ -365,7 +365,7 @@
       "resourceUrl": "${resourceUrl}",
       "masterRealm": "${masterRealm}",
       "resourceVersion": "${resourceVersion}",
-      "commitHash": "${git.commit.id}",
+      "commitHash": "",
       "isRunningAsTheme": true
     }
   </script>
