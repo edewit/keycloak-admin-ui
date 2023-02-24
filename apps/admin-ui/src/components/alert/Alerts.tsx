@@ -31,7 +31,7 @@ export const AlertContext = createNamedContext<AlertProps | undefined>(
 export const useAlerts = () => useRequiredContext(AlertContext);
 
 export type AlertEntry = {
-  id: string;
+  id: number;
   message: string;
   variant: AlertVariant;
   description?: string;
@@ -42,13 +42,13 @@ export const AlertProvider = ({ children }: PropsWithChildren) => {
   const setTimeout = useSetTimeout();
   const [alerts, setAlerts] = useState<AlertEntry[]>([]);
 
-  const removeAlert = (id: string) =>
+  const removeAlert = (id: number) =>
     setAlerts((alerts) => alerts.filter((alert) => alert.id !== id));
 
   const addAlert = useCallback<AddAlertFunction>(
     (message, variant = AlertVariant.success, description) => {
       const alert: AlertEntry = {
-        id: crypto.randomUUID(),
+        id: Math.random() * 100,
         message,
         variant,
         description,

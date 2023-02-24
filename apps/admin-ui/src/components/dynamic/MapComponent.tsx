@@ -18,8 +18,9 @@ import type { ComponentProps } from "./components";
 import { convertToName } from "./DynamicComponents";
 
 type IdKeyValueType = KeyValueType & {
-  id: string;
+  id: number;
 };
+const generateId = () => Math.floor(Math.random() * 100);
 
 export const MapComponent = ({ name, label, helpText }: ComponentProps) => {
   const { t } = useTranslation("dynamic");
@@ -34,7 +35,7 @@ export const MapComponent = ({ name, label, helpText }: ComponentProps) => {
     if (!values.length) {
       values.push({ key: "", value: "" });
     }
-    setMap(values.map((value) => ({ ...value, id: crypto.randomUUID() })));
+    setMap(values.map((value) => ({ ...value, id: generateId() })));
   }, [register, getValues]);
 
   const update = (val = map) => {
@@ -128,7 +129,7 @@ export const MapComponent = ({ name, label, helpText }: ComponentProps) => {
             variant="link"
             icon={<PlusCircleIcon />}
             onClick={() =>
-              setMap([...map, { key: "", value: "", id: crypto.randomUUID() }])
+              setMap([...map, { key: "", value: "", id: generateId() }])
             }
           >
             {t("common:addAttribute")}
