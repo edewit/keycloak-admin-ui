@@ -33,7 +33,11 @@ export async function savePersonalInfo(
   info: UserRepresentation
 ): Promise<void> {
   const response = await request("/", { body: info, method: "POST" });
-  return parseResponse(response);
+  if (!response.ok) {
+    const { errors } = await response.json();
+    throw errors;
+  }
+  return undefined;
 }
 
 export async function getPermissionRequests(

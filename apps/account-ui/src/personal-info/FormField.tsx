@@ -1,12 +1,12 @@
 import { FormGroup, Select, SelectOption } from "@patternfly/react-core";
 import { TFuncKey } from "i18next";
+import { get } from "lodash-es";
 import { useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { KeycloakTextInput } from "ui-shared";
 import { UserProfileAttributeMetadata } from "../api/representations";
-
-const ROOT_ATTRIBUTES = ["username", "firstName", "lastName", "email"];
+import { fieldName, isBundleKey, unWrap } from "./PersonalInfo";
 
 type FormFieldProps = {
   attribute: UserProfileAttributeMetadata;
@@ -22,17 +22,8 @@ export const FormField = ({ attribute }: FormFieldProps) => {
   const [open, setOpen] = useState(false);
   const toggle = () => setOpen(!open);
 
-  const isBundleKey = (displayName?: string) => displayName?.includes("${");
-  const unWrap = (key: string) => key.substring(2, key.length - 1);
-
   const isSelect = (attribute: UserProfileAttributeMetadata) =>
     Object.hasOwn(attribute.validators, "options");
-
-  const isRootAttribute = (attr?: string) =>
-    attr && ROOT_ATTRIBUTES.includes(attr);
-
-  const fieldName = (attribute: UserProfileAttributeMetadata) =>
-    `${isRootAttribute(attribute.name) ? "" : "attributes."}${attribute.name}`;
 
   return (
     <FormGroup
@@ -44,12 +35,14 @@ export const FormField = ({ attribute }: FormFieldProps) => {
       }
       fieldId={attribute.name}
       isRequired={attribute.required}
-      validated={errors.username ? "error" : "default"}
-      helperTextInvalid={t("required")}
+      validated={get(errors, fieldName(attribute.name)) ? "error" : "default"}
+      helperTextInvalid={
+        get(errors, fieldName(attribute.name))?.message as string
+      }
     >
       {isSelect(attribute) ? (
         <Controller
-          name={fieldName(attribute)}
+          name={fieldName(attribute.name)}
           defaultValue=""
           control={control}
           render={({ field }) => (
@@ -87,7 +80,7 @@ export const FormField = ({ attribute }: FormFieldProps) => {
       ) : (
         <KeycloakTextInput
           id={attribute.name}
-          {...register(fieldName(attribute))}
+          {...register(fieldName(attribute.name))}
         />
       )}
     </FormGroup>

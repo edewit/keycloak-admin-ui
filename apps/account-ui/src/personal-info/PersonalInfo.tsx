@@ -13,14 +13,26 @@ import { Page } from "../components/page/Page";
 import { usePromise } from "../utils/usePromise";
 import { FormField } from "./FormField";
 
+type FieldError = {
+  field: string;
+  errorMessage: string;
+  params: string[];
+};
+
+const ROOT_ATTRIBUTES = ["username", "firstName", "lastName", "email"];
+export const isBundleKey = (key?: string) => key?.includes("${");
+export const unWrap = (key: string) => key.substring(2, key.length - 1);
+export const isRootAttribute = (attr?: string) =>
+  attr && ROOT_ATTRIBUTES.includes(attr);
+export const fieldName = (name: string) =>
+  `${isRootAttribute(name) ? "" : "attributes."}${name}`;
+
 const PersonalInfo = () => {
   const { t } = useTranslation();
   const [userProfileMetadata, setUserProfileMetadata] =
     useState<UserProfileMetadata>();
-  const form = useForm<UserRepresentation>({
-    mode: "onChange",
-  });
-  const { handleSubmit, reset } = form;
+  const form = useForm<UserRepresentation>({ mode: "onChange" });
+  const { handleSubmit, reset, setError } = form;
   const { addAlert, addError } = useAlerts();
 
   usePromise(
@@ -34,9 +46,20 @@ const PersonalInfo = () => {
   const onSubmit = async (user: UserRepresentation) => {
     try {
       await savePersonalInfo(user);
-      addAlert("accountUpdatedMessage");
+      addAlert(t("accountUpdatedMessage"));
     } catch (error) {
-      addError("accountUpdatedError", error);
+      addError(t("accountUpdatedError").toString());
+
+      (error as FieldError[]).forEach((e) => {
+        const params = Object.assign(
+          {},
+          e.params.map((p) => (isBundleKey(p) ? unWrap(p) : p))
+        );
+        setError(fieldName(e.field) as keyof UserRepresentation, {
+          message: t(e.errorMessage, { ...params, defaultValue: e.field }),
+          type: "server",
+        });
+      });
     }
   };
 
