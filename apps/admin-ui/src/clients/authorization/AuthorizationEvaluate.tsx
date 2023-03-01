@@ -10,7 +10,7 @@ import {
   Switch,
 } from "@patternfly/react-core";
 import { useState } from "react";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import type ClientRepresentation from "@keycloak/keycloak-admin-client/lib/defs/clientRepresentation";
@@ -173,6 +173,9 @@ export const AuthorizationEvaluate = ({ client }: Props) => {
     return evaluation;
   };
 
+  const user = useWatch({ control, name: "user", defaultValue: [] });
+  const roles = useWatch({ control, name: "roleIds", defaultValue: [] });
+
   if (evaluateResult) {
     return (
       <Results
@@ -182,6 +185,7 @@ export const AuthorizationEvaluate = ({ client }: Props) => {
       />
     );
   }
+
   return (
     <PageSection>
       <FormProvider {...form}>
@@ -201,9 +205,9 @@ export const AuthorizationEvaluate = ({ client }: Props) => {
               name="user"
               label="users"
               helpText="clients-help:selectUser"
-              defaultValue=""
+              defaultValue={[]}
               variant={SelectVariant.typeahead}
-              isRequired
+              isRequired={roles?.length === 0}
             />
             <FormGroup
               label={t("roles")}
@@ -216,13 +220,16 @@ export const AuthorizationEvaluate = ({ client }: Props) => {
               fieldId="realmRole"
               validated={errors.roleIds ? "error" : "default"}
               helperTextInvalid={t("common:required")}
-              isRequired
+              isRequired={user.length === 0}
             >
               <Controller
                 name="roleIds"
                 control={control}
                 defaultValue={[]}
-                rules={{ validate: (value) => (value || "").length > 0 }}
+                rules={{
+                  validate: (value) =>
+                    (value || "").length > 0 || user.length > 0,
+                }}
                 render={({ field }) => (
                   <Select
                     placeholderText={t("selectARole")}
