@@ -2,6 +2,7 @@ import { NetworkError } from "@keycloak/keycloak-admin-client";
 import { AlertVariant } from "@patternfly/react-core";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { generateId } from "../../util";
 
 import { createNamedContext } from "../../utils/createNamedContext";
 import useRequiredContext from "../../utils/useRequiredContext";
@@ -48,7 +49,7 @@ export const AlertProvider = ({ children }: PropsWithChildren) => {
   const addAlert = useCallback<AddAlertFunction>(
     (message, variant = AlertVariant.success, description) => {
       const alert: AlertEntry = {
-        id: Math.random() * 100,
+        id: generateId(),
         message,
         variant,
         description,

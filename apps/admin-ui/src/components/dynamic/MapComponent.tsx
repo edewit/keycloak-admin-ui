@@ -11,6 +11,7 @@ import { MinusCircleIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { generateId } from "../../util";
 
 import { HelpItem } from "../help-enabler/HelpItem";
 import { KeyValueType } from "../key-value-form/key-value-convert";
@@ -20,7 +21,6 @@ import { convertToName } from "./DynamicComponents";
 type IdKeyValueType = KeyValueType & {
   id: number;
 };
-const generateId = () => Math.floor(Math.random() * 100);
 
 export const MapComponent = ({ name, label, helpText }: ComponentProps) => {
   const { t } = useTranslation("dynamic");
