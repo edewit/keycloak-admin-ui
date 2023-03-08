@@ -78,7 +78,7 @@ export const FormAccess = ({
             ...element.props,
             render: (props: any) => {
               const renderElement = element.props.render(props);
-              return recursiveCloneChildren(renderElement, {
+              return cloneElement(renderElement, {
                 ...renderElement.props,
                 ...newProps,
               });
