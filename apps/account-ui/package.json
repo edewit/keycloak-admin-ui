@@ -23,7 +23,7 @@
     "ui-shared": "999.0.0-SNAPSHOT"
   },
   "devDependencies": {
-    "@types/lodash-es": "^4.17.6",
+    "@types/lodash-es": "^4.17.8",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
     "@vitejs/plugin-react-swc": "^3.2.0",
