@@ -126,7 +126,7 @@ jobs:
           version: latest
 
       - name: Run Cypress
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         continue-on-error: true
         with:
           install: false
