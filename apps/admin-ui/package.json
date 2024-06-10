@@ -103,7 +103,7 @@
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.23",
     "@vitejs/plugin-react-swc": "^3.7.0",
-    "cypress": "^12.9.0",
+    "cypress": "^13.11.0",
     "jsdom": "^24.0.0",
     "ldap-server-mock": "^6.0.1",
     "ts-node": "^10.9.1",
