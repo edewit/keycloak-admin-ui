@@ -46,10 +46,10 @@
     "@faker-js/faker": "^8.2.0",
     "@types/chai": "^4.3.11",
     "@types/lodash-es": "^4.17.9",
-    "@types/mocha": "^10.0.6",
+    "@types/mocha": "^10.0.9",
     "@types/node": "^22.5.5",
     "chai": "^5.1.1",
-    "mocha": "^10.2.0",
+    "mocha": "^10.8.2",
     "ts-node": "^10.2.1"
   },
   "author": "wwwy3y3",
