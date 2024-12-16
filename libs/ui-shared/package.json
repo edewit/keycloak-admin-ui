@@ -38,11 +38,11 @@
     "@patternfly/react-core": "^4.267.6",
     "react-hook-form": "7.52.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.23",
+    "@types/react-dom": "^19.0.1",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "vite": "^6.0.1",
