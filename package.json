@@ -16,7 +16,7 @@
     "@types/node": "^22.13.1",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "eslint": "^8.52.0",
+    "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.0.2",
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-cypress": "^2.12.1",
