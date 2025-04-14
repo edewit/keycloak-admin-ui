@@ -70,7 +70,7 @@
     "@keycloak/keycloak-admin-client": "999.0.0-SNAPSHOT",
     "@patternfly/patternfly": "^5.2.1",
     "@patternfly/react-code-editor": "^5.4.0",
-    "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-core": "^6.2.0",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-table": "^4.112.39",
     "dagre": "^0.8.5",
