@@ -86,7 +86,7 @@
     "react-error-boundary": "^3.1.4",
     "react-hook-form": "^7.56.3",
     "react-i18next": "^12.2.0",
-    "react-router-dom": "7.6.1",
+    "react-router-dom": "7.10.1",
     "reactflow": "^11.7.2",
     "ui-shared": "999.0.0-SNAPSHOT",
     "use-react-router-breadcrumbs": "^4.0.1"
