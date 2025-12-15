@@ -43,11 +43,11 @@
   "dependencies": {
     "@patternfly/react-core": "^4.276.6",
     "keycloak-js": "999.0.0-SNAPSHOT",
-    "react": "^18.2.0",
+    "react": "^19.2.3",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.43",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^18.2.23",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
