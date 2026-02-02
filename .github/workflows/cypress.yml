@@ -103,7 +103,7 @@ jobs:
         run: npm run build --workspace=@keycloak/keycloak-admin-client
 
       - name: Restore Keycloak server
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v7
         with:
           name: keycloak
 
