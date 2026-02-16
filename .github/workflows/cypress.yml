@@ -25,12 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: admin-ui-repo
 
       - name: Check out Keycloak Server
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ inputs.keycloakRepo || 'keycloak/keycloak' }}
           ref: ${{ inputs.keycloakBranch || (contains(github.ref, 'release/') && github.ref || 'main') }}
@@ -87,7 +87,7 @@ jobs:
         container: [1, 2, 3, 4, 5]
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node
         uses: actions/setup-node@v4
